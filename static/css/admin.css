@@ -1,0 +1,8 @@
+
+.members_icon_user_group,
+.pimcore_icon_membersUserGroupMultiselect{
+    background: url(/plugins/Members/static/img/user-group.png) no-repeat scroll left center transparent !important;
+}
+.members_icon_document_restriction {
+    background: url(/plugins/Members/static/img/lock.png) no-repeat scroll left center transparent !important;
+}
