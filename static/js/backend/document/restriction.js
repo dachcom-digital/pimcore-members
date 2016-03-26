@@ -9,6 +9,11 @@ pimcore.plugin.members.document.restriction = Class.create({
     /**
      *
      */
+    layout : null,
+
+    /**
+     *
+     */
     element : null,
 
     /**
@@ -76,7 +81,7 @@ pimcore.plugin.members.document.restriction = Class.create({
 
         var _self = this;
 
-        this.layout = new Ext.Panel({
+        this.layout = new Ext.FormPanel({
 
             id: this.layoutId,
             title: t('members_restriction'),
@@ -103,6 +108,13 @@ pimcore.plugin.members.document.restriction = Class.create({
                             checked: this.data.isActive
                         },
 
+                        {
+                            xtype:"checkbox",
+                            name: "membersDocumentInheritable",
+                            fieldLabel: t("members_enable_document_inheritable"),
+                            checked: this.data.isInheritable
+                        },
+
                         Ext.create('Ext.ux.form.MultiSelect', {
 
                             name: 'membersDocumentUserGroups',
@@ -112,6 +124,8 @@ pimcore.plugin.members.document.restriction = Class.create({
                             store: this.userRolesStore,
                             itemCls: "object_field",
                             width: 700,
+                            valueField: 'id',
+                            displayField: 'text',
                             minHeight: 100,
                             queryMode : 'local',
                             value: this.data.userGroups,
@@ -136,5 +150,35 @@ pimcore.plugin.members.document.restriction = Class.create({
 
         this.element.tabbar.add( this.layout );
 
+        this.element.members.restrictionTab = this;
+
+
+    },
+
+    save : function() {
+
+        var _self = this,
+            settings = this.layout.getForm().getFieldValues();
+
+        var values = {
+            docId: _self.element.id,
+            settings : settings
+        };
+
+        Ext.Ajax.request({
+
+            url: '/plugin/Members/admin_Restriction/set-document-restriction-config',
+            params: {
+                data : Ext.encode(values)
+            },
+            success: function(result){
+
+                console.log(result);
+
+            }
+
+        });
+
     }
+
 });

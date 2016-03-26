@@ -15,7 +15,7 @@ class Restriction extends AbstractModel
     /**
      * @var integer
      */
-    public $id;
+    public $id = NULL;
 
     /**
      * @var boolean
@@ -28,11 +28,49 @@ class Restriction extends AbstractModel
     public $inherited = false;
 
     /**
+     * @var array
+     */
+    public $relatedGroups = array();
+
+    /**
+     * @param $id
+     *
+     * @return \Members\Model\Restriction
+     */
+    public static function getById($id) {
+
+        $obj = new self;
+        $obj->getDao()->getById($id);
+        return $obj;
+
+    }
+
+    /**
+     * @param $id
+     *
+     * @return \Members\Model\Restriction
+     */
+    public static function getByTargetId($id) {
+
+        $obj = new self;
+        $obj->getDao()->getByField('targetId', (int) $id);
+        return $obj;
+    }
+
+    /**
      * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return integer
+     */
+    public function setId( $id )
+    {
+        return $this->id = (int) $id;
     }
 
     /**
@@ -50,6 +88,24 @@ class Restriction extends AbstractModel
     public function setTargetId($targetId)
     {
         $this->targetId = (int) $targetId;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelatedGroups()
+    {
+        return $this->relatedGroups;
+    }
+
+    /**
+     * @param array $relatedGroups
+     * @return static
+     */
+    public function setRelatedGroups($relatedGroups)
+    {
+        $this->relatedGroups = (array) $relatedGroups;
         return $this;
     }
 

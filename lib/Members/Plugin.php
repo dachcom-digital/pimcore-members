@@ -6,6 +6,7 @@ use Pimcore\API\Plugin as PluginLib;
 
 use Members\Plugin\Install;
 use Members\Model\Configuration;
+use Members\RestrictionService;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface {
 
@@ -27,6 +28,36 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function init()
     {
         parent::init();
+
+        \Pimcore::getEventManager()->attach('system.startup',      array($this, 'registerPluginController'));
+        \Pimcore::getEventManager()->attach('document.postAdd',    array($this, 'handleDocument'));
+        \Pimcore::getEventManager()->attach('document.postUpdate', array($this, 'handleDocument'));
+
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     */
+    public function registerPluginController(\Zend_EventManager_Event $e)
+    {
+        $frontController = $e->getTarget();
+
+        if ($frontController instanceof \Zend_Controller_Front)
+        {
+            $frontController->registerPlugin(new Controller\Plugin\Frontend());
+        }
+
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleDocument(\Zend_EventManager_Event $e)
+    {
+        $document = $e->getTarget();
+        return RestrictionService::handleDocument( $document );
     }
 
     /**
@@ -74,7 +105,6 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $install->installConfigFile();
             $install->installClasses();
             $install->injectDbData();
-
         }
         catch (\Exception $e)
         {
@@ -113,23 +143,32 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      */
     public static function getTranslate($lang = null)
     {
-        if (self::$_translate instanceof \Zend_Translate) {
+        if (self::$_translate instanceof \Zend_Translate)
+        {
             return self::$_translate;
         }
-        if(is_null($lang)) {
-            try {
+
+        if(is_null($lang))
+        {
+            try
+            {
                 $lang = \Zend_Registry::get('Zend_Locale')->getLanguage();
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e)
+            {
                 $lang = 'en';
             }
         }
 
         self::$_translate = new \Zend_Translate(
+
             'csv',
             PIMCORE_PLUGINS_PATH .self::getTranslationFile($lang),
             $lang,
             array('delimiter' => ',')
+
         );
+
         return self::$_translate;
     }
 

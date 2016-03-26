@@ -50,12 +50,20 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin,{
 
     postOpenDocument : function(doc) {
 
+        doc.members = {};
+
         var restrictionTab = new pimcore.plugin.members.document.restriction(doc);
 
         restrictionTab.setup();
 
+    },
+
+    postSaveDocument : function(doc, type, task, only) {
+
+        doc.members.restrictionTab.save();
+
     }
 
-    });
+});
 
 new pimcore.plugin.members();
