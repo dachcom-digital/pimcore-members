@@ -14,6 +14,11 @@ class Tool {
     {
         $identity = self::getIdentity();
 
+        if (isset($_COOKIE['pimcore_admin_sid']))
+        {
+            return md5('pimcore_admin');
+        }
+
         if( $identity instanceof Object\Member)
         {
             $allowedGroups = $identity->getGroups();
@@ -60,6 +65,12 @@ class Tool {
     public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
     {
         $restriction = FALSE;
+
+        //@fixme! bad?
+        if (isset($_COOKIE['pimcore_admin_sid']))
+        {
+            return FALSE;
+        }
 
         try
         {
