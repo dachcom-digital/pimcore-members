@@ -15,7 +15,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         {
             $document = $request->getParam('document');
 
-            $groups = Tool::getDocumentRestrictedGroups( $document->getId() );
+            $groups = Tool::getDocumentRestrictedGroups( $document );
 
             $renderer = \Zend_Controller_Action_HelperBroker::getExistingHelper('ViewRenderer');
             $renderer->initView();

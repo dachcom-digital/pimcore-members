@@ -36,17 +36,9 @@ class Tool {
 
     }
 
-    public static function getDocumentRestrictedGroups( $id )
+    public static function getDocumentRestrictedGroups( $document )
     {
-        $restriction = FALSE;
-
-        try
-        {
-            $restriction = Restriction::getByTargetId( $id );
-        }
-        catch(\Exception $e)
-        {
-        }
+        $restriction = self::getRestrictionObject( $document );
 
         $groups = array();
 
@@ -63,6 +55,34 @@ class Tool {
     }
 
     public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
+    {
+        $restriction = self::getRestrictionObject( $document );
+
+        if( $restriction === FALSE)
+        {
+            return FALSE;
+        }
+
+        $identity = self::getIdentity();
+
+        $restrictionRelatedGroups = $restriction->getRelatedGroups();
+
+        if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
+        {
+            $allowedGroups = $identity->getGroups();
+            $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+
+            if( count($intersectResult) > 0 )
+            {
+                return FALSE;
+            }
+
+        }
+
+        return TRUE;
+    }
+
+    private static function getRestrictionObject( $document )
     {
         $restriction = FALSE;
 
@@ -89,29 +109,11 @@ class Tool {
             {
                 $restriction = $nextHigherRestriction;
             }
-            else
-            {
-                return FALSE;
-            }
-        }
-
-        $identity = self::getIdentity();
-
-        $restrictionRelatedGroups = $restriction->getRelatedGroups();
-
-        if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
-        {
-            $allowedGroups = $identity->getGroups();
-            $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
-
-            if( count($intersectResult) > 0 )
-            {
-                return FALSE;
-            }
 
         }
 
-        return TRUE;
+        return $restriction;
+
     }
 
     private static function getIdentity($forceFromStorage = false)
