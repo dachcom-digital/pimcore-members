@@ -82,6 +82,20 @@ class Tool {
         return TRUE;
     }
 
+    public static function getCurrentUserAllowedGroups() {
+
+        $identity = \Zend_Auth::getInstance()->getIdentity();
+
+        if( $identity instanceof \Pimcore\Model\Object\Member )
+        {
+            $allowedGroups = $identity->getGroups();
+
+            return $allowedGroups;
+
+        }
+
+    }
+
     private static function getRestrictionObject( $document )
     {
         $restriction = FALSE;
