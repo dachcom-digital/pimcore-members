@@ -149,7 +149,6 @@ pimcore.plugin.members.document.restriction = Class.create({
         });
 
         this.element.tabbar.add( this.layout );
-
         this.element.members.restrictionTab = this;
 
 
@@ -171,11 +170,7 @@ pimcore.plugin.members.document.restriction = Class.create({
             params: {
                 data : Ext.encode(values)
             },
-            success: function(result){
-
-                console.log(result);
-
-            }
+            success: function(result){ }
 
         });
 

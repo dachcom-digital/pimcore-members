@@ -160,14 +160,14 @@ class Configuration extends Model\AbstractModel
         {
             try
             {
-                $config = new \Zend_Config_Xml(MEMBERS_CONFIGURATION_FILE);
+                $config = new \Zend_Config_Xml(MEMBERS_PLUGIN_CONFIG);
                 self::setPluginConfig($config);
             }
             catch (\Exception $e)
             {
-                if (is_file(MEMBERS_CONFIGURATION_FILE))
+                if (is_file(MEMBERS_PLUGIN_CONFIG))
                 {
-                    $m = 'Your plugin_xml.xml located at is invalid, please check and correct it manually!';
+                    $m = 'Your plugin_xml.xml located at ' . MEMBERS_PLUGIN_CONFIG. ' is invalid, please check and correct it manually!';
                     Tool::exitWithError($m);
                 }
             }

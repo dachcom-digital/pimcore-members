@@ -21,13 +21,15 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         define('MEMBERS_PATH', PIMCORE_PLUGINS_PATH . '/Members');
         define('MEMBERS_INSTALL_PATH', MEMBERS_PATH . '/install');
-        define('MEMBERS_CONFIGURATION_FILE', PIMCORE_CONFIGURATION_DIRECTORY . '/members_configuration.php');
+        define('MEMBERS_PLUGIN_CONFIG', MEMBERS_PATH . '/plugin.xml');
 
     }
 
     public function init()
     {
         parent::init();
+
+        \Zend_Controller_Action_HelperBroker::addPrefix('Members_Controller_Action_Helper');
 
         \Pimcore::getEventManager()->attach('system.startup',      array($this, 'registerPluginController'));
         \Pimcore::getEventManager()->attach('document.postAdd',    array($this, 'handleDocument'));
@@ -139,6 +141,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     }
 
     /**
+     * @param null $lang
+     *
      * @return \Zend_Translate
      */
     public static function getTranslate($lang = null)

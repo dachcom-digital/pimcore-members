@@ -3,6 +3,7 @@
 namespace Members\Model;
 
 use Pimcore\Model\AbstractModel;
+use Pimcore\Model\Object\AbstractObject;
 
 class Restriction extends AbstractModel
 {
@@ -57,6 +58,14 @@ class Restriction extends AbstractModel
         return $obj;
     }
 
+    public static function findNextInherited( $docId = NULL, $docParentIds )
+    {
+        $obj = new self;
+        $obj->getDao()->getNextInheritedParent($docId = NULL, $docParentIds);
+        return $obj;
+
+    }
+
     /**
      * @return integer
      */
@@ -105,7 +114,10 @@ class Restriction extends AbstractModel
      */
     public function setRelatedGroups($relatedGroups)
     {
-        $this->relatedGroups = (array) $relatedGroups;
+        $relatedGroups = (array) $relatedGroups;
+
+        $this->relatedGroups = array_map('intval', $relatedGroups);
+
         return $this;
     }
 

@@ -15,19 +15,31 @@ class Install {
      */
     protected $_user;
 
-    /**
-     * @var null|string
-     */
-    private $configFile = NULL;
-
     public function __construct()
     {
-        $this->configFile = MEMBERS_CONFIGURATION_FILE;
     }
 
     public function installConfigFile()
     {
         Configuration::set('installed', TRUE);
+        Configuration::set('auth.adapter.identityClassname', 'Object\Member');
+        Configuration::set('auth.adapter.identityColumn', 'email');
+        Configuration::set('auth.adapter.credentialColumn', 'password');
+        Configuration::set('auth.adapter.objectPath', '/members');
+
+        Configuration::set('routes.login', '/members/login');
+        Configuration::set('routes.logout', '/members/logout');
+        Configuration::set('routes.register', '/members/register');
+        Configuration::set('routes.profile', '/members');
+        Configuration::set('routes.confirm', '/members/confirm');
+        Configuration::set('routes.passwordRequest', '/members/password-request');
+        Configuration::set('routes.passwordReset', '/members/password-reset');
+
+        Configuration::set('emails.registerConfirm', '/members/emails/register-confirm');
+        Configuration::set('emails.passwordReset', '/members/emails/password-reset');
+
+        Configuration::set('actions.postRegister', 'active');
+
         return TRUE;
     }
 

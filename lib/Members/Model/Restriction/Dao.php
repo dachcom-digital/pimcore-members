@@ -53,12 +53,29 @@ class Dao extends Model\Dao\AbstractDao
         {
             throw new \Exception('Object with the '.$field.' ' . $value . ' doesn\'t exists');
         }
+        else
         {
             $data = $this->addRelationData($data);
 
         }
 
         $this->assignVariablesToModel($data);
+    }
+
+    public function getNextInheritedParent( $docId = NULL, $docParentIds ) {
+
+        $propertiesRaw = $this->db->fetchAll("SELECT * FROM members_restrictions WHERE ((targetId IN (" . implode(",", $docParentIds) . ") AND inheritable = 1) OR targetId = ? )", $docId);
+
+        // because this should be faster than mysql
+        usort($propertiesRaw, function ($left, $right) {
+            return strcmp($left["targetId"], $right["targetId"]);
+        });
+
+        if( !empty( $propertiesRaw ) )
+        {
+            $data = $this->addRelationData($propertiesRaw[0]);
+            $this->assignVariablesToModel($data);
+        }
     }
 
     /**

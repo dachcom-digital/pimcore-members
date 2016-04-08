@@ -28,6 +28,10 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
             fieldLabel: this.fieldConfig.title,
             store: store,
             itemCls: "object_field",
+            valueField: 'id',
+            displayField: 'text',
+            width: 300,
+            minHeight: 100,
             maxHeight : 400,
             queryMode : 'local',
             listeners : {
