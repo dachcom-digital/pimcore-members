@@ -33,7 +33,7 @@ class Member extends \Zend_Controller_Action_Helper_Abstract
         if (!\Zend_Auth::getInstance()->hasIdentity())
         {
             $this->getActionController()->redirect(sprintf('%s?back=%s',
-                Configuration::get('routes.login'),
+                Configuration::getLocalizedPath('routes.login'),
                 urlencode( $this->getRequest()->getRequestUri() )
             ));
         }

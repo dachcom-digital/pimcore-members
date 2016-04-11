@@ -1,6 +1,6 @@
 {
 	"description":null,
-	"parentClass":null,
+    "parentClass":"Members\\Model\\Member",
 	"useTraits":null,
 	"allowInherit":false,
 	"allowVariants":false,

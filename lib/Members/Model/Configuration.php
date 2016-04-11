@@ -144,6 +144,15 @@ class Configuration extends Model\AbstractModel
         $configEntry->save();
     }
 
+    public static function getLocalizedPath( $param )
+    {
+        $data = self::get( $param );
+        $lang = (string)\Zend_Registry::get("Zend_Locale");
+
+        return str_replace('/%lang', '/' . $lang, $data );
+
+    }
+
     /**
      * @return mixed|null|\Zend_Config_Xml
      * @throws \Zend_Exception

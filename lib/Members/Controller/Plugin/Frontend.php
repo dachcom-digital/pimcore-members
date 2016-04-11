@@ -4,10 +4,11 @@ namespace Members\Controller\Plugin;
 
 use Pimcore\Model\Document\Page;
 use Members\Tool\Tool;
+use Members\Model\Configuration;
 
 class Frontend extends \Zend_Controller_Plugin_Abstract
 {
-    public function preDispatch(\Zend_Controller_Request_Abstract $request)
+    public function postDispatch(\Zend_Controller_Request_Abstract $request)
     {
         parent::preDispatch($request);
 
@@ -52,9 +53,8 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         if( Tool::isRestrictedDocument( $document ) )
         {
             $response = $this->getResponse();
-
-            $response->setHeader('Cache-Control', 'max-age=0');
-            $response->setHttpResponseCode(401);
+            $response->setHeader('Location', Configuration::getLocalizedPath('routes.login'));
+            $response->setRawHeader(302);
             $response->sendHeaders();
             exit;
         }

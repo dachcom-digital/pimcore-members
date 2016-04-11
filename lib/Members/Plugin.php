@@ -35,6 +35,13 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('document.postAdd',    array($this, 'handleDocument'));
         \Pimcore::getEventManager()->attach('document.postUpdate', array($this, 'handleDocument'));
 
+        \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
+        \Pimcore::getEventManager()->attach('members.password.reset',  array('Members\Events\Password', 'reset'));
+
+        if (Configuration::get('actions.postRegister') !== FALSE)
+        {
+            \Pimcore::getEventManager()->attach('members.register.post', array('Members\Events\Register', Configuration::get('actions.postRegister')));
+        }
     }
 
     /**
@@ -106,6 +113,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $install = new Install();
             $install->installConfigFile();
             $install->installClasses();
+            $install->installDocuments();
+            $install->installTranslations();
             $install->injectDbData();
         }
         catch (\Exception $e)

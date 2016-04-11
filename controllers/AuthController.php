@@ -1,9 +1,9 @@
 <?php
 
+use Pimcore\Model\Object;
 use Members\Auth\Adapter;
 use Members\Controller\Action;
 use Members\Model\Configuration;
-use Pimcore\Model\Object;
 
 class Members_AuthController extends Action
 {
@@ -11,7 +11,7 @@ class Members_AuthController extends Action
     {
         if ($this->_helper->member())
         {
-            $this->redirect(Configuration::get('routes.profile'));
+            $this->redirect(Configuration::getLocalizedPath('routes.profile'));
         }
 
         if ($this->_request->isPost())
@@ -27,10 +27,10 @@ class Members_AuthController extends Action
 
             $adapterSettings = array(
 
-                'identityClassname' =>  Configuration::get('auth.adapter.identityClassname'),
-                'identityColumn' =>  Configuration::get('auth.adapter.identityColumn'),
-                'credentialColumn' =>  Configuration::get('auth.adapter.credentialColumn'),
-                'objectPath' =>  Configuration::get('auth.adapter.objectPath')
+                'identityClassname'     =>  Configuration::get('auth.adapter.identityClassname'),
+                'identityColumn'        =>  Configuration::get('auth.adapter.identityColumn'),
+                'credentialColumn'      =>  Configuration::get('auth.adapter.credentialColumn'),
+                'objectPath'            =>  Configuration::get('auth.adapter.objectPath')
 
             );
 
@@ -46,7 +46,7 @@ class Members_AuthController extends Action
                 if ($this->_getParam('back')) {
                     $this->redirect($this->_getParam('back'));
                 }
-                $this->redirect(Configuration::get('routes')->profile);
+                $this->redirect(Configuration::getLocalizedPath('routes.profile'));
             }
 
             switch ($result->getCode())
@@ -68,14 +68,14 @@ class Members_AuthController extends Action
     public function logoutAction()
     {
         $this->auth->clearIdentity();
-        $this->redirect(Configuration::get('routes.login'));
+        $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
 
     public function passwordRequestAction()
     {
         if ($this->_helper->member())
         {
-            $this->redirect(Configuration::get('routes.profile'));
+            $this->redirect(Configuration::getLocalizedPath('routes.profile'));
         }
 
         if ($this->_request->isPost())
@@ -83,15 +83,16 @@ class Members_AuthController extends Action
             $email = trim($this->_request->getPost('email'));
             if (!\Zend_Validate::is($email, 'EmailAddress'))
             {
-                $this->view->error = $this->translate->_('member_password_request_email_invalid');
+                $this->view->error = $this->translate->_('Provide valid email address.');
                 return;
             }
 
             // TODO resend confirmation email if account is not active
             $list = Object\Member::getByEmail($email);
 
-            if (count($list) == 0) {
-                $this->view->error = $this->translate->_('member_password_request_email_not_exist');
+            if (count($list) == 0)
+            {
+                $this->view->error = $this->translate->_('User with given email not exist.');
                 return;
             }
 
@@ -100,10 +101,10 @@ class Members_AuthController extends Action
             $member->requestPasswordReset();
             $this->_helper->flashMessenger([
                 'type' => 'success',
-                'text' => $this->translate->_('member_password_request_success'),
+                'text' => $this->translate->_('Password reset confirmation was sent to given email address.'),
             ]);
 
-            $this->redirect(Configuration::get('routes.login'));
+            $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }
     }
 
@@ -111,7 +112,7 @@ class Members_AuthController extends Action
     {
         if ($this->_helper->member())
         {
-            $this->redirect(Configuration::get('routes.profile'));
+            $this->redirect(Configuration::getLocalizedPath('routes.profile'));
         }
 
         $hash = trim($this->_getParam('hash'));
@@ -120,10 +121,10 @@ class Members_AuthController extends Action
         {
             $this->_helper->flashMessenger([
                 'type' => 'danger',
-                'text' => $this->translate->_('member_password_reset_link_invalid'),
+                'text' => $this->translate->_('Invalid password reset link.'),
             ]);
 
-            $this->redirect(Configuration::get('routes')->login);
+            $this->redirect(Configuration::getLocalizedPath('routes.login'));
 
         }
 
@@ -135,10 +136,10 @@ class Members_AuthController extends Action
         {
             $this->_helper->flashMessenger([
                 'type' => 'danger',
-                'text' => $this->translate->_('member_password_reset_link_invalid')
+                'text' => $this->translate->_('Invalid password reset link.')
             ]);
 
-            $this->redirect(Configuration::get('routes.login'));
+            $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }
 
         if ($this->_request->isPost())
@@ -151,10 +152,10 @@ class Members_AuthController extends Action
             {
                 $this->_helper->flashMessenger([
                     'type' => 'success',
-                    'text' => $this->translate->_('member_password_reset_success')
+                    'text' => $this->translate->_('Your password has been successfully changed.')
                 ]);
 
-                $this->redirect(Configuration::get('routes.login'));
+                $this->redirect(Configuration::getLocalizedPath('routes.login'));
             }
 
             $this->view->errors = $result->getMessages();

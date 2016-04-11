@@ -3,9 +3,11 @@
 namespace Members\Plugin;
 
 use Pimcore\Model\Object;
+use Pimcore\Model\Document;
 use Pimcore\Model\User;
 use Pimcore\Model\Tool\Setup;
-
+use Pimcore\Model\Translation\Website;
+use Pimcore\Tool;
 use Members\Model\Configuration;
 
 class Install {
@@ -27,20 +29,27 @@ class Install {
         Configuration::set('auth.adapter.credentialColumn', 'password');
         Configuration::set('auth.adapter.objectPath', '/members');
 
-        Configuration::set('routes.login', '/members/login');
-        Configuration::set('routes.logout', '/members/logout');
-        Configuration::set('routes.register', '/members/register');
-        Configuration::set('routes.profile', '/members');
-        Configuration::set('routes.confirm', '/members/confirm');
-        Configuration::set('routes.passwordRequest', '/members/password-request');
-        Configuration::set('routes.passwordReset', '/members/password-reset');
+        Configuration::set('routes.login', '/%lang/members/login');
+        Configuration::set('routes.logout', '/%lang/members/logout');
+        Configuration::set('routes.register', '/%lang/members/register');
+        Configuration::set('routes.profile', '/%lang/members');
+        Configuration::set('routes.confirm', '/%lang/members/confirm');
+        Configuration::set('routes.passwordRequest', '/%lang/members/password-request');
+        Configuration::set('routes.passwordReset', '/%lang/members/password-reset');
 
-        Configuration::set('emails.registerConfirm', '/members/emails/register-confirm');
-        Configuration::set('emails.passwordReset', '/members/emails/password-reset');
+        Configuration::set('emails.registerConfirm', '/%lang/emails/members/register-confirm');
+        Configuration::set('emails.passwordReset', '/%lang/emails/members/password-reset');
 
-        Configuration::set('actions.postRegister', 'active');
+        Configuration::set('actions.postRegister', 'activate');
 
         return TRUE;
+    }
+
+    public function installTranslations() {
+
+        $csv = PIMCORE_PLUGINS_PATH . '/Members/install/translations/data.csv';
+        Website::importTranslationsFromFile($csv, true, Tool\Admin::getLanguages());
+
     }
 
     public function injectDbData()
@@ -80,6 +89,127 @@ class Install {
         }
 
         return TRUE;
+    }
+
+    public function installDocuments()
+    {
+        $file = PIMCORE_PLUGINS_PATH . '/Members/install/documents-Members.json';
+        $docs = new \Zend_Config_Json($file);
+
+        $validLanguages = explode(",", \Pimcore\Config::getSystemConfig()->general->validLanguages);
+        $languagesDone = array();
+
+        foreach ($validLanguages as $language)
+        {
+            $languageDocument = Document::getByPath("/" . $language);
+
+            if (!$languageDocument instanceof Document)
+            {
+                $languageDocument = new Document\Page();
+                $languageDocument->setParent(Document::getById(1));
+                $languageDocument->setKey($language);
+                $languageDocument->save();
+            }
+
+            foreach ($docs as $def)
+            {
+                $def = $def->toArray();
+
+                $path = "/" . $language . "/" . $def['path'] . "/" . $def['key'];
+
+                if (!Document\Service::pathExists($path))
+                {
+                    $class = "Pimcore\\Model\\Document\\" . ucfirst($def['type']);
+
+                    if (\Pimcore\Tool::classExists($class))
+                    {
+                        /** @var Document $doc */
+                        $document = new $class();
+                        $document->setParent(Document::getByPath("/" . $language . "/" . $def['path']));
+
+                        $document->setKey($def['key']);
+                        $document->setProperty("language", $language, 'text', true);
+
+                        $document->setUserOwner($this->_getUser()->getId());
+                        $document->setUserModification($this->_getUser()->getId());
+
+                        if( isset( $def['name'] ) )
+                        {
+                            $document->setName($def['name']);
+                        }
+                        if( isset( $def['title'] ) )
+                        {
+                            $document->setTitle($def['title']);
+                        }
+                        if( isset( $def['module'] ) )
+                        {
+                            $document->setModule($def['module']);
+                        }
+                        if( isset( $def['controller'] ) )
+                        {
+                            $document->setController($def['controller']);
+                        }
+                        if( isset( $def['action'] ) )
+                        {
+                            $document->setAction($def['action']);
+                        }
+
+                        if (array_key_exists("data", $def))
+                        {
+                            foreach ($def['data'] as $fieldLanguage => $fields)
+                            {
+                                if ($fieldLanguage !== $language)
+                                {
+                                    continue;
+                                }
+
+                                foreach ($fields as $field)
+                                {
+                                    $key = $field['key'];
+                                    $type = $field['type'];
+                                    $content = null;
+
+                                    if (array_key_exists("value", $field))
+                                    {
+                                        $content = $field['value'];
+                                    }
+
+                                    if ( !empty( $content ) )
+                                    {
+                                        if ($type === "objectProperty")
+                                        {
+                                            $document->setValue($key, $content);
+                                        }
+                                        else
+                                        {
+                                            $document->setRawElement($key, $type, $content);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        $document->setPublished(TRUE);
+                        $document->save();
+
+                        //Link translations
+                        foreach($languagesDone as $doneLanguage) {
+                            $translatedDocument = Document::getByPath("/" . $doneLanguage . "/" . $def['path'] . "/" . $def['key']);
+
+                            if($translatedDocument)
+                            {
+                                $service = new \Pimcore\Model\Document\Service();
+                                $service->addTranslation($document, $translatedDocument, $doneLanguage);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            $languagesDone[] = $language;
+        }
     }
 
     public function removeConfig()

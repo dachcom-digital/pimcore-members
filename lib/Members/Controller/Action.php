@@ -20,12 +20,12 @@ class Action extends WebsiteAction
 
         $this->enableLayout();
 
-        $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
+        $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts/members');
         $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
 
-        $this->auth = \Zend_Auth::getInstance();
-        // TODO provide plugin translations to frontend
         $this->translate = $this->initTranslation();
+
+        $this->auth = \Zend_Auth::getInstance();
         $this->view->flashMessages = $this->_helper->flashMessenger->getMessages();
     }
 }

@@ -12,10 +12,10 @@
             <?php endif; ?>
 
             <h2 class="text-center">
-                <?= $this->translate('login') ?>
+                <?= $this->translate('Login') ?>
                 <?= $this->translate('or') ?>
-                <a href="<?= \Members\Model\Configuration::get('routes.register') ?>">
-                    <?= $this->translate('sign_up') ?>
+                <a href="<?= \Members\Model\Configuration::getLocalizedPath('routes.register') ?>">
+                    <?= $this->translate('Sign up') ?>
                 </a>
             </h2>
 
@@ -24,7 +24,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
                         <input type="email" class="form-control input-lg" name="email"
-                            placeholder="<?= $this->translate('email') ?>">
+                            placeholder="<?= $this->translate('Email') ?>">
                     </div>
                 </div>
 
@@ -32,7 +32,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-fw fa-lock"></i></span>
                         <input type="password" class="form-control input-lg" name="password"
-                            placeholder="<?= $this->translate('password') ?>">
+                            placeholder="<?= $this->translate('Password') ?>">
                     </div>
                 </div>
 
@@ -43,7 +43,7 @@
                 <?php endif; ?>
 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
-                    <?= $this->translate('login') ?>
+                    <?= $this->translate('Login') ?>
                 </button>
             </form>
 
@@ -52,14 +52,14 @@
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" value="remember-me">
-                            <?= $this->translate('remember_me') ?>
+                            <?= $this->translate('Remember me') ?>
                         </label>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <p class="forgot-pwd">
-                        <a href="<?= \Members\Model\Configuration::get('routes.passwordRequest') ?>">
-                            <?= $this->translate('forgot_password?') ?>
+                        <a href="<?= \Members\Model\Configuration::getLocalizedPath('routes.passwordRequest') ?>">
+                            <?= $this->translate('Forgot your password?') ?>
                         </a>
                     </p>
                 </div>
