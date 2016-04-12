@@ -74,7 +74,7 @@ class Tool {
         if( $restriction === FALSE)
         {
             $status['state'] = self::STATE_NOT_LOGGED_IN;
-            $status['section'] = self::SECTION_NOT_ALLOWED;
+            $status['section'] = self::SECTION_ALLOWED;
             return $status;
         }
 
@@ -144,6 +144,10 @@ class Tool {
             if( $nextHigherRestriction->getId() !== null )
             {
                 $restriction = $nextHigherRestriction;
+            }
+            else
+            {
+                $restriction = FALSE;
             }
 
         }
