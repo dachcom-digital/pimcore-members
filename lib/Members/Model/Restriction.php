@@ -9,24 +9,29 @@ class Restriction extends AbstractModel
 {
 
     /**
-     * @var string
-     */
-    public $targetId;
-
-    /**
      * @var integer
      */
     public $id = NULL;
 
     /**
-     * @var boolean
+     * @var string
      */
-    public $inheritable;
+    public $ctype = NULL;
+
+    /**
+     * @var string
+     */
+    public $targetId = 0;
 
     /**
      * @var boolean
      */
-    public $inherited = false;
+    public $inheritable = FALSE;
+
+    /**
+     * @var boolean
+     */
+    public $inherited = FALSE;
 
     /**
      * @var array
@@ -48,22 +53,29 @@ class Restriction extends AbstractModel
 
     /**
      * @param $id
+     * @param $cType
      *
      * @return \Members\Model\Restriction
      */
-    public static function getByTargetId($id) {
+    public static function getByTargetId($id, $cType = 'page') {
 
         $obj = new self;
-        $obj->getDao()->getByField('targetId', (int) $id);
+        $obj->getDao()->getByField('targetId', (int) $id, $cType);
         return $obj;
     }
 
-    public static function findNextInherited( $docId = NULL, $docParentIds )
+    /**
+     * @param null   $docId
+     * @param int    $docParentIds
+     * @param string $cType
+     *
+     * @return \Members\Model\Restriction
+     */
+    public static function findNextInherited( $docId = NULL, $docParentIds, $cType = 'page' )
     {
         $obj = new self;
-        $obj->getDao()->getNextInheritedParent($docId = NULL, $docParentIds);
+        $obj->getDao()->getNextInheritedParent($docId, $docParentIds, $cType);
         return $obj;
-
     }
 
     /**
@@ -80,6 +92,24 @@ class Restriction extends AbstractModel
     public function setId( $id )
     {
         return $this->id = (int) $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCtype()
+    {
+        return $this->ctype;
+    }
+
+    /**
+     * @param string $cType
+     * @return static
+     */
+    public function setCtype($cType)
+    {
+        $this->ctype = (string) $cType;
+        return $this;
     }
 
     /**
@@ -115,7 +145,6 @@ class Restriction extends AbstractModel
     public function setRelatedGroups($relatedGroups)
     {
         $relatedGroups = (array) $relatedGroups;
-
         $this->relatedGroups = array_map('intval', $relatedGroups);
 
         return $this;
@@ -130,16 +159,6 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * Alias for getInherited()
-     *
-     * @return boolean
-     */
-    public function isInherited()
-    {
-        return $this->getInherited();
-    }
-
-    /**
      * @param boolean $inherited
      * @return static
      */
@@ -147,6 +166,16 @@ class Restriction extends AbstractModel
     {
         $this->inherited = (bool) $inherited;
         return $this;
+    }
+
+    /**
+     * Alias for getInherited()
+     *
+     * @return boolean
+     */
+    public function isInherited()
+    {
+        return $this->getInherited();
     }
 
     /**

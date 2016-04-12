@@ -6,10 +6,25 @@ use Members\Model\Restriction;
 
 class RestrictionService
 {
-    public static function handleDocument( $document ) {
+    public static function deleteRestriction( $obj, $cType ) {
 
-        //$front = \Zend_Controller_Front::getInstance();
-        //print_r( $front->getRequest()->getParams() );
+        $docId =  $obj->getId();
+        $restriction = FALSE;
+
+        try
+        {
+            $restriction = Restriction::getByTargetId( $docId, $cType );
+
+        }
+        catch(\Exception $e)
+        {
+
+        }
+
+        if( $restriction !== FALSE)
+        {
+            $restriction->delete();
+        }
 
         return true;
 

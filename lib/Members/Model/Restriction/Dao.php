@@ -40,18 +40,19 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
-     * @param      $field
-     * @param null $value
+     * @param string    $field
+     * @param null      $value
+     * @param string    $cType
      *
      * @throws \Exception
      */
-    public function getByField($field, $value = null) {
+    public function getByField($field, $value = null, $cType = 'page') {
 
-        $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE ' . $field . ' = ?', $value);
+        $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE ' . $field . ' = ? AND ctype = ?', array($value, $cType));
 
         if( $data === FALSE)
         {
-            throw new \Exception('Object with the '.$field.' ' . $value . ' doesn\'t exists');
+            throw new \Exception('Object (Type: ' . $cType. ') with the ' . $field . ' ' . $value . ' doesn\'t exists');
         }
         else
         {
@@ -62,13 +63,20 @@ class Dao extends Model\Dao\AbstractDao
         $this->assignVariablesToModel($data);
     }
 
-    public function getNextInheritedParent( $docId = NULL, $docParentIds ) {
+    /**
+     * @param null   $docId
+     * @param        $docParentIds
+     * @param string $cType
+     */
+    public function getNextInheritedParent( $docId = NULL, $docParentIds, $cType = 'page' ) {
 
-        $propertiesRaw = $this->db->fetchAll("SELECT * FROM members_restrictions WHERE ((targetId IN (" . implode(",", $docParentIds) . ") AND inheritable = 1) OR targetId = ? )", $docId);
+        $propertiesRaw = $this->db->fetchAll(
+            "SELECT * FROM members_restrictions WHERE (targetId IN (" . implode(',',$docParentIds) . ") AND inheritable = ? AND ctype = ?) OR (targetId = ? AND ctype = ?)",
+            array(1, $cType, $docId, $cType));
 
         // because this should be faster than mysql
         usort($propertiesRaw, function ($left, $right) {
-            return strcmp($left["targetId"], $right["targetId"]);
+            return strcmp($left['targetId'], $right['targetId']);
         });
 
         if( !empty( $propertiesRaw ) )
@@ -87,8 +95,9 @@ class Dao extends Model\Dao\AbstractDao
     {
         $saveData = array(
 
-            'targetId' => $this->model->getTargetId(),
-            'inheritable' => (int)$this->model->getInheritable()
+            'targetId'      => $this->model->getTargetId(),
+            'ctype'         => $this->model->getCtype(),
+            'inheritable'   => (int) $this->model->getInheritable()
 
         );
 
@@ -159,7 +168,7 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
-     *
+     * Delete Data
      */
     public function delete() {
 

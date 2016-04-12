@@ -1,4 +1,8 @@
 "members","Members"
+"members_install_failed","Members Plugin could not be installed."
+"members_install_successfully","Members Plugin has been successfully installed."
+"members_uninstalled_successfully","Members Plugin has been successfully uninstalled."
+"members_uninstall_failed","Members Plugin could not be uninstalled."
 "members_user_group_multiselect","User Group"
 "members_restriction","Access Privileges"
 "members_enable_document_restriction","Enable Document Access Restriction",

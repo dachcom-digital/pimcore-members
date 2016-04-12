@@ -27,6 +27,11 @@ pimcore.plugin.members.document.restriction = Class.create({
     userRolesStore : null,
 
     /**
+     * string "object" or "page"
+     */
+    cType : null,
+
+    /**
      * constructor
      */
     initialize: function(doc) {
@@ -36,9 +41,11 @@ pimcore.plugin.members.document.restriction = Class.create({
 
     },
 
-    setup: function ()
+    setup: function ( cType )
     {
         var _self = this;
+
+        this.cType = cType;
 
         if (!this.layout) {
 
@@ -46,7 +53,8 @@ pimcore.plugin.members.document.restriction = Class.create({
 
                 url: '/plugin/Members/admin_Restriction/get-document-restriction-config',
                 params: {
-                    docId: _self.element.id
+                    docId: _self.element.id,
+                    cType: _self.cType
                 },
                 success: function(result){
 
@@ -161,12 +169,34 @@ pimcore.plugin.members.document.restriction = Class.create({
 
         var values = {
             docId: _self.element.id,
+            cType : _self.cType,
             settings : settings
         };
 
         Ext.Ajax.request({
 
             url: '/plugin/Members/admin_Restriction/set-document-restriction-config',
+            params: {
+                data : Ext.encode(values)
+            },
+            success: function(result){ }
+
+        });
+
+    },
+
+    delete : function() {
+
+        var _self = this;
+
+        var values = {
+            docId: _self.element.id,
+            cType : _self.cType
+        };
+
+        Ext.Ajax.request({
+
+            url: '/plugin/Members/admin_Restriction/delete-document-restriction-config',
             params: {
                 data : Ext.encode(values)
             },

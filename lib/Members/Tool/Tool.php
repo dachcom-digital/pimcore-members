@@ -38,7 +38,7 @@ class Tool {
 
     public static function getDocumentRestrictedGroups( $document )
     {
-        $restriction = self::getRestrictionObject( $document );
+        $restriction = self::getRestrictionObject( $document, 'page' );
 
         $groups = array();
 
@@ -56,7 +56,7 @@ class Tool {
 
     public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
     {
-        $restriction = self::getRestrictionObject( $document );
+        $restriction = self::getRestrictionObject( $document, 'page' );
 
         if( $restriction === FALSE)
         {
@@ -96,7 +96,7 @@ class Tool {
 
     }
 
-    private static function getRestrictionObject( $document )
+    private static function getRestrictionObject( $document, $cType = 'page' )
     {
         $restriction = FALSE;
 
@@ -108,7 +108,7 @@ class Tool {
 
         try
         {
-            $restriction = Restriction::getByTargetId( $document->getId() );
+            $restriction = Restriction::getByTargetId( $document->getId(), $cType );
         }
         catch(\Exception $e)
         {
@@ -117,7 +117,7 @@ class Tool {
         if($restriction === FALSE)
         {
             $docParentIds = $document->getDao()->getParentIds();
-            $nextHigherRestriction = Restriction::findNextInherited( $document->getId(), $docParentIds );
+            $nextHigherRestriction = Restriction::findNextInherited( $document->getId(), $docParentIds, 'page' );
 
             if( $nextHigherRestriction->getId() !== null )
             {

@@ -50,11 +50,21 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin,{
 
     postOpenDocument : function(doc) {
 
-        doc.members = {};
+        if( doc.type == 'page') {
+            doc.members = {};
+            var restrictionTab = new pimcore.plugin.members.document.restriction(doc);
+            restrictionTab.setup('page');
+        }
 
-        var restrictionTab = new pimcore.plugin.members.document.restriction(doc);
+    },
 
-        restrictionTab.setup();
+    postOpenObject : function(obj) {
+
+        if( obj.type !== 'folder') {
+            obj.members = {};
+            var restrictionTab = new pimcore.plugin.members.document.restriction(obj);
+            restrictionTab.setup('object');
+        }
 
     },
 
@@ -62,7 +72,14 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin,{
 
         doc.members.restrictionTab.save();
 
+    },
+
+    postSaveObject : function(obj, task, only) {
+
+        obj.members.restrictionTab.save();
+
     }
+
 
 });
 

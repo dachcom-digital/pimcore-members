@@ -32,8 +32,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Zend_Controller_Action_HelperBroker::addPrefix('Members_Controller_Action_Helper');
 
         \Pimcore::getEventManager()->attach('system.startup',      array($this, 'registerPluginController'));
-        \Pimcore::getEventManager()->attach('document.postAdd',    array($this, 'handleDocument'));
-        \Pimcore::getEventManager()->attach('document.postUpdate', array($this, 'handleDocument'));
+        \Pimcore::getEventManager()->attach('document.preDelete',  array($this, 'handleDocumentDeletion'));
+        \Pimcore::getEventManager()->attach('object.preDelete',   array($this, 'handleObjectDeletion'));
 
         \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
         \Pimcore::getEventManager()->attach('members.password.reset',  array('Members\Events\Password', 'reset'));
@@ -63,10 +63,21 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      *
      * @return bool
      */
-    public function handleDocument(\Zend_EventManager_Event $e)
+    public function handleDocumentDeletion(\Zend_EventManager_Event $e)
     {
         $document = $e->getTarget();
-        return RestrictionService::handleDocument( $document );
+        return RestrictionService::deleteRestriction( $document, 'page' );
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleObjectDeletion(\Zend_EventManager_Event $e)
+    {
+        $object = $e->getTarget();
+        return RestrictionService::deleteRestriction( $object, 'object' );
     }
 
     /**
