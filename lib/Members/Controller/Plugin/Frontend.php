@@ -95,8 +95,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         }
 
         $response = $this->getResponse();
-        $response->setHeader('Location', $url);
-        $response->setRawHeader(302);
+        $response->setHeader('Location', $url, true);
         $response->sendHeaders();
         exit;
 
