@@ -10,6 +10,12 @@ use Pimcore\Model\Object;
 
 class Tool {
 
+    const STATE_LOGGED_IN = 'loggedIn';
+    const STATE_NOT_LOGGED_IN = 'notLoggedIn';
+
+    const SECTION_ALLOWED = 'allowed';
+    const SECTION_NOT_ALLOWED = 'notAllowed';
+
     public static function generateNavCacheKey()
     {
         $identity = self::getIdentity();
@@ -54,32 +60,48 @@ class Tool {
         return $groups;
     }
 
+    /**
+     * @param \Pimcore\Model\Document\Page $document
+     *
+     * @return array (state, section)
+     */
     public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
     {
+        $status = array('state' => NULL, 'section' => NULL);
+
         $restriction = self::getRestrictionObject( $document, 'page' );
 
         if( $restriction === FALSE)
         {
-            return FALSE;
+            $status['state'] = self::STATE_NOT_LOGGED_IN;
+            $status['section'] = self::SECTION_NOT_ALLOWED;
+            return $status;
         }
 
         $identity = self::getIdentity();
 
         $restrictionRelatedGroups = $restriction->getRelatedGroups();
 
-        if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
+        if( $identity instanceof Object\Member )
         {
-            $allowedGroups = $identity->getGroups();
-            $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+            $status['state'] = self::STATE_LOGGED_IN;
+            $status['section'] = self::SECTION_NOT_ALLOWED;
 
-            if( count($intersectResult) > 0 )
+            if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
             {
-                return FALSE;
+                $allowedGroups = $identity->getGroups();
+                $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+
+                if( count($intersectResult) > 0 )
+                {
+                    $status['section'] = self::SECTION_ALLOWED;
+                }
+
             }
 
         }
 
-        return TRUE;
+        return $status;
     }
 
     public static function getCurrentUserAllowedGroups() {
@@ -162,10 +184,10 @@ class Tool {
 
         $adapterSettings = array(
 
-            'identityClassname' =>  Configuration::get('auth.adapter.identityClassname'),
-            'identityColumn' =>  Configuration::get('auth.adapter.identityColumn'),
-            'credentialColumn' =>  Configuration::get('auth.adapter.credentialColumn'),
-            'objectPath' =>  Configuration::get('auth.adapter.objectPath')
+            'identityClassname'     =>  Configuration::get('auth.adapter.identityClassname'),
+            'identityColumn'        =>  Configuration::get('auth.adapter.identityColumn'),
+            'credentialColumn'      =>  Configuration::get('auth.adapter.credentialColumn'),
+            'objectPath'            =>  Configuration::get('auth.adapter.objectPath')
 
         );
 

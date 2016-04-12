@@ -49,15 +49,51 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             return FALSE;
         }
 
-        //now load restriction, and redirect user to login page, if page is restricted!
-        if( Tool::isRestrictedDocument( $document ) )
+        //now load restriction and redirect user to login page, if page is restricted!
+        $restrictedType = Tool::isRestrictedDocument( $document );
+
+        if(  $restrictedType['state'] == Tool::STATE_LOGGED_IN && $restrictedType['section'] == Tool::SECTION_ALLOWED )
         {
-            $response = $this->getResponse();
-            $response->setHeader('Location', Configuration::getLocalizedPath('routes.login'));
-            $response->setRawHeader(302);
-            $response->sendHeaders();
-            exit;
+            return FALSE;
         }
+
+        //do not check /members pages, they will check them itself.
+        $requestUrl = $this->getRequest()->getRequestUri();
+        $nowAllowed = array(
+            Configuration::getLocalizedPath('routes.login'),
+            Configuration::getLocalizedPath('routes.profile')
+        );
+
+        foreach( $nowAllowed as $not)
+        {
+            if( substr($requestUrl, 0, strlen($not)) == $not)
+            {
+                return FALSE;
+            }
+        }
+
+        if( in_array($this->getRequest()->getRequestUri(), $nowAllowed) )
+        {
+            return FALSE;
+        }
+
+        if( $restrictedType['state'] === Tool::STATE_LOGGED_IN && $restrictedType['section'] === Tool::SECTION_NOT_ALLOWED)
+        {
+            $url = Configuration::getLocalizedPath('routes.profile');
+        }
+        else
+        {
+            $url = sprintf('%s?back=%s',
+                Configuration::getLocalizedPath('routes.login'),
+                urlencode( $this->getRequest()->getRequestUri() )
+            );
+        }
+
+        $response = $this->getResponse();
+        $response->setHeader('Location', $url);
+        $response->setRawHeader(302);
+        $response->sendHeaders();
+        exit;
 
     }
 }
