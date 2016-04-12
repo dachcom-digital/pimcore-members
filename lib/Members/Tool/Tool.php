@@ -44,7 +44,7 @@ class Tool {
 
     public static function getDocumentRestrictedGroups( $document )
     {
-        $restriction = self::getRestrictionObject( $document, 'page' );
+        $restriction = self::getRestrictionObject( $document, 'page', true );
 
         $groups = array();
 
@@ -118,12 +118,12 @@ class Tool {
 
     }
 
-    private static function getRestrictionObject( $document, $cType = 'page' )
+    private static function getRestrictionObject( $document, $cType = 'page', $ignoreLoggedIn = FALSE )
     {
         $restriction = FALSE;
 
         //@fixme! bad?
-        if (isset($_COOKIE['pimcore_admin_sid']))
+        if (isset($_COOKIE['pimcore_admin_sid']) && $ignoreLoggedIn == FALSE)
         {
             return FALSE;
         }
