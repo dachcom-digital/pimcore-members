@@ -20,7 +20,10 @@ class Action extends WebsiteAction
 
         $this->enableLayout();
 
-        $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts/members');
+        //allow website to use own scripts
+        $this->view->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts/members');
+        $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
+
         $this->view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
 
         $this->translate = $this->initTranslation();
