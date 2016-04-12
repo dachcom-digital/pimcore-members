@@ -19,6 +19,7 @@ class Members_AuthController extends Action
             $identity = trim($this->_getParam('email'));
             $password = $this->_getParam('password');
 
+
             if (empty($identity) || empty($password))
             {
                 $this->view->error = $this->translate->_('Wrong email or password');
@@ -42,10 +43,19 @@ class Members_AuthController extends Action
 
             if ($result->isValid())
             {
-                // TODO handle "remember me"
-                if ($this->_getParam('back')) {
+                /**
+                 * Set the Session Cookie to 7 Days.
+                 */
+                if( !is_null( $this->_getParam('remember') ) )
+                {
+                    \Zend_Session::rememberMe(604800);
+                }
+
+                if ($this->_getParam('back'))
+                {
                     $this->redirect($this->_getParam('back'));
                 }
+
                 $this->redirect(Configuration::getLocalizedPath('routes.profile'));
             }
 
