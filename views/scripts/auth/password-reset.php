@@ -1,14 +1,14 @@
-<div class="member remind">
+<div class="members remind">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
 
-            <?php if (!empty($this->flashMessages)): ?>
-                <?php foreach ($this->flashMessages as $message): ?>
+            <?php if (!empty($this->flashMessages)){ ?>
+                <?php foreach ($this->flashMessages as $message) { ?>
                     <div class="alert alert-<?= $message['type'] ?>" role="alert">
                         <?= $message['text'] ?>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <?php } ?>
+            <?php } ?>
 
             <h2 class="text-center">
                 <?= $this->translate('Reset password') ?>

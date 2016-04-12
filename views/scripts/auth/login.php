@@ -1,15 +1,16 @@
-<div class="member login">
+<div class="members login">
 
     <div class="row">
+
         <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
 
-            <?php if (!empty($this->flashMessages)): ?>
-                <?php foreach($this->flashMessages as $message): ?>
+            <?php if (!empty($this->flashMessages)){ ?>
+                <?php foreach ($this->flashMessages as $message) { ?>
                     <div class="alert alert-<?= $message['type'] ?>" role="alert">
                         <?= $message['text'] ?>
                     </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <?php } ?>
+            <?php } ?>
 
             <h2 class="text-center">
                 <?= $this->translate('Login') ?>
@@ -36,11 +37,11 @@
                     </div>
                 </div>
 
-                <?php if ($this->error): ?>
+                <?php if ($this->error) { ?>
                     <div class="form-group has-error">
                         <span class="help-block"><?= $this->error ?></span>
                     </div>
-                <?php endif; ?>
+                <?php } ?>
 
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                     <?= $this->translate('Login') ?>
@@ -64,7 +65,9 @@
                     </p>
                 </div>
             </div>
+
         </div>
+
     </div>
 
 </div>
