@@ -52,6 +52,11 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         //now load restriction and redirect user to login page, if page is restricted!
         $restrictedType = Tool::isRestrictedDocument( $document );
 
+        if( $restrictedType['section'] == Tool::SECTION_ALLOWED )
+        {
+            return FALSE;
+        }
+
         if(  $restrictedType['state'] == Tool::STATE_LOGGED_IN && $restrictedType['section'] == Tool::SECTION_ALLOWED )
         {
             return FALSE;
