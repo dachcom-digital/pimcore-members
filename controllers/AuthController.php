@@ -1,9 +1,10 @@
 <?php
 
 use Pimcore\Model\Object;
-use Members\Auth\Adapter;
+
 use Members\Controller\Action;
 use Members\Model\Configuration;
+use Members\Tool\Identifier;
 
 class Members_AuthController extends Action
 {
@@ -19,29 +20,15 @@ class Members_AuthController extends Action
             $identity = trim($this->_getParam('email'));
             $password = $this->_getParam('password');
 
-
             if (empty($identity) || empty($password))
             {
                 $this->view->error = $this->translate->_('Wrong email or password');
                 return;
             }
 
-            $adapterSettings = array(
+            $identifier = new Identifier();
 
-                'identityClassname'     =>  Configuration::get('auth.adapter.identityClassname'),
-                'identityColumn'        =>  Configuration::get('auth.adapter.identityColumn'),
-                'credentialColumn'      =>  Configuration::get('auth.adapter.credentialColumn'),
-                'objectPath'            =>  Configuration::get('auth.adapter.objectPath')
-
-            );
-
-            $adapter = new Adapter( $adapterSettings );
-            $adapter
-                ->setIdentity($identity)
-                ->setCredential($password);
-            $result = $this->auth->authenticate($adapter);
-
-            if ($result->isValid())
+            if ($identifier->setIdentity($identity, $password)->isValid())
             {
                 /**
                  * Set the Session Cookie to 7 Days.
@@ -53,13 +40,13 @@ class Members_AuthController extends Action
 
                 if ($this->_getParam('back'))
                 {
-                    $this->redirect($this->_getParam('back'));
+                    $this->redirect( $this->_getParam('back') );
                 }
 
-                $this->redirect(Configuration::getLocalizedPath('routes.profile'));
+                $this->redirect( Configuration::getLocalizedPath('routes.profile') );
             }
 
-            switch ($result->getCode())
+            switch ($identifier->getCode())
             {
                 case \Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
                 case \Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:

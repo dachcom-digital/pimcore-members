@@ -2,7 +2,6 @@
 
 namespace Members\Tool;
 
-use Members\Auth\Adapter;
 use Members\Model\Restriction;
 use Members\Model\Configuration;
 
@@ -18,12 +17,12 @@ class Tool {
 
     public static function generateNavCacheKey()
     {
-        $identity = self::getIdentity();
-
-        if (isset($_COOKIE['pimcore_admin_sid']))
+        if ( self::isAdmin() )
         {
             return md5('pimcore_admin');
         }
+
+        $identity = self::getIdentity();
 
         if( $identity instanceof Object\Member)
         {
@@ -67,54 +66,63 @@ class Tool {
      */
     public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
     {
-        $status = array('state' => NULL, 'section' => NULL);
+        $cacheKey = self::generateIdentityDocumentCacheId($document);
 
-        $restriction = self::getRestrictionObject( $document, 'page' );
-
-        if( $restriction === FALSE)
+        if( !$status = \Pimcore\Cache::load($cacheKey) )
         {
-            $status['state'] = self::STATE_NOT_LOGGED_IN;
-            $status['section'] = self::SECTION_ALLOWED;
-            return $status;
-        }
+            $status = array('state' => NULL, 'section' => NULL);
+            $restriction = self::getRestrictionObject( $document, 'page' );
 
-        $identity = self::getIdentity();
-
-        $restrictionRelatedGroups = $restriction->getRelatedGroups();
-
-        if( $identity instanceof Object\Member )
-        {
-            $status['state'] = self::STATE_LOGGED_IN;
-            $status['section'] = self::SECTION_NOT_ALLOWED;
-
-            if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
+            if( $restriction === FALSE)
             {
-                $allowedGroups = $identity->getGroups();
-                $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+                $status['state'] = self::STATE_NOT_LOGGED_IN;
+                $status['section'] = self::SECTION_ALLOWED;
+                return $status;
+            }
 
-                if( count($intersectResult) > 0 )
+            $restrictionRelatedGroups = $restriction->getRelatedGroups();
+
+            $identity = self::getIdentity();
+
+            if( $identity instanceof Object\Member )
+            {
+                $status['state'] = self::STATE_LOGGED_IN;
+                $status['section'] = self::SECTION_NOT_ALLOWED;
+
+                if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
                 {
-                    $status['section'] = self::SECTION_ALLOWED;
+                    $allowedGroups = $identity->getGroups();
+                    $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+
+                    if( count($intersectResult) > 0 )
+                    {
+                        $status['section'] = self::SECTION_ALLOWED;
+                    }
+
                 }
 
             }
 
+            //store in cache.
+            \Pimcore\Cache::save( $status, $cacheKey, ['members'], 999);
+
         }
 
         return $status;
+
     }
 
-    public static function getCurrentUserAllowedGroups() {
+    public static function bindRestrictionToNavigation($document, $page)
+    {
+        $restrictedType = self::isRestrictedDocument($document);
 
-        $identity = \Zend_Auth::getInstance()->getIdentity();
-
-        if( $identity instanceof \Pimcore\Model\Object\Member )
+        if( $restrictedType['section'] !== self::SECTION_ALLOWED )
         {
-            $allowedGroups = $identity->getGroups();
-
-            return $allowedGroups;
-
+            $page->setActive(false);
+            $page->setVisible(false);
         }
+
+        return $page;
 
     }
 
@@ -122,8 +130,7 @@ class Tool {
     {
         $restriction = FALSE;
 
-        //@fixme! bad?
-        if (isset($_COOKIE['pimcore_admin_sid']) && $ignoreLoggedIn == FALSE)
+        if ($ignoreLoggedIn == FALSE && self::isAdmin() )
         {
             return FALSE;
         }
@@ -184,29 +191,41 @@ class Tool {
 
     private static function getServerIdentity( $username, $password )
     {
-        $auth = \Zend_Auth::getInstance();
+        $identifier = new Identifier();
 
-        $adapterSettings = array(
-
-            'identityClassname'     =>  Configuration::get('auth.adapter.identityClassname'),
-            'identityColumn'        =>  Configuration::get('auth.adapter.identityColumn'),
-            'credentialColumn'      =>  Configuration::get('auth.adapter.credentialColumn'),
-            'objectPath'            =>  Configuration::get('auth.adapter.objectPath')
-
-        );
-
-        $adapter = new Adapter( $adapterSettings );
-        $adapter
-            ->setIdentity($username)
-            ->setCredential($password);
-        $result = $auth->authenticate($adapter);
-
-        if ($result->isValid())
+        if ($identifier->setIdentity($username, $password)->isValid())
         {
             return \Zend_Auth::getInstance()->getIdentity();
         }
 
         return FALSE;
+    }
+
+    private static function isAdmin()
+    {
+        return isset( $_COOKIE['pimcore_admin_sid'] );
+    }
+
+    /**
+     * Generate a Document Cache Key. It binds the logged in user id, if available.
+     * @fixme: Is there a better solution: because of this, every document will be stored for each user. maybe we should store the doc id serialized to each user?
+     * @param $document
+     *
+     * @return string
+     */
+    private static function generateIdentityDocumentCacheId($document)
+    {
+        $identity = self::getIdentity();
+        $pageId =  $document->getId() . '_page_';
+
+        $identityKey = 'noMember';
+
+        if( $identity instanceof \Pimcore\Model\Object\Member )
+        {
+            $identityKey = $identity->getId();
+        }
+
+        return 'members_' . md5( $pageId . $identityKey );
 
     }
 }

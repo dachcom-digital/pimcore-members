@@ -62,7 +62,6 @@ class Members_Admin_RestrictionController extends Admin
         try
         {
             $restriction = Restriction::getByTargetId( $docId, $cType );
-
         }
         catch(\Exception $e)
         {
@@ -83,6 +82,9 @@ class Members_Admin_RestrictionController extends Admin
             $restriction->setRelatedGroups( $membersDocumentUserGroups );
             $restriction->save();
         }
+
+        //clear cache!
+        \Pimcore\Cache::clearTag('members');
 
         $this->_helper->json(
             array(
