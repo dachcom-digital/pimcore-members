@@ -93,6 +93,26 @@ class Install {
 
     public function installDocuments()
     {
+        //install object folder "members" and lock it!
+        $membersPath = Object\Folder::getByPath('/members');
+
+        if( !$membersPath instanceof Object\Folder )
+        {
+            $obj = Object\Folder::create(
+                array(
+                    'o_parentId'            => 1,
+                    'o_creationDate'        => time(),
+                    'o_userOwner'           => $this->_getUser()->getId(),
+                    'o_userModification'    => $this->_getUser()->getId(),
+                    'o_key'                 => 'members',
+                    'o_published'           => true
+                )
+            );
+
+            $obj->setLocked(true);
+            $obj->update();
+        }
+
         $file = PIMCORE_PLUGINS_PATH . '/Members/install/documents-Members.json';
         $docs = new \Zend_Config_Json($file);
 
