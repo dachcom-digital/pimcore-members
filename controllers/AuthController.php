@@ -10,55 +10,143 @@ class Members_AuthController extends Action
 {
     public function loginAction()
     {
+        $loginData = $this->parseLoginAction();
+
+        if ($loginData['error'] === TRUE && $loginData['message'] === 'ALREADY_LOGGED_IN')
+        {
+            $this->redirect($loginData['redirect']);
+        }
+        else if ($loginData['error'] === TRUE )
+        {
+            $this->view->error = $this->translate->_( $loginData['message'] );
+        }
+        else if ($loginData['error'] === FALSE )
+        {
+            if( !empty( $loginData['redirect'] ) )
+            {
+                $this->redirect( $loginData['redirect'] );
+            }
+        }
+
+    }
+
+    public function loginAjaxAction()
+    {
+        if( !$this->getRequest()->isXmlHttpRequest() )
+        {
+            die('invalid ajax request.');
+        }
+
+        $loginData = $this->parseLoginAction();
+
+        $userData = FALSE;
+        $htmlTemplate = NULL;
+
+        if( $loginData['error'] === FALSE)
+        {
+            $userData = array(
+                'firstName' => $this->auth->getIdentity()->getFirstname(),
+                'lastname' => $this->auth->getIdentity()->getFirstname(),
+                'email' => $this->auth->getIdentity()->getEmail()
+            );
+
+            $htmlTemplate = $this->view->partial(
+                'auth/ajax/success.php',
+                array(
+                    'user' => $userData,
+                    'message' => $loginData['message'],
+                    'logoutUrl' => Configuration::getLocalizedPath('routes.logout')
+                )
+            );
+
+        }
+        else
+        {
+            $htmlTemplate = $this->view->partial(
+                'auth/ajax/error.php',
+                array(
+                    'message' => $loginData['message']
+                )
+            );
+        }
+
+        $this->_helper->json(array(
+            'success'       => !$loginData['error'],
+            'message'       => $loginData['message'] === 'ALREADY_LOGGED_IN' ? $loginData['message'] : $this->translate->_( $loginData['message'] ),
+            'redirectUrl'   => $loginData['redirect'],
+            'user'          => $userData,
+            'html'          => $htmlTemplate
+        ));
+    }
+
+    private function parseLoginAction() {
+
+        $error = FALSE;
+        $message = NULL;
+        $redirect = NULL;
+
         if ($this->_helper->member())
         {
-            $this->redirect(Configuration::getLocalizedPath('routes.profile'));
+            $error = TRUE;
+            $message = 'ALREADY_LOGGED_IN';
+            $redirect = Configuration::getLocalizedPath('routes.profile');
         }
-
-        if ($this->_request->isPost())
+        else
         {
-            $identity = trim($this->_getParam('email'));
-            $password = $this->_getParam('password');
-
-            if (empty($identity) || empty($password))
+            if ($this->_request->isPost())
             {
-                $this->view->error = $this->translate->_('Wrong email or password');
-                return;
-            }
+                $identity = trim($this->_getParam('email'));
+                $password = $this->_getParam('password');
 
-            $identifier = new Identifier();
-
-            if ($identifier->setIdentity($identity, $password)->isValid())
-            {
-                /**
-                 * Set the Session Cookie to 7 Days.
-                 */
-                if( !is_null( $this->_getParam('remember') ) )
+                if (empty($identity) || empty($password))
                 {
-                    \Zend_Session::rememberMe(604800);
+                    $error = TRUE;
+                    $message = 'Wrong email or password';
                 }
-
-                if ($this->_getParam('back'))
+                else
                 {
-                    $this->redirect( $this->_getParam('back') );
+                    $identifier = new Identifier();
+                    if ($identifier->setIdentity($identity, $password)->isValid())
+                    {
+                        /**
+                         * Set the Session Cookie to 7 Days.
+                         */
+                        if( !is_null( $this->_getParam('remember') ) )
+                        {
+                            \Zend_Session::rememberMe(604800);
+                        }
+
+                        if ($this->_getParam('back'))
+                        {
+                            $redirect = $this->_getParam('back');
+                        }
+                        else
+                        {
+                            $redirect =  Configuration::getLocalizedPath('routes.profile');
+                        }
+
+                        $message = 'You\'ve been successfully logged in';
+                    }
+                    else
+                    {
+                        switch ($identifier->getCode())
+                        {
+                            case \Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
+                            case \Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
+                                $error = TRUE;
+                                $message = 'Wrong email or password';
+                                break;
+                            default:
+                                $error = TRUE;
+                                $message = 'Unexpected error occurred';
+                                break;
+                        }
+                    }
                 }
-
-                $this->redirect( Configuration::getLocalizedPath('routes.profile') );
             }
-
-            switch ($identifier->getCode())
-            {
-                case \Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID:
-                case \Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND:
-                    $error = $this->translate->_('Wrong email or password');
-                    break;
-                default:
-                    $error = $this->translate->_('Unexpected error occurred');
-                    break;
-            }
-
-            $this->view->error = $error;
         }
+
+        return array('error' => $error, 'message' => $message, 'redirect' => $redirect);
 
     }
 
