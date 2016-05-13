@@ -8,22 +8,29 @@ use Members\Model\Configuration;
 
 class Frontend extends \Zend_Controller_Plugin_Abstract
 {
-    public function postDispatch(\Zend_Controller_Request_Abstract $request)
+    private static $renderer = NULL;
+
+    public function preDispatch(\Zend_Controller_Request_Abstract $request)
     {
         parent::preDispatch($request);
+
+        self::$renderer = \Zend_Controller_Action_HelperBroker::getExistingHelper('ViewRenderer');
+        self::$renderer->initView();
+
+        $view = self::$renderer->view;
+        $view->addHelperPath(PIMCORE_PLUGINS_PATH . '/Members/lib/Members/View/Helper', 'Members\View\Helper');
+    }
+
+    public function postDispatch(\Zend_Controller_Request_Abstract $request)
+    {
+        parent::postDispatch($request);
 
         if ($request->getParam('document') instanceof Page)
         {
             $document = $request->getParam('document');
 
             $groups = Tool::getDocumentRestrictedGroups( $document );
-
-            $renderer = \Zend_Controller_Action_HelperBroker::getExistingHelper('ViewRenderer');
-            $renderer->initView();
-
-            $view = $renderer->view;
-
-            $view->headMeta()->appendName('m:groups', implode(',', $groups), array());
+            self::$renderer->view->headMeta()->appendName('m:groups', implode(',', $groups), array());
 
             $this->handleDocumentAuthentication($request->getParam('document'));
         }

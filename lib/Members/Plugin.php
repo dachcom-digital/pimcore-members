@@ -22,7 +22,6 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         define('MEMBERS_PATH', PIMCORE_PLUGINS_PATH . '/Members');
         define('MEMBERS_INSTALL_PATH', MEMBERS_PATH . '/install');
         define('MEMBERS_PLUGIN_CONFIG', MEMBERS_PATH . '/plugin.xml');
-
     }
 
     public function init()

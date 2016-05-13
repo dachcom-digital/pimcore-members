@@ -9,6 +9,7 @@ class Action extends WebsiteAction
      * @var \Zend_Auth
      */
     protected $auth;
+
     /**
      * @var \Pimcore\Translate\Website
      */
