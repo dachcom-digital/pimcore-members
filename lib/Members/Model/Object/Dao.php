@@ -10,12 +10,12 @@ class Dao extends \Pimcore\Model\Object\Concrete\Dao
      * Because Pimcore stores objects in cache, this method is deprecated.
      * @deprecated
      */
-    public function getData()
+    public function _getData()
     {
-        /**
-            parent::getData();
-            $restriction = Tool\Observer::isRestrictedObject( $this->model );
-            $this->model->setValue('restricted', $restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED);
-        **/
+        /*
+        parent::getData();
+        $restriction = Tool\Observer::isRestrictedObject( $this->model );
+        $this->model->setValue('restricted', $restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED);
+        */
     }
 }

@@ -3,6 +3,7 @@
 namespace Members\Model;
 
 use Pimcore\Model\Object\Concrete;
+use Members\Tool;
 
 class Object extends Concrete {
 
@@ -21,8 +22,8 @@ class Object extends Concrete {
      */
     public function getRestricted()
     {
-        $restriction = \Members\Tool\Observer::isRestrictedObject( $this );
-        $this->setValue('restricted', $restriction['section'] === \Members\Tool\Observer::SECTION_NOT_ALLOWED);
+        $restriction = Tool\Observer::isRestrictedObject( $this );
+        $this->setValue('restricted', $restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED);
 
         return $this->restricted;
     }
