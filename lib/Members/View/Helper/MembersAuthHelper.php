@@ -29,9 +29,13 @@ class MembersAuthHelper extends \Zend_View_Helper_Abstract {
         return FALSE;
     }
 
-    public function getSetting($value)
+    public function getSetting($value, $localizeValue = FALSE)
     {
-        return \Members\Model\Configuration::getLocalizedPath($value);
+        if( $localizeValue === TRUE)
+        {
+            return \Members\Model\Configuration::getLocalizedPath($value);
+        }
+        return \Members\Model\Configuration::get($value);
     }
 
     public function getUser()

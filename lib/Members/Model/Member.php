@@ -13,6 +13,7 @@ class Member extends Concrete {
     public function register(array $data)
     {
         $argv = compact('data');
+        $argv['validateFor'] = 'create';
 
         $results = \Pimcore::getEventManager()->triggerUntil('members.register.validate',
             $this, $argv, function ($v) {
@@ -37,10 +38,10 @@ class Member extends Concrete {
             //@fixme: which userGroup to registered User?
             //$this->getGroups( array() );
 
-            $this->setKey(str_replace('@', '_at_', $this->getEmail()));
+            $this->setKey(\Pimcore\File::getValidFilename($this->getEmail()));
             $this->setParent(Folder::getByPath('/' . ltrim(Configuration::get('auth.adapter.objectPath'), '/')));
             $this->save();
-            \Pimcore::getEventManager()->trigger('members.register.post', $this);
+            \Pimcore::getEventManager()->trigger('members.register.post', $this, $argv);
         }
         catch (\Exception $e)
         {
@@ -55,6 +56,41 @@ class Member extends Concrete {
         return $input;
     }
 
+    public function updateProfile(array $data)
+    {
+        $argv = compact('data');
+        $argv['validateFor'] = 'update';
+
+        $results = \Pimcore::getEventManager()->triggerUntil('members.update.validate',
+            $this, $argv, function ($v) {
+                return ($v instanceof \Zend_Filter_Input);
+            });
+        $input = $results->last();
+
+        if (!$input instanceof \Zend_Filter_Input)
+        {
+            throw new \Exception('No validate listener attached to "members.update.validate" event');
+        }
+
+        if (!$input->isValid())
+        {
+            return $input;
+        }
+
+        try
+        {
+            $this->setValues($input->getUnescaped());
+            $this->save();
+            \Pimcore::getEventManager()->trigger('members.update.post', $this, $argv);
+        }
+        catch (\Exception $e)
+        {
+            throw $e;
+        }
+
+        return $input;
+    }
+
     public function createHash($algo = 'md5')
     {
         return hash($algo, $this->getId() . $this->getEmail() . mt_rand());
@@ -62,6 +98,8 @@ class Member extends Concrete {
 
     public function confirm()
     {
+        //do not check mandatory fields because of conditional logic!
+        $this->setOmitMandatoryCheck(true);
         $this->setPublished(true);
         $this->setConfirmHash(null);
         $this->save();
@@ -70,6 +108,8 @@ class Member extends Concrete {
 
     public function requestPasswordReset()
     {
+        //do not check mandatory fields because of conditional logic!
+        $this->setOmitMandatoryCheck(true);
         $this->setResetHash($this->createHash());
         $this->save();
 
@@ -115,6 +155,8 @@ class Member extends Concrete {
             return $input;
         }
 
+        //do not check mandatory fields because of conditional logic!
+        $this->setOmitMandatoryCheck(true);
         $this->setPassword( $input->getUnescaped('password') );
         $this->setResetHash(null);
         $this->save();
@@ -123,6 +165,34 @@ class Member extends Concrete {
         {
             $this->confirm();
         }
+
+        return $input;
+    }
+
+    public function changePassword(array $data)
+    {
+        $argv = compact('data');
+        $results = \Pimcore::getEventManager()->triggerUntil('members.password.change',
+            $this, $argv, function ($v) {
+                return ($v instanceof \Zend_Filter_Input);
+            });
+
+        $input = $results->last();
+
+        if (!$input instanceof \Zend_Filter_Input)
+        {
+            throw new \Exception('No validate listener attached to "members.password.change" event');
+        }
+
+        if (!$input->isValid())
+        {
+            return $input;
+        }
+
+        //do not check mandatory fields because of conditional logic!
+        $this->setOmitMandatoryCheck(true);
+        $this->setPassword( $input->getUnescaped('password') );
+        $this->save();
 
         return $input;
     }

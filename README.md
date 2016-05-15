@@ -24,9 +24,26 @@ Members provides some helpers to fix that. Use your *pimcoreNavigation* like tha
     $mainNavStartNode,
     null,
     function ($page, $document) {
-        Members\Tool\Tool::bindRestrictionToNavigation( $document, $page );
+        Members\Tool\Observer::bindRestrictionToNavigation($document, $page);
     },
-    Members\Tool\Tool::generateNavCacheKey()
-);
+    Members\Tool\Observer::generateNavCacheKey()
+); ?>
+```
+**Use restriction on objects**
+
+Just extend your object classes with `\Members\Model\Object`.
+With that you can easly check the restriction of your object:
+
+```php
+<?php
+
+$list = new Object\YourObject\Listing();
+$objects = $list->getObjects();
+
+foreach($objects as $object)
+{
+    echo $object->getRestricted(); //bool true|false
+}
+
 ?>
 ```

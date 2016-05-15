@@ -92,7 +92,7 @@ class Register
         $member = $event->getTarget();
         $member->setConfirmHash($member->createHash());
         $member->save();
-        $doc = Email::getByPath(Configuration::get('emails.registerConfirm'));
+        $doc = Email::getByPath(Configuration::getLocalizedPath('emails.registerConfirm'));
 
         if (!$doc)
         {

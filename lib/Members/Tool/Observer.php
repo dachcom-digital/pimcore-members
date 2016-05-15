@@ -7,7 +7,7 @@ use Members\Model\Configuration;
 
 use Pimcore\Model\Object;
 
-class Tool {
+class Observer {
 
     const STATE_LOGGED_IN = 'loggedIn';
     const STATE_NOT_LOGGED_IN = 'notLoggedIn';
@@ -70,12 +70,17 @@ class Tool {
 
         if( !$status = \Pimcore\Cache::load($cacheKey) )
         {
-            $status = array('state' => NULL, 'section' => NULL);
+            $status = array('state' => self::STATE_NOT_LOGGED_IN, 'section' => self::SECTION_NOT_ALLOWED);
             $restriction = self::getRestrictionObject( $document, 'page' );
+            $identity = self::getIdentity();
+
+            if( $identity instanceof Object\Member )
+            {
+                $status['state'] = self::STATE_LOGGED_IN;
+            }
 
             if( $restriction === FALSE)
             {
-                $status['state'] = self::STATE_NOT_LOGGED_IN;
                 $status['section'] = self::SECTION_ALLOWED;
                 return $status;
             }
@@ -86,9 +91,6 @@ class Tool {
 
             if( $identity instanceof Object\Member )
             {
-                $status['state'] = self::STATE_LOGGED_IN;
-                $status['section'] = self::SECTION_NOT_ALLOWED;
-
                 if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
                 {
                     $allowedGroups = $identity->getGroups();
@@ -112,6 +114,51 @@ class Tool {
 
     }
 
+
+    /**
+     * @param \Pimcore\Model\AbstractModel $object
+     *
+     * @return array (state, section)
+     */
+    public static function isRestrictedObject( \Pimcore\Model\AbstractModel $object )
+    {
+        $status = array('state' => self::STATE_NOT_LOGGED_IN, 'section' => self::SECTION_NOT_ALLOWED);
+        $restriction = self::getRestrictionObject( $object, 'object' );
+        $identity = self::getIdentity();
+
+        if( $identity instanceof Object\Member )
+        {
+            $status['state'] = self::STATE_LOGGED_IN;
+        }
+
+        if( $restriction === FALSE)
+        {
+            $status['section'] = self::SECTION_ALLOWED;
+            return $status;
+        }
+
+        $restrictionRelatedGroups = $restriction->getRelatedGroups();
+
+        if( $identity instanceof Object\Member )
+        {
+            if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
+            {
+                $allowedGroups = $identity->getGroups();
+                $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+
+                if( count($intersectResult) > 0 )
+                {
+                    $status['section'] = self::SECTION_ALLOWED;
+                }
+
+            }
+
+        }
+
+        return $status;
+
+    }
+
     public static function bindRestrictionToNavigation($document, $page)
     {
         $restrictedType = self::isRestrictedDocument($document);
@@ -126,7 +173,14 @@ class Tool {
 
     }
 
-    private static function getRestrictionObject( $document, $cType = 'page', $ignoreLoggedIn = FALSE )
+    /**
+     * @param        $object (document|object)
+     * @param string $cType
+     * @param bool   $ignoreLoggedIn
+     *
+     * @return bool|\Members\Model\Restriction
+     */
+    private static function getRestrictionObject( $object, $cType = 'page', $ignoreLoggedIn = FALSE )
     {
         $restriction = FALSE;
 
@@ -137,7 +191,7 @@ class Tool {
 
         try
         {
-            $restriction = Restriction::getByTargetId( $document->getId(), $cType );
+            $restriction = Restriction::getByTargetId( $object->getId(), $cType );
         }
         catch(\Exception $e)
         {
@@ -145,8 +199,8 @@ class Tool {
 
         if($restriction === FALSE)
         {
-            $docParentIds = $document->getDao()->getParentIds();
-            $nextHigherRestriction = Restriction::findNextInherited( $document->getId(), $docParentIds, 'page' );
+            $docParentIds = $object->getDao()->getParentIds();
+            $nextHigherRestriction = Restriction::findNextInherited( $object->getId(), $docParentIds, 'page' );
 
             if( $nextHigherRestriction->getId() !== null )
             {

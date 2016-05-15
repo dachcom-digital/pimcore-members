@@ -33,14 +33,15 @@ class Install {
         Configuration::set('routes.logout', '/%lang/members/logout');
         Configuration::set('routes.register', '/%lang/members/register');
         Configuration::set('routes.profile', '/%lang/members');
+        Configuration::set('routes.profile.update', '/%lang/members/update');
         Configuration::set('routes.confirm', '/%lang/members/confirm');
         Configuration::set('routes.passwordRequest', '/%lang/members/password-request');
         Configuration::set('routes.passwordReset', '/%lang/members/password-reset');
 
-        Configuration::set('emails.registerConfirm', '/%lang/emails/members/register-confirm');
-        Configuration::set('emails.passwordReset', '/%lang/emails/members/password-reset');
+        Configuration::set('emails.registerConfirm', '/%lang/members/emails/register-confirm');
+        Configuration::set('emails.passwordReset', '/%lang/members/emails/password-reset');
 
-        Configuration::set('actions.postRegister', 'activate');
+        Configuration::set('actions.postRegister', FALSE);
 
         return TRUE;
     }

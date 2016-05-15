@@ -11,6 +11,26 @@
     },
     {
         "type": "page",
+        "path": "members/profile",
+        "key": "update",
+        "name": "Members",
+        "title": "Member profile update",
+        "module": "Members",
+        "controller": "profile",
+        "action": "update"
+    },
+    {
+        "type": "page",
+        "path": "members/profile",
+        "key": "change-password",
+        "name": "Members",
+        "title": "Member profile change password",
+        "module": "Members",
+        "controller": "profile",
+        "action": "password-change"
+    },
+    {
+        "type": "page",
         "path": "members",
         "key": "login",
         "name": "Login",

@@ -30,17 +30,20 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         \Zend_Controller_Action_HelperBroker::addPrefix('Members_Controller_Action_Helper');
 
-        \Pimcore::getEventManager()->attach('system.startup',      array($this, 'registerPluginController'));
-        \Pimcore::getEventManager()->attach('document.preDelete',  array($this, 'handleDocumentDeletion'));
-        \Pimcore::getEventManager()->attach('object.preDelete',   array($this, 'handleObjectDeletion'));
+        \Pimcore::getEventManager()->attach('system.startup',            array($this, 'registerPluginController'));
+        \Pimcore::getEventManager()->attach('document.preDelete',        array($this, 'handleDocumentDeletion'));
+        \Pimcore::getEventManager()->attach('object.preDelete',          array($this, 'handleObjectDeletion'));
 
         \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
-        \Pimcore::getEventManager()->attach('members.password.reset',  array('Members\Events\Password', 'reset'));
+        \Pimcore::getEventManager()->attach('members.update.validate',   array('Members\Events\Register', 'validate'));
+        \Pimcore::getEventManager()->attach('members.password.reset',    array('Members\Events\Password', 'reset'));
+        \Pimcore::getEventManager()->attach('members.password.change',   array('Members\Events\Password', 'change'));
 
         if (Configuration::get('actions.postRegister') !== FALSE)
         {
             \Pimcore::getEventManager()->attach('members.register.post', array('Members\Events\Register', Configuration::get('actions.postRegister')));
         }
+
     }
 
     /**

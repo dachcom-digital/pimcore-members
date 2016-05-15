@@ -3,7 +3,7 @@
 namespace Members\Controller\Plugin;
 
 use Pimcore\Model\Document\Page;
-use Members\Tool\Tool;
+use Members\Tool\Observer;
 use Members\Model\Configuration;
 
 class Frontend extends \Zend_Controller_Plugin_Abstract
@@ -19,6 +19,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
 
         $view = self::$renderer->view;
         $view->addHelperPath(PIMCORE_PLUGINS_PATH . '/Members/lib/Members/View/Helper', 'Members\View\Helper');
+
     }
 
     public function postDispatch(\Zend_Controller_Request_Abstract $request)
@@ -29,7 +30,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         {
             $document = $request->getParam('document');
 
-            $groups = Tool::getDocumentRestrictedGroups( $document );
+            $groups = Observer::getDocumentRestrictedGroups( $document );
             self::$renderer->view->headMeta()->appendName('m:groups', implode(',', $groups), array());
 
             $this->handleDocumentAuthentication($request->getParam('document'));
@@ -57,14 +58,14 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         }
 
         //now load restriction and redirect user to login page, if page is restricted!
-        $restrictedType = Tool::isRestrictedDocument( $document );
+        $restrictedType = Observer::isRestrictedDocument( $document );
 
-        if( $restrictedType['section'] == Tool::SECTION_ALLOWED )
+        if( $restrictedType['section'] == Observer::SECTION_ALLOWED )
         {
             return FALSE;
         }
 
-        if(  $restrictedType['state'] == Tool::STATE_LOGGED_IN && $restrictedType['section'] == Tool::SECTION_ALLOWED )
+        if(  $restrictedType['state'] == Observer::STATE_LOGGED_IN && $restrictedType['section'] == Observer::SECTION_ALLOWED )
         {
             return FALSE;
         }
@@ -89,7 +90,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             return FALSE;
         }
 
-        if( $restrictedType['state'] === Tool::STATE_LOGGED_IN && $restrictedType['section'] === Tool::SECTION_NOT_ALLOWED)
+        if( $restrictedType['state'] === Observer::STATE_LOGGED_IN && $restrictedType['section'] === Observer::SECTION_NOT_ALLOWED)
         {
             $url = Configuration::getLocalizedPath('routes.profile');
         }
