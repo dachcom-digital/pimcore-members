@@ -21,6 +21,9 @@ class Object extends Concrete {
      */
     public function getRestricted()
     {
+        $restriction = \Members\Tool\Observer::isRestrictedObject( $this );
+        $this->setValue('restricted', $restriction['section'] === \Members\Tool\Observer::SECTION_NOT_ALLOWED);
+
         return $this->restricted;
     }
 }
