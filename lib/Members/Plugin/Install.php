@@ -34,6 +34,7 @@ class Install {
         Configuration::set('routes.register', '/%lang/members/register');
         Configuration::set('routes.profile', '/%lang/members');
         Configuration::set('routes.profile.update', '/%lang/members/update');
+        Configuration::set('routes.profile.changePassword', '/%lang/members/change-password');
         Configuration::set('routes.confirm', '/%lang/members/confirm');
         Configuration::set('routes.passwordRequest', '/%lang/members/password-request');
         Configuration::set('routes.passwordReset', '/%lang/members/password-reset');
@@ -231,6 +232,39 @@ class Install {
 
             $languagesDone[] = $language;
         }
+    }
+
+    public function installFolder() {
+
+        $folder = new \Pimcore\Model\Asset\Folder();
+        $folder->setCreationDate ( time() );
+        $folder->setLocked(true);
+        $folder->setUserOwner (1);
+        $folder->setUserModification (0);
+        $folder->setParentId(1);
+        $folder->setFilename('restricted-assets');
+        $folder->save();
+
+        //now create .htaccess file to disallow every request to this folder (exept admin!
+        $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'a+');
+
+        $rule =  'RewriteEngine On' . "\n";
+        $rule .= 'RewriteCond %{HTTP_HOST}@@%{HTTP_REFERER} !^([^@]*)@@https?://\1/.*/admin/.*/ [OR]' . "\n";
+        $rule .= 'RewriteCond %{HTTP_COOKIE} !^.*pimcore_admin_sid.*$ [NC]' . "\n";
+        $rule .= 'RewriteRule ^ - [L,F]';
+
+        fwrite($f, $rule);
+        fclose($f);
+
+    }
+
+    public function createRedirect()
+    {
+        $redirect = new \Pimcore\Model\Redirect();
+        $redirect->setValues(array('source' => '@^/members/request\-data/(.*)$@', 'target' => '/plugin/Members/request/serve/?d=$1', 'statusCode' => 302, 'priority' => 1));
+        $redirect->save();
+
+        return TRUE;
     }
 
     public function removeConfig()

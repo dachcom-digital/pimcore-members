@@ -1,4 +1,4 @@
-<div class="members profile">
+<div class="members profile-update">
 
     <h2 class="text-center">
         <?= $this->translate('Update profile') ?>

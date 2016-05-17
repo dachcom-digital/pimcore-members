@@ -127,6 +127,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $install->installConfigFile();
             $install->installClasses();
             $install->installDocuments();
+            $install->installFolder();
+            $install->createRedirect();
             $install->installTranslations();
             $install->injectDbData();
         }
