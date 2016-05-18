@@ -249,7 +249,7 @@ class Install {
         $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'a+');
 
         $rule =  'RewriteEngine On' . "\n";
-        $rule .= 'RewriteCond %{HTTP_HOST}@@%{HTTP_REFERER} !^([^@]*)@@https?://\1/.*/admin/.*/ [OR]' . "\n";
+        $rule .= 'RewriteCond %{HTTP_HOST}==%{HTTP_REFERER} !^(.*?)==https?://\1/admin/ [OR]' . "\n";
         $rule .= 'RewriteCond %{HTTP_COOKIE} !^.*pimcore_admin_sid.*$ [NC]' . "\n";
         $rule .= 'RewriteRule ^ - [L,F]';
 

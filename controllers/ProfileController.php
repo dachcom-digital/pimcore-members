@@ -8,8 +8,11 @@ class Members_ProfileController extends Action
 {
     public function defaultAction()
     {
-        $this->_helper->member->requireAuth();
-        $this->view->member = $this->auth->getIdentity();
+        if( !$this->view->editmode)
+        {
+            $this->_helper->member->requireAuth();
+            $this->view->member = $this->auth->getIdentity();
+        }
     }
 
     public function registerAction()

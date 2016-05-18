@@ -14,7 +14,7 @@ class MembersAuthHelper extends \Zend_View_Helper_Abstract {
         self::$_auth = \Zend_Auth::getInstance();
     }
 
-    public function membersauthhelper()
+    public function membersAuthHelper()
     {
         return $this;
     }
