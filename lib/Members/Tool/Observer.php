@@ -60,11 +60,11 @@ class Observer {
     }
 
     /**
-     * @param \Pimcore\Model\Document\Page $document
+     * @param \Pimcore\Model\Document $document
      *
      * @return array (state, section)
      */
-    public static function isRestrictedDocument( \Pimcore\Model\Document\Page $document )
+    public static function isRestrictedDocument( \Pimcore\Model\Document $document )
     {
         $cacheKey = self::generateIdentityDocumentCacheId($document);
 
