@@ -59,7 +59,7 @@ class Members_ProfileController extends Action
 
     public function updateAction()
     {
-        if (!$this->_helper->member())
+        if( !$this->view->editmode && !$this->_helper->member())
         {
             $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }
@@ -92,7 +92,7 @@ class Members_ProfileController extends Action
 
     public function passwordChangeAction()
     {
-        if (!$this->_helper->member())
+        if ( !$this->view->editmode && !$this->_helper->member())
         {
             $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }

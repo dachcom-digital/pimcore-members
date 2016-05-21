@@ -12,6 +12,10 @@
         <?php } ?>
     <?php } ?>
 
-    <?= $this->template('form/userForm.php', array('type' => 'update', 'formAction' => \Members\Model\Configuration::getLocalizedPath('routes.profile.update'))); ?>
+    <?php if( $this->editmode) { ?>
+        <div class="alert alert-info"><?= $this->translateAdmin('user profile not visible in backend'); ?></div>
+    <?php } else {?>
+        <?= $this->template('form/userForm.php', array('type' => 'update', 'formAction' => \Members\Model\Configuration::getLocalizedPath('routes.profile.update'))); ?>
+    <?php } ?>
 
 </div>
