@@ -34,7 +34,7 @@ Members provides some helpers to fix that. Use your *pimcoreNavigation* like tha
 ### Assets
 
 Pure Asset restriction is not supported right now. However, Members will install a protected folder
-called "restricted-assets". all assets placed in this folder are protected from frontend call.
+called "restricted-assets". all assets placed in this folder are protected from frontend calls.
 
 **Get Asset Data**
 
