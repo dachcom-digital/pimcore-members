@@ -11,7 +11,7 @@
     },
     {
         "type": "page",
-        "path": "members/profile",
+        "path": "members",
         "key": "update",
         "name": "Members",
         "title": "Member profile update",
@@ -21,8 +21,8 @@
     },
     {
         "type": "page",
-        "path": "members/profile",
-        "key": "change-password",
+        "path": "members",
+        "key": "password-change",
         "name": "Members",
         "title": "Member profile change password",
         "module": "Members",

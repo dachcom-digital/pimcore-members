@@ -33,8 +33,8 @@ class Install {
         Configuration::set('routes.logout', '/%lang/members/logout');
         Configuration::set('routes.register', '/%lang/members/register');
         Configuration::set('routes.profile', '/%lang/members');
-        Configuration::set('routes.profile.update', '/%lang/members/update');
-        Configuration::set('routes.profile.changePassword', '/%lang/members/change-password');
+        Configuration::set('routes.profile.update', '/%lang/members/update-profile');
+        Configuration::set('routes.profile.changePassword', '/%lang/members/password-change');
         Configuration::set('routes.confirm', '/%lang/members/confirm');
         Configuration::set('routes.passwordRequest', '/%lang/members/password-request');
         Configuration::set('routes.passwordReset', '/%lang/members/password-reset');
@@ -47,11 +47,10 @@ class Install {
         return TRUE;
     }
 
-    public function installTranslations() {
-
+    public function installTranslations()
+    {
         $csv = PIMCORE_PLUGINS_PATH . '/Members/install/translations/data.csv';
         Website::importTranslationsFromFile($csv, true, Tool\Admin::getLanguages());
-
     }
 
     public function injectDbData()
@@ -234,7 +233,14 @@ class Install {
         }
     }
 
-    public function installFolder() {
+    public function installFolder()
+    {
+        $folderName = 'restricted-assets';
+
+        if( \Pimcore\Model\Asset\Folder::getByPath('/'. $folderName) instanceof \Pimcore\Model\Asset\Folder)
+        {
+            return FALSE;
+        }
 
         $folder = new \Pimcore\Model\Asset\Folder();
         $folder->setCreationDate ( time() );
