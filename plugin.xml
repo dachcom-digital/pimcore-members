@@ -5,7 +5,7 @@
     <pluginNiceName>Members Module</pluginNiceName>
     <pluginIcon>/plugins/Members/static/img/logo.png</pluginIcon>
     <pluginDescription>create user restrictions</pluginDescription>
-    <pluginVersion>1.0.4</pluginVersion>
+    <pluginVersion>1.0.5</pluginVersion>
     <pluginClassName>\Members\Plugin</pluginClassName>
     <pluginIncludePaths>
       <path>/Members/lib</path>

@@ -19,7 +19,7 @@ class Identifier {
 
     public function __construct()
     {
-        $this->auth = \Zend_Auth::getInstance();
+        $this->auth = \Members\Auth\Instance::getAuth();
     }
 
     public function setIdentity( $username = '', $password = '' )
@@ -52,5 +52,15 @@ class Identifier {
     public function getCode()
     {
         return $this->authResult->getCode();
+    }
+
+    public function hasIdentity()
+    {
+        return !is_null( $this->auth->getIdentity() );
+    }
+
+    public function getIdentity()
+    {
+        return $this->auth->getIdentity();
     }
 }

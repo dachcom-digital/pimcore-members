@@ -2,6 +2,7 @@
 
 namespace Members\Tool;
 
+use Members\Auth;
 use Members\Model\Restriction;
 use Members\Model\Configuration;
 
@@ -219,7 +220,8 @@ class Observer {
 
     private static function getIdentity($forceFromStorage = false)
     {
-        $identity = \Zend_Auth::getInstance()->getIdentity();
+        $ident = Auth\Instance::getAuth();
+        $identity = $ident->getIdentity();
 
         if (!$identity && isset($_SERVER['PHP_AUTH_PW']))
         {
@@ -249,7 +251,9 @@ class Observer {
 
         if ($identifier->setIdentity($username, $password)->isValid())
         {
-            return \Zend_Auth::getInstance()->getIdentity();
+            $ident = Auth\Instance::getAuth();
+
+            return $ident->getIdentity();
         }
 
         return FALSE;

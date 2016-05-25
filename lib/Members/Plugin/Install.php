@@ -47,8 +47,8 @@ class Install {
         return TRUE;
     }
 
-    public function installTranslations()
-    {
+    public function installTranslations() {
+
         $csv = PIMCORE_PLUGINS_PATH . '/Members/install/translations/data.csv';
         Website::importTranslationsFromFile($csv, true, Tool\Admin::getLanguages());
     }
@@ -233,11 +233,11 @@ class Install {
         }
     }
 
-    public function installFolder()
-    {
+    public function installFolder() {
+
         $folderName = 'restricted-assets';
 
-        if( \Pimcore\Model\Asset\Folder::getByPath('/'. $folderName) instanceof \Pimcore\Model\Asset\Folder)
+        if( \Pimcore\Model\Asset\Folder::getByPath('/' . $folderName) instanceof \Pimcore\Model\Asset\Folder)
         {
             return FALSE;
         }
@@ -248,7 +248,7 @@ class Install {
         $folder->setUserOwner (1);
         $folder->setUserModification (0);
         $folder->setParentId(1);
-        $folder->setFilename('restricted-assets');
+        $folder->setFilename($folderName);
         $folder->save();
 
         //now create .htaccess file to disallow every request to this folder (exept admin!

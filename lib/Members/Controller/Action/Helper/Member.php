@@ -3,6 +3,8 @@
 namespace Members\Controller\Action\Helper;
 
 use Members\Model\Configuration;
+use Members\Auth;
+
 use Pimcore\Model\Object;
 
 class Member extends \Zend_Controller_Action_Helper_Abstract
@@ -13,7 +15,7 @@ class Member extends \Zend_Controller_Action_Helper_Abstract
      */
     public function direct($fromStorage = true)
     {
-        $identity = \Zend_Auth::getInstance()->getIdentity();
+        $identity = Auth\Instance::getAuth()->getIdentity();
         if ($identity && !$fromStorage)
         {
             // return real object instead of object cached in auth storage
@@ -30,7 +32,7 @@ class Member extends \Zend_Controller_Action_Helper_Abstract
      */
     public function requireAuth()
     {
-        if (!\Zend_Auth::getInstance()->hasIdentity())
+        if (!Auth\Instance::getAuth()->hasIdentity())
         {
             $this->getActionController()->redirect(sprintf('%s?back=%s',
                 Configuration::getLocalizedPath('routes.login'),

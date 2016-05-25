@@ -2,6 +2,7 @@
 namespace Members\Controller;
 
 use Website\Controller\Action as WebsiteAction;
+use Members\Auth;
 
 class Action extends WebsiteAction
 {
@@ -28,7 +29,7 @@ class Action extends WebsiteAction
 
         $this->translate = $this->initTranslation();
 
-        $this->auth = \Zend_Auth::getInstance();
+        $this->auth = Auth\Instance::getAuth();
         $this->view->flashMessages = $this->_helper->flashMessenger->getMessages();
     }
 }

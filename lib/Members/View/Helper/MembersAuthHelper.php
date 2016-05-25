@@ -2,6 +2,8 @@
 
 namespace Members\View\Helper;
 
+use Members\Tool\Identifier;
+
 class MembersAuthHelper extends \Zend_View_Helper_Abstract {
 
     /**
@@ -11,7 +13,8 @@ class MembersAuthHelper extends \Zend_View_Helper_Abstract {
 
     public function __construct()
     {
-        self::$_auth = \Zend_Auth::getInstance();
+        $identifier = new Identifier();
+        self::$_auth = $identifier->getIdentity();
     }
 
     public function membersAuthHelper()
@@ -21,7 +24,7 @@ class MembersAuthHelper extends \Zend_View_Helper_Abstract {
 
     public function isLoggedIn()
     {
-        if( self::$_auth->getIdentity())
+        if( !is_null(self::$_auth))
         {
             return TRUE;
         }
@@ -40,6 +43,6 @@ class MembersAuthHelper extends \Zend_View_Helper_Abstract {
 
     public function getUser()
     {
-        return self::$_auth->getIdentity();
+        return self::$_auth;
     }
 }

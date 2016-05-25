@@ -12,10 +12,10 @@ class UrlServant {
     const MEMBERS_REQUEST_URL = '/members/request-data/';
 
     /**
-     * @param string|Model\Asset $asset     if string, getByPath will be triggered.
-     * @param bool|int $objectProxyId       Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
- *                                          the object has restriction but the asset does not.
- *                                          If $objectProxyId is given, this method will check for the object restriction instead of the asset.
+     * @param string|Model\Asset $asset         if string, getByPath will be triggered.
+     * @param bool|int $objectProxyId           Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
+     *                                          the object has restriction but the asset does not.
+     *                                          If $objectProxyId is given, this method will check for the object restriction instead of the asset.
      * @return string
      * @throws \Exception
      */
