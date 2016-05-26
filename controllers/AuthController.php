@@ -153,6 +153,8 @@ class Members_AuthController extends Action
     public function logoutAction()
     {
         $this->auth->clearIdentity();
+        \Pimcore::getEventManager()->trigger('members.action.logout');
+
         $this->redirect(Configuration::getLocalizedPath('routes.login'));
     }
 
