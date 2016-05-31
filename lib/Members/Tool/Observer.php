@@ -198,22 +198,6 @@ class Observer {
         {
         }
 
-        if($restriction === FALSE)
-        {
-            $docParentIds = $object->getDao()->getParentIds();
-            $nextHigherRestriction = Restriction::findNextInherited( $object->getId(), $docParentIds, 'page' );
-
-            if( $nextHigherRestriction->getId() !== null )
-            {
-                $restriction = $nextHigherRestriction;
-            }
-            else
-            {
-                $restriction = FALSE;
-            }
-
-        }
-
         return $restriction;
 
     }
@@ -259,9 +243,10 @@ class Observer {
         return FALSE;
     }
 
-    private static function isAdmin()
+    public static function isAdmin()
     {
-        return isset( $_COOKIE['pimcore_admin_sid'] );
+        $u = \Pimcore\Tool\Authentication::authenticateSession();
+        return $u instanceof \Pimcore\Model\User;
     }
 
     /**

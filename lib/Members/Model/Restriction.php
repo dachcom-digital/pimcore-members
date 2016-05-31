@@ -26,12 +26,12 @@ class Restriction extends AbstractModel
     /**
      * @var boolean
      */
-    public $inheritable = FALSE;
+    public $isInherited = FALSE;
 
     /**
      * @var boolean
      */
-    public $inherited = FALSE;
+    public $inherit = FALSE;
 
     /**
      * @var array
@@ -61,20 +61,6 @@ class Restriction extends AbstractModel
 
         $obj = new self;
         $obj->getDao()->getByField('targetId', (int) $id, $cType);
-        return $obj;
-    }
-
-    /**
-     * @param null   $docId
-     * @param int    $docParentIds
-     * @param string $cType
-     *
-     * @return \Members\Model\Restriction
-     */
-    public static function findNextInherited( $docId = NULL, $docParentIds, $cType = 'page' )
-    {
-        $obj = new self;
-        $obj->getDao()->getNextInheritedParent($docId, $docParentIds, $cType);
         return $obj;
     }
 
@@ -153,46 +139,46 @@ class Restriction extends AbstractModel
     /**
      * @return boolean
      */
-    public function getInherited()
+    public function getIsInherited()
     {
-        return $this->inherited;
+        return $this->isInherited;
     }
 
     /**
-     * @param boolean $inherited
-     * @return static
-     */
-    public function setInherited($inherited)
-    {
-        $this->inherited = (bool) $inherited;
-        return $this;
-    }
-
-    /**
-     * Alias for getInherited()
+     * Alias for getIsInherited()
      *
      * @return boolean
      */
     public function isInherited()
     {
-        return $this->getInherited();
+        return $this->getIsInherited();
+    }
+
+    /**
+     * @param boolean $isInherited
+     * @return static
+     */
+    public function setIsInherited($isInherited)
+    {
+        $this->isInherited = (bool) $isInherited;
+        return $this;
     }
 
     /**
      * @return boolean
      */
-    public function getInheritable()
+    public function getInherit()
     {
-        return $this->inheritable;
+        return $this->inherit;
     }
 
     /**
-     * @param boolean $inheritable
+     * @param boolean $inherit
      * @return static
      */
-    public function setInheritable($inheritable)
+    public function setInherit($inherit)
     {
-        $this->inheritable = (bool) $inheritable;
+        $this->inherit = (bool) $inherit;
         return $this;
     }
 

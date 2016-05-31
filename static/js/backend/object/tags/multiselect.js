@@ -4,7 +4,7 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
     getLayoutEdit: function () {
 
         var proxy = new Ext.data.HttpProxy({
-            url : '/admin/user/role-tree-get-childs-by-id'
+            url : '/plugin/Members/admin_Restriction/get-roles'
         });
 
         var fields = [
@@ -30,8 +30,8 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
             itemCls: "object_field",
             valueField: 'id',
             displayField: 'text',
-            width: 300,
-            minHeight: 100,
+            width: 400,
+            minHeight: 150,
             maxHeight : 400,
             queryMode : 'local',
             listeners : {

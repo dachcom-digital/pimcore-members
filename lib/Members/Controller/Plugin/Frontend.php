@@ -45,8 +45,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
      */
     private function handleDocumentAuthentication($document)
     {
-        //@fixme! bad?
-        if (isset($_COOKIE['pimcore_admin_sid']))
+        if (Observer::isAdmin())
         {
             return FALSE;
         }

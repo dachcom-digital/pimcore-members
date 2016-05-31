@@ -6,6 +6,7 @@ use Pimcore\API\Plugin as PluginLib;
 
 use Members\Plugin\Install;
 use Members\Model\Configuration;
+use Members\Model\Member;
 use Members\RestrictionService;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface {
@@ -34,6 +35,9 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('document.preDelete',        array($this, 'handleDocumentDeletion'));
         \Pimcore::getEventManager()->attach('object.preDelete',          array($this, 'handleObjectDeletion'));
 
+        \Pimcore::getEventManager()->attach('object.postAdd',            array($this, 'handleObjectAdd'));
+        \Pimcore::getEventManager()->attach('document.postAdd',          array($this, 'handleDocumentAdd'));
+
         \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
         \Pimcore::getEventManager()->attach('members.update.validate',   array('Members\Events\Register', 'validate'));
         \Pimcore::getEventManager()->attach('members.password.reset',    array('Members\Events\Password', 'reset'));
@@ -58,6 +62,28 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $frontController->registerPlugin(new Controller\Plugin\Frontend());
         }
 
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleObjectAdd(\Zend_EventManager_Event $e)
+    {
+        $object = $e->getTarget();
+        return RestrictionService::checkRestriction( $object, 'object' );
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleDocumentAdd(\Zend_EventManager_Event $e)
+    {
+        $document = $e->getTarget();
+        return RestrictionService::checkRestriction( $document, 'page' );
     }
 
     /**

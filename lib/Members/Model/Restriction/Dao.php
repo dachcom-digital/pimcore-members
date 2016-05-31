@@ -64,29 +64,6 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
-     * @param null   $docId
-     * @param        $docParentIds
-     * @param string $cType
-     */
-    public function getNextInheritedParent( $docId = NULL, $docParentIds, $cType = 'page' ) {
-
-        $propertiesRaw = $this->db->fetchAll(
-            "SELECT * FROM members_restrictions WHERE (targetId IN (" . implode(',',$docParentIds) . ") AND inheritable = ? AND ctype = ?) OR (targetId = ? AND ctype = ?)",
-            array(1, $cType, $docId, $cType));
-
-        // because this should be faster than mysql
-        usort($propertiesRaw, function ($left, $right) {
-            return strcmp($left['targetId'], $right['targetId']);
-        });
-
-        if( !empty( $propertiesRaw ) )
-        {
-            $data = $this->addRelationData($propertiesRaw[0]);
-            $this->assignVariablesToModel($data);
-        }
-    }
-
-    /**
      * Save object to database
      *
      * @return bool
@@ -97,7 +74,8 @@ class Dao extends Model\Dao\AbstractDao
 
             'targetId'      => $this->model->getTargetId(),
             'ctype'         => $this->model->getCtype(),
-            'inheritable'   => (int) $this->model->getInheritable()
+            'isInherited'   => (int) $this->model->isInherited(),
+            'inherit'   => (int) $this->model->getInherit()
 
         );
 
