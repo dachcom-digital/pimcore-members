@@ -16,6 +16,19 @@ class Action extends WebsiteAction
      */
     protected $translate;
 
+    public function preDispatch()
+    {
+        parent::preDispatch();
+
+        /*
+         * Initialize Session namespace for FlashMessenger through Pimcore Session.
+         * Because FlashMessenger does not allow custom Zend_Session_Namespace injection,
+         * we need to initialize the session in a early state to prevent a session reset in pimcore session handler.
+         * Also add this line to your website Action, if you need FlashMessenger there!
+         */
+        \Pimcore\Tool\Session::get('FlashMessenger');
+    }
+
     public function init()
     {
         parent::init();

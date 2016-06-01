@@ -24,6 +24,8 @@ class Install {
     public function installConfigFile()
     {
         Configuration::set('installed', TRUE);
+        Configuration::set('core.settings.object.allowed', []);
+
         Configuration::set('auth.adapter.identityClassname', 'Object\Member');
         Configuration::set('auth.adapter.identityColumn', 'email');
         Configuration::set('auth.adapter.credentialColumn', 'password');
@@ -42,7 +44,7 @@ class Install {
         Configuration::set('emails.registerConfirm', '/%lang/members/emails/register-confirm');
         Configuration::set('emails.passwordReset', '/%lang/members/emails/password-reset');
 
-        Configuration::set('actions.postRegister', FALSE);
+        Configuration::set('actions.postRegister', 'confirm');
 
         return TRUE;
     }

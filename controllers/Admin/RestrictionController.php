@@ -1,11 +1,30 @@
 <?php
 
 use Pimcore\Controller\Action\Admin;
-use Members\Model\Restriction;
 use Pimcore\Model\Object\MemberRole;
+
+use Members\Model\Configuration;
+use Members\Model\Restriction;
 
 class Members_Admin_RestrictionController extends Admin
 {
+    public function getGlobalSettingsAction()
+    {
+        $config = new Configuration\Listing();
+
+        $valueArray = array();
+
+        foreach ($config->getConfigurations() as $c) {
+            $valueArray[$c->getKey()] = $c->getData();
+        }
+
+        $this->_helper->json(
+            array(
+                'settings' => $valueArray,
+            )
+        );
+    }
+
     public function getRolesAction()
     {
         $list = new MemberRole\Listing();
