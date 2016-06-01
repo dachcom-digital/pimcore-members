@@ -95,6 +95,12 @@ class Observer {
                 if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
                 {
                     $allowedGroups = $identity->getGroups();
+
+                    if( is_null($allowedGroups))
+                    {
+                        $allowedGroups = array();
+                    }
+
                     $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
 
                     if( count($intersectResult) > 0 )
@@ -145,6 +151,12 @@ class Observer {
             if( !empty( $restrictionRelatedGroups ) && $identity instanceof Object\Member)
             {
                 $allowedGroups = $identity->getGroups();
+
+                if( is_null($allowedGroups))
+                {
+                    $allowedGroups = array();
+                }
+
                 $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
 
                 if( count($intersectResult) > 0 )
