@@ -101,6 +101,8 @@ class Members_RequestController extends Action
             ob_flush();
             flush();
         }
+
+        exit;
     }
 
     private function serveZip( $assets )
