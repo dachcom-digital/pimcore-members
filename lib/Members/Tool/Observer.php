@@ -187,6 +187,22 @@ class Observer {
     }
 
     /**
+     * Use this method for luceneSearch
+     * @return array
+     */
+    public static function getCurrentUserAllowedGroups()
+    {
+        $ident = Auth\Instance::getAuth();
+        $identity = $ident->getIdentity();
+
+        if( $identity instanceof \Pimcore\Model\Object\Member )
+        {
+            $allowedGroups = $identity->getGroups();
+            return $allowedGroups;
+        }
+    }
+
+    /**
      * @param        $object (document|object)
      * @param string $cType
      * @param bool   $ignoreLoggedIn

@@ -20,12 +20,6 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         $view = self::$renderer->view;
         $view->addHelperPath(PIMCORE_PLUGINS_PATH . '/Members/lib/Members/View/Helper', 'Members\View\Helper');
 
-    }
-
-    public function postDispatch(\Zend_Controller_Request_Abstract $request)
-    {
-        parent::postDispatch($request);
-
         if ($request->getParam('document') instanceof Page)
         {
             $document = $request->getParam('document');
@@ -35,7 +29,6 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
 
             $this->handleDocumentAuthentication($request->getParam('document'));
         }
-
     }
 
     /**
