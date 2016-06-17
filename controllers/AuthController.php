@@ -8,8 +8,49 @@ use Members\Tool\Identifier;
 
 class Members_AuthController extends Action
 {
+
+    public function loginFromAreaAction() {
+
+        if( !\Zend_Registry::isRegistered('Zend_Locale') && $this->getParam('lang') ) {
+            $locale = new \Zend_Locale($this->getParam('lang'));
+            \Zend_Registry::set('Zend_Locale', $locale);
+        }
+
+        $loginData = $this->parseLoginAction();
+
+        if ($loginData['error'] === TRUE )
+        {
+            $this->_helper->flashMessenger([
+                'mode' => 'area',
+                'type' => 'danger',
+                'text' => $this->translate->_( $loginData['message'] ),
+            ]);
+
+            if( !empty( $loginData['redirect'] ) )
+            {
+                $this->redirect( $loginData['redirect'] );
+            }
+
+        }
+        else if ($loginData['error'] === FALSE )
+        {
+            if( !empty( $loginData['redirect'] ) )
+            {
+                $this->redirect( $loginData['redirect'] );
+            }
+        }
+
+    }
+
     public function loginAction()
     {
+        $this->view->back = $this->getParam('back')
+            ? $this->getParam('back')
+            : (\Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
+                ? \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
+                : \Members\Model\Configuration::getLocalizedPath('routes.profile')
+            );
+
         $loginData = $this->parseLoginAction();
 
         if ($loginData['error'] === TRUE && $loginData['message'] === 'ALREADY_LOGGED_IN')
@@ -55,8 +96,7 @@ class Members_AuthController extends Action
                 array(
                     'user' => $userData,
                     'message' => $loginData['message'],
-                    'logoutUrl' => Configuration::getLocalizedPath('routes.logout'),
-                    'additionalParams' => $this->getParam('additionalParams')
+                    'logoutUrl' => Configuration::getLocalizedPath('routes.logout')
                 )
             );
 
@@ -145,6 +185,10 @@ class Members_AuthController extends Action
                     }
                 }
             }
+        }
+
+        if ( $error && $this->_getParam('origin') ) {
+            $redirect = $this->_getParam('origin');
         }
 
         return array('error' => $error, 'message' => $message, 'redirect' => $redirect);

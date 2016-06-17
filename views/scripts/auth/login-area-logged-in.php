@@ -1,0 +1,1 @@
+<a href="<?= \Members\Model\Configuration::getLocalizedPath('routes.logout') ?>" class="btn btn-default"><?=$this->translate('Logout')?></a>
