@@ -15,12 +15,17 @@ class MemberLogin extends Document\Tag\Area\AbstractArea {
         $this->view->hideWhenLoggedIn = $this->view->checkbox('hideWhenLoggedIn')->getData();
         $this->view->isLoggedIn = $memberHelper->isLoggedIn();
 
-        $this->view->back = $this->view->href('redirectAfterSuccess')
-            ? $this->view->href('redirectAfterSuccess')->getFullPath()
-            : (\Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
-                ? \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
-                : \Members\Model\Configuration::getLocalizedPath('routes.profile')
-            );
+        $this->view->back = \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
+            ? \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
+            : \Members\Model\Configuration::getLocalizedPath('routes.profile');
+
+        if ( $this->getParam('back') ) {
+            $this->view->back = $this->getParam('back');
+        }
+
+        if ( $this->view->href('redirectAfterSuccess')->getElement() ) {
+            $this->view->back = $this->view->href('redirectAfterSuccess')->getFullPath();
+        }
 
         $this->view->error = FALSE;
         foreach ( $flashmessenger->getMessages() as $message ) {
