@@ -96,7 +96,8 @@ class Members_AuthController extends Action
                 array(
                     'user' => $userData,
                     'message' => $loginData['message'],
-                    'logoutUrl' => Configuration::getLocalizedPath('routes.logout')
+                    'logoutUrl' => Configuration::getLocalizedPath('routes.logout'),
+                    'additionalParams' => $this->getParam('additionalParams')
                 )
             );
 
