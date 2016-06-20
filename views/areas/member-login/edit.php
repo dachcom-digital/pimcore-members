@@ -1,29 +1,26 @@
-<div class="row">
-    <div class="col-xs-12">
-        <label><?= $this->translate('Redirect after successful login') ?></label>
+<div class="toolbox-edit-overlay">
+
+    <div class="t-row">
+        <label><?= $this->translateAdmin('Redirect after successful login') ?></label>
         <?php
         echo $this->href('redirectAfterSuccess', [
             'types'   => ['document'],
         ]); ?>
     </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12">
-        <label><?= $this->translate('Hide when logged in') ?></label>
+    <div class="t-row">
+        <label><?= $this->translateAdmin('Hide when logged in') ?></label>
         <?= $this->checkbox('hideWhenLoggedIn'); ?>
     </div>
-</div>
 
-<?php if ( !$this->checkbox('hideWhenLoggedIn')->getData() ) { ?>
-<div class="row">
-    <div class="col-xs-12">
-        <label><?= $this->translate('Show this snippet when logged in') ?></label>
+    <?php if ( !$this->checkbox('hideWhenLoggedIn')->getData() ) { ?>
+    <div class="t-row">
+        <label><?= $this->translateAdmin('Show this snippet when logged in') ?></label>
         <?php
         echo $this->href('showSnippedWhenLoggedIn', [
             'types'   => ['document'],
             'subtypes'   => ['snippet'],
         ]); ?>
     </div>
+    <?php } ?>
+
 </div>
-<?php } ?>
