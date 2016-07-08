@@ -24,6 +24,8 @@ class Install {
     public function installConfigFile()
     {
         Configuration::set('installed', TRUE);
+        Configuration::set('sendNotificationMailAfterConfirm', FALSE);
+
         Configuration::set('core.settings.object.allowed', []);
 
         Configuration::set('auth.adapter.identityClassname', 'Object\Member');
@@ -43,6 +45,7 @@ class Install {
         Configuration::set('routes.login.redirectAfterSuccess', '/%lang/members');
 
         Configuration::set('emails.registerConfirm', '/%lang/members/emails/register-confirm');
+        Configuration::set('emails.registerNotification', '/%lang/members/emails/register-notification');
         Configuration::set('emails.passwordReset', '/%lang/members/emails/password-reset');
 
         Configuration::set('actions.postRegister', 'confirm');

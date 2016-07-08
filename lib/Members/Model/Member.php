@@ -103,6 +103,36 @@ class Member extends Concrete {
         $this->setPublished(true);
         $this->setConfirmHash(null);
         $this->save();
+
+        //send confirm notification
+        if( Configuration::get('sendNotificationMailAfterConfirm') === TRUE )
+        {
+            /** @var \Pimcore\Model\Document\Email $doc */
+            $doc = Email::getByPath( Configuration::getLocalizedPath('emails.registerNotification') );
+
+            if (!$doc)
+            {
+                throw new \Exception('No register notification email template defined');
+            }
+
+            /** @var \Zend_Controller_Request_Http $request */
+            $request = \Zend_Controller_Front::getInstance()->getRequest();
+            $email = new \Pimcore\Mail();
+            $email->setDocument($doc);
+            $email->setTo($doc->getTo());
+            $email->setParams([
+                'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+                'member_id' => $this->getId(),
+                'deeplink' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()) . '/admin/login/deeplink?object_' . $this->getId() . '_object',
+                'member_name' => $this->getLastname() . ' ' . $this->getFirstname(),
+            ]);
+
+            $email->send();
+        }
+
+        //allow 3rd party plugins to hook into confirm post events.
+        \Pimcore::getEventManager()->trigger('members.confirm.post', $this);
+
         return $this;
     }
 

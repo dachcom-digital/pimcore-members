@@ -126,6 +126,40 @@
     {
         "type": "email",
         "path": "members/emails",
+        "key": "register-notification",
+        "module": "Members",
+        "controller": "email",
+        "action": "email",
+        "data": {
+            "de": [
+                {
+                    "key": "subject",
+                    "type": "objectProperty",
+                    "value": "Ein Account wurde aktiviert"
+                },
+                {
+                    "key": "email_content",
+                    "type": "wysiwyg",
+                    "value": "<p>Hallo,</p><p>eine neue Registrierung wurde erfolgreich aktiviert.</p><p>Benutzer: <a href=\"%Text(deeplink);\">%Text(member_name);</a></p>"
+                }
+            ],
+            "en": [
+                {
+                    "key": "subject",
+                    "type": "objectProperty",
+                    "value": "Activate your account"
+                },
+                {
+                    "key": "email_content",
+                    "type": "wysiwyg",
+                    "value": "<p>Hi,</p><p> new registration has been successfully activated.</p><p>User: <a href=\"%Text(deeplink);\">%Text(member_name);</a></p>"
+                }
+            ]
+        }
+    },
+    {
+        "type": "email",
+        "path": "members/emails",
         "key": "password-reset",
         "module": "Members",
         "controller": "email",

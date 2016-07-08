@@ -62,7 +62,7 @@ class Register
     }
 
     /**
-     * Callback for 'member.register.post' event.
+     * Callback for 'members.register.post' event.
      * Activates member account after registration.
      *
      * @param \Zend_EventManager_Event $event
@@ -73,13 +73,12 @@ class Register
     {
         /** @var Object\Member $member */
         $member = $event->getTarget();
-        $member->setPublished(true);
-        $member->save();
+        $member->confirm();
         return $member;
     }
 
     /**
-     * Callback for 'member.register.post' event.
+     * Callback for 'members.register.post' event.
      * Sending email with confirmation links.
      *
      * @param \Zend_EventManager_Event $event
