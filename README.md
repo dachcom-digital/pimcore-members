@@ -3,7 +3,7 @@
 Just download and install it into your plugin folder.
 
 #### Requirements
-* Pimcore 4.0 (at least build 3784)
+* Pimcore 4.1
 
 #### Features
 * Create Members in Backend
@@ -92,3 +92,35 @@ foreach($objects as $object)
 
 ?>
 ```
+
+
+### Event API
+For more information about using Event API please check [pimcore documentation](https://www.pimcore.org/wiki/pages/viewpage.action?pageId=16854309).
+
+**Example**
+```php
+\Pimcore::getEventManager()->attach(
+    'members.register.post', array('\Website\Events\Members\Auth', 'postRegister'), 10
+);
+```
+        
+**`members.register.validate`**
+Allows to override validation of register form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Register::validate()` for default implementation.
+
+**`members.update.validate`**
+Allows to override validation of update form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Register::validate()` for default implementation.
+
+**`members.register.post`**
+Allows to define what should be done after member object was created. By default member object is unpublished - which means that account is inactive and members has to confirm it via mail. There is also a `activate` callback implemented which enables the account immediately after registering. If you set `actions.postRegister` to `FALSE` in `config/members-configurations.php` members must be activated by admin.
+    
+**`members.update.post`**
+Allows to define what should be done after member object has been updated.
+
+**`members.confirm.post`**
+Allows to define what should be done after member object has been published.
+    
+**`members.password.reset`**
+Allows to override validation of password reset form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Password::reset()` for default implementation.
+
+**`members.password.change`**
+Allows to override validation of password change form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Password::change()` for default implementation.
