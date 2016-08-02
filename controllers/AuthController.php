@@ -92,7 +92,7 @@ class Members_AuthController extends Action
             );
 
             $htmlTemplate = $this->view->partial(
-                'auth/ajax/success.php',
+                'members/auth/ajax/success.php',
                 array(
                     'user' => $userData,
                     'message' => $loginData['message'],
@@ -105,7 +105,7 @@ class Members_AuthController extends Action
         else
         {
             $htmlTemplate = $this->view->partial(
-                'auth/ajax/error.php',
+                'members/auth/ajax/error.php',
                 array(
                     'message' => $loginData['message']
                 )

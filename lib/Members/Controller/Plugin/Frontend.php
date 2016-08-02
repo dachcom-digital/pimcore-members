@@ -23,7 +23,6 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         //allow website to use own scripts
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
-        $view->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts/members');
 
         if ($request->getParam('document') instanceof Page)
         {

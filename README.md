@@ -10,6 +10,15 @@ Just download and install it into your plugin folder.
 * Allow Members to register in frontend
 * Restrict Documents to specific User Roles
 
+### Installation
+Some installation advices. 
+
+**Override Templates**
+
+To override the Members scripts, just create a members folder in your scripts folder to override templates:
+ 
+ `/website/views/scripts/members/profile/default.php`
+ 
 ### Documents
 
 **Hide restricted pages in navigation**
@@ -29,7 +38,6 @@ Members provides some helpers to fix that. Use your *pimcoreNavigation* like tha
     Members\Tool\Observer::generateNavCacheKey()
 ); ?>
 ```
-
 
 ### Assets
 
@@ -74,7 +82,6 @@ This will create a zip file on the fly, so no temp files on your server!
 
 ```
 
-
 ### Objects
 
 Just extend your object classes with `\Members\Model\Object`. Now you're able to check the restriction of your object:
@@ -92,7 +99,6 @@ foreach($objects as $object)
 
 ?>
 ```
-
 
 ### Event API
 For more information about using Event API please check [pimcore documentation](https://www.pimcore.org/wiki/pages/viewpage.action?pageId=16854309).

@@ -12,7 +12,7 @@
                 </a>
             </h2>
 
-            <?= $this->template('form/userForm.php', array('type' => 'create', 'formAction' => \Members\Model\Configuration::getLocalizedPath('routes.register'))); ?>
+            <?= $this->template('members/form/userForm.php', array('type' => 'create', 'formAction' => \Members\Model\Configuration::getLocalizedPath('routes.register'))); ?>
 
         </div>
 

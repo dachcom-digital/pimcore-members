@@ -226,4 +226,14 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         return self::$_translate;
     }
 
+    /**
+     * @param \Pimcore\View $view
+     */
+    public static function addFrontendPaths($view)
+    {
+        if( $view instanceof \Pimcore\View)
+        {
+            $view->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts/members');
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?php if ($this->editmode || !$this->isLoggedIn) { ?>
 
-    <?= $this->template('auth/login-area.php', [
+    <?= $this->template('members/auth/login-area.php', [
         'language' => $this->language,
         'areaMode' => TRUE,
         'loginUri' => $this->loginUri,
@@ -18,7 +18,7 @@
 
     <?php } elseif ( !$this->hideWhenLoggedIn ) { ?>
 
-        <?= $this->template('auth/login-area-logged-in.php') ?>
+        <?= $this->template('members/auth/login-area-logged-in.php') ?>
 
     <?php } ?>
 

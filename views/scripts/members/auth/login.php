@@ -20,7 +20,7 @@
                 </a>
             </h2>
 
-            <?= $this->template('form/loginForm.php', array('loginUri' => $this->request->getRequestUri(), 'error' => $this->error, 'back' => $this->back)); ?>
+            <?= $this->template('members/form/loginForm.php', array('loginUri' => $this->request->getRequestUri(), 'error' => $this->error, 'back' => $this->back)); ?>
 
         </div>
 

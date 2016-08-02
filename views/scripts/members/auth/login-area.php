@@ -1,5 +1,5 @@
 <div class="members login">
-    <?= $this->template('form/loginForm.php', [
+    <?= $this->template('members/form/loginForm.php', [
         'language' => $this->language,
         'areaMode' => TRUE,
         'loginUri' => $this->loginUri,
