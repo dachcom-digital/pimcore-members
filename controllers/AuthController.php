@@ -8,7 +8,6 @@ use Members\Tool\Identifier;
 
 class Members_AuthController extends Action
 {
-
     public function loginFromAreaAction() {
 
         if( !\Zend_Registry::isRegistered('Zend_Locale') && $this->getParam('lang') ) {
