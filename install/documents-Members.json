@@ -7,7 +7,8 @@
         "title": "Member profile",
         "module": "Members",
         "controller": "profile",
-        "action": "default"
+        "action": "default",
+        "template": "/members/profile/default.php"
     },
     {
         "type": "page",
@@ -17,7 +18,8 @@
         "title": "Member profile update",
         "module": "Members",
         "controller": "profile",
-        "action": "update"
+        "action": "update",
+        "template": "/members/profile/update.php"
     },
     {
         "type": "page",
@@ -27,7 +29,18 @@
         "title": "Member profile change password",
         "module": "Members",
         "controller": "profile",
-        "action": "password-change"
+        "action": "password-change",
+        "template": "/members/profile/password-change.php"
+    },
+    {
+        "type": "page",
+        "path": "members",
+        "key": "register",
+        "name": "Register",
+        "module": "Members",
+        "controller": "profile",
+        "action": "register",
+        "template": "/members/profile/register.php"
     },
     {
         "type": "page",
@@ -37,25 +50,28 @@
         "title": "Member login",
         "module": "Members",
         "controller": "auth",
-        "action": "login"
+        "action": "login",
+        "template": "/members/auth/login.php"
     },
     {
         "type": "page",
         "path": "members",
-        "key": "logout",
-        "name": "Logout",
+        "key": "password-request",
+        "name": "Reset password",
         "module": "Members",
         "controller": "auth",
-        "action": "logout"
+        "action": "password-request",
+        "template": "/members/auth/password-request.php"
     },
     {
         "type": "page",
         "path": "members",
-        "key": "register",
-        "name": "Register",
+        "key": "password-reset",
+        "name": "Set new password",
         "module": "Members",
-        "controller": "profile",
-        "action": "register"
+        "controller": "auth",
+        "action": "password-reset",
+        "template": "/members/auth/password-reset.php"
     },
     {
         "type": "page",
@@ -69,20 +85,11 @@
     {
         "type": "page",
         "path": "members",
-        "key": "password-request",
-        "name": "Reset password",
+        "key": "logout",
+        "name": "Logout",
         "module": "Members",
         "controller": "auth",
-        "action": "password-request"
-    },
-    {
-        "type": "page",
-        "path": "members",
-        "key": "password-reset",
-        "name": "Set new password",
-        "module": "Members",
-        "controller": "auth",
-        "action": "password-reset"
+        "action": "logout"
     },
     {
         "type": "folder",
@@ -96,6 +103,7 @@
         "module": "Members",
         "controller": "email",
         "action": "email",
+        "template": "/members/email/email.php",
         "data": {
             "de": [
                 {

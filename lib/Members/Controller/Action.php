@@ -36,8 +36,11 @@ class Action extends WebsiteAction
         $this->enableLayout();
 
         $this->translate = $this->initTranslation();
-
         $this->auth = Auth\Instance::getAuth();
+
+        //allow website path to override templates
+        $this->view->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts');
+        $this->view->addScriptPath(PIMCORE_WEBSITE_PATH . '/views/layouts');
         $this->view->flashMessages = $this->_helper->flashMessenger->getMessages();
     }
 }

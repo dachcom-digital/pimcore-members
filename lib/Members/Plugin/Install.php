@@ -180,8 +180,12 @@ class Install {
                         {
                             $document->setAction($def['action']);
                         }
+                        if( isset( $def['template'] ) )
+                        {
+                            $document->setTemplate($def['template']);
+                        }
 
-                        if (array_key_exists("data", $def))
+                        if (array_key_exists('data', $def))
                         {
                             foreach ($def['data'] as $fieldLanguage => $fields)
                             {
@@ -196,14 +200,14 @@ class Install {
                                     $type = $field['type'];
                                     $content = null;
 
-                                    if (array_key_exists("value", $field))
+                                    if (array_key_exists('value', $field))
                                     {
                                         $content = $field['value'];
                                     }
 
                                     if ( !empty( $content ) )
                                     {
-                                        if ($type === "objectProperty")
+                                        if ($type === 'objectProperty')
                                         {
                                             $document->setValue($key, $content);
                                         }
