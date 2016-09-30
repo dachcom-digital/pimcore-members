@@ -60,6 +60,24 @@ class Observer {
         return $groups;
     }
 
+    public static function getObjectRestrictedGroups( $document )
+    {
+        $restriction = self::getRestrictionObject( $document, 'object', true );
+
+        $groups = array();
+
+        if( $restriction !== FALSE && is_array( $restriction->relatedGroups))
+        {
+            $groups = $restriction->relatedGroups;
+        }
+        else
+        {
+            $groups[] = 'default';
+        }
+
+        return $groups;
+    }
+
     /**
      * @param \Pimcore\Model\Document $document
      *
@@ -215,12 +233,24 @@ class Observer {
 
         if ($ignoreLoggedIn == FALSE && self::isAdmin() )
         {
-            return FALSE;
+            //return FALSE;
         }
 
         try
         {
-            $restriction = Restriction::getByTargetId( $object->getId(), $cType );
+            if( $cType === 'page')
+            {
+                $restriction = Restriction::getByTargetId( $object->getId(), $cType );
+            }
+            else
+            {
+                $allowedTypes = Configuration::get('core.settings.object.allowed');
+                if( $object instanceof \Pimcore\Model\Object\AbstractObject && in_array( $object->getClass()->getName(), $allowedTypes) )
+                {
+                    $restriction = Restriction::getByTargetId( $object->getId(), $cType );
+                }
+            }
+
         }
         catch(\Exception $e)
         {

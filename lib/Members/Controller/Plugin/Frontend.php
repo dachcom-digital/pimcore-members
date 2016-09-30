@@ -3,6 +3,7 @@
 namespace Members\Controller\Plugin;
 
 use Pimcore\Model\Document\Page;
+use Pimcore\Model\Object;
 use Members\Tool\Observer;
 use Members\Model\Configuration;
 
@@ -24,23 +25,55 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
 
-        if ($request->getParam('document') instanceof Page)
+        if($request->getParam('pimcore_request_source') === 'staticroute')
+        {
+            if( $view instanceof \Pimcore\View )
+            {
+                //is it a object related view? check if object is in core.settings.object.allowed.
+                //if so, trigger event, to allow custom routing restriction!
+                //if event is empty, add "default" to m:groups and allow document view!.
+                $objectRestriction = array('default');
+                $boundedObject = NULL;
+
+                $boEvent = \Pimcore::getEventManager()->trigger('members.restriction.object', null, [ 'params' => $request->getParams() ]);
+
+                if ($boEvent->count())
+                {
+                    $returnData = $boEvent->last();
+                    if( $returnData instanceof Object\AbstractObject )
+                    {
+                        $boundedObject = $returnData;
+                        $objectRestriction = Observer::getObjectRestrictedGroups( $boundedObject );
+                    }
+                }
+
+                if( !is_null( $boundedObject ) )
+                {
+                    $this->handleDocumentAuthentication($boundedObject);
+                }
+
+                $view->headMeta()->appendName('m:groups', implode(',', $objectRestriction), array());
+
+            }
+        }
+        else if($request->getParam('document') instanceof Page)
         {
             $document = $request->getParam('document');
 
             $groups = Observer::getDocumentRestrictedGroups( $document );
-            self::$renderer->view->headMeta()->appendName('m:groups', implode(',', $groups), array());
+            $view->headMeta()->appendName('m:groups', implode(',', $groups), array());
 
             $this->handleDocumentAuthentication($request->getParam('document'));
         }
+
     }
 
     /**
-     * @param Page $document
+     * @param Page|Object\AbstractObject $element
      *
      * @return bool
      */
-    private function handleDocumentAuthentication($document)
+    private function handleDocumentAuthentication($element)
     {
         if (Observer::isAdmin())
         {
@@ -54,7 +87,14 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         }
 
         //now load restriction and redirect user to login page, if page is restricted!
-        $restrictedType = Observer::isRestrictedDocument( $document );
+        if( $element instanceof Object\AbstractObject )
+        {
+            $restrictedType = Observer::isRestrictedObject( $element );
+        }
+        else
+        {
+            $restrictedType = Observer::isRestrictedDocument( $element );
+        }
 
         if( $restrictedType['section'] == Observer::SECTION_ALLOWED )
         {
@@ -98,9 +138,7 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             );
         }
 
-        $response = $this->getResponse();
-        $response->setHeader('Location', $url, true);
-        $response->sendHeaders();
+        $this->getResponse()->setRedirect( $url )->sendResponse( );
         exit;
 
     }

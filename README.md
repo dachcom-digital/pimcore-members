@@ -33,9 +33,9 @@ Members provides some helpers to fix that. Use your *pimcoreNavigation* like tha
     $mainNavStartNode,
     null,
     function ($page, $document) {
-        Members\Tool\Observer::bindRestrictionToNavigation($document, $page);
+        \Members\Tool\Observer::bindRestrictionToNavigation($document, $page);
     },
-    Members\Tool\Observer::generateNavCacheKey()
+    \Members\Tool\Observer::generateNavCacheKey()
 ); ?>
 ```
 
@@ -84,11 +84,24 @@ This will create a zip file on the fly, so no temp files on your server!
 
 ### Objects
 
-Just extend your object classes with `\Members\Model\Object`. Now you're able to check the restriction of your object:
+#### Register
+To add the "restriction" tab in backend, you need to register it first. Edit the `members_configurations.php` first:
 
 ```php
 <?php
 
+//search for key "core.settings.object.allowed" and add your objects (name)
+"key"  => "core.settings.object.allowed",
+"data" => [ "News" ]
+
+?>
+```
+
+### Add Listener
+Just extend your object classes with `\Members\Model\Object`. Now you're able to check the restriction of your object:
+
+```php
+<?php
 $list = new Object\YourObject\Listing();
 $objects = $list->getObjects();
 
@@ -96,7 +109,35 @@ foreach($objects as $object)
 {
     echo $object->getRestricted(); //bool true|false
 }
+?>
+```
 
+#### Restrict objects in view (static route restrictions)**
+
+In some cases, objects are bounded to the view. For example a news, blog or a product object. In that case you probably added a static route (www.site.com/news/your-news).
+Even if the object has a restriction, the view will not notice it and the user would be able to open the view. Because Members cannot detect the related Object based on a static route, you need to take care about that.
+Returning the object will be enough, Members takes care of everything else.
+
+**Example** (add this to your `startup.php`)
+
+```php
+<?php
+\Pimcore::getEventManager()->attach(
+
+    'members.restriction.object', function(\Zend_EventManager_Event $e)
+    {
+        $params = $e->getParam('params');
+        if( $params['controller'] === 'news')
+        {
+            $newsId = $params['newsId'];
+            $object = \Pimcore\Model\Object\News::getById( $newsId );
+            return $object;
+        }
+
+        return FALSE;
+    }
+    
+);
 ?>
 ```
 
@@ -104,10 +145,13 @@ foreach($objects as $object)
 For more information about using Event API please check [pimcore documentation](https://www.pimcore.org/wiki/pages/viewpage.action?pageId=16854309).
 
 **Example**
+
 ```php
+<?php
 \Pimcore::getEventManager()->attach(
     'members.register.post', array('\Website\Events\Members\Auth', 'postRegister'), 10
 );
+?>
 ```
         
 **`members.register.validate`**
@@ -130,3 +174,6 @@ Allows to override validation of password reset form data. Your callback must re
 
 **`members.password.change`**
 Allows to override validation of password change form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Password::change()` for default implementation.
+        
+**`members.restriction.object`**
+Validate view restricted objects (see section Objects)
