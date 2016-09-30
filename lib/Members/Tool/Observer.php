@@ -233,7 +233,7 @@ class Observer {
 
         if ($ignoreLoggedIn == FALSE && self::isAdmin() )
         {
-            //return FALSE;
+            return FALSE;
         }
 
         try
