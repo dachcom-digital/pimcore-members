@@ -66,7 +66,7 @@ class Configuration extends Model\AbstractModel
             }
             catch (\Exception $e)
             {
-                \Logger::error($e);
+                \Pimcore\Logger::error($e);
                 return null;
             }
         }
@@ -104,7 +104,7 @@ class Configuration extends Model\AbstractModel
         }
         catch (\Exception $e)
         {
-            \Logger::warn($e);
+            \Pimcore\Logger::warn($e);
             return null;
         }
 

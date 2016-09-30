@@ -3,7 +3,7 @@
 Just download and install it into your plugin folder.
 
 #### Requirements
-* Pimcore 4.1
+* Pimcore 4.3
 
 #### Features
 * Create Members in Backend

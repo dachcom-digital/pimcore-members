@@ -160,7 +160,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         }
         catch (\Exception $e)
         {
-            \Logger::crit($e);
+            \Pimcore\Logger::crit($e);
             return self::getTranslate()->_('members_install_failed');
         }
 
