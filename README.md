@@ -97,7 +97,7 @@ To add the "restriction" tab in backend, you need to register it first. Edit the
 ?>
 ```
 
-### Add Listener
+#### Add Listener
 Just extend your object classes with `\Members\Model\Object`. Now you're able to check the restriction of your object:
 
 ```php
@@ -112,7 +112,7 @@ foreach($objects as $object)
 ?>
 ```
 
-#### Restrict objects in view (static route restrictions)**
+#### Restrict objects in view (static route restrictions)
 
 In some cases, objects are bounded to the view. For example a news, blog or a product object. In that case you probably added a static route (www.site.com/news/your-news).
 Even if the object has a restriction, the view will not notice it and the user would be able to open the view. Because Members cannot detect the related Object based on a static route, you need to take care about that.
