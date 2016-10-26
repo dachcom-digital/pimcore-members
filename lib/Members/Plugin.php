@@ -39,7 +39,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('document.postAdd',          array($this, 'handleDocumentAdd'));
 
         \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
-        \Pimcore::getEventManager()->attach('members.update.validate',   array('Members\Events\Register', 'validate'));
+        \Pimcore::getEventManager()->attach('members.update.validate',   array('Members\Events\Update', 'validate'));
         \Pimcore::getEventManager()->attach('members.password.reset',    array('Members\Events\Password', 'reset'));
         \Pimcore::getEventManager()->attach('members.password.change',   array('Members\Events\Password', 'change'));
 
