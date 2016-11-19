@@ -1,6 +1,5 @@
 # Pimcore Members
-
-Just download and install it into your plugin folder.
+Add user authentication and document restriction to pimcore 4.0.
 
 #### Requirements
 * Pimcore 4.3
@@ -12,6 +11,22 @@ Just download and install it into your plugin folder.
 
 ### Installation
 Some installation advices. 
+
+**Handcrafted Installation**   
+1. Download Plugin  
+2. Rename it to `Members`  
+3. Place it in your plugin directory  
+4. Activate & install it through backend 
+
+**Composer Installation**  
+1. Add code below to your `composer.json`    
+2. Activate & install it through backend
+
+```json
+"require" : {
+    "dachcom-digital/pimcore-members" : "1.3.0",
+}
+```
 
 **Override Templates**
 
@@ -154,26 +169,26 @@ For more information about using Event API please check [pimcore documentation](
 ?>
 ```
         
-**`members.register.validate`**
+**`members.register.validate`**  
 Allows to override validation of register form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Register::validate()` for default implementation.
 
-**`members.update.validate`**
+**`members.update.validate`**  
 Allows to override validation of update form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Register::validate()` for default implementation.
 
-**`members.register.post`**
+**`members.register.post`**  
 Allows to define what should be done after member object was created. By default member object is unpublished - which means that account is inactive and members has to confirm it via mail. There is also a `activate` callback implemented which enables the account immediately after registering. If you set `actions.postRegister` to `FALSE` in `config/members-configurations.php` members must be activated by admin.
     
-**`members.update.post`**
+**`members.update.post`**  
 Allows to define what should be done after member object has been updated.
 
-**`members.confirm.post`**
+**`members.confirm.post`**  
 Allows to define what should be done after member object has been published.
     
-**`members.password.reset`**
+**`members.password.reset`**  
 Allows to override validation of password reset form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Password::reset()` for default implementation.
 
-**`members.password.change`**
+**`members.password.change`**  
 Allows to override validation of password change form data. Your callback must return configured instance of `\Zend_Filter_Input`. See `\Members\Events\Password::change()` for default implementation.
         
-**`members.restriction.object`**
+**`members.restriction.object`**  
 Validate view restricted objects (see section Objects)
