@@ -16,6 +16,9 @@ class Action extends WebsiteAction
      */
     protected $translate;
 
+    /**
+     *
+     */
     public function preDispatch()
     {
         parent::preDispatch();
@@ -29,6 +32,9 @@ class Action extends WebsiteAction
         \Pimcore\Tool\Session::get('FlashMessenger');
     }
 
+    /**
+     *
+     */
     public function init()
     {
         parent::init();

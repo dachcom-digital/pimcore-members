@@ -8,8 +8,14 @@ use Pimcore\Model\Object\Folder;
 use Pimcore\Model\Document\Email;
 use Members\Model\Configuration;
 
-class Member extends Concrete {
-
+class Member extends Concrete
+{
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function register(array $data)
     {
         $argv = compact('data');
@@ -21,18 +27,15 @@ class Member extends Concrete {
             });
         $input = $results->last();
 
-        if (!$input instanceof \Zend_Filter_Input)
-        {
+        if (!$input instanceof \Zend_Filter_Input) {
             throw new \Exception('No validate listener attached to "members.register.validate" event');
         }
 
-        if (!$input->isValid())
-        {
+        if (!$input->isValid()) {
             return $input;
         }
 
-        try
-        {
+        try {
             $this->setValues($input->getUnescaped());
 
             //@fixme: which userGroup to registered User?
@@ -42,11 +45,8 @@ class Member extends Concrete {
             $this->setParent(Folder::getByPath('/' . ltrim(Configuration::get('auth.adapter.objectPath'), '/')));
             $this->save();
             \Pimcore::getEventManager()->trigger('members.register.post', $this, $argv);
-        }
-        catch (\Exception $e)
-        {
-            if ($this->getId())
-            {
+        } catch (\Exception $e) {
+            if ($this->getId()) {
                 $this->delete();
             }
 
@@ -56,6 +56,12 @@ class Member extends Concrete {
         return $input;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function updateProfile(array $data)
     {
         $argv = compact('data');
@@ -67,51 +73,53 @@ class Member extends Concrete {
             });
         $input = $results->last();
 
-        if (!$input instanceof \Zend_Filter_Input)
-        {
+        if (!$input instanceof \Zend_Filter_Input) {
             throw new \Exception('No validate listener attached to "members.update.validate" event');
         }
 
-        if (!$input->isValid())
-        {
+        if (!$input->isValid()) {
             return $input;
         }
 
-        try
-        {
+        try {
             $this->setValues($input->getUnescaped());
             $this->save();
             \Pimcore::getEventManager()->trigger('members.update.post', $this, $argv);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             throw $e;
         }
 
         return $input;
     }
 
+    /**
+     * @param string $algo
+     *
+     * @return string
+     */
     public function createHash($algo = 'md5')
     {
         return hash($algo, $this->getId() . $this->getEmail() . mt_rand());
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     public function confirm()
     {
         //do not check mandatory fields because of conditional logic!
-        $this->setOmitMandatoryCheck(true);
-        $this->setPublished(true);
-        $this->setConfirmHash(null);
+        $this->setOmitMandatoryCheck(TRUE);
+        $this->setPublished(TRUE);
+        $this->setConfirmHash(NULL);
         $this->save();
 
         //send confirm notification
-        if( Configuration::get('sendNotificationMailAfterConfirm') === TRUE )
-        {
+        if (Configuration::get('sendNotificationMailAfterConfirm') === TRUE) {
             /** @var \Pimcore\Model\Document\Email $doc */
-            $doc = Email::getByPath( Configuration::getLocalizedPath('emails.registerNotification') );
+            $doc = Email::getByPath(Configuration::getLocalizedPath('emails.registerNotification'));
 
-            if (!$doc)
-            {
+            if (!$doc) {
                 throw new \Exception('No register notification email template defined');
             }
 
@@ -121,9 +129,9 @@ class Member extends Concrete {
             $email->setDocument($doc);
             $email->setTo($doc->getTo());
             $email->setParams([
-                'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
-                'member_id' => $this->getId(),
-                'deeplink' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()) . '/admin/login/deeplink?object_' . $this->getId() . '_object',
+                'host'        => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+                'member_id'   => $this->getId(),
+                'deeplink'    => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()) . '/admin/login/deeplink?object_' . $this->getId() . '_object',
                 'member_name' => $this->getLastname() . ' ' . $this->getFirstname(),
             ]);
 
@@ -136,17 +144,20 @@ class Member extends Concrete {
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws \Exception
+     */
     public function requestPasswordReset()
     {
         //do not check mandatory fields because of conditional logic!
-        $this->setOmitMandatoryCheck(true);
+        $this->setOmitMandatoryCheck(TRUE);
         $this->setResetHash($this->createHash());
         $this->save();
 
-        $doc = Email::getByPath( Configuration::getLocalizedPath('emails.passwordReset') );
+        $doc = Email::getByPath(Configuration::getLocalizedPath('emails.passwordReset'));
 
-        if (!$doc)
-        {
+        if (!$doc) {
             throw new \Exception('No password reset email template defined');
         }
 
@@ -156,7 +167,7 @@ class Member extends Concrete {
         $email->addTo($this->getEmail());
         $email->setDocument($doc);
         $email->setParams([
-            'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+            'host'      => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
             'member_id' => $this->getId(),
         ]);
 
@@ -165,6 +176,12 @@ class Member extends Concrete {
         return $this;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function resetPassword(array $data)
     {
         $argv = compact('data');
@@ -175,30 +192,33 @@ class Member extends Concrete {
 
         $input = $results->last();
 
-        if (!$input instanceof \Zend_Filter_Input)
-        {
+        if (!$input instanceof \Zend_Filter_Input) {
             throw new \Exception('No validate listener attached to "members.password.reset" event');
         }
 
-        if (!$input->isValid())
-        {
+        if (!$input->isValid()) {
             return $input;
         }
 
         //do not check mandatory fields because of conditional logic!
-        $this->setOmitMandatoryCheck(true);
-        $this->setPassword( $input->getUnescaped('password') );
-        $this->setResetHash(null);
+        $this->setOmitMandatoryCheck(TRUE);
+        $this->setPassword($input->getUnescaped('password'));
+        $this->setResetHash(NULL);
         $this->save();
 
-        if (!$this->isPublished())
-        {
+        if (!$this->isPublished()) {
             $this->confirm();
         }
 
         return $input;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function changePassword(array $data)
     {
         $argv = compact('data');
@@ -209,19 +229,17 @@ class Member extends Concrete {
 
         $input = $results->last();
 
-        if (!$input instanceof \Zend_Filter_Input)
-        {
+        if (!$input instanceof \Zend_Filter_Input) {
             throw new \Exception('No validate listener attached to "members.password.change" event');
         }
 
-        if (!$input->isValid())
-        {
+        if (!$input->isValid()) {
             return $input;
         }
 
         //do not check mandatory fields because of conditional logic!
-        $this->setOmitMandatoryCheck(true);
-        $this->setPassword( $input->getUnescaped('password') );
+        $this->setOmitMandatoryCheck(TRUE);
+        $this->setPassword($input->getUnescaped('password'));
         $this->save();
 
         return $input;

@@ -7,7 +7,6 @@ use Pimcore\Model\Object\AbstractObject;
 
 class Restriction extends AbstractModel
 {
-
     /**
      * @var integer
      */
@@ -36,19 +35,19 @@ class Restriction extends AbstractModel
     /**
      * @var array
      */
-    public $relatedGroups = array();
+    public $relatedGroups = [];
 
     /**
      * @param $id
      *
      * @return \Members\Model\Restriction
      */
-    public static function getById($id) {
-
+    public static function getById($id)
+    {
         $obj = new self;
         $obj->getDao()->getById($id);
-        return $obj;
 
+        return $obj;
     }
 
     /**
@@ -57,10 +56,11 @@ class Restriction extends AbstractModel
      *
      * @return \Members\Model\Restriction
      */
-    public static function getByTargetId($id, $cType = 'page') {
-
+    public static function getByTargetId($id, $cType = 'page')
+    {
         $obj = new self;
-        $obj->getDao()->getByField('targetId', (int) $id, $cType);
+        $obj->getDao()->getByField('targetId', (int)$id, $cType);
+
         return $obj;
     }
 
@@ -75,9 +75,9 @@ class Restriction extends AbstractModel
     /**
      * @return integer
      */
-    public function setId( $id )
+    public function setId($id)
     {
-        return $this->id = (int) $id;
+        return $this->id = (int)$id;
     }
 
     /**
@@ -90,11 +90,12 @@ class Restriction extends AbstractModel
 
     /**
      * @param string $cType
+     *
      * @return static
      */
     public function setCtype($cType)
     {
-        $this->ctype = (string) $cType;
+        $this->ctype = (string)$cType;
         return $this;
     }
 
@@ -108,11 +109,12 @@ class Restriction extends AbstractModel
 
     /**
      * @param integer $targetId
+     *
      * @return static
      */
     public function setTargetId($targetId)
     {
-        $this->targetId = (int) $targetId;
+        $this->targetId = (int)$targetId;
         return $this;
     }
 
@@ -126,11 +128,12 @@ class Restriction extends AbstractModel
 
     /**
      * @param array $relatedGroups
+     *
      * @return static
      */
     public function setRelatedGroups($relatedGroups)
     {
-        $relatedGroups = (array) $relatedGroups;
+        $relatedGroups = (array)$relatedGroups;
         $this->relatedGroups = array_map('intval', $relatedGroups);
 
         return $this;
@@ -146,7 +149,6 @@ class Restriction extends AbstractModel
 
     /**
      * Alias for getIsInherited()
-     *
      * @return boolean
      */
     public function isInherited()
@@ -156,11 +158,12 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $isInherited
+     *
      * @return static
      */
     public function setIsInherited($isInherited)
     {
-        $this->isInherited = (bool) $isInherited;
+        $this->isInherited = (bool)$isInherited;
         return $this;
     }
 
@@ -174,11 +177,12 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $inherit
+     *
      * @return static
      */
     public function setInherit($inherit)
     {
-        $this->inherit = (bool) $inherit;
+        $this->inherit = (bool)$inherit;
         return $this;
     }
 

@@ -8,22 +8,23 @@ use Zend_Validate_Exception;
 class EmailExist extends \Zend_Validate_Abstract
 {
     const EMAIL_EXIST = 'emailExist';
+
     /**
      * Validation failure message template definitions
-     *
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::EMAIL_EXIST => "Given email address is already registered",
-    );
+    ];
+
     /**
      * Returns true if and only if $value meets the validation requirements
-     *
      * If $value fails validation, then this method returns false, and
      * getMessages() will return an array of messages that explain why the
      * validation failed.
      *
      * @param  mixed $value
+     *
      * @return boolean
      * @throws Zend_Validate_Exception If validation of $value is impossible
      */
@@ -33,13 +34,16 @@ class EmailExist extends \Zend_Validate_Abstract
         /** @var Listing $list */
         $list = new Listing();
         $list->addConditionParam('email = ?', $value);
-        $list->setUnpublished(true);
+        $list->setUnpublished(TRUE);
         if ($list->count() > 0) {
             $this->_error(self::EMAIL_EXIST);
-            return false;
+
+            return FALSE;
         }
-        return true;
+
+        return TRUE;
     }
 }
+
 // unfortunately we need this alias here, since ZF plugin loader isn't able to handle namespaces correctly
 class_alias("Members\\Validate\\EmailExist", "Members_Validate_EmailExist");

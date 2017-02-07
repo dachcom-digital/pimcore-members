@@ -1,5 +1,5 @@
 {
-  "name": "dachcom-digital/pimcore-members",
+  "name": "dachcom-digital/members",
   "type": "pimcore-plugin",
   "license": "GPL-3.0+",
   "description": "Pimcore 4.0 Authentication",

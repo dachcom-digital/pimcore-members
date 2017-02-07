@@ -29,14 +29,12 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * Identity value
-     *
      * @var string
      */
     protected $identity;
 
     /**
      * Credential value
-     *
      * @var string
      */
     protected $credential;
@@ -45,10 +43,11 @@ class Adapter implements \Zend_Auth_Adapter_Interface
      * Constructor
      *
      * @param \Zend_Config|array $config Configuration settings example:
-     *    'identityClassname' => '\Pimcore\Model\Object\Member'
-     *    'identityColumn' => 'email'
-     *    'credentialColumn' => 'password'
-     *    'objectPath' => '/members'
+     *                                   'identityClassname' => '\Pimcore\Model\Object\Member'
+     *                                   'identityColumn' => 'email'
+     *                                   'credentialColumn' => 'password'
+     *                                   'objectPath' => '/members'
+     *
      * @throws \Zend_Auth_Adapter_Exception
      */
     public function __construct($config)
@@ -61,7 +60,6 @@ class Adapter implements \Zend_Auth_Adapter_Interface
                 $this->$setter($config[$option]);
             }
         }
-
     }
 
     /**
@@ -74,20 +72,19 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param mixed $identityClassname
+     *
      * @return Adapter
      * @throws \Exception
      */
     public function setIdentityClassname($identityClassname)
     {
-        if (!class_exists($identityClassname))
-        {
+        if (!class_exists($identityClassname)) {
             throw new \Exception("Identity class '$identityClassname' not exist");
         }
 
         $obj = new $identityClassname();
 
-        if (!$obj instanceof Concrete)
-        {
+        if (!$obj instanceof Concrete) {
             throw new \Exception('Identity class should be pimcore object');
         }
 
@@ -106,6 +103,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param mixed $identityColumn
+     *
      * @return Adapter
      */
     public function setIdentityColumn($identityColumn)
@@ -124,6 +122,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param mixed $credentialColumn
+     *
      * @return Adapter
      */
     public function setCredentialColumn($credentialColumn)
@@ -142,6 +141,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param mixed $objectPath
+     *
      * @return Adapter
      */
     public function setObjectPath($objectPath)
@@ -160,6 +160,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param string $identity
+     *
      * @return Adapter
      */
     public function setIdentity($identity)
@@ -178,6 +179,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * @param string $credential
+     *
      * @return Adapter
      */
     public function setCredential($credential)
@@ -188,20 +190,21 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
     /**
      * Performs an authentication attempt
-     *
      * @throws \Zend_Auth_Adapter_Exception If authentication cannot be performed
      * @return \Zend_Auth_Result
      */
     public function authenticate()
     {
         $optionsRequired = [
-            'identityClassname', 'identityColumn', 'credentialColumn', 'identity', 'credential'
+            'identityClassname',
+            'identityColumn',
+            'credentialColumn',
+            'identity',
+            'credential'
         ];
 
-        foreach ($optionsRequired as $optionRequired)
-        {
-            if (empty($this->{$optionRequired}))
-            {
+        foreach ($optionsRequired as $optionRequired) {
+            if (empty($this->{$optionRequired})) {
                 throw new \Zend_Auth_Adapter_Exception(
                     "Option '$optionRequired' must be set before authentication");
             }
@@ -209,20 +212,17 @@ class Adapter implements \Zend_Auth_Adapter_Interface
 
         $identities = $this->getIdentities();
 
-        if (count($identities) == 0)
-        {
-            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND, null);
+        if (count($identities) == 0) {
+            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_IDENTITY_NOT_FOUND, NULL);
         }
-        if (count($identities) > 1)
-        {
-            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_IDENTITY_AMBIGUOUS, null);
+        if (count($identities) > 1) {
+            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_IDENTITY_AMBIGUOUS, NULL);
         }
 
         /** @var Concrete $identity */
         $identity = $identities->current();
-        if (!$this->checkCredential($identity))
-        {
-            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID, null);
+        if (!$this->checkCredential($identity)) {
+            return new \Zend_Auth_Result(\Zend_Auth_Result::FAILURE_CREDENTIAL_INVALID, NULL);
         }
 
         return new \Zend_Auth_Result(\Zend_Auth_Result::SUCCESS, $identity);
@@ -238,8 +238,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
         $list = new $listClass();
         $list->addConditionParam($this->identityColumn . ' = ?', $this->identity);
 
-        if ($this->objectPath)
-        {
+        if ($this->objectPath) {
             $list->addConditionParam('o_path LIKE ?', $this->objectPath . '%');
         }
 
@@ -251,6 +250,7 @@ class Adapter implements \Zend_Auth_Adapter_Interface
         /** @var \Pimcore\Model\Object\ClassDefinition\Data\Password $credentialField */
         $credentialField = $identity->getClass()->getFieldDefinition($this->credentialColumn);
         $hashed = $credentialField->getDataForResource($this->credential);
+
         return $hashed === $identity->{$this->credentialColumn};
     }
 }

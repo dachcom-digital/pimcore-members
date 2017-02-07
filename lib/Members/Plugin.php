@@ -9,14 +9,21 @@ use Members\Model\Configuration;
 use Members\Model\Member;
 use Members\RestrictionService;
 
-class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface {
-
+class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
+{
     /**
      * @var \Zend_Translate
      */
     protected static $_translate;
 
-    public function __construct($jsPaths = null, $cssPaths = null, $alternateIndexDir = null)
+    /**
+     * Plugin constructor.
+     *
+     * @param null $jsPaths
+     * @param null $cssPaths
+     * @param null $alternateIndexDir
+     */
+    public function __construct($jsPaths = NULL, $cssPaths = NULL, $alternateIndexDir = NULL)
     {
         parent::__construct($jsPaths, $cssPaths);
 
@@ -25,29 +32,30 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         define('MEMBERS_PLUGIN_CONFIG', MEMBERS_PATH . '/plugin.xml');
     }
 
+    /**
+     *
+     */
     public function init()
     {
         parent::init();
 
         \Zend_Controller_Action_HelperBroker::addPrefix('Members_Controller_Action_Helper');
 
-        \Pimcore::getEventManager()->attach('system.startup',            array($this, 'registerPluginController'));
-        \Pimcore::getEventManager()->attach('document.preDelete',        array($this, 'handleDocumentDeletion'));
-        \Pimcore::getEventManager()->attach('object.preDelete',          array($this, 'handleObjectDeletion'));
+        \Pimcore::getEventManager()->attach('system.startup', [$this, 'registerPluginController']);
+        \Pimcore::getEventManager()->attach('document.preDelete', [$this, 'handleDocumentDeletion']);
+        \Pimcore::getEventManager()->attach('object.preDelete', [$this, 'handleObjectDeletion']);
 
-        \Pimcore::getEventManager()->attach('object.postAdd',            array($this, 'handleObjectAdd'));
-        \Pimcore::getEventManager()->attach('document.postAdd',          array($this, 'handleDocumentAdd'));
+        \Pimcore::getEventManager()->attach('object.postAdd', [$this, 'handleObjectAdd']);
+        \Pimcore::getEventManager()->attach('document.postAdd', [$this, 'handleDocumentAdd']);
 
-        \Pimcore::getEventManager()->attach('members.register.validate', array('Members\Events\Register', 'validate'));
-        \Pimcore::getEventManager()->attach('members.update.validate',   array('Members\Events\Update', 'validate'));
-        \Pimcore::getEventManager()->attach('members.password.reset',    array('Members\Events\Password', 'reset'));
-        \Pimcore::getEventManager()->attach('members.password.change',   array('Members\Events\Password', 'change'));
+        \Pimcore::getEventManager()->attach('members.register.validate', ['Members\Events\Register', 'validate']);
+        \Pimcore::getEventManager()->attach('members.update.validate', ['Members\Events\Update', 'validate']);
+        \Pimcore::getEventManager()->attach('members.password.reset', ['Members\Events\Password', 'reset']);
+        \Pimcore::getEventManager()->attach('members.password.change', ['Members\Events\Password', 'change']);
 
-        if (Configuration::get('actions.postRegister') !== FALSE)
-        {
-            \Pimcore::getEventManager()->attach('members.register.post', array('Members\Events\Register', Configuration::get('actions.postRegister')));
+        if (Configuration::get('actions.postRegister') !== FALSE) {
+            \Pimcore::getEventManager()->attach('members.register.post', ['Members\Events\Register', Configuration::get('actions.postRegister')]);
         }
-
     }
 
     /**
@@ -57,11 +65,9 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     {
         $frontController = $e->getTarget();
 
-        if ($frontController instanceof \Zend_Controller_Front)
-        {
+        if ($frontController instanceof \Zend_Controller_Front) {
             $frontController->registerPlugin(new Controller\Plugin\Frontend());
         }
-
     }
 
     /**
@@ -72,7 +78,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function handleObjectAdd(\Zend_EventManager_Event $e)
     {
         $object = $e->getTarget();
-        return RestrictionService::checkRestriction( $object, 'object' );
+
+        return RestrictionService::checkRestriction($object, 'object');
     }
 
     /**
@@ -83,7 +90,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function handleDocumentAdd(\Zend_EventManager_Event $e)
     {
         $document = $e->getTarget();
-        return RestrictionService::checkRestriction( $document, 'page' );
+
+        return RestrictionService::checkRestriction($document, 'page');
     }
 
     /**
@@ -94,7 +102,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function handleDocumentDeletion(\Zend_EventManager_Event $e)
     {
         $document = $e->getTarget();
-        return RestrictionService::deleteRestriction( $document, 'page' );
+
+        return RestrictionService::deleteRestriction($document, 'page');
     }
 
     /**
@@ -105,7 +114,8 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     public function handleObjectDeletion(\Zend_EventManager_Event $e)
     {
         $object = $e->getTarget();
-        return RestrictionService::deleteRestriction( $object, 'object' );
+
+        return RestrictionService::deleteRestriction($object, 'object');
     }
 
     /**
@@ -116,8 +126,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     {
         $searchConf = Configuration::get('installed');
 
-        if( is_null( $searchConf ) )
-        {
+        if (is_null($searchConf)) {
             return FALSE;
         }
 
@@ -125,18 +134,15 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
     }
 
     /**
-     *
      * @param string $language
+     *
      * @return string path to the translation file relative to plugin directory
      */
     public static function getTranslationFile($language)
     {
-        if (is_file(PIMCORE_PLUGINS_PATH . '/Members/static/texts/' . $language . '.csv'))
-        {
+        if (is_file(PIMCORE_PLUGINS_PATH . '/Members/static/texts/' . $language . '.csv')) {
             return '/Members/static/texts/' . $language . '.csv';
-        }
-        else
-        {
+        } else {
             return '/Members/static/texts/en.csv';
         }
     }
@@ -147,8 +153,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      */
     public static function install()
     {
-        try
-        {
+        try {
             $install = new Install();
             $install->installConfigFile();
             $install->installClasses();
@@ -157,15 +162,13 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
             $install->createRedirect();
             $install->installTranslations();
             $install->injectDbData();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             \Pimcore\Logger::crit($e);
+
             return self::getTranslate()->_('members_install_failed');
         }
 
         return self::getTranslate()->_('members_install_successfully');
-
     }
 
     /**
@@ -179,15 +182,11 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
 
         $success = TRUE;
 
-        if ($success)
-        {
+        if ($success) {
             return self::getTranslate()->_('members_uninstalled_successfully');
-        }
-        else
-        {
+        } else {
             return self::getTranslate()->_('members_uninstall_failed');
         }
-
     }
 
     /**
@@ -195,21 +194,16 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      *
      * @return \Zend_Translate
      */
-    public static function getTranslate($lang = null)
+    public static function getTranslate($lang = NULL)
     {
-        if (self::$_translate instanceof \Zend_Translate)
-        {
+        if (self::$_translate instanceof \Zend_Translate) {
             return self::$_translate;
         }
 
-        if(is_null($lang))
-        {
-            try
-            {
+        if (is_null($lang)) {
+            try {
                 $lang = \Zend_Registry::get('Zend_Locale')->getLanguage();
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $lang = 'en';
             }
         }
@@ -217,9 +211,9 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         self::$_translate = new \Zend_Translate(
 
             'csv',
-            PIMCORE_PLUGINS_PATH .self::getTranslationFile($lang),
+            PIMCORE_PLUGINS_PATH . self::getTranslationFile($lang),
             $lang,
-            array('delimiter' => ',')
+            ['delimiter' => ',']
 
         );
 

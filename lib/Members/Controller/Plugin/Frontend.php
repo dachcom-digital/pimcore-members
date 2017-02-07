@@ -9,8 +9,14 @@ use Members\Model\Configuration;
 
 class Frontend extends \Zend_Controller_Plugin_Abstract
 {
+    /**
+     * @var null
+     */
     private static $renderer = NULL;
 
+    /**
+     * @param \Zend_Controller_Request_Abstract $request
+     */
     public function preDispatch(\Zend_Controller_Request_Abstract $request)
     {
         parent::preDispatch($request);
@@ -25,47 +31,38 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
 
-        if($request->getParam('pimcore_request_source') === 'staticroute')
-        {
-            if( $view instanceof \Pimcore\View )
-            {
+        if ($request->getParam('pimcore_request_source') === 'staticroute') {
+            if ($view instanceof \Pimcore\View) {
                 //is it a object related view? check if object is in core.settings.object.allowed.
                 //if so, trigger event, to allow custom routing restriction!
                 //if event is empty, add "default" to m:groups and allow document view!.
-                $objectRestriction = array('default');
+                $objectRestriction = ['default'];
                 $boundedObject = NULL;
 
-                $boEvent = \Pimcore::getEventManager()->trigger('members.restriction.object', null, [ 'params' => $request->getParams() ]);
+                $boEvent = \Pimcore::getEventManager()->trigger('members.restriction.object', NULL, ['params' => $request->getParams()]);
 
-                if ($boEvent->count())
-                {
+                if ($boEvent->count()) {
                     $returnData = $boEvent->last();
-                    if( $returnData instanceof Object\AbstractObject )
-                    {
+                    if ($returnData instanceof Object\AbstractObject) {
                         $boundedObject = $returnData;
-                        $objectRestriction = Observer::getObjectRestrictedGroups( $boundedObject );
+                        $objectRestriction = Observer::getObjectRestrictedGroups($boundedObject);
                     }
                 }
 
-                if( !is_null( $boundedObject ) )
-                {
+                if (!is_null($boundedObject)) {
                     $this->handleDocumentAuthentication($boundedObject);
                 }
 
-                $view->headMeta()->appendName('m:groups', implode(',', $objectRestriction), array());
-
+                $view->headMeta()->appendName('m:groups', implode(',', $objectRestriction), []);
             }
-        }
-        else if($request->getParam('document') instanceof Page)
-        {
+        } else if ($request->getParam('document') instanceof Page) {
             $document = $request->getParam('document');
 
-            $groups = Observer::getDocumentRestrictedGroups( $document );
-            $view->headMeta()->appendName('m:groups', implode(',', $groups), array());
+            $groups = Observer::getDocumentRestrictedGroups($document);
+            $view->headMeta()->appendName('m:groups', implode(',', $groups), []);
 
             $this->handleDocumentAuthentication($request->getParam('document'));
         }
-
     }
 
     /**
@@ -75,71 +72,57 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
      */
     private function handleDocumentAuthentication($element)
     {
-        if (Observer::isAdmin())
-        {
+        if (Observer::isAdmin()) {
             return FALSE;
         }
 
         //@fixme: does not work in backend? :)
-        if( !\Pimcore\Tool::isFrontend() )
-        {
+        if (!\Pimcore\Tool::isFrontend()) {
             return FALSE;
         }
 
         //now load restriction and redirect user to login page, if page is restricted!
-        if( $element instanceof Object\AbstractObject )
-        {
-            $restrictedType = Observer::isRestrictedObject( $element );
-        }
-        else
-        {
-            $restrictedType = Observer::isRestrictedDocument( $element );
+        if ($element instanceof Object\AbstractObject) {
+            $restrictedType = Observer::isRestrictedObject($element);
+        } else {
+            $restrictedType = Observer::isRestrictedDocument($element);
         }
 
-        if( $restrictedType['section'] == Observer::SECTION_ALLOWED )
-        {
+        if ($restrictedType['section'] == Observer::SECTION_ALLOWED) {
             return FALSE;
         }
 
-        if(  $restrictedType['state'] == Observer::STATE_LOGGED_IN && $restrictedType['section'] == Observer::SECTION_ALLOWED )
-        {
+        if ($restrictedType['state'] == Observer::STATE_LOGGED_IN && $restrictedType['section'] == Observer::SECTION_ALLOWED) {
             return FALSE;
         }
 
         //do not check /members pages, they will check them itself.
         $requestUrl = $this->getRequest()->getRequestUri();
-        $nowAllowed = array(
+        $nowAllowed = [
             Configuration::getLocalizedPath('routes.login'),
             Configuration::getLocalizedPath('routes.profile')
-        );
+        ];
 
-        foreach( $nowAllowed as $not)
-        {
-            if( substr($requestUrl, 0, strlen($not)) == $not)
-            {
+        foreach ($nowAllowed as $not) {
+            if (substr($requestUrl, 0, strlen($not)) == $not) {
                 return FALSE;
             }
         }
 
-        if( in_array($this->getRequest()->getRequestUri(), $nowAllowed) )
-        {
+        if (in_array($this->getRequest()->getRequestUri(), $nowAllowed)) {
             return FALSE;
         }
 
-        if( $restrictedType['state'] === Observer::STATE_LOGGED_IN && $restrictedType['section'] === Observer::SECTION_NOT_ALLOWED)
-        {
+        if ($restrictedType['state'] === Observer::STATE_LOGGED_IN && $restrictedType['section'] === Observer::SECTION_NOT_ALLOWED) {
             $url = Configuration::getLocalizedPath('routes.profile');
-        }
-        else
-        {
+        } else {
             $url = sprintf('%s?back=%s',
                 Configuration::getLocalizedPath('routes.login'),
-                urlencode( $this->getRequest()->getRequestUri() )
+                urlencode($this->getRequest()->getRequestUri())
             );
         }
 
-        $this->getResponse()->setRedirect( $url )->sendResponse( );
+        $this->getResponse()->setRedirect($url)->sendResponse();
         exit;
-
     }
 }

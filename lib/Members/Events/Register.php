@@ -12,11 +12,11 @@ class Register
 {
     /**
      * Default register validation.
-     *
      * You can provide your own validation by attaching callback to
      * 'member.register.validate' event.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return \Zend_Filter_Input
      */
     public static function validate(\Zend_EventManager_Event $event)
@@ -25,24 +25,24 @@ class Register
         $input = new \Zend_Filter_Input([
             '*' => ['StringTrim', 'StripTags']
         ], [
-            'firstname' => [
+            'firstname'        => [
                 'NotEmpty',
                 'presence' => 'required',
             ],
-            'lastname' => [
+            'lastname'         => [
                 'NotEmpty',
                 'presence' => 'required',
             ],
-            'email' => [
+            'email'            => [
                 'EmailAddress',
                 'EmailExist',
                 'presence' => 'required',
             ],
-            'agree' => [
+            'agree'            => [
                 new \Zend_Validate_Identical('1'),
                 'presence' => 'required',
             ],
-            'password' => [
+            'password'         => [
                 new \Zend_Validate_StringLength(6),
                 'PasswordStrength',
                 'presence' => 'required',
@@ -66,6 +66,7 @@ class Register
      * Activates member account after registration.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return Object\Member
      * @throws \Exception
      */
@@ -74,6 +75,7 @@ class Register
         /** @var Object\Member $member */
         $member = $event->getTarget();
         $member->confirm();
+
         return $member;
     }
 
@@ -82,6 +84,7 @@ class Register
      * Sending email with confirmation links.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return Object\Member
      * @throws \Exception
      */
@@ -93,8 +96,7 @@ class Register
         $member->save();
         $doc = Email::getByPath(Configuration::getLocalizedPath('emails.registerConfirm'));
 
-        if (!$doc)
-        {
+        if (!$doc) {
             throw new \Exception('No confirmation email defined');
         }
 
@@ -105,7 +107,7 @@ class Register
         $email->addTo($member->getEmail());
         $email->setDocument($doc);
         $email->setParams([
-            'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+            'host'      => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
             'member_id' => $member->getId(),
         ]);
 

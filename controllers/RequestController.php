@@ -8,14 +8,16 @@ use Members\Tool;
 
 class Members_RequestController extends Action
 {
+    /**
+     *
+     */
     public function serveAction()
     {
         $this->disableLayout();
 
         $requestData = $this->getParam('d');
 
-        if(empty($requestData))
-        {
+        if (empty($requestData)) {
             $this->show404();
         }
 
@@ -24,62 +26,52 @@ class Members_RequestController extends Action
 
         $fileInfo = json_decode($data);
 
-        if( !is_array($fileInfo) )
-        {
+        if (!is_array($fileInfo)) {
             $this->show404();
         }
 
-        $dataToProcess = array();
+        $dataToProcess = [];
 
-        foreach( $fileInfo as $file )
-        {
+        foreach ($fileInfo as $file) {
             $assetId = $file->f;
             $proxyId = $file->p;
 
-            $asset = Model\Asset::getById( $assetId );
+            $asset = Model\Asset::getById($assetId);
 
-            if (!$asset instanceof Model\Asset)
-            {
+            if (!$asset instanceof Model\Asset) {
                 continue;
             }
 
-            if( $proxyId !== FALSE)
-            {
+            if ($proxyId !== FALSE) {
                 $object = Model\Object\AbstractObject::getById($proxyId);
-                $restriction = Tool\Observer::isRestrictedObject( $object );
+                $restriction = Tool\Observer::isRestrictedObject($object);
 
-                if(  $restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED )
-                {
+                if ($restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED) {
                     continue;
                 }
             }
 
             $dataToProcess[] = $asset;
-
         }
 
-        if( count( $dataToProcess ) === 0 )
-        {
+        if (count($dataToProcess) === 0) {
             $this->show404();
-        }
-        else if( count( $dataToProcess ) == 1 )
-        {
-            $this->serveFile( $dataToProcess[0] );
-        }
-        else if( count( $dataToProcess ) > 1 )
-        {
-            $this->serveZip( $dataToProcess );
-        }
-        else
-        {
+        } else if (count($dataToProcess) == 1) {
+            $this->serveFile($dataToProcess[0]);
+        } else if (count($dataToProcess) > 1) {
+            $this->serveZip($dataToProcess);
+        } else {
             $this->show404();
         }
     }
 
-    private function serveFile( Model\Asset $asset )
+    /**
+     * @param Model\Asset $asset
+     */
+    private function serveFile(Model\Asset $asset)
     {
         $size = $asset->getFileSize('noformatting');
-        $quoted = sprintf('"%s"', addcslashes( basename($asset->getFileName()), '"\\') );
+        $quoted = sprintf('"%s"', addcslashes(basename($asset->getFileName()), '"\\'));
 
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
@@ -93,11 +85,10 @@ class Members_RequestController extends Action
 
         set_time_limit(0);
 
-        $file = @fopen(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath(),'rb');
+        $file = @fopen(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath(), 'rb');
 
-        while(!feof($file))
-        {
-            print( @fread($file, 1024*8) );
+        while (!feof($file)) {
+            print(@fread($file, 1024 * 8));
             ob_flush();
             flush();
         }
@@ -105,7 +96,10 @@ class Members_RequestController extends Action
         exit;
     }
 
-    private function serveZip( $assets )
+    /**
+     * @param $assets
+     */
+    private function serveZip($assets)
     {
         $fileName = 'package';
 
@@ -120,9 +114,8 @@ class Members_RequestController extends Action
 
         $files = '';
 
-        foreach($assets as $asset)
-        {
-            $files .= '"'. PIMCORE_ASSET_DIRECTORY . $asset->getFullPath() .'" ';
+        foreach ($assets as $asset) {
+            $files .= '"' . PIMCORE_ASSET_DIRECTORY . $asset->getFullPath() . '" ';
         }
 
         $fp = popen('zip -r -j - ' . $files, 'r');
@@ -130,8 +123,7 @@ class Members_RequestController extends Action
         $bufferSize = 8192;
         $buff = '';
 
-        while( !feof($fp) )
-        {
+        while (!feof($fp)) {
             $buff = fread($fp, $bufferSize);
             ob_flush();
             echo $buff;
@@ -141,6 +133,9 @@ class Members_RequestController extends Action
         exit;
     }
 
+    /**
+     *
+     */
     private function show404()
     {
         $response = $this->getResponse();

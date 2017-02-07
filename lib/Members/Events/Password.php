@@ -6,11 +6,11 @@ class Password
 {
     /**
      * Default password reset validation.
-     *
      * You can provide your own validation by attaching callback to
      * 'member.password.reset' event.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return \Zend_Filter_Input
      */
     public static function reset(\Zend_EventManager_Event $event)
@@ -20,7 +20,7 @@ class Password
         $input = new \Zend_Filter_Input([
             '*' => ['StringTrim', 'StripTags']
         ], [
-            'password' => [
+            'password'         => [
                 new \Zend_Validate_StringLength(6),
                 'PasswordStrength',
                 'presence' => 'required',
@@ -39,6 +39,11 @@ class Password
         return $input;
     }
 
+    /**
+     * @param \Zend_EventManager_Event $event
+     *
+     * @return \Zend_Filter_Input
+     */
     public static function change(\Zend_EventManager_Event $event)
     {
         $data = $event->getParam('data');
@@ -54,7 +59,7 @@ class Password
                 'presence' => 'required',
                 'messages' => 'current password is incorrect'
             ],
-            'password' => [
+            'password'         => [
                 new \Zend_Validate_StringLength(6),
                 'PasswordStrength',
                 'presence' => 'required',

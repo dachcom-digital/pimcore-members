@@ -12,11 +12,11 @@ class Update
 {
     /**
      * Default register validation.
-     *
      * You can provide your own validation by attaching callback to
      * 'member.register.validate' event.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return \Zend_Filter_Input
      */
     public static function validate(\Zend_EventManager_Event $event)
@@ -29,7 +29,7 @@ class Update
                 'NotEmpty',
                 'presence' => 'required',
             ],
-            'lastname' => [
+            'lastname'  => [
                 'NotEmpty',
                 'presence' => 'required',
             ],
@@ -45,6 +45,7 @@ class Update
      * Activates member account after registration.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return Object\Member
      * @throws \Exception
      */
@@ -53,6 +54,7 @@ class Update
         /** @var Object\Member $member */
         $member = $event->getTarget();
         $member->confirm();
+
         return $member;
     }
 
@@ -61,6 +63,7 @@ class Update
      * Sending email with confirmation links.
      *
      * @param \Zend_EventManager_Event $event
+     *
      * @return Object\Member
      * @throws \Exception
      */
@@ -72,8 +75,7 @@ class Update
         $member->save();
         $doc = Email::getByPath(Configuration::getLocalizedPath('emails.registerConfirm'));
 
-        if (!$doc)
-        {
+        if (!$doc) {
             throw new \Exception('No confirmation email defined');
         }
 
@@ -84,7 +86,7 @@ class Update
         $email->addTo($member->getEmail());
         $email->setDocument($doc);
         $email->setParams([
-            'host' => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
+            'host'      => sprintf('%s://%s', $request->getScheme(), $request->getHttpHost()),
             'member_id' => $member->getId(),
         ]);
 

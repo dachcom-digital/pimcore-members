@@ -11,19 +11,18 @@ class Member extends \Zend_Controller_Action_Helper_Abstract
 {
     /**
      * @param bool $fromStorage
+     *
      * @return Object\Member|null
      */
-    public function direct($fromStorage = true)
+    public function direct($fromStorage = TRUE)
     {
         $identity = Auth\Instance::getAuth()->getIdentity();
-        if ($identity && !$fromStorage)
-        {
+        if ($identity && !$fromStorage) {
             // return real object instead of object cached in auth storage
             $identity = Object\Member::getById($identity->getId());
         }
 
         return $identity;
-
     }
 
     /**
@@ -32,11 +31,10 @@ class Member extends \Zend_Controller_Action_Helper_Abstract
      */
     public function requireAuth()
     {
-        if (!Auth\Instance::getAuth()->hasIdentity())
-        {
+        if (!Auth\Instance::getAuth()->hasIdentity()) {
             $this->getActionController()->redirect(sprintf('%s?back=%s',
                 Configuration::getLocalizedPath('routes.login'),
-                urlencode( $this->getRequest()->getRequestUri() )
+                urlencode($this->getRequest()->getRequestUri())
             ));
         }
     }

@@ -6,32 +6,33 @@ use Members\Model\Configuration;
 
 class Members_ProfileController extends Action
 {
+    /**
+     *
+     */
     public function defaultAction()
     {
-        if( !$this->view->editmode)
-        {
+        if (!$this->view->editmode) {
             $this->_helper->member->requireAuth();
             $this->view->member = $this->auth->getIdentity();
         }
     }
 
+    /**
+     *
+     */
     public function registerAction()
     {
-        if ($this->_helper->member())
-        {
+        if ($this->_helper->member()) {
             $this->redirect(Configuration::getLocalizedPath('routes.profile'));
         }
 
-        if ($this->_request->isPost())
-        {
+        if ($this->_request->isPost()) {
             $post = $this->_request->getPost();
             $member = new Object\Member();
             $result = $member->register($post);
 
-            if ($result->isValid())
-            {
-                switch(Configuration::get('actions.postRegister'))
-                {
+            if ($result->isValid()) {
+                switch (Configuration::get('actions.postRegister')) {
                     case FALSE:
                         $message = 'You account was created successfully and must be activated by site stuff.';
                         break;
@@ -54,25 +55,24 @@ class Members_ProfileController extends Action
             $this->view->assign(array_merge($post, $result->getEscaped()));
             $this->view->errors = $result->getMessages();
         }
-
     }
 
+    /**
+     *
+     */
     public function updateAction()
     {
-        if( !$this->view->editmode && !$this->_helper->member())
-        {
+        if (!$this->view->editmode && !$this->_helper->member()) {
             $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }
 
         $member = $this->auth->getIdentity();
 
-        if ($this->_request->isPost())
-        {
+        if ($this->_request->isPost()) {
             $post = $this->_request->getPost();
             $result = $member->updateProfile($post);
 
-            if ($result->isValid())
-            {
+            if ($result->isValid()) {
                 $message = 'Your profile has been successfully updated.';
                 $this->_helper->flashMessenger([
                     'type' => 'success',
@@ -90,21 +90,21 @@ class Members_ProfileController extends Action
         $this->view->isPost = $member;
     }
 
+    /**
+     *
+     */
     public function passwordChangeAction()
     {
-        if ( !$this->view->editmode && !$this->_helper->member())
-        {
+        if (!$this->view->editmode && !$this->_helper->member()) {
             $this->redirect(Configuration::getLocalizedPath('routes.login'));
         }
 
-        if ($this->_request->isPost())
-        {
+        if ($this->_request->isPost()) {
             $post = $this->_request->getPost();
             /** @var \Pimcore\Model\Object\Member $member */
             $member = $this->_helper->member();
             $result = $member->changePassword($post);
-            if ($result->isValid())
-            {
+            if ($result->isValid()) {
                 $this->_helper->flashMessenger([
                     'type' => 'success',
                     'text' => $this->translate->_('Your password has been successfully changed. Please login again.')
@@ -120,12 +120,14 @@ class Members_ProfileController extends Action
         $this->view->member = $this->auth->getIdentity();
     }
 
+    /**
+     *
+     */
     public function confirmAction()
     {
         $hash = trim($this->_getParam('hash'));
 
-        if (empty($hash))
-        {
+        if (empty($hash)) {
             $this->_helper->flashMessenger([
                 'type' => 'danger',
                 'text' => $this->translate->_('Invalid confirmation link.')
@@ -135,11 +137,10 @@ class Members_ProfileController extends Action
         }
 
         $list = new Object\Member\Listing();
-        $list->setUnpublished(true);
+        $list->setUnpublished(TRUE);
         $list->setCondition('confirmHash = ?', $hash);
 
-        if (count($list) == 0)
-        {
+        if (count($list) == 0) {
             $this->_helper->flashMessenger([
                 'type' => 'danger',
                 'text' => $this->translate->_('Invalid confirmation link.')

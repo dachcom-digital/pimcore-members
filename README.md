@@ -24,7 +24,7 @@ Some installation advices.
 
 ```json
 "require" : {
-    "dachcom-digital/pimcore-members" : "1.3.0",
+    "dachcom-digital/members" : "1.3.0",
 }
 ```
 

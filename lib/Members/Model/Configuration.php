@@ -7,7 +7,6 @@ use Pimcore\Model;
 
 class Configuration extends Model\AbstractModel
 {
-
     /**
      * @var integer
      */
@@ -35,39 +34,34 @@ class Configuration extends Model\AbstractModel
 
     /**
      * this is a small per request cache to know which configuration is which is, this info is used in self::getByKey()
-     *
      * @var array
      */
-    protected static $nameIdMappingCache = array();
+    protected static $nameIdMappingCache = [];
 
     /**
      * @param integer $id
+     *
      * @return Configuration
      */
     public static function getById($id)
     {
         $cacheKey = 'members_configuration_' . $id;
 
-        try
-        {
+        try {
             $configurationEntry = \Zend_Registry::get($cacheKey);
             if (!$configurationEntry) {
                 throw new \Exception('Configuration in registry is null');
             }
-        }
-        catch (\Exception $e)
-        {
-            try
-            {
+        } catch (\Exception $e) {
+            try {
                 $configurationEntry = new self();
                 \Zend_Registry::set($cacheKey, $configurationEntry);
                 $configurationEntry->setId(intval($id));
                 $configurationEntry->getDao()->getById();
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 \Pimcore\Logger::error($e);
-                return null;
+
+                return NULL;
             }
         }
 
@@ -75,52 +69,48 @@ class Configuration extends Model\AbstractModel
     }
 
     /**
-     * @param string $key
+     * @param string  $key
      * @param boolean $returnObject
+     *
      * @return mixed|null
      */
-    public static function get($key, $returnObject = false)
+    public static function get($key, $returnObject = FALSE)
     {
         $cacheKey = $key . '~~~';
 
         // check if pimcore already knows the id for this $name, if yes just return it
-        if (array_key_exists($cacheKey, self::$nameIdMappingCache))
-        {
+        if (array_key_exists($cacheKey, self::$nameIdMappingCache)) {
             $entry = self::getById(self::$nameIdMappingCache[$cacheKey]);
 
             if ($returnObject) {
                 return $entry;
             }
 
-            return $entry instanceof Configuration ? $entry->getData() : null;
+            return $entry instanceof Configuration ? $entry->getData() : NULL;
         }
 
         // create a tmp object to obtain the id
         $configurationEntry = new self();
 
-        try
-        {
+        try {
             $configurationEntry->getDao()->getByKey($key);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             \Pimcore\Logger::warn($e);
-            return null;
+
+            return NULL;
         }
 
         // to have a singleton in a way. like all instances of Element\ElementInterface do also, like Object\AbstractObject
-        if ($configurationEntry->getId() > 0)
-        {
+        if ($configurationEntry->getId() > 0) {
             // add it to the mini-per request cache
             self::$nameIdMappingCache[$cacheKey] = $configurationEntry->getId();
             $entry = self::getById($configurationEntry->getId());
 
-            if ($returnObject)
-            {
+            if ($returnObject) {
                 return $entry;
             }
 
-            return $entry instanceof Configuration ? $entry->getData() : null;
+            return $entry instanceof Configuration ? $entry->getData() : NULL;
         }
     }
 
@@ -132,10 +122,9 @@ class Configuration extends Model\AbstractModel
      */
     public static function set($key, $data)
     {
-        $configEntry = self::get($key, true);
+        $configEntry = self::get($key, TRUE);
 
-        if (!$configEntry)
-        {
+        if (!$configEntry) {
             $configEntry = new self();
             $configEntry->setKey($key);
         }
@@ -144,13 +133,12 @@ class Configuration extends Model\AbstractModel
         $configEntry->save();
     }
 
-    public static function getLocalizedPath( $param )
+    public static function getLocalizedPath($param)
     {
-        $data = self::get( $param );
+        $data = self::get($param);
         $lang = (string)\Zend_Registry::get("Zend_Locale");
 
-        return str_replace('/%lang', '/' . $lang, $data );
-
+        return str_replace('/%lang', '/' . $lang, $data);
     }
 
     /**
@@ -159,24 +147,17 @@ class Configuration extends Model\AbstractModel
      */
     public static function getPluginConfig()
     {
-        $config = null;
+        $config = NULL;
 
-        if (\Zend_Registry::isRegistered('members_plugin_config'))
-        {
+        if (\Zend_Registry::isRegistered('members_plugin_config')) {
             $config = \Zend_Registry::get('members_plugin_config');
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 $config = new \Zend_Config_Xml(MEMBERS_PLUGIN_CONFIG);
                 self::setPluginConfig($config);
-            }
-            catch (\Exception $e)
-            {
-                if (is_file(MEMBERS_PLUGIN_CONFIG))
-                {
-                    $m = 'Your plugin_xml.xml located at ' . MEMBERS_PLUGIN_CONFIG. ' is invalid, please check and correct it manually!';
+            } catch (\Exception $e) {
+                if (is_file(MEMBERS_PLUGIN_CONFIG)) {
+                    $m = 'Your plugin_xml.xml located at ' . MEMBERS_PLUGIN_CONFIG . ' is invalid, please check and correct it manually!';
                     Tool::exitWithError($m);
                 }
             }
@@ -187,7 +168,9 @@ class Configuration extends Model\AbstractModel
 
     /**
      * @static
+     *
      * @param \Zend_Config $config
+     *
      * @return void
      */
     public static function setPluginConfig(\Zend_Config $config)
