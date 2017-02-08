@@ -1,18 +1,18 @@
 {
-  "name": "dachcom-digital/members",
-  "type": "pimcore-plugin",
-  "license": "GPL-3.0+",
-  "description": "Pimcore 4.0 Authentication",
-  "keywords": ["pimcore", "members", "authentication"],
-  "homepage": "https://github.com/dachcom-digital/pimcore-members",
-  "authors": [
-    {
-      "name": "Stefan Hagspiel",
-      "homepage": "http://www.dachcom-digital.ch",
-      "role": "Developer"
+    "name": "dachcom-digital/members",
+    "type": "pimcore-plugin",
+    "license": "GPL-3.0+",
+    "description": "Pimcore 4.x User, Object, Asset and Document Authentication",
+    "keywords": ["pimcore", "members", "authentication"],
+    "homepage": "https://github.com/dachcom-digital/pimcore-members",
+    "authors": [
+        {
+            "name": "Stefan Hagspiel",
+            "homepage": "http://www.dachcom-digital.ch",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "pimcore/installer-plugin": ">=1"
     }
-  ],
-  "require": {
-    "pimcore/installer-plugin": ">=1"
-  }
 }

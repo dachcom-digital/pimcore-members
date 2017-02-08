@@ -192,3 +192,7 @@ Allows to override validation of password change form data. Your callback must r
         
 **`members.restriction.object`**  
 Validate view restricted objects (see section Objects)
+
+## Copyright and license
+Copyright: [DACHCOM.DIGITAL](http://dachcom-digital.ch)  
+For licensing details please visit [LICENSE.md](LICENSE.md)  
