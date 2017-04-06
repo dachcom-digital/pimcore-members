@@ -143,7 +143,12 @@ class Members_AuthController extends Action
                         }
 
                         if ($this->_getParam('back')) {
-                            $redirect = $this->_getParam('back');
+                            $backParam = $this->_getParam('back');
+                            if (is_numeric($backParam)) {
+                                $redirect = \Pimcore\Model\Document::getById($backParam)->getFullPath();
+                            } else {
+                                $redirect = $backParam;
+                            }
                         } else {
                             $redirect = Configuration::getLocalizedPath('routes.profile');
                         }

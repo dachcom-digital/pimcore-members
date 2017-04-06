@@ -4,8 +4,11 @@ namespace Pimcore\Model\Document\Tag\Area;
 
 use Pimcore\Model\Document;
 
-class MemberLogin extends Document\Tag\Area\AbstractArea {
-
+class MemberLogin extends Document\Tag\Area\AbstractArea
+{
+    /**
+     *
+     */
     public function action()
     {
         $memberHelper = new \Members\View\Helper\MembersAuthHelper();
@@ -19,22 +22,21 @@ class MemberLogin extends Document\Tag\Area\AbstractArea {
             ? \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
             : \Members\Model\Configuration::getLocalizedPath('routes.profile');
 
-        if ( $this->getParam('back') ) {
+        if ($this->getParam('back')) {
             $this->view->back = $this->getParam('back');
         }
 
-        if ( $this->view->href('redirectAfterSuccess')->getElement() ) {
-            $this->view->back = $this->view->href('redirectAfterSuccess')->getFullPath();
+        if ($this->view->href('redirectAfterSuccess')->getElement()) {
+            $this->view->back = $this->view->href('redirectAfterSuccess')->getId();
         }
 
         $this->view->error = FALSE;
-        foreach ( $flashmessenger->getMessages() as $message ) {
-            if ( $message['mode'] == 'area' && $message['type'] == 'danger' ) {
+        foreach ($flashmessenger->getMessages() as $message) {
+            if ($message['mode'] == 'area' && $message['type'] == 'danger') {
                 $this->view->error = $this->view->translate($message['text']);
                 break;
             }
         }
-
     }
 
 }
