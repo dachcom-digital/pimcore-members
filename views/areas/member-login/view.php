@@ -1,22 +1,25 @@
 <?php if ($this->editmode || !$this->isLoggedIn) { ?>
 
-    <?= $this->template('members/auth/login-area.php', [
-        'language' => $this->language,
-        'areaMode' => TRUE,
-        'loginUri' => $this->loginUri,
-        'back' => $this->back,
-        'origin' => $this->request->getRequestUri(),
-        'error' => $this->error
-    ]); ?>
-
+    <?= $this->template('members/auth/login-area.php'); ?>
 
 <?php } elseif ($this->isLoggedIn) { ?>
 
-    <?php if ( !$this->hideWhenLoggedIn && $this->href('showSnippedWhenLoggedIn')->getElement() ) { ?>
+    <?php if (!$this->hideWhenLoggedIn && $this->href('showSnippedWhenLoggedIn')->getElement()) { ?>
 
-        <?=$this->inc($this->href('showSnippedWhenLoggedIn')->getFullPath()); ?>
+        <?php
 
-    <?php } elseif ( !$this->hideWhenLoggedIn ) { ?>
+        $placeholder = new \Pimcore\Placeholder();
+        $snippetContent = $this->inc($this->href('showSnippedWhenLoggedIn')->getFullPath());
+        $params = [
+            'user'        => $this->membersUser,
+            'redirectUri' => $this->back,
+            'logoutUri'   => $this->logoutUri,
+            'currentUri'  => $this->origin
+        ];
+        ?>
+        <?= $placeholder->replacePlaceholders($snippetContent, $params); ?>
+
+    <?php } elseif (!$this->hideWhenLoggedIn) { ?>
 
         <?= $this->template('members/auth/login-area-logged-in.php') ?>
 
