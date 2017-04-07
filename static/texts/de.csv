@@ -5,7 +5,7 @@
 "members_uninstall_failed","Members Plugin konnte nicht deinstalliert werden."
 "members_user_group_multiselect","Benutzergruppe"
 "members_restriction","Zugriffsrechte"
-"members_enable_document_restriction","Zugriffsrechte für Dokument bzw. Objekt aktivieren."
+"members_enable_document_restriction","Zugriffsrechte für Elemente aktivieren."
 "members_enable_document_inheritable","Zugriffsrechte auf Kinderelemente übertragen."
 "members_allowed_user_groups","Erlaubte Benutzergruppen"
 "members_allowed_user_groups_description","Nur eingeloggte Benutzer, welche den zugewiesenen Gruppen zugeteilt sind, haben Zugang zu diesem Dokument/Objekt."

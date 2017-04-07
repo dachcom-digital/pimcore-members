@@ -136,7 +136,10 @@ class Configuration extends Model\AbstractModel
     public static function getLocalizedPath($param)
     {
         $data = self::get($param);
-        $lang = (string)\Zend_Registry::get("Zend_Locale");
+        $lang = '';
+        if( \Zend_Registry::isRegistered('Zend_Locale')) {
+            $lang = (string)\Zend_Registry::get('Zend_Locale');
+        }
 
         return str_replace('/%lang', '/' . $lang, $data);
     }

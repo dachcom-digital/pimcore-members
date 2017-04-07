@@ -35,22 +35,6 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
         var user = pimcore.globalmanager.get('user');
 
-        if (user.isAllowed('plugins')) {
-
-            /*
-             var membersMenu = new Ext.Action({
-             id: 'members',
-             text: t('members'),
-             iconCls: 'members_icon',
-             handler:this.openSettings
-             });
-
-             layoutToolbar.settingsMenu.add(membersMenu);
-
-             */
-
-        }
-
     },
 
     openSettings: function () {
@@ -82,10 +66,19 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     },
 
+    postOpenAsset: function (asset) {
+
+        if( this.ready ) {
+            this.processElement(asset, 'asset');
+        } else {
+            this.addElementToQueue(asset, 'asset');
+        }
+
+    },
+
     postSaveDocument: function (doc, type, task, only) {
 
-        if( doc.members )
-        {
+        if( doc.members ) {
             doc.members.restrictionTab.save();
         }
 
@@ -93,10 +86,25 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     postSaveObject: function (obj, task, only) {
 
-        if( obj.members )
-        {
+        if( obj.members ) {
             obj.members.restrictionTab.save();
         }
+    },
+
+    postSaveAsset: function (assetId) {
+
+        var asset;
+
+        if (pimcore.globalmanager.exists('asset_' + assetId) !== false) {
+
+            asset = pimcore.globalmanager.get('asset_' + assetId);
+
+            if( asset.members ) {
+                asset.members.restrictionTab.save();
+            }
+
+        }
+
     },
 
     addElementToQueue: function(obj, type) {
@@ -125,9 +133,11 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
         var isAllowed = true;
 
-        if(type == 'object' && this.settings['core.settings.object.allowed'].indexOf(obj.data.general.o_className) === -1) {
+        if(type === 'object' && this.settings['core.settings.object.allowed'].indexOf(obj.data.general.o_className) === -1) {
             isAllowed = false;
-        } else if(type == 'page' && obj.type !== 'page') {
+        } else if(type === 'page' && obj.type !== 'page') {
+            isAllowed = false;
+        } else if(type === 'asset' && obj.data.path.substring(0, 18) !== '/restricted-assets') {
             isAllowed = false;
         }
 

@@ -96,20 +96,8 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             return FALSE;
         }
 
-        //do not check /members pages, they will check them itself.
-        $requestUrl = $this->getRequest()->getRequestUri();
-        $nowAllowed = [
-            Configuration::getLocalizedPath('routes.login'),
-            Configuration::getLocalizedPath('routes.profile')
-        ];
-
-        foreach ($nowAllowed as $not) {
-            if (substr($requestUrl, 0, strlen($not)) == $not) {
-                return FALSE;
-            }
-        }
-
-        if (in_array($this->getRequest()->getRequestUri(), $nowAllowed)) {
+        //do not check Members module pages, they will check them itself.
+        if( $this->getRequest()->getParam('module') === 'Members' ) {
             return FALSE;
         }
 

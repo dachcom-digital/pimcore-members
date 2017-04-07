@@ -1,4 +1,4 @@
-pimcore.registerNS("pimcore.plugin.members.document.restriction");
+pimcore.registerNS('pimcore.plugin.members.document.restriction');
 pimcore.plugin.members.document.restriction = Class.create({
 
     /**
@@ -27,7 +27,7 @@ pimcore.plugin.members.document.restriction = Class.create({
     userRolesStore : null,
 
     /**
-     * string "object" or "page"
+     * string 'object' or 'page'
      */
     cType : null,
 
@@ -36,7 +36,7 @@ pimcore.plugin.members.document.restriction = Class.create({
      */
     initialize: function(doc) {
 
-        this.layoutId = this.layoutId + "_" + doc.id;
+        this.layoutId = this.layoutId + '_' + doc.id;
         this.element = doc;
 
     },
@@ -87,7 +87,89 @@ pimcore.plugin.members.document.restriction = Class.create({
 
     renderLayout : function() {
 
-        var _self = this;
+        var _self = this,
+            restrictionItems = [];
+
+        restrictionItems.push(
+            {
+                xtype:'checkbox',
+                name: 'membersDocumentRestrict',
+                fieldLabel: t('members_enable_document_restriction'),
+                checked: this.data.isActive,
+                disabled: this.data.isInherited === true
+            }
+        );
+
+        //if ctype is not an asset
+        if( this.cType !== 'asset') {
+
+            restrictionItems.push(
+                {
+                    xtype:'checkbox',
+                    name: 'membersDocumentInheritable',
+                    fieldLabel: t('members_enable_document_inheritable'),
+                    checked: this.data.inherit,
+                    disabled: this.data.isInherited === true
+                }
+            );
+
+            restrictionItems.push(
+                {
+                    xtype:'fieldset',
+                    name: 'membersDocumentUnlockFieldset',
+                    hidden: this.data.isInherited === false,
+                    items: [
+                        {
+                            xtype: 'label',
+                            text: t('members_unlock_inheritable_description'),
+                            width: 185,
+                            style:'float:left;margin-right:5px;'
+                        },
+                        {
+                            xtype:'button',
+                            id:'',
+                            name: 'membersDocumentInheritWarning',
+                            text: t('members_unlock_inherit'),
+
+                            handler: function (btn) {
+                                Ext.getCmp(this.layoutId).getForm().findField('membersDocumentRestrict').enable();
+                                Ext.getCmp(this.layoutId).getForm().findField('membersDocumentInheritable').enable();
+                                var fieldset = btn.up('fieldset');
+                                fieldset.hide();
+
+                            }.bind(this)
+                        }
+                    ]
+                }
+            );
+
+        }
+
+        restrictionItems.push(
+            Ext.create('Ext.ux.form.MultiSelect', {
+
+                name: 'membersDocumentUserGroups',
+                triggerAction: 'all',
+                editable: false,
+                fieldLabel: t('members_allowed_user_groups_description'),
+                store: this.userRolesStore,
+                itemCls: 'object_field',
+                width: 700,
+                valueField: 'id',
+                displayField: 'text',
+                minHeight: 100,
+                queryMode : 'local',
+                value: this.data.userGroups,
+                listeners : {
+                    beforerender : function() {
+                        if(!_self.userRolesStore.isLoaded() && !_self.userRolesStore.isLoading())
+                            _self.userRolesStore.load();
+                    }
+
+                }
+
+            })
+        );
 
         this.layout = new Ext.FormPanel({
 
@@ -107,76 +189,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                         labelWidth: 200
                     },
 
-                    items: [
-
-                        {
-                            xtype:"checkbox",
-                            name: "membersDocumentRestrict",
-                            fieldLabel: t("members_enable_document_restriction"),
-                            checked: this.data.isActive,
-                            disabled: this.data.isInherited == true
-                        },
-                        {
-                            xtype:"checkbox",
-                            name: "membersDocumentInheritable",
-                            fieldLabel: t("members_enable_document_inheritable"),
-                            checked: this.data.inherit,
-                            disabled: this.data.isInherited == true
-                        },
-
-                        {
-                            xtype:"fieldset",
-                            name: "membersDocumentUnlockFieldset",
-                            hidden: this.data.isInherited == false,
-                            items: [
-                                {
-                                    xtype: "label",
-                                    text: t("members_unlock_inheritable_description"),
-                                    width: 185,
-                                    style:"float:left;margin-right:5px;"
-                                },
-                                {
-                                    xtype:"button",
-                                    id:"",
-                                    name: "membersDocumentInheritWarning",
-                                    text: t("members_unlock_inherit"),
-
-                                    handler: function (btn) {
-                                        Ext.getCmp(this.layoutId).getForm().findField("membersDocumentRestrict").enable();
-                                        Ext.getCmp(this.layoutId).getForm().findField("membersDocumentInheritable").enable();
-                                        var fieldset = btn.up('fieldset');
-                                        fieldset.hide();
-
-                                    }.bind(this)
-                                }
-                            ]
-                        },
-
-                        Ext.create('Ext.ux.form.MultiSelect', {
-
-                            name: 'membersDocumentUserGroups',
-                            triggerAction: "all",
-                            editable: false,
-                            fieldLabel: t('members_allowed_user_groups_description'),
-                            store: this.userRolesStore,
-                            itemCls: "object_field",
-                            width: 700,
-                            valueField: 'id',
-                            displayField: 'text',
-                            minHeight: 100,
-                            queryMode : 'local',
-                            value: this.data.userGroups,
-                            listeners : {
-                                beforerender : function() {
-                                    if(!_self.userRolesStore.isLoaded() && !_self.userRolesStore.isLoading())
-                                        _self.userRolesStore.load();
-                                }
-
-                            }
-
-                        })
-
-                    ]
+                    items: restrictionItems
 
                 }
 

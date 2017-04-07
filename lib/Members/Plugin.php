@@ -44,6 +44,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('system.startup', [$this, 'registerPluginController']);
         \Pimcore::getEventManager()->attach('document.preDelete', [$this, 'handleDocumentDeletion']);
         \Pimcore::getEventManager()->attach('object.preDelete', [$this, 'handleObjectDeletion']);
+        \Pimcore::getEventManager()->attach('asset.preDelete', [$this, 'handleAssetDeletion']);
 
         \Pimcore::getEventManager()->attach('object.postAdd', [$this, 'handleObjectAdd']);
         \Pimcore::getEventManager()->attach('document.postAdd', [$this, 'handleDocumentAdd']);
@@ -104,6 +105,18 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         $document = $e->getTarget();
 
         return RestrictionService::deleteRestriction($document, 'page');
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleAssetDeletion(\Zend_EventManager_Event $e)
+    {
+        $asset = $e->getTarget();
+
+        return RestrictionService::deleteRestriction($asset, 'asset');
     }
 
     /**

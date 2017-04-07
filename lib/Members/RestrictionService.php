@@ -3,6 +3,7 @@
 namespace Members;
 
 use Members\Model\Restriction;
+use Pimcore\Model\Element;
 
 class RestrictionService
 {
@@ -45,11 +46,11 @@ class RestrictionService
 
         //get all child elements and store them in members table!
         $type = 'document';
-        if ($cType == 'object') {
+        if ($cType === 'object') {
             $type = 'object';
         }
 
-        $parentObj = \Pimcore\Model\Element\Service::getElementById($type, $parentId);
+        $parentObj = Element\Service::getElementById($type, $parentId);
 
         if (empty($parentObj)) {
             return TRUE;
@@ -62,7 +63,7 @@ class RestrictionService
         } catch (\Exception $e) {
         }
 
-        if (!$parentRestriction instanceof \Members\Model\Restriction) {
+        if (!$parentRestriction instanceof Restriction) {
             return TRUE;
         }
 

@@ -178,6 +178,48 @@ class Observer
     }
 
     /**
+     * @param \Pimcore\Model\AbstractModel $asset
+     *
+     * @return array (state, section)
+     */
+    public static function isRestrictedAsset(\Pimcore\Model\AbstractModel $asset)
+    {
+        $status = ['state' => self::STATE_NOT_LOGGED_IN, 'section' => self::SECTION_NOT_ALLOWED];
+        $restriction = self::getRestrictionObject($asset, 'asset');
+        $identity = self::getIdentity();
+
+        if ($identity instanceof Object\Member) {
+            $status['state'] = self::STATE_LOGGED_IN;
+        }
+
+        if ($restriction === FALSE) {
+            $status['section'] = self::SECTION_ALLOWED;
+
+            return $status;
+        }
+
+        $restrictionRelatedGroups = $restriction->getRelatedGroups();
+
+        if ($identity instanceof Object\Member) {
+            if (!empty($restrictionRelatedGroups) && $identity instanceof Object\Member) {
+                $allowedGroups = $identity->getGroups();
+
+                if (is_null($allowedGroups)) {
+                    $allowedGroups = [];
+                }
+
+                $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
+
+                if (count($intersectResult) > 0) {
+                    $status['section'] = self::SECTION_ALLOWED;
+                }
+            }
+        }
+
+        return $status;
+    }
+
+    /**
      * @param $document
      * @param $page
      *
@@ -228,6 +270,8 @@ class Observer
 
         try {
             if ($cType === 'page') {
+                $restriction = Restriction::getByTargetId($object->getId(), $cType);
+            } else if ($cType === 'asset') {
                 $restriction = Restriction::getByTargetId($object->getId(), $cType);
             } else {
                 $allowedTypes = Configuration::get('core.settings.object.allowed');

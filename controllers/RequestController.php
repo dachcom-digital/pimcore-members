@@ -3,7 +3,6 @@
 use Pimcore\Model;
 
 use Members\Controller\Action;
-use Members\Model\Configuration;
 use Members\Tool;
 
 class Members_RequestController extends Action
@@ -23,7 +22,6 @@ class Members_RequestController extends Action
 
         $base64 = $requestData . str_repeat('=', strlen($requestData) % 4);
         $data = base64_decode($base64);
-
         $fileInfo = json_decode($data);
 
         if (!is_array($fileInfo)) {
@@ -42,13 +40,12 @@ class Members_RequestController extends Action
                 continue;
             }
 
-            if ($proxyId !== FALSE) {
-                $object = Model\Object\AbstractObject::getById($proxyId);
-                $restriction = Tool\Observer::isRestrictedObject($object);
+            //proxy is available so asset is wrapped in some object data
+            $object = $proxyId !== FALSE ? Model\Object\AbstractObject::getById($proxyId) : $asset;
+            $restriction = $object instanceof Model\Object\AbstractObject ? Tool\Observer::isRestrictedObject($object) : Tool\Observer::isRestrictedAsset($asset);
 
-                if ($restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED) {
-                    continue;
-                }
+            if ($restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED) {
+                continue;
             }
 
             $dataToProcess[] = $asset;
