@@ -25,7 +25,7 @@ class MemberLogin extends Document\Tag\Area\AbstractArea
         }
 
         if ($this->view->href('redirectAfterSuccess')->getElement()) {
-            $backUri = $this->view->href('redirectAfterSuccess')->getFullPath();
+            $backUri = $this->view->href('redirectAfterSuccess')->getId();
         }
 
         $error = FALSE;
