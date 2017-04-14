@@ -227,6 +227,9 @@ Allows to override validation of password change form data. Your callback must r
 **`members.restriction.object`**  
 Validate view restricted objects (see section Objects)
 
+**`members.path.route`**  
+Allows to modify the members frontend path. Members only handles the`%lang` placeholder which in some cases isn't enough.
+
 **`members.action.logout`**  
 Triggered after logout action.
 
