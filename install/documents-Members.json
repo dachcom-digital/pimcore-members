@@ -149,6 +149,7 @@
         "module": "Members",
         "controller": "email",
         "action": "email",
+        "template": "/members/email/email.php",
         "data": {
             "de": [
                 {
@@ -183,6 +184,7 @@
         "module": "Members",
         "controller": "email",
         "action": "email",
+        "template": "/members/email/email.php",
         "data": {
             "de": [
                 {
