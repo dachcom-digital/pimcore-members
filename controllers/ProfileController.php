@@ -20,6 +20,13 @@ class Members_ProfileController extends Action
     /**
      *
      */
+    public function refusedAction()
+    {
+    }
+
+    /**
+     *
+     */
     public function registerAction()
     {
         if ($this->_helper->member()) {

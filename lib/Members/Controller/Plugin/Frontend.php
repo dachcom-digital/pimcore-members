@@ -101,8 +101,10 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             return FALSE;
         }
 
+        //logged in but no allowed.
         if ($restrictedType['state'] === Observer::STATE_LOGGED_IN && $restrictedType['section'] === Observer::SECTION_NOT_ALLOWED) {
-            $url = Configuration::getLocalizedPath('routes.profile');
+            $refusalUrl = Configuration::getLocalizedPath('routes.login.redirectAfterRefusal');
+            $url = !empty($refusalUrl) ? $refusalUrl : Configuration::getLocalizedPath('routes.profile');
         } else {
             $url = sprintf('%s?back=%s',
                 Configuration::getLocalizedPath('routes.login'),
