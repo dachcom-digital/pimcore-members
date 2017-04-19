@@ -2,12 +2,12 @@
 
 namespace Members\Plugin;
 
+use Pimcore\Tool;
+use Pimcore\Model\User;
 use Pimcore\Model\Object;
 use Pimcore\Model\Document;
-use Pimcore\Model\User;
 use Pimcore\Model\Tool\Setup;
-use Pimcore\Model\Translation\Website;
-use Pimcore\Tool;
+use Pimcore\Model\Translation;
 use Members\Model\Configuration;
 
 class Install
@@ -64,9 +64,10 @@ class Install
      */
     public function installTranslations()
     {
-
         $csv = PIMCORE_PLUGINS_PATH . '/Members/install/translations/data.csv';
-        Website::importTranslationsFromFile($csv, TRUE, Tool\Admin::getLanguages());
+        $csvAdmin = PIMCORE_PLUGINS_PATH . '/Members/install/translations/admin/data.csv';
+        Translation\Website::importTranslationsFromFile($csv, TRUE, Tool\Admin::getLanguages());
+        Translation\Admin::importTranslationsFromFile($csvAdmin, TRUE, Tool\Admin::getLanguages());
     }
 
     /**
@@ -238,7 +239,6 @@ class Install
      */
     public function installFolder()
     {
-
         $folderName = 'restricted-assets';
 
         if (\Pimcore\Model\Asset\Folder::getByPath('/' . $folderName) instanceof \Pimcore\Model\Asset\Folder) {
