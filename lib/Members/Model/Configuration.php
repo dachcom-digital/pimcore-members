@@ -136,12 +136,23 @@ class Configuration extends Model\AbstractModel
     public static function getLocalizedPath($param)
     {
         $data = self::get($param);
-        $lang = '';
-        if( \Zend_Registry::isRegistered('Zend_Locale')) {
-            $lang = (string)\Zend_Registry::get('Zend_Locale');
+
+        $results = \Pimcore::getEventManager()->trigger('members.path.route', NULL, [
+            'route' => $data
+        ]);
+
+        if ($results->count()) {
+            $url = $results->last();
+        } else {
+            $lang = '';
+            if (\Zend_Registry::isRegistered('Zend_Locale')) {
+                $lang = (string)\Zend_Registry::get('Zend_Locale');
+            }
+
+            $url = str_replace('/%lang', '/' . $lang, $data);
         }
 
-        return str_replace('/%lang', '/' . $lang, $data);
+        return $url;
     }
 
     /**

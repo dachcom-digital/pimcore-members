@@ -13,6 +13,17 @@
     {
         "type": "page",
         "path": "members",
+        "key": "refused",
+        "name": "Refused",
+        "title": "Access Refused",
+        "module": "Members",
+        "controller": "profile",
+        "action": "refused",
+        "template": "/members/profile/refused.php"
+    },
+    {
+        "type": "page",
+        "path": "members",
         "key": "update-profile",
         "name": "Update Profile",
         "title": "Member profile update",
@@ -138,6 +149,7 @@
         "module": "Members",
         "controller": "email",
         "action": "email",
+        "template": "/members/email/email.php",
         "data": {
             "de": [
                 {
@@ -172,6 +184,7 @@
         "module": "Members",
         "controller": "email",
         "action": "email",
+        "template": "/members/email/email.php",
         "data": {
             "de": [
                 {
