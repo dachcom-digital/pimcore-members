@@ -137,7 +137,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
             isAllowed = false;
         } else if(type === 'page' && obj.type !== 'page') {
             isAllowed = false;
-        } else if(type === 'asset' && obj.data.path.substring(0, 18) !== '/restricted-assets') {
+        } else if(type === 'asset' && (obj.type === 'folder' || obj.data.path.substring(0, 18) !== '/restricted-assets')) {
             isAllowed = false;
         }
 
