@@ -11,6 +11,17 @@ use Members\Model\Configuration;
 class Member extends Concrete
 {
     /**
+     * @return $this
+     * @throws \Exception
+     */
+    public function save()
+    {
+        parent::save();
+
+        //clear members tag.
+        \Pimcore\Cache::clearTag('members');
+    }
+    /**
      * @param array $data
      *
      * @return mixed
