@@ -21,6 +21,7 @@ class Member extends Concrete
         //clear members tag.
         \Pimcore\Cache::clearTag('members');
     }
+
     /**
      * @param array $data
      *

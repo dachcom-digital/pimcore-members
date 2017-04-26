@@ -5,7 +5,6 @@ namespace Members\Tool;
 use Members\Auth;
 use Members\Model\Restriction;
 use Members\Model\Configuration;
-
 use Pimcore\Model\Object;
 
 class Observer
@@ -74,7 +73,6 @@ class Observer
         $restriction = self::getRestrictionObject($document, 'object', TRUE);
 
         $groups = [];
-
         if ($restriction !== FALSE && is_array($restriction->relatedGroups)) {
             $groups = $restriction->relatedGroups;
         } else {
@@ -94,6 +92,7 @@ class Observer
         $cacheKey = self::generateIdentityDocumentCacheId($document);
 
         if (!$status = \Pimcore\Cache::load($cacheKey)) {
+
             $status = ['state' => self::STATE_NOT_LOGGED_IN, 'section' => self::SECTION_NOT_ALLOWED];
             $restriction = self::getRestrictionObject($document, 'page');
             $identity = self::getIdentity();
@@ -109,7 +108,6 @@ class Observer
             }
 
             $restrictionRelatedGroups = $restriction->getRelatedGroups();
-
             $identity = self::getIdentity();
 
             if ($identity instanceof Object\Member) {
@@ -121,7 +119,6 @@ class Observer
                     }
 
                     $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
-
                     if (count($intersectResult) > 0) {
                         $status['section'] = self::SECTION_ALLOWED;
                     }
@@ -130,6 +127,7 @@ class Observer
 
             //store in cache.
             \Pimcore\Cache::save($status, $cacheKey, ['members'], 999);
+
         }
 
         return $status;
@@ -152,7 +150,6 @@ class Observer
 
         if ($restriction === FALSE) {
             $status['section'] = self::SECTION_ALLOWED;
-
             return $status;
         }
 
@@ -167,7 +164,6 @@ class Observer
                 }
 
                 $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
-
                 if (count($intersectResult) > 0) {
                     $status['section'] = self::SECTION_ALLOWED;
                 }
@@ -194,7 +190,6 @@ class Observer
 
         if ($restriction === FALSE) {
             $status['section'] = self::SECTION_ALLOWED;
-
             return $status;
         }
 
@@ -209,7 +204,6 @@ class Observer
                 }
 
                 $intersectResult = array_intersect($restrictionRelatedGroups, $allowedGroups);
-
                 if (count($intersectResult) > 0) {
                     $status['section'] = self::SECTION_ALLOWED;
                 }
@@ -246,7 +240,7 @@ class Observer
         $ident = Auth\Instance::getAuth();
         $identity = $ident->getIdentity();
 
-        if ($identity instanceof \Pimcore\Model\Object\Member) {
+        if ($identity instanceof Object\Member) {
             $allowedGroups = $identity->getGroups();
 
             return $allowedGroups;
@@ -275,7 +269,7 @@ class Observer
                 $restriction = Restriction::getByTargetId($object->getId(), $cType);
             } else {
                 $allowedTypes = Configuration::get('core.settings.object.allowed');
-                if ($object instanceof \Pimcore\Model\Object\AbstractObject && in_array($object->getClass()->getName(), $allowedTypes)) {
+                if ($object instanceof Object\AbstractObject && in_array($object->getClass()->getName(), $allowedTypes)) {
                     $restriction = Restriction::getByTargetId($object->getId(), $cType);
                 }
             }
@@ -288,25 +282,39 @@ class Observer
     /**
      * @param bool $forceFromStorage
      *
-     * @return bool|mixed|null|static
+     * @return bool|\Pimcore\Model\Object\Member
      */
     private static function getIdentity($forceFromStorage = FALSE)
     {
-        $ident = Auth\Instance::getAuth();
-        $identity = $ident->getIdentity();
+        $auth = Auth\Instance::getAuth();
+        $identity = $auth->getIdentity();
 
-        if (!$identity && isset($_SERVER['PHP_AUTH_PW'])) {
+        //server auth?
+        if (!$identity instanceof Object\Member && isset($_SERVER['PHP_AUTH_PW'])) {
             $username = $_SERVER['PHP_AUTH_USER'];
             $password = $_SERVER['PHP_AUTH_PW'];
-
             $identity = self::getServerIdentity($username, $password);
         }
 
-        if ($identity && $forceFromStorage) {
-            $identity = Object\Member::getById($identity->getId());
-        }
+        if ($identity instanceof Object\Member) {
 
-        if ($identity instanceof \Pimcore\Model\Object\Member) {
+            //check always if identity is valid!
+            $classId = Object\Member::classId();
+            $data = \Pimcore\Db::get()->fetchRow(
+                'SELECT o_modificationDate as mDate FROM object_' . $classId . ' WHERE `o_id` = ?',
+                $identity->getId()
+            );
+
+            if ($identity->getModificationDate() < $data['mDate']) {
+                $forceFromStorage = TRUE;
+            }
+
+            //update storage with fresh object.
+            if ($forceFromStorage) {
+                $identity = Object\Member::getById($identity->getId());
+                $auth->getStorage()->write($identity);
+            }
+
             return $identity;
         }
 
@@ -324,9 +332,8 @@ class Observer
         $identifier = new Identifier();
 
         if ($identifier->setIdentity($username, $password)->isValid()) {
-            $ident = Auth\Instance::getAuth();
-
-            return $ident->getIdentity();
+            $auth = Auth\Instance::getAuth();
+            return $auth->getIdentity();
         }
 
         return FALSE;
@@ -356,7 +363,7 @@ class Observer
 
         $identityKey = 'noMember';
 
-        if ($identity instanceof \Pimcore\Model\Object\Member) {
+        if ($identity instanceof Object\Member) {
             $identityKey = $identity->getId();
         }
 
