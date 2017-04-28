@@ -33,7 +33,6 @@ class Member extends Object\Concrete
             $sendMail = TRUE;
         }
 
-        //check if user gets enabled by admin. send
         if ($sendMail === TRUE
             && !is_null($this->getEmail())
             && Configuration::get('actions.postRegister') === FALSE
