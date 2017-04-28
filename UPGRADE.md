@@ -3,7 +3,7 @@
 #### Update from Version 1.3.x to Version 1.4.0
 
 **Config**  
-- new config element: `routes.login.redirectAfterRefusal`:
+- new config elements:
 ```php
 \Members\Model\Configuration::set('routes.login.redirectAfterRefusal', '/%lang/members/refused');
 \Members\Model\Configuration::set('sendRegisterConfirmedFromAdmin', FALSE);
