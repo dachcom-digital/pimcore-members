@@ -31,6 +31,7 @@ class Install
     {
         Configuration::set('installed', TRUE);
         Configuration::set('sendNotificationMailAfterConfirm', FALSE);
+        Configuration::set('sendRegisterConfirmedFromAdmin', FALSE);
 
         Configuration::set('core.settings.object.allowed', []);
 
@@ -52,6 +53,7 @@ class Install
         Configuration::set('routes.login.redirectAfterRefusal', '/%lang/members/refused');
 
         Configuration::set('emails.registerConfirm', '/%lang/members/emails/register-confirm');
+        Configuration::set('emails.registerConfirmed', '/%lang/members/emails/register-confirmed');
         Configuration::set('emails.registerNotification', '/%lang/members/emails/register-notification');
         Configuration::set('emails.passwordReset', '/%lang/members/emails/password-reset');
 

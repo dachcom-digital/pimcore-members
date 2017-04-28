@@ -193,6 +193,22 @@ Returning the object will be enough, Members takes care of everything else.
 );
 ```
 
+### Email Notifications
+**Register Confirm**   
+*Note*: only works if `actions.postRegister` has been set to `confirm`  
+Send a confirmation link to user to activate account.
+
+**Register Confirmed**  
+*Note*: only for admin and if `sendRegisterConfirmedFromAdmin` has been set to `TRUE` and `actions.postRegister` has been set to `FALSE`  
+Send confirmation email to user after admin activated a member object in backend.
+
+**Register Notification**  
+*Note*: only for admin and if `sendNotificationMailAfterConfirm` has been set to `TRUE`  
+Send a notification mail to admin if a user has been successfully activated his account.
+
+**Password Reset**  
+Send a email with a password reset link.
+
 ### Event API
 For more information about using Event API please check [pimcore documentation](https://www.pimcore.org/wiki/pages/viewpage.action?pageId=16854309).
 

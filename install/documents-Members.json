@@ -145,6 +145,41 @@
     {
         "type": "email",
         "path": "members/emails",
+        "key": "register-confirmed",
+        "module": "Members",
+        "controller": "email",
+        "action": "email",
+        "template": "/members/email/email.php",
+        "data": {
+            "de": [
+                {
+                    "key": "subject",
+                    "type": "objectProperty",
+                    "value": "Account aktiviert"
+                },
+                {
+                    "key": "email_content",
+                    "type": "wysiwyg",
+                    "value": "<p>Ihr Account wurde erfolgreich aktiviert. Bitte klicken Sie <a href=\"%Text(loginpage);\">hier</a> um zur Anmeldeseite zu gelangen.</p>"
+                }
+            ],
+            "en": [
+                {
+                    "key": "subject",
+                    "type": "objectProperty",
+                    "value": "Activate activated"
+                },
+                {
+                    "key": "email_content",
+                    "type": "wysiwyg",
+                    "value": "<p>Your account has been successfully activated. Please click <a href=\"%Text(loginpage);\">here</a> to open the login page.</p>"
+                }
+            ]
+        }
+    },
+    {
+        "type": "email",
+        "path": "members/emails",
         "key": "register-notification",
         "module": "Members",
         "controller": "email",

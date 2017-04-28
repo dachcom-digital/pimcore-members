@@ -2,13 +2,15 @@
 
 namespace Members\Model;
 
-use Pimcore\Model\Object\Concrete;
+use Pimcore\Tool;
+use Pimcore\Mail;
+use Pimcore\File;
 
-use Pimcore\Model\Object\Folder;
+use Pimcore\Model\Object;
+use Pimcore\Model\Version;
 use Pimcore\Model\Document\Email;
-use Members\Model\Configuration;
 
-class Member extends Concrete
+class Member extends Object\Concrete
 {
     /**
      * @return $this
@@ -16,7 +18,45 @@ class Member extends Concrete
      */
     public function save()
     {
+        $object = $this->getLatestVersion($this);
+
         parent::save();
+
+        $sendMail = FALSE;
+        $versionIsPublished = FALSE;
+
+        if ($object instanceof Version) {
+            $versionIsPublished = $object->getData()->getPublished();
+        }
+
+        if ($versionIsPublished === FALSE && $this->getPublished() === TRUE) {
+            $sendMail = TRUE;
+        }
+
+        //check if user gets enabled by admin. send
+        if ($sendMail === TRUE
+            && !is_null($this->getEmail())
+            && Configuration::get('actions.postRegister') === FALSE
+            && Configuration::get('sendRegisterConfirmedFromAdmin') === TRUE
+        ) {
+
+            /** @var \Pimcore\Model\Document\Email $doc */
+            $doc = Email::getByPath(Configuration::getLocalizedPath('emails.registerConfirmed'));
+            if ($doc instanceof Email) {
+
+                $loginUrl = rtrim(Tool::getHostUrl(), '/') . Configuration::getLocalizedPath('routes.login');
+
+                $email = new Mail();
+                $email->setDocument($doc);
+                $email->setTo($this->getEmail());
+                $email->setParams([
+                    'loginpage' => $loginUrl,
+                    'member_id' => $this->getId()
+                ]);
+
+                $email->send();
+            }
+        }
 
         //clear members tag.
         \Pimcore\Cache::clearTag('members');
@@ -53,8 +93,8 @@ class Member extends Concrete
             //@fixme: which userGroup to registered User?
             //$this->getGroups( array() );
 
-            $this->setKey(\Pimcore\File::getValidFilename($this->getEmail()));
-            $this->setParent(Folder::getByPath('/' . ltrim(Configuration::get('auth.adapter.objectPath'), '/')));
+            $this->setKey(File::getValidFilename($this->getEmail()));
+            $this->setParent(Object\Folder::getByPath('/' . ltrim(Configuration::get('auth.adapter.objectPath'), '/')));
             $this->save();
             \Pimcore::getEventManager()->trigger('members.register.post', $this, $argv);
         } catch (\Exception $e) {
@@ -137,7 +177,7 @@ class Member extends Concrete
 
             /** @var \Zend_Controller_Request_Http $request */
             $request = \Zend_Controller_Front::getInstance()->getRequest();
-            $email = new \Pimcore\Mail();
+            $email = new Mail();
             $email->setDocument($doc);
             $email->setTo($doc->getTo());
             $email->setParams([
@@ -175,7 +215,7 @@ class Member extends Concrete
 
         /** @var \Zend_Controller_Request_Http $request */
         $request = \Zend_Controller_Front::getInstance()->getRequest();
-        $email = new \Pimcore\Mail();
+        $email = new Mail();
         $email->addTo($this->getEmail());
         $email->setDocument($doc);
         $email->setParams([
