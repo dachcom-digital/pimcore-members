@@ -8,7 +8,7 @@
 \Members\Model\Configuration::set('routes.login.redirectAfterRefusal', '/%lang/members/refused');
 ```
 
-**Pages*  
+**Pages**  
 - add a page at `members/refused`:
 ```json
 {
