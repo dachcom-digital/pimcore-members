@@ -6,6 +6,8 @@
 - new config element: `routes.login.redirectAfterRefusal`:
 ```php
 \Members\Model\Configuration::set('routes.login.redirectAfterRefusal', '/%lang/members/refused');
+\Members\Model\Configuration::set('sendRegisterConfirmedFromAdmin', FALSE);
+\Members\Model\Configuration::set('emails.registerConfirmed', '/%lang/members/emails/register-confirmed');
 ```
 
 **Pages**  
@@ -25,12 +27,6 @@
 ```
 
 **Email**  
-- new config elements: `sendRegisterConfirmedFromAdmin` and `emails.registerConfirmed`:
-```php
-Configuration::set('sendRegisterConfirmedFromAdmin', FALSE);
-Configuration::set('emails.registerConfirmed', '/%lang/members/emails/register-confirmed');
-```
-
 - add a new email at `members/emails/register-confirmed` (get content from `install/documents-Members.json`):
 ```json
 {
