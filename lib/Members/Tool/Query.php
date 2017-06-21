@@ -34,7 +34,7 @@ class Query
                 $cType = 'page';
             }
 
-            $query->joinLeft(['members_restrictions' => 'members_restrictions'], 'members_restrictions.targetId = ' . $queryIdentifier, '');
+            $query->joinLeft(['members_restrictions' => 'members_restrictions'], 'members_restrictions.targetId = ' . $queryIdentifier . ' AND members_restrictions.ctype = "' . $cType . '"', '');
             $query->joinLeft(['members_group_relations' => 'members_group_relations'], 'members_group_relations.restrictionId = members_restrictions.id', '');
 
             $orQuery = '';
