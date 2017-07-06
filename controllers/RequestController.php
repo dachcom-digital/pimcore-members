@@ -20,35 +20,10 @@ class Members_RequestController extends Action
             $this->show404();
         }
 
-        $base64 = $requestData . str_repeat('=', strlen($requestData) % 4);
-        $data = base64_decode($base64);
-        $fileInfo = json_decode($data);
+        $dataToProcess = Tool\UrlServant::decodeAssetUrl($requestData);
 
-        if (!is_array($fileInfo)) {
+        if($dataToProcess === FALSE) {
             $this->show404();
-        }
-
-        $dataToProcess = [];
-
-        foreach ($fileInfo as $file) {
-            $assetId = $file->f;
-            $proxyId = $file->p;
-
-            $asset = Model\Asset::getById($assetId);
-
-            if (!$asset instanceof Model\Asset) {
-                continue;
-            }
-
-            //proxy is available so asset is wrapped in some object data
-            $object = $proxyId !== FALSE ? Model\Object\AbstractObject::getById($proxyId) : $asset;
-            $restriction = $object instanceof Model\Object\AbstractObject ? Tool\Observer::isRestrictedObject($object) : Tool\Observer::isRestrictedAsset($asset);
-
-            if ($restriction['section'] === Tool\Observer::SECTION_NOT_ALLOWED) {
-                continue;
-            }
-
-            $dataToProcess[] = $asset;
         }
 
         if (count($dataToProcess) === 0) {
@@ -67,14 +42,30 @@ class Members_RequestController extends Action
      */
     private function serveFile(Model\Asset $asset)
     {
+        $forceDownload = TRUE;
+        $contentType = 'application/octet-stream';
+
+        $hasLuceneSearch = \Pimcore\ExtensionManager::isEnabled('plugin', 'LuceneSearch');
+
+        if($hasLuceneSearch) {
+            if(\LuceneSearch\Tool\Request::isLuceneSearchCrawler() && in_array($asset->getMimetype(), ['application/pdf'])) {
+                $forceDownload = FALSE;
+                $contentType = $asset->getMimetype();
+            }
+        }
+
         $size = $asset->getFileSize('noformatting');
         $quoted = sprintf('"%s"', addcslashes(basename($asset->getFileName()), '"\\'));
 
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . $quoted);
-        header('Content-Transfer-Encoding: binary');
+        if($forceDownload === TRUE) {
+            header('Content-Description: File Transfer');
+            header('Content-Transfer-Encoding: binary');
+            header('Content-Disposition: attachment; filename=' . $quoted);
+        }
+
+        header('Content-Type: ' . $contentType);
         header('Connection: Keep-Alive');
+        header('Provider: Pimcore-Members');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');

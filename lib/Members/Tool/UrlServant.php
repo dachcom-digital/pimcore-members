@@ -88,4 +88,61 @@ class UrlServant
 
         return self::MEMBERS_REQUEST_URL . '' . $params;
     }
+
+    /**
+     * @param $requestData
+     *
+     * @return array|bool
+     */
+    public static function decodeAssetUrl($requestData)
+    {
+        $fileInfo = self::parseUrlFragment($requestData);
+
+        if (!is_array($fileInfo)) {
+            return FALSE;
+        }
+
+        $dataToProcess = [];
+
+        foreach ($fileInfo as $file) {
+            $assetId = $file->f;
+            $proxyId = $file->p;
+
+            $asset = Model\Asset::getById($assetId);
+
+            if (!$asset instanceof Model\Asset) {
+                continue;
+            }
+
+            //proxy is available so asset is wrapped in some object data
+            $object = $proxyId !== FALSE ? Model\Object\AbstractObject::getById($proxyId) : $asset;
+            $restriction = $object instanceof Model\Object\AbstractObject ? Observer::isRestrictedObject($object) : Observer::isRestrictedAsset($asset);
+
+            if ($restriction['section'] === Observer::SECTION_NOT_ALLOWED) {
+                continue;
+            }
+
+            $dataToProcess[] = $asset;
+        }
+
+        return $dataToProcess;
+    }
+
+    /**
+     * @param string $urlFragment
+     *
+     * @return array|bool
+     */
+    public static function parseUrlFragment($urlFragment)
+    {
+        $base64 = $urlFragment . str_repeat('=', strlen($urlFragment) % 4);
+        $data = base64_decode($base64);
+        $fileInfo = json_decode($data);
+
+        if (!is_array($fileInfo)) {
+            return FALSE;
+        }
+
+        return $fileInfo;
+    }
 }
