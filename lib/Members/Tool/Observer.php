@@ -188,8 +188,11 @@ class Observer
             $status['state'] = self::STATE_LOGGED_IN;
         }
 
+        //protect asset if element is in restricted area with no added restriction group.
         if ($restriction === FALSE) {
-            $status['section'] = self::SECTION_ALLOWED;
+            $status['section'] = strpos($asset->getPath(), UrlServant::PROTECTED_ASSET_FOLDER) === FALSE
+                ? self::SECTION_ALLOWED
+                : self::SECTION_NOT_ALLOWED;
             return $status;
         }
 
