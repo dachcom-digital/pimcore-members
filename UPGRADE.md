@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+#### Update from Version 1.4.x to Version 1.5.0
+- if [LuceneSearch Extension](https://github.com/dachcom-digital/pimcore-lucene-search) is installed, Members will disable the header file transfer (forcing direct download) when serving a protected single asset, so they can get indexed. 
+
 #### Update from Version 1.3.x to Version 1.4.0
 
 **Config**  
