@@ -103,7 +103,6 @@ class Observer
 
             if ($restriction === FALSE) {
                 $status['section'] = self::SECTION_ALLOWED;
-
                 return $status;
             }
 
