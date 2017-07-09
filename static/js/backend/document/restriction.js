@@ -80,9 +80,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                 reader:     reader,
                 autoload:   true
             });
-
         }
-
     },
 
     renderLayout : function() {
@@ -100,50 +98,87 @@ pimcore.plugin.members.document.restriction = Class.create({
             }
         );
 
-        //if ctype is not an asset
-        if( this.cType !== 'asset') {
+        var showInheritElements = this.cType === 'page'
+            || this.cType === 'object'
+            || (this.cType === 'asset' && this.element.type === 'folder');
+
+        if(showInheritElements) {
 
             restrictionItems.push(
                 {
                     xtype:'checkbox',
                     name: 'membersDocumentInheritable',
                     fieldLabel: t('members_enable_document_inheritable'),
-                    checked: this.data.inherit,
-                    disabled: this.data.isInherited === true
-                }
-            );
+                    checked: this.data.inherit || this.element.type === 'folder',
+                    readOnly: this.element.type === 'folder',
+                    disabled: this.data.isInherited === true,
+                    listeners: {
 
-            restrictionItems.push(
-                {
-                    xtype:'fieldset',
-                    name: 'membersDocumentUnlockFieldset',
-                    hidden: this.data.isInherited === false,
-                    items: [
-                        {
-                            xtype: 'label',
-                            text: t('members_unlock_inheritable_description'),
-                            width: 185,
-                            style:'float:left;margin-right:5px;'
-                        },
-                        {
-                            xtype:'button',
-                            id:'',
-                            name: 'membersDocumentInheritWarning',
-                            text: t('members_unlock_inherit'),
+                        afterrender: function(e,b) {
+                            var me = this;
+                            if(_self.element.type === 'folder') {
 
-                            handler: function (btn) {
-                                Ext.getCmp(this.layoutId).getForm().findField('membersDocumentRestrict').enable();
-                                Ext.getCmp(this.layoutId).getForm().findField('membersDocumentInheritable').enable();
-                                var fieldset = btn.up('fieldset');
-                                fieldset.hide();
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: me.el,
+                                    title: 'Info',
+                                    width: 200,
+                                    showDelay:50,
+                                    html: t('members_enable_document_inheritable_locked'),
+                                    listeners: {
+                                        scope: me
+                                    }
+                                });
 
-                            }.bind(this)
+                                me.setStyle('opacity', 0.5);
+                            }
                         }
-                    ]
+                    }
                 }
             );
-
         }
+
+        restrictionItems.push(
+            {
+                xtype:'fieldset',
+                name: 'membersDocumentUnlockFieldset',
+                hidden: this.data.isInherited === false,
+                items: [
+                    {
+                        xtype: 'label',
+                        text: t('members_unlock_inheritable_description'),
+                        width: 185,
+                        style:'float:left; margin:5px 5px 0 0;'
+                    },
+                    {
+                        xtype:'button',
+                        id:'',
+                        name: 'membersDocumentInheritWarning',
+                        text: t('members_unlock_inherit'),
+                        style:'margin:5px 0 0 0;',
+
+                        handler: function (btn) {
+
+                            var $a = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentRestrict'),
+                                $b = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentInheritable'),
+                                $c = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentUserGroups');
+
+                            if($a) { $a.enable(); }
+                            if($b) { $b.enable(); }
+
+                            if($c) {
+                                $c.setDisabled(false)
+                                    .setDisabled(true)
+                                    .setDisabled(false); //oh yea...
+                            }
+
+                            var fieldset = btn.up('fieldset');
+                            fieldset.hide();
+
+                        }.bind(this)
+                    }
+                ]
+            }
+        );
 
         restrictionItems.push(
             Ext.create('Ext.ux.form.MultiSelect', {
@@ -153,6 +188,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                 editable: false,
                 fieldLabel: t('members_allowed_user_groups_description'),
                 store: this.userRolesStore,
+                disabled: this.data.isInherited === true,
                 itemCls: 'object_field',
                 width: 700,
                 valueField: 'id',
@@ -165,9 +201,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                         if(!_self.userRolesStore.isLoaded() && !_self.userRolesStore.isLoading())
                             _self.userRolesStore.load();
                     }
-
                 }
-
             })
         );
 
@@ -192,9 +226,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                     items: restrictionItems
 
                 }
-
             ]
-
         });
 
         this.element.tabbar.add( this.layout );
@@ -218,8 +250,7 @@ pimcore.plugin.members.document.restriction = Class.create({
             url: '/plugin/Members/admin_Restriction/set-document-restriction-config',
             params: {
                 data : Ext.encode(values)
-            },
-            success: function(result){ }
+            }
 
         });
 
@@ -239,11 +270,7 @@ pimcore.plugin.members.document.restriction = Class.create({
             url: '/plugin/Members/admin_Restriction/delete-document-restriction-config',
             params: {
                 data : Ext.encode(values)
-            },
-            success: function(result){ }
-
+            }
         });
-
     }
-
 });

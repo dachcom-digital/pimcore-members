@@ -1,4 +1,4 @@
-pimcore.registerNS("pimcore.plugin.members.object.tags.multiselect");
+pimcore.registerNS('pimcore.plugin.members.object.tags.multiselect');
 pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tags.multiselect, {
 
     getLayoutEdit: function () {
@@ -10,7 +10,7 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
         var fields = [
             {name:'id'},
             {name:'name'}
-        ]
+        ];
 
         var reader = new Ext.data.JsonReader({}, fields);
 
@@ -23,11 +23,11 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
 
         var options = {
             name: this.fieldConfig.name,
-            triggerAction: "all",
+            triggerAction: 'all',
             editable: false,
             fieldLabel: this.fieldConfig.title,
             store: store,
-            itemCls: "object_field",
+            itemCls: 'object_field',
             valueField: 'id',
             displayField: 'text',
             width: 400,
@@ -49,7 +49,7 @@ pimcore.plugin.members.object.tags.multiselect = Class.create(pimcore.object.tag
             options.height = this.fieldConfig.height;
         }
 
-        if (typeof this.data == "string" || typeof this.data == "number") {
+        if (typeof this.data === 'string' || typeof this.data === 'number') {
             options.value = this.data;
         }
 

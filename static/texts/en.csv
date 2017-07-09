@@ -7,6 +7,7 @@
 "members_restriction","Access Privileges"
 "members_enable_document_restriction","Enable Element Access Restriction"
 "members_enable_document_inheritable","Restriction is inheritable. All child documents will be affected too."
+"members_enable_document_inheritable_locked", "Inheritances for folders are mandatory, since they do not have any access rights, but pass them directly to sub elements."
 "members_allowed_user_groups","Allowed User Groups"
 "members_allowed_user_groups_description","If you select some of the User Groups, only logged-in users with specified roles can access this page"
 "members_unlock_inheritable_description","Unlock inherit to take over the document restriction."

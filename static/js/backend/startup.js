@@ -96,9 +96,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         var asset;
 
         if (pimcore.globalmanager.exists('asset_' + assetId) !== false) {
-
             asset = pimcore.globalmanager.get('asset_' + assetId);
-
             if( asset.members ) {
                 asset.members.restrictionTab.save();
             }
@@ -137,7 +135,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
             isAllowed = false;
         } else if(type === 'page' && obj.type !== 'page') {
             isAllowed = false;
-        } else if(type === 'asset' && (obj.type === 'folder' || obj.data.path.substring(0, 18) !== '/restricted-assets')) {
+        } else if(type === 'asset' && !(obj.data.filename === 'restricted-assets' || obj.data.path.substring(0, 18) === '/restricted-assets')) {
             isAllowed = false;
         }
 

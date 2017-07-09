@@ -8,6 +8,9 @@ use Members\Plugin\Install;
 use Members\Model\Configuration;
 use Members\Model\Member;
 use Members\RestrictionService;
+use Pimcore\Model\Object;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Document;
 
 class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterface
 {
@@ -46,8 +49,13 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('object.preDelete', [$this, 'handleObjectDeletion']);
         \Pimcore::getEventManager()->attach('asset.preDelete', [$this, 'handleAssetDeletion']);
 
+        \Pimcore::getEventManager()->attach('document.preUpdate', [$this, 'handleDocumentUpdate']);
+        \Pimcore::getEventManager()->attach('object.preUpdate', [$this, 'handleObjectUpdate']);
+        \Pimcore::getEventManager()->attach('asset.preUpdate', [$this, 'handleAssetUpdate']);
+
         \Pimcore::getEventManager()->attach('object.postAdd', [$this, 'handleObjectAdd']);
         \Pimcore::getEventManager()->attach('document.postAdd', [$this, 'handleDocumentAdd']);
+        \Pimcore::getEventManager()->attach('asset.postAdd', [$this, 'handleAssetAdd']);
 
         \Pimcore::getEventManager()->attach('members.register.validate', ['Members\Events\Register', 'validate']);
         \Pimcore::getEventManager()->attach('members.update.validate', ['Members\Events\Update', 'validate']);
@@ -100,6 +108,18 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
      *
      * @return bool
      */
+    public function handleAssetAdd(\Zend_EventManager_Event $e)
+    {
+        $asset = $e->getTarget();
+
+        return RestrictionService::checkRestriction($asset, 'asset');
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
     public function handleDocumentDeletion(\Zend_EventManager_Event $e)
     {
         $document = $e->getTarget();
@@ -129,6 +149,60 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         $object = $e->getTarget();
 
         return RestrictionService::deleteRestriction($object, 'object');
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleDocumentUpdate(\Zend_EventManager_Event $e)
+    {
+        $doc = $e->getTarget();
+        $className = "Pimcore\\Model\\Document\\" . ucfirst($doc->getType());
+        $originalDocument = \Pimcore::getDiContainer()->make($className);
+        $originalDocument->getDao()->getById($doc->getId());
+
+        if($originalDocument instanceof Document) {
+            return RestrictionService::resolveRestriction($doc, $originalDocument, 'page');
+        }
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleObjectUpdate(\Zend_EventManager_Event $e)
+    {
+        $obj = $e->getTarget();
+
+        $className = "Pimcore\\Model\\Object\\AbstractObject";
+        $originalObject = \Pimcore::getDiContainer()->make($className);
+        $originalObject->getDao()->getById($obj->getId());
+
+        if($originalObject instanceof Object\AbstractObject) {
+            return RestrictionService::resolveRestriction($obj, $originalObject, 'object');
+        }
+
+    }
+
+    /**
+     * @param \Zend_EventManager_Event $e
+     *
+     * @return bool
+     */
+    public function handleAssetUpdate(\Zend_EventManager_Event $e)
+    {
+        $asset = $e->getTarget();
+        $className = "Pimcore\\Model\\Asset\\" . ucfirst($asset->getType());
+        $originalAsset = \Pimcore::getDiContainer()->make($className);
+        $originalAsset->getDao()->getById($asset->getId());
+
+        if($originalAsset instanceof Asset) {
+            return RestrictionService::resolveRestriction($asset, $originalAsset, 'asset');
+        };
+
     }
 
     /**

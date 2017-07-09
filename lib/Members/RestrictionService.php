@@ -3,6 +3,7 @@
 namespace Members;
 
 use Members\Model\Restriction;
+use Pimcore\Model\Asset;
 use Pimcore\Model\Element;
 
 class RestrictionService
@@ -31,6 +32,59 @@ class RestrictionService
     }
 
     /**
+     * Resolve Restriction if Element gets moved out of a inherited Structure
+     * @param $obj
+     * @param $orgObj
+     * @param $cType
+     *
+     * @return bool
+     */
+    public static function resolveRestriction($obj, $orgObj, $cType)
+    {
+        $front = \Zend_Controller_Front::getInstance();
+
+        $parentId = NULL;
+
+        if($cType === 'object') {
+            $values = json_decode($front->getRequest()->getParam('values'));
+            $parentId = $values->parentId;
+        } else if( $cType === 'asset') {
+            $parentId = $front->getRequest()->getParam('parentId');
+        } else if( $cType === 'page') {
+            $parentId = $front->getRequest()->getParam('parentId');
+        }
+
+        if(!is_numeric($parentId)) {
+            return FALSE;
+        }
+
+        if((int)$parentId === (int)$orgObj->getParentId()) {
+            return FALSE;
+        }
+
+        $docId = $obj->getId();
+        $restriction = FALSE;
+
+        try {
+            $restriction = Restriction::getByTargetId($docId, $cType);
+        } catch (\Exception $e) {
+        }
+
+        if(!$restriction instanceof Restriction) {
+            return FALSE;
+        }
+
+        if ($restriction->isInherited()) {
+            $restriction->setIsInherited(FALSE);
+            $restriction->save();
+        }
+
+        self::checkRestriction($obj, $cType);
+
+        return TRUE;
+    }
+
+    /**
      * @param $obj
      * @param $cType
      *
@@ -48,6 +102,8 @@ class RestrictionService
         $type = 'document';
         if ($cType === 'object') {
             $type = 'object';
+        } else if ($cType === 'asset') {
+            $type = 'asset';
         }
 
         $parentObj = Element\Service::getElementById($type, $parentId);
@@ -72,10 +128,14 @@ class RestrictionService
             return TRUE;
         }
 
-        $restriction = new Restriction();
-        $restriction->setTargetId($obj->getId());
+        try {
+            $restriction = Restriction::getByTargetId($obj->getId(), $cType);
+        } catch (\Exception $e) {
+            $restriction = new Restriction();
+            $restriction->setTargetId($obj->getId());
+            $restriction->setCtype($cType);
+        }
 
-        $restriction->setCtype($cType);
         $restriction->setIsInherited(TRUE);
         $restriction->setRelatedGroups($parentRestriction->getRelatedGroups());
         $restriction->save();
