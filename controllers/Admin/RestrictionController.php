@@ -9,7 +9,7 @@ use Members\Model\Restriction;
 class Members_Admin_RestrictionController extends Admin
 {
     /**
-     *
+     * @return void
      */
     public function getGlobalSettingsAction()
     {
@@ -20,15 +20,11 @@ class Members_Admin_RestrictionController extends Admin
             $valueArray[$c->getKey()] = $c->getData();
         }
 
-        $this->_helper->json(
-            [
-                'settings' => $valueArray,
-            ]
-        );
+        $this->_helper->json(['settings' => $valueArray]);
     }
 
     /**
-     *
+     * @return void
      */
     public function getRolesAction()
     {
@@ -60,7 +56,7 @@ class Members_Admin_RestrictionController extends Admin
     }
 
     /**
-     *
+     * @return void
      */
     public function getDocumentRestrictionConfigAction()
     {
@@ -87,23 +83,19 @@ class Members_Admin_RestrictionController extends Admin
             $cType = $restriction->getCtype();
         }
 
-        $this->_helper->json(
-            [
-
-                'success'     => TRUE,
-                'docId'       => (int)$documentId,
-                'cType'       => $cType,
-                'isActive'    => $isActive,
-                'isInherited' => $isInherited,
-                'inherit'     => $inherit,
-                'userGroups'  => $userGroups
-
-            ]
-        );
+        $this->_helper->json([
+            'success'     => TRUE,
+            'docId'       => (int)$documentId,
+            'cType'       => $cType,
+            'isActive'    => $isActive,
+            'isInherited' => $isInherited,
+            'inherit'     => $inherit,
+            'userGroups'  => $userGroups
+        ]);
     }
 
     /**
-     *
+     * @return void
      */
     public function setDocumentRestrictionConfigAction()
     {
@@ -112,44 +104,6 @@ class Members_Admin_RestrictionController extends Admin
         $docId = (int)$data['docId'];
         $settings = $data['settings'];
         $cType = $data['cType']; //object|page|asset
-
-        //doc / object is inherited, no data given, do nothing!
-        if (!isset($settings['membersDocumentRestrict'])) {
-            $this->_helper->json(['success' => TRUE]);
-        }
-
-        $membersDocumentRestrict = $settings['membersDocumentRestrict'];
-        $membersDocumentInheritable = $settings['membersDocumentInheritable'];
-        $membersDocumentUserGroups = $settings['membersDocumentUserGroups'];
-
-        try {
-            $restriction = Restriction::getByTargetId($docId, $cType);
-        } catch (\Exception $e) {
-            $restriction = new Restriction();
-            $restriction->setTargetId($docId);
-            $restriction->setCtype($cType);
-        }
-
-        $removeChildRestrictions = FALSE;
-
-        //restriction has been disabled! remove everything!
-        if ($membersDocumentRestrict === FALSE) {
-
-            //check if element inherits. if so, mark subpath restrictions as deleted.
-            if($restriction->getInherit() === TRUE) {
-                $removeChildRestrictions = TRUE;
-            }
-
-            $restriction->delete();
-
-        } else {
-            $restriction->setCtype($cType);
-            $restriction->setInherit($membersDocumentInheritable);
-            //restriction has been explicitly saved, its not inherited anymore!
-            $restriction->setIsInherited(FALSE);
-            $restriction->setRelatedGroups($membersDocumentUserGroups);
-            $restriction->save();
-        }
 
         //get all child elements and store them in members table!
         $type = 'document';
@@ -161,92 +115,59 @@ class Members_Admin_RestrictionController extends Admin
 
         $obj = \Pimcore\Model\Element\Service::getElementById($type, $docId);
 
-        if ($obj instanceof \Pimcore\Model\Object\AbstractObject) {
-            $list = new \Pimcore\Model\Object\Listing();
-            $list->setCondition("o_type = ? AND o_path LIKE ?", ['object', $obj->getFullPath() . '/%']);
-            $list->setOrderKey('LENGTH(o_path) ASC', false);
-        } else if ($obj instanceof \Pimcore\Model\Document) {
-            $list = new \Pimcore\Model\Document\Listing();
-            $list->setCondition("type = ? AND path LIKE ?", ['page', $obj->getFullPath() . '/%']);
-            $list->setOrderKey('LENGTH(path) ASC', false);
-        } else if ($obj->getType() === 'folder' && $obj instanceof \Pimcore\Model\Asset) {
-            $list = new \Pimcore\Model\Asset\Listing();
-            $list->setCondition("path LIKE ?", [$obj->getFullPath() . '/%']);
-            $list->setOrderKey('LENGTH(path) ASC', false);
+        $restriction = NULL;
+        $hasRestriction = TRUE;
+        $active = FALSE;
+
+        try {
+            $restriction = Restriction::getByTargetId($docId, $cType);
+        } catch (\Exception $e) {
+            $hasRestriction = FALSE;
         }
 
-        $children = $list->load();
+        //remove restriction since they has been disabled.
+        if (!isset($settings['membersDocumentRestrict'])) {
 
-        $excludePaths = [];
-
-        if (!empty($children)) {
-
-            /** @var \Pimcore\Model\AbstractModel $child */
-            foreach ($children as $child) {
-
-                $isNew = FALSE;
-                $skip = FALSE;
-                foreach ($excludePaths as $path) {
-                    if (substr($child->getFullPath(), 0, strlen($path)) === $path) {
-                        $skip = TRUE;
-                        break;
-                    }
-                }
-
-                if($skip === TRUE) {
-                    continue;
-                }
-
-                $targetType = $obj->getType();
-                if($cType === 'asset' && $targetType === 'folder') {
-                    $targetType = 'asset';
-                }
-
-                try {
-                    $restriction = Restriction::getByTargetId($child->getId(), $targetType);
-                } catch (\Exception $e) {
-                    $restriction = new Restriction();
-                    $restriction->setTargetId($child->getId());
-                    $restriction->setCtype($cType);
-                    $isNew = TRUE;
-                }
-
-                if ($isNew == FALSE && $restriction->isInherited() === FALSE) {
-                    $excludePaths[] = $child->getFullPath();
-                    continue;
-                }
-
-                $restriction->setCtype($cType);
-                $restriction->setRelatedGroups($membersDocumentUserGroups);
-
-                if($removeChildRestrictions == TRUE) {
-                    $restriction->delete();
-                } else if ($membersDocumentInheritable === TRUE) {
-                    $restriction->setIsInherited(TRUE);
-                    $restriction->save();
-                } else if (!$restriction->getInherit()) {
-                    $restriction->delete();
-                }
+            if ($hasRestriction === TRUE) {
+                $restriction->delete();
             }
+
+        //update or set restriction
+        } else {
+
+            $active = TRUE;
+
+            $membersDocumentInheritable = $settings['membersDocumentInheritable'];
+            $membersDocumentUserGroups = explode(',', $settings['membersDocumentUserGroups']);
+
+            if ($hasRestriction === FALSE) {
+                $restriction = new Restriction();
+                $restriction->setTargetId($docId);
+                $restriction->setCtype($cType);
+            }
+
+
+            $restriction->setInherit($membersDocumentInheritable);
+            $restriction->setIsInherited(FALSE);
+            $restriction->setRelatedGroups($membersDocumentUserGroups);
+            $restriction->save();
         }
+
+        \Members\RestrictionService::checkRestrictionContext($obj, $cType);
 
         //clear cache!
         \Pimcore\Cache::clearTag('members');
 
-        $this->_helper->json(
-            [
-
-                'success'    => TRUE,
-                'docId'      => (int)$settings['docId'],
-                'isActive'   => TRUE,
-                'userGroups' => $restriction->getRelatedGroups()
-
-            ]
-        );
+        $this->_helper->json([
+            'success'    => TRUE,
+            'isActive'   => $active,
+            'docId'      => (int)$settings['docId'],
+            'userGroups' => $active ? $restriction->getRelatedGroups() : []
+        ]);
     }
 
     /**
-     *
+     * @return void
      */
     public function deleteDocumentRestrictionConfigAction()
     {
@@ -267,11 +188,22 @@ class Members_Admin_RestrictionController extends Admin
             $restriction->delete();
         }
 
-        $this->_helper->json(
-            [
-                'success' => TRUE,
-            ]
-        );
+        $this->_helper->json(['success' => TRUE]);
     }
 
+    /**
+     * @return void
+     */
+    public function getNextParentRestrictionAction()
+    {
+        $elementId = $this->getParam('docId');
+        $cType = $this->getParam('cType');
+        $closestInheritanceParent = \Members\RestrictionService::findClosestInheritanceParent($elementId, $cType);
+
+        $this->_helper->json([
+            'success' => TRUE,
+            'key'     => $closestInheritanceParent['key'],
+            'path'    => $closestInheritanceParent['path']
+        ]);
+    }
 }
