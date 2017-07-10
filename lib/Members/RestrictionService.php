@@ -134,7 +134,7 @@ class RestrictionService
      *
      * @return bool
      */
-    public static function updateChildren($obj, $cType)
+    private static function updateChildren($obj, $cType)
     {
         $mainNodeRestriction = NULL;
         $closestParent = NULL;
