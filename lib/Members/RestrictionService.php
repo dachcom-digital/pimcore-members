@@ -33,47 +33,6 @@ class RestrictionService
     }
 
     /**
-     * @deprecated
-     * Triggered by post update events of all types.
-     * Resolve Restriction if Element gets moved out of a inherited Structure
-     *
-     * @param $obj
-     * @param $orgObj
-     * @param $cType
-     *
-     * @return bool
-     */
-    public static function resolveRestriction($obj, $orgObj, $cType)
-    {
-        if ((int)$parentId === (int)$orgObj->getParentId()) {
-            return FALSE;
-        }
-
-        $docId = $obj->getId();
-        $restriction = FALSE;
-
-        try {
-            $restriction = Restriction::getByTargetId($docId, $cType);
-        } catch (\Exception $e) {
-        }
-
-        if ($restriction instanceof Restriction && $restriction->isInherited()) {
-
-            //if there is another inheritance parent, do not kill inheritance.
-            $closestInheritanceParent = self::findClosestInheritanceParent($obj->getId(), $cType);
-
-            print_r($closestInheritanceParent);
-
-            if (is_null($closestInheritanceParent['id'])) {
-                $restriction->setIsInherited(FALSE);
-                $restriction->save();
-            }
-        }
-
-        return TRUE;
-    }
-
-    /**
      * Triggered by post update events of all types ONLY when element gets moved in tree!
      * Check if element is in right context
      *
