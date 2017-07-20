@@ -24,6 +24,10 @@ class ProfileController extends AbstractController
      */
     public function showAction(Request $request)
     {
+        if($this->container->get('pimcore.http.request_helper')->isFrontendRequestByAdmin($request)) {
+            return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
+        }
+
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');

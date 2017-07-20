@@ -1,6 +1,3 @@
-parameters:
-    security.access_map.class: My\Custom\AccessMap
-
 pimcore:
     security:
         encoder_factories:

@@ -1,5 +1,6 @@
 "key","creationDate","modificationDate","de","en"
 "members.restriction.refused",1500539187,1500539187,"Zugang zur gewünschten Seite ist gesperrt.","You have no access rights to view the requested page."
+"members.backend.visibility",1500539187,1500539187,"Benutzerspezifische Seiten/Routen können im Backend nicht dargestellt werden.","user-specific documents/routes are disabled in backend."
 "members.auth.login.username",1500539187,1500539187,"Benutzername","Username"
 "members.auth.login.password",1500539187,1500539187,"Passwort","Password"
 "members.auth.login.remember_me",1500539187,1500539187,"Angemeldet bleiben","Remember me"
