@@ -1,0 +1,17 @@
+services:
+    #form resetting factory
+    members.resetting.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - 'members_user_registration_form'
+            - 'MembersBundle\Form\Type\ResettingFormType'
+            - [Registration, Default]
+
+    #form resetting type
+    members.resetting.form.type:
+        class: MembersBundle\Form\Type\ResettingFormType
+        arguments:
+            - '\MembersBundle\Adapter\User\AbstractUser'
+        tags:
+            - { name: form.type, alias: members_user_resetting }

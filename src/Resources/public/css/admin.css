@@ -1,0 +1,13 @@
+.members_icon_update_restriction {
+    background: url(/pimcore/static6/img/flat-color-icons/lock.svg) center center no-repeat !important;
+}
+.pimcore_icon_data_group_members {
+    background: url(/bundles/members/img/members.svg) center center no-repeat !important;
+}
+.members_icon_user_group,
+.pimcore_icon_membersGroupMultiselect{
+    background: url(/bundles/members/img/group.svg) no-repeat scroll left center transparent !important;
+}
+.members_icon_document_restriction {
+    background: url(/bundles/members/img/lock.png) no-repeat scroll left center transparent !important;
+}

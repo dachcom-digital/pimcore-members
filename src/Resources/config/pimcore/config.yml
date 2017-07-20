@@ -1,0 +1,71 @@
+parameters:
+    security.access_map.class: My\Custom\AccessMap
+
+pimcore:
+    security:
+        encoder_factories:
+            MembersBundle\Adapter\User\UserInterface: members.security.password_encoder_factory
+
+    objects:
+        class_definitions:
+            data:
+                map:
+                    membersGroupMultiselect: MembersBundle\CoreExtension\GroupMultiselect
+security:
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+    providers:
+        members:
+            id: members.user_provider.username
+
+    firewalls:
+        members_fe:
+            pattern: ^/
+            form_login:
+                login_path: members_user_security_login
+                check_path: members_user_security_check
+                provider: members
+                csrf_token_generator: security.csrf.token_manager
+            logout:
+                path: members_user_security_logout
+                target: /
+            anonymous:    true
+
+    access_control:
+        - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_locale/members/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
+members:
+
+    send_admin_mail_after_register: false
+    send_user_mail_after_confirmed: false
+
+    # confirm_by_mail, confirm_by_admin, confirm_instant
+    post_register_type: 'confirm_by_mail'
+
+    restriction:
+        allowed_objects: []
+
+    member:
+        adapter:
+            class_name: 'membersUser'
+
+    group:
+        adapter:
+            class_name: 'membersGroup'
+
+    auth:
+        adapter:
+            class_name:
+            object_path:
+
+    emails:
+        register_confirm: '/domain1/de/members/emails/register-confirm' # √
+        register_confirmed: '/domain1/de/members/emails/register-confirmed' # only if admin activates account!!!
+        register_password_resetting: '/domain1/de/members/emails/password-reset' # √
+        admin_register_notification: '/domain1/de/members/emails/admin-register-notification' # √
+

@@ -1,0 +1,33 @@
+<div class="toolbox-edit-overlay">
+
+    <div class="t-row">
+        <label>{{ 'Redirect after successful login'|trans_admin }}</label>
+        {{ pimcore_href('redirectAfterSuccess', {
+            'types'    : ['document'],
+            'subtypes' : {
+                'document' : ['page', 'link', 'hardlink']
+                }
+        }) }}
+
+    </div>
+
+    <div class="t-row">
+        <label>{{ 'Hide when logged in'|trans_admin }}</label>
+        {{ pimcore_checkbox('hideWhenLoggedIn') }}
+    </div>
+
+    {% if pimcore_checkbox('hideWhenLoggedIn'.getData() is not empty) %}
+
+        <div class="t-row">
+            <label>{{ 'Show this snippet when logged in'|trans_admin }}</label>
+            {{ pimcore_href('showSnippedWhenLoggedIn', {
+                'types' => ['document'],
+                'subtypes' => {
+                    'document' : ['snippet']
+                    }
+            }) }}
+        </div>
+
+    {% endif %}
+
+</div>

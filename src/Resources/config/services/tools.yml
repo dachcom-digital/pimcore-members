@@ -1,0 +1,14 @@
+services:
+
+    # tool: installer
+    members.tool.installer:
+        class: MembersBundle\Tool\Install
+        arguments:
+            - '@logger'
+            - '@pimcore_admin.serializer'
+        tags:
+            - { name: monolog.logger }
+
+    # tool: installer
+    members.tool.token_generator:
+        class: MembersBundle\Tool\TokenGenerator

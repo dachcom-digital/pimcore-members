@@ -1,0 +1,6 @@
+{{ form_start(form, { 'action': path('members_user_profile_edit'), 'attr': { 'class': 'members_user_profile_edit' } }) }}
+    {{ form_widget(form) }}
+    <div>
+        <input type="submit" value="{{ 'members.profile.edit.submit'|trans }}" />
+    </div>
+{{ form_end(form) }}

@@ -1,0 +1,11 @@
+parameters:
+    members.resetting.email.template: '/domain1/de/members/emails/password-reset'
+    members.registration.confirmation.template: '/domain1/de/members/emails/register-confirm'
+
+services:
+
+    members.mailer:
+        class: MembersBundle\Mailer\Mailer
+        arguments:
+            - '@router'
+            - '@members.configuration'

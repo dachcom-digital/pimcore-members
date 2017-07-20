@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<zend-config>
-    <id>member_login</id>
-    <name>Member Login</name>
-    <version>1.0.0</version>
-    <description>Member Plugin</description>
-</zend-config>

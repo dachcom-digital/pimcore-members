@@ -1,0 +1,20 @@
+services:
+
+    members.security.user_checker:
+        class: MembersBundle\Security\UserChecker
+
+    members.security.password_encoder_factory:
+        class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
+        arguments:
+            - Pimcore\Security\Encoder\PasswordFieldEncoder
+            - ['password']
+
+    members.user_provider.username:
+        class: MembersBundle\Security\UserProvider
+        arguments:
+            - '@members.manager.user'
+
+    members.user_provider.username_email:
+        class: MembersBundle\Security\EmailUserProvider
+        arguments:
+            - '@members.manager.user'

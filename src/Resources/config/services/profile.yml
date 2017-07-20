@@ -1,0 +1,17 @@
+services:
+    #form profile factory
+    members.profile.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - 'members_user_registration_form'
+            - 'MembersBundle\Form\Type\ProfileFormType'
+            - [Registration, Default]
+
+    #form profile type
+    members.profile.form.type:
+        class: MembersBundle\Form\Type\ProfileFormType
+        arguments:
+            - '\MembersBundle\Adapter\User\AbstractUser'
+        tags:
+            - { name: form.type, alias: members_user_profile }

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+</head>
+<body>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div>
+    {% block members_user_content %}
+    {% endblock members_user_content %}
+</div>
+</body>
+</html>

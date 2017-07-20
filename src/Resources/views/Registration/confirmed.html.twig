@@ -1,0 +1,6 @@
+{% extends "@Members/layout.html.twig" %}
+{% block members_user_content %}
+    <p>{{ 'members.registration.confirmed'|trans({'%username%': user.username}) }}</p>
+    {% if targetUrl %}
+        <p><a href="{{ targetUrl }}">{{ 'members.registration.back'|trans }}</a></p>
+{% endif %}{% endblock members_user_content %}

@@ -1,0 +1,10 @@
+<div class="members register">
+
+    {{ form_start(form, {'method': 'post', 'action': path('members_user_registration_register'), 'attr': {'class': 'members_user_registration_register'}}) }}
+    {{ form_widget(form) }}
+    <div>
+        <input type="submit" value="{{ 'members.registration.submit'|trans }}" />
+    </div>
+    {{ form_end(form) }}
+
+</div>

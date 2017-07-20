@@ -1,0 +1,29 @@
+services:
+
+    # manager: class
+    members.manager.class:
+        class: MembersBundle\Manager\ClassManager
+        arguments:
+            - '@members.configuration'
+
+    # manager: user
+    members.manager.user:
+        class: MembersBundle\Manager\UserManager
+        arguments:
+            - '@members.manager.class'
+
+    # manager: restriction
+    members.manager.restriction:
+        class: MembersBundle\Manager\RestrictionManager
+        arguments:
+            - '@members.configuration'
+            - '@security.token_storage'
+
+    # manager: login
+    members.manager.login:
+        class: MembersBundle\Manager\LoginManager
+        arguments:
+            - '@security.token_storage'
+            - '@members.security.user_checker'
+            - '@security.authentication.session_strategy'
+            - '@request_stack'
