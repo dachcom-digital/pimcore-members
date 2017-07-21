@@ -4,9 +4,9 @@ services:
         class: MembersBundle\Form\Factory\FormFactory
         arguments:
             - '@form.factory'
-            - 'members_user_registration_form'
-            - 'MembersBundle\Form\Type\ResettingFormType'
-            - [Registration, Default]
+            - '%members_user.resetting.form.name%'
+            - '%members_user.resetting.form.type%'
+            - '%members_user.resetting.form.validation_groups%'
 
     #form resetting type
     members.resetting.form.type:

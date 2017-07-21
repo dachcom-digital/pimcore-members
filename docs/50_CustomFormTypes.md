@@ -4,4 +4,31 @@ The default form types only have some few elements. Within a registration you ma
 
 ## Create a Custom Form Type
 
-TBD.
+Just create your own form type and override the default value in your `AppBundle/Resources/config/pimcore/config.yml`:
+
+```yaml
+members:
+    relations:
+        profile:
+            form:
+                type:               MembersBundle\Form\Type\ProfileFormType
+                name:               members_user_profile_form
+                validation_groups:  [Profile, Default]
+        change_password:
+            form:
+                type:               MembersBundle\Form\Type\ChangePasswordFormType
+                name:               members_user_change_password_form
+                validation_groups:  [ChangePassword, Default]
+        registration:
+            form:
+                type:               AppBundle\Form\Type\RegistrationFormType
+                name:               members_user_registration_form
+                validation_groups:  [Registration, Default]
+        resetting:
+            token_ttl: 86400
+            form:
+                type:               MembersBundle\Form\Type\ResettingFormType
+                name:               members_user_resetting_form
+                validation_groups:  [ResetPassword, Default]
+            
+```

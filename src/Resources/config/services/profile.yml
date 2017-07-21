@@ -4,9 +4,9 @@ services:
         class: MembersBundle\Form\Factory\FormFactory
         arguments:
             - '@form.factory'
-            - 'members_user_registration_form'
-            - 'MembersBundle\Form\Type\ProfileFormType'
-            - [Registration, Default]
+            - '%members_user.profile.form.name%'
+            - '%members_user.profile.form.type%'
+            - '%members_user.profile.form.validation_groups%'
 
     #form profile type
     members.profile.form.type:

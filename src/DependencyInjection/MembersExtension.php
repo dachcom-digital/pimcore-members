@@ -33,7 +33,24 @@ class MembersExtension extends Extension
         }
 
         $container->setParameter('members.registration.event.type', $config['post_register_type']);
-        $container->setParameter('members.resetting.retry_ttl', 7200);
-        $container->setParameter('members.resetting.token_ttl', 8030);
+        $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
+        $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
+
+        foreach($config['relations']['profile']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.profile.form.' . $confName, $confValue);
+        }
+
+        foreach($config['relations']['change_password']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.change_password.form.' . $confName, $confValue);
+        }
+
+        foreach($config['relations']['registration']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.registration.form.' . $confName, $confValue);
+        }
+
+        foreach($config['relations']['resetting']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.resetting.form.' . $confName, $confValue);
+        }
+
     }
 }

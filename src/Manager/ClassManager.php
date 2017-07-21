@@ -40,7 +40,7 @@ class ClassManager
 
     public function getUserListing()
     {
-        $className = $this->configuration->getConfig('member');
+        $className = $this->configuration->getConfig('user');
 
         if (empty($className['adapter']['class_name'])) {
             return FALSE;
@@ -57,7 +57,7 @@ class ClassManager
 
     public function getUserClass()
     {
-        $className = $this->configuration->getConfig('member');
+        $className = $this->configuration->getConfig('user');
 
         if (empty($className['adapter']['class_name'])) {
             return FALSE;

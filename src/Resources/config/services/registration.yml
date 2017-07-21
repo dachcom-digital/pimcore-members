@@ -5,9 +5,9 @@ services:
         class: MembersBundle\Form\Factory\FormFactory
         arguments:
             - '@form.factory'
-            - 'members_user_registration_form'
-            - 'MembersBundle\Form\Type\RegistrationFormType'
-            - [Registration, Default]
+            - '%members_user.registration.form.name%'
+            - '%members_user.registration.form.type%'
+            - '%members_user.registration.form.validation_groups%'
 
     #form registration type
     members.registration.form.type:

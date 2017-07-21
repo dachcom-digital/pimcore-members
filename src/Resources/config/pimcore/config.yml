@@ -47,7 +47,7 @@ members:
     restriction:
         allowed_objects: []
 
-    member:
+    user:
         adapter:
             class_name: 'membersUser'
 
