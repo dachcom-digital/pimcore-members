@@ -60,9 +60,10 @@ members:
             class_name:
             object_path:
 
+    # move this to configuration pass since we need to localize it.
     emails:
-        register_confirm: '/domain1/de/members/emails/register-confirm' # √
-        register_confirmed: '/domain1/de/members/emails/register-confirmed' # only if admin activates account!!!
-        register_password_resetting: '/domain1/de/members/emails/password-reset' # √
-        admin_register_notification: '/domain1/de/members/emails/admin-register-notification' # √
+        register_confirm: '/domain1/de/members/emails/register-confirm'
+        register_confirmed: '/domain1/de/members/emails/register-confirmed'
+        register_password_resetting: '/domain1/de/members/emails/password-reset'
+        admin_register_notification: '/domain1/de/members/emails/admin-register-notification'
 

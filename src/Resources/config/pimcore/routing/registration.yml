@@ -2,15 +2,20 @@
 members_user_registration_register:
     path: /
     defaults: { _controller: MembersBundle:Registration:register }
+    methods:  [GET, POST]
 members_user_registration_check_email:
     path: /check-email
     defaults: { _controller: MembersBundle:Registration:checkEmail }
+    methods:  [GET]
 members_user_registration_check_admin:
     path: /check-admin
     defaults: { _controller: MembersBundle:Registration:checkAdmin }
+    methods:  [GET]
 members_user_registration_confirm:
     path: /confirm/{token}
     defaults: { _controller: MembersBundle:Registration:confirm }
+    methods:  [GET]
 members_user_registration_confirmed:
     path: /confirmed
     defaults: { _controller: MembersBundle:Registration:confirmed }
+    methods:  [GET]

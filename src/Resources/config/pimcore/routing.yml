@@ -23,7 +23,7 @@ members.asset_request:
 # frontend routing
 members_auth:
     resource: '@MembersBundle/Resources/config/pimcore/routing/auth.yml'
-    prefix: /{_locale}/members/
+    prefix: /{_locale}/members
 
 members_registration:
     resource: '@MembersBundle/Resources/config/pimcore/routing/registration.yml'
