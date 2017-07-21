@@ -4,7 +4,7 @@ namespace MembersBundle\Restriction;
 
 use Pimcore\Model;
 
-class Resource extends Model\Dao\AbstractDao
+class Dao extends Model\Dao\AbstractDao
 {
     /**
      * @var string
