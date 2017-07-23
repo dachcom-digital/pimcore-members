@@ -53,7 +53,6 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         } else {
             this.addElementToQueue(doc, 'page');
         }
-
     },
 
     postOpenObject: function (obj) {
@@ -63,7 +62,6 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         } else {
             this.addElementToQueue(obj, 'object');
         }
-
     },
 
     postOpenAsset: function (asset) {
@@ -73,7 +71,6 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         } else {
             this.addElementToQueue(asset, 'asset');
         }
-
     },
 
     postSaveDocument: function (doc, type, task, only) {
@@ -81,7 +78,6 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         if( doc.members ) {
             doc.members.restrictionTab.save();
         }
-
     },
 
     postSaveObject: function (obj, task, only) {
@@ -100,13 +96,10 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
             if( asset.members ) {
                 asset.members.restrictionTab.save();
             }
-
         }
-
     },
 
     addElementToQueue: function(obj, type) {
-
         this.dataQueue.push({'obj' : obj, 'type' : type});
     },
 
@@ -129,6 +122,10 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     processElement: function(obj, type) {
 
+        if(this.settings.restriction.enabled === false) {
+            return false;
+        }
+
         var isAllowed = true;
 
         if(type === 'object' && this.settings.restriction.allowed_objects.indexOf(obj.data.general.o_className) === -1) {
@@ -144,9 +141,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
             var restrictionTab = new pimcore.plugin.members.document.restriction(obj);
             restrictionTab.setup(type);
         }
-
     }
-
 });
 
 new pimcore.plugin.members();

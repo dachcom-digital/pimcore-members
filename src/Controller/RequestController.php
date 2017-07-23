@@ -15,6 +15,10 @@ class RequestController extends AbstractController
     {            
         $requestData = $hash;
 
+        if($this->container->get('members.configuration')->getConfig('restriction')['enabled'] === FALSE) {
+            throw $this->createNotFoundException('i18n restriction has been disabled.');
+        }
+
         if (empty($requestData)) {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }

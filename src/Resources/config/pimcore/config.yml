@@ -45,6 +45,7 @@ members:
     post_register_type: 'confirm_by_mail'
 
     restriction:
+        enabled: false
         allowed_objects: []
 
     user:
