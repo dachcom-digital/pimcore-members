@@ -20,7 +20,7 @@ class RequestController extends AbstractController
         }
 
         /** @var RestrictionUri $restrictionUri */
-        $restrictionUri = $this->container->get('members.auth.restriction.uri');
+        $restrictionUri = $this->container->get('members.security.restriction.uri');
         $dataToProcess = $restrictionUri->decodeAssetUrl($requestData);
 
         if ($dataToProcess === FALSE) {

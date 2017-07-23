@@ -153,6 +153,10 @@ class RestrictionUri
             $dataToProcess[] = $asset;
         }
 
+        if (count($dataToProcess) === 0) {
+            return FALSE;
+        }
+
         return $dataToProcess;
     }
 
