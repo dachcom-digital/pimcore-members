@@ -85,7 +85,7 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction()
     {
-        $sessionBag = $this->get('session')->getBag('i18n_session');
+        $sessionBag = $this->get('session')->getBag('members_session');
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -107,7 +107,7 @@ class RegistrationController extends AbstractController
      */
     public function checkAdminAction()
     {
-        $sessionBag = $this->get('session')->getBag('i18n_session');
+        $sessionBag = $this->get('session')->getBag('members_session');
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {

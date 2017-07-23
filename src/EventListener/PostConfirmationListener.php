@@ -49,8 +49,13 @@ class PostConfirmationListener implements EventSubscriberInterface
      * @param TokenGenerator        $tokenGenerator
      * @param string                $postEventType
      */
-    public function __construct(Mailer $pimcoreMailer, UrlGeneratorInterface $router, SessionInterface $session, TokenGenerator $tokenGenerator, $postEventType)
-    {
+    public function __construct(
+        Mailer $pimcoreMailer,
+        UrlGeneratorInterface $router,
+        SessionInterface $session,
+        TokenGenerator $tokenGenerator,
+        $postEventType
+    ) {
         $this->mailer = $pimcoreMailer;
         $this->tokenGenerator = $tokenGenerator;
         $this->router = $router;
@@ -97,7 +102,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->mailer->sendConfirmationEmailMessage($user);
 
         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
-        $sessionBag = $this->session->getBag('i18n_session');
+        $sessionBag = $this->session->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
         $url = $this->router->generate('members_user_registration_check_email');
@@ -117,7 +122,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
-        $sessionBag = $this->session->getBag('i18n_session');
+        $sessionBag = $this->session->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
         $url = $this->router->generate('members_user_registration_check_admin');
