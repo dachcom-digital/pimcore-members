@@ -16,7 +16,7 @@ class RequestController extends AbstractController
         $requestData = $hash;
 
         if($this->container->get('members.configuration')->getConfig('restriction')['enabled'] === FALSE) {
-            throw $this->createNotFoundException('i18n restriction has been disabled.');
+            throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
         if (empty($requestData)) {
