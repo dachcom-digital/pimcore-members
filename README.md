@@ -58,9 +58,18 @@ You need two classes: User and Group. So let's create it:
 
 > `membersGroup` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
 
-Feel free to add additional fields since those are just the required ones.
+Feel free to add additional fields since those are just the required ones. That's it. Members will use those classes to manage authentication and group management.
 
-That's it. Members will use those classes to manage authentication and group management.
+#### Frontend Implementation
+
+**Navigation:** Do **not** use the default nav builder extension (`pimcore_build_nav`). Just use the `members_build_nav` to build secure menus. 
+Otherwise your restricted pages will show up. This twig extension will also handel your navigation cache strategy.
+
+**Usage**  
+```twig
+{% set nav = members_build_nav(currentDoc, documentRootDoc, null, true) %}
+{{ pimcore_render_nav(nav, 'menu', 'renderMenu', { maxDepth: 2 }) }}
+```
 
 ### Further Information
 - [Custom Class Names](docs/20_CustomClassName.md)

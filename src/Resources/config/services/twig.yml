@@ -1,0 +1,10 @@
+services:
+    members.twig.extension.navigation:
+        class: MembersBundle\Twig\Extension\NavigationExtension
+        arguments:
+            - '@pimcore.templating.view_helper.navigation'
+            - '@members.manager.restriction'
+            - '@security.token_storage'
+        public: false
+        tags:
+            - { name: twig.extension }

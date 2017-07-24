@@ -46,7 +46,7 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    # that's not nice. is there a better way?
+    # event: handle post confirmation type
     members.event_listener.post_confirmation:
         class: MembersBundle\EventListener\PostConfirmationListener
         arguments:
