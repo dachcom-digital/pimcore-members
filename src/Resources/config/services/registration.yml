@@ -1,5 +1,4 @@
 services:
-
     #form registration factory
     members.registration.form.factory:
         class: MembersBundle\Form\Factory\FormFactory

@@ -62,32 +62,4 @@ class AuthController extends AbstractController
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
     }
-
-    /**
-     * @param Request $request
-     */
-    public function __loginFromAreaAction(Request $request)
-    {
-        if (!$request->getLocale() && $request->query->get('lang')) {
-            $request->setLocale($request->query->get('lang'));
-        }
-
-        $loginData = $this->parseLoginAction($request);
-
-        if ($loginData['error'] === TRUE) {
-            $this->_helper->flashMessenger([
-                'mode' => 'area',
-                'type' => 'danger',
-                'text' => $this->translate->_($loginData['message']),
-            ]);
-
-            if (!empty($loginData['redirect'])) {
-                $this->redirect($loginData['redirect']);
-            }
-        } else if ($loginData['error'] === FALSE) {
-            if (!empty($loginData['redirect'])) {
-                $this->redirect($loginData['redirect']);
-            }
-        }
-    }
 }

@@ -1,0 +1,16 @@
+services:
+    members.brick.builder:
+        class: MembersBundle\Document\Builder\BrickBuilder
+        shared: false
+        arguments:
+            - '@security.token_storage'
+            - '@security.csrf.token_manager'
+            - '@pimcore.templating.include_renderer'
+            - '@router'
+
+    members.area.brick.login:
+        class: MembersBundle\Document\Areabrick\MembersLogin\MembersLogin
+        arguments:
+            - '@members.brick.builder'
+        tags:
+            - { name: pimcore.area.brick, id: members_login }

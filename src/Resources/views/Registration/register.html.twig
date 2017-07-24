@@ -11,7 +11,7 @@
             <div class="col-xs-12">
 
                 <h2 class="text-center">{{ 'Sign up'|trans }} {{ 'or'|trans }} <a href="{{ path('members_user_security_login') }}">{{ 'Login'|trans }}</a></h2>
-                {% include '@Members/Form/user_form.html.twig' with { type: 'create' } %}
+                {% include '@Members/Registration/register_content.html.twig' with { type: 'create' } %}
 
             </div>
 

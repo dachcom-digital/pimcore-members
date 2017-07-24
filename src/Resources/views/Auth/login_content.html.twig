@@ -6,6 +6,12 @@
     {% if csrf_token %}
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
     {% endif %}
+    {% if target_path %}
+        <input type="hidden" name="_target_path" value="{{ target_path }}" />
+    {% endif %}
+    {% if failure_path %}
+        <input type="hidden" name="_failure_path" value="{{ failure_path }}" />
+    {% endif %}
 
     <label for="username">{{ 'members.auth.login.username'|trans }}</label>
     <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />

@@ -1,0 +1,10 @@
+{#
+
+ * renders one of these templates:
+ *
+ * @view @Members/Auth/Area/login_area.html.twig
+ * @view @Members/Auth/Area/login_area_logged_in.html.twig
+ * @view @Members/Auth/Area/login_area_logged_in_snippet.html.twig
+
+#}
+{% include '@Members/' ~ members_area_template ~ '.html.twig' %}
