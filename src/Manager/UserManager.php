@@ -6,6 +6,7 @@ use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\Listing\AbstractListing;
 use Pimcore\Model\Object;
+use Pimcore\Model\Version;
 
 class UserManager implements UserManagerInterface
 {
@@ -174,16 +175,43 @@ class UserManager implements UserManagerInterface
 
     public function updateUser(UserInterface $user)
     {
+        $new = FALSE;
+
         //It's a new user!
         if (empty($user->getKey())) {
+            $new = TRUE;
             $user->setKey(\Pimcore\File::getValidFilename($user->getEmail()));
             $user->setParentId($this->memberStorageId);
         }
 
-        if(!empty($user->getPlainPassword())) {
+        if (!empty($user->getPlainPassword())) {
             $user->setPassword($user->getPlainPassword());
         }
 
+        return $new ? $this->saveWithVersion($user) : $this->saveWithoutVersion($user);
+    }
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return mixed
+     */
+    private function saveWithVersion($user)
+    {
         return $user->save();
+    }
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return mixed
+     */
+    private function saveWithoutVersion($user)
+    {
+        Version::disable();
+        $state = $user->save();
+        Version::enable();
+
+        return $state;
     }
 }
