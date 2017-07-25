@@ -71,12 +71,16 @@ Otherwise your restricted pages will show up. This twig extension will also hand
 {{ pimcore_render_nav(nav, 'menu', 'renderMenu', { maxDepth: 2 }) }}
 ```
 
+#### Email Implementation
+You're almost there, just check the [email configuration](docs/70_EmailConfiguration.md) and you're good to go.
+
 ### Further Information
 - [Custom Class Names](docs/20_CustomClassName.md)
 - [Frontend Routes & Views](docs/30_FrontendRoutes.md)
 - [Available Events](docs/40_Events.md)
 - [Custom Form Types](docs/50_CustomFormTypes.md)
 - [Registration Types](docs/60_RegistrationTypes.md)
+- [Email Configuration](docs/70_EmailConfiguration.md)
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)

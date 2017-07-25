@@ -34,10 +34,10 @@ class RegistrationController extends AbstractController
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
+        /** @var UserInterface $user */
         $user = $userManager->createUser();
 
         $event = new GetResponseUserEvent($user, $request);
-
         $dispatcher->dispatch(MembersEvents::REGISTRATION_INITIALIZE, $event);
 
         if (NULL !== $event->getResponse()) {
@@ -52,10 +52,11 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted()) {
 
             if ($form->isValid()) {
+
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
 
-                $userManager->updateUser($user);
+                $userManager->updateUser($user, $this->getUserProperties($request));
 
                 if (NULL === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
@@ -190,5 +191,25 @@ class RegistrationController extends AbstractController
         if ($this->get('session')->has($key)) {
             return $this->get('session')->get($key);
         }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    private function getUserProperties($request)
+    {
+        $siteResolver = $this->get('pimcore.service.request.site_resolver');
+
+        $userProperties = [
+            '_user_locale' => $request->getLocale()
+        ];
+
+        if($siteResolver->isSiteRequest()) {
+            $userProperties['_site_domain'] = $siteResolver->getSite($request)->getMainDomain();
+        }
+
+        return $userProperties;
     }
 }

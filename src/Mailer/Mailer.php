@@ -6,6 +6,7 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Mail;
 use Pimcore\Model\Document\Email;
+use Pimcore\Model\Document\Service;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Mailer implements MailerInterface
@@ -35,7 +36,7 @@ class Mailer implements MailerInterface
      */
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
-        $template = $this->getMailTemplatePath('register_confirm');
+        $template = $this->getMailTemplatePath('register_confirm', $user);
         $url = $this->router->generate('members_user_registration_confirm', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
@@ -55,7 +56,7 @@ class Mailer implements MailerInterface
             return;
         }
 
-        $template = $this->getMailTemplatePath('register_confirmed');
+        $template = $this->getMailTemplatePath('register_confirmed', $user);
         $url = $this->router->generate('members_user_security_login', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
@@ -71,7 +72,7 @@ class Mailer implements MailerInterface
      */
     public function sendResettingEmailMessage(UserInterface $user)
     {
-        $template = $this->getMailTemplatePath('register_password_resetting');
+        $template = $this->getMailTemplatePath('register_password_resetting', $user);
         $url = $this->router->generate('members_user_resetting_reset', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
@@ -91,7 +92,7 @@ class Mailer implements MailerInterface
             return;
         }
 
-        $template = $this->getMailTemplatePath('admin_register_notification');
+        $template = $this->getMailTemplatePath('admin_register_notification', $user);
         $url = $this->router->generate('pimcore_admin_login_deeplink', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
@@ -124,10 +125,41 @@ class Mailer implements MailerInterface
         $email->send();
     }
 
-    private function getMailTemplatePath($type)
+    /**
+     * @param string        $type
+     * @param UserInterface $user
+     *
+     * @return string
+     */
+    private function getMailTemplatePath($type = '', UserInterface $user)
     {
         $templates = $this->configuration->getConfig('emails');
 
-        return $templates[$type];
+        $userLocale = $user->getProperty('_user_locale');
+        $userSite = $user->getProperty('_site_domain');
+
+        $templateBranch = $templates['default'];
+        if(!empty($userSite) && !empty($templates['sites'])) {
+
+            $key = array_search($userSite, array_column($templates['sites'], 'main_domain'));
+
+            if($key !== FALSE) {
+                $templateBranch = $templates['sites'][$key]['emails'];
+            }
+        }
+
+        $requestedTemplate = $templateBranch[$type];
+        if(!empty($userLocale) && strpos($requestedTemplate, '{_locale}') !== FALSE) {
+            $_requestedTemplate = str_replace('{_locale}', $userLocale, $requestedTemplate);
+
+            //fallback: there is maybe a nice locale to url transform, like "de_CH" => "de-ch"
+            if(!Service::pathExists($_requestedTemplate) && strpos($userLocale, '_') !== FALSE) {
+                $_requestedTemplate = str_replace('{_locale}', strtolower(str_replace('_', '-', $userLocale)), $requestedTemplate);
+            }
+
+            $requestedTemplate = $_requestedTemplate;
+        }
+
+        return $requestedTemplate;
     }
 }

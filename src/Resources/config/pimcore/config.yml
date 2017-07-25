@@ -61,10 +61,10 @@ members:
             class_name:
             object_path:
 
-    # move this to configuration pass since we need to localize it.
     emails:
-        register_confirm: '/domain1/de/members/emails/register-confirm'
-        register_confirmed: '/domain1/de/members/emails/register-confirmed'
-        register_password_resetting: '/domain1/de/members/emails/password-reset'
-        admin_register_notification: '/domain1/de/members/emails/admin-register-notification'
-
+        default:
+            register_confirm: '/email/register-confirm'
+            register_confirmed: '/email/register-confirmed'
+            register_password_resetting: '/email/password-reset'
+            admin_register_notification: '/email/admin-register-notification'
+        sites: ~

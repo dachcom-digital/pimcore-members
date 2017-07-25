@@ -1,23 +1,12 @@
 [
     {
-        "type": "page",
-        "path": "",
-        "key": "members",
-        "name": "Profile",
-        "title": "Member profile",
-        "module": "MembersBundle",
-        "controller": "Profile",
-        "action": "show",
-        "template": "MembersBundle:Profile:show.html.twig"
-    },
-    {
         "type": "folder",
-        "path": "members",
-        "key": "emails"
+        "path": "",
+        "key": "email"
     },
     {
         "type": "email",
-        "path": "members/emails",
+        "path": "email",
         "key": "register-confirm",
         "module": "MembersBundle",
         "controller": "Email",
@@ -52,7 +41,7 @@
     },
     {
         "type": "email",
-        "path": "members/emails",
+        "path": "email",
         "key": "register-confirmed",
         "module": "MembersBundle",
         "controller": "Email",
@@ -87,7 +76,7 @@
     },
     {
         "type": "email",
-        "path": "members/emails",
+        "path": "email",
         "key": "password-reset",
         "module": "MembersBundle",
         "controller": "Email",
@@ -122,7 +111,7 @@
     },
     {
         "type": "email",
-        "path": "members/emails",
+        "path": "email",
         "key": "admin-register-notification",
         "module": "MembersBundle",
         "controller": "Email",

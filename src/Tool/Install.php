@@ -43,7 +43,6 @@ class Install extends AbstractInstaller
      */
     protected $_user;
 
-
     /**
      * Install constructor.
      *
@@ -68,7 +67,8 @@ class Install extends AbstractInstaller
 
         // @fixme: manage routing and documents?
         // @see https://github.com/pimcore/pimcore/issues/1733
-        $this->installDocuments();
+        $this->installObjectFolder();
+        $this->installEmails();
         $this->installFolder();
         $this->installTranslations();
         $this->injectDbData();
@@ -143,10 +143,7 @@ class Install extends AbstractInstaller
 
     }
 
-    /**
-     *
-     */
-    public function installDocuments()
+    private function installObjectFolder()
     {
         //install object folder "members" and lock it!
         $membersPath = Object\Folder::getByPath('/members');
@@ -166,104 +163,85 @@ class Install extends AbstractInstaller
             $obj->setLocked(TRUE);
             $obj->update();
         }
+    }
 
-        $file = $this->installSourcesPath . '/documents-Members.json';
+    private function installEmails()
+    {
+        $file = $this->installSourcesPath . '/emails-Members.json';
         $contents = file_get_contents($file);
         $docs = $this->serializer->decode($contents, 'json');
 
-        $validLanguages = explode(",", \Pimcore\Config::getSystemConfig()->general->validLanguages);
-        $languagesDone = [];
+        $defaultLanguage = \Pimcore\Config::getSystemConfig()->general->defaultLanguage;
 
-        foreach ($validLanguages as $language) {
-            $languageDocument = Document::getByPath("/" . $language);
+        if(!in_array($defaultLanguage, ['de', 'en'])) {
+            $defaultLanguage = 'en';
+        }
 
-            if (!$languageDocument instanceof Document) {
-                $languageDocument = new Document\Page();
-                $languageDocument->setParent(Document::getById(1));
-                $languageDocument->setKey($language);
-                $languageDocument->save();
-            }
+        foreach ($docs as $def) {
 
-            foreach ($docs as $def) {
+            $path = '/' . $def['path'] . '/' . $def['key'];
 
-                $path = "/" . $language . "/" . $def['path'] . "/" . $def['key'];
+            if (!Document\Service::pathExists($path)) {
+                $class = "Pimcore\\Model\\Document\\" . ucfirst($def['type']);
 
-                if (!Document\Service::pathExists($path)) {
-                    $class = "Pimcore\\Model\\Document\\" . ucfirst($def['type']);
+                if (\Pimcore\Tool::classExists($class)) {
+                    /** @var Document\Email $document */
+                    $document = new $class();
+                    $document->setParent(Document::getByPath('/' . $def['path']));
+                    $document->setKey($def['key']);
+                    $document->setUserOwner($this->_getUser()->getId());
+                    $document->setUserModification($this->_getUser()->getId());
 
-                    if (\Pimcore\Tool::classExists($class)) {
-                        /** @var Document $document */
-                        $document = new $class();
-                        $document->setParent(Document::getByPath("/" . $language . "/" . $def['path']));
+                    if (isset($def['name'])) {
+                        $document->setName($def['name']);
+                    }
+                    if (isset($def['title'])) {
+                        $document->setTitle($def['title']);
+                    }
+                    if (isset($def['module'])) {
+                        $document->setModule($def['module']);
+                    }
+                    if (isset($def['controller'])) {
+                        $document->setController($def['controller']);
+                    }
+                    if (isset($def['action'])) {
+                        $document->setAction($def['action']);
+                    }
+                    if (isset($def['template'])) {
+                        $document->setTemplate($def['template']);
+                    }
 
-                        $document->setKey($def['key']);
-                        $document->setProperty("language", $language, 'text', TRUE);
-
-                        $document->setUserOwner($this->_getUser()->getId());
-                        $document->setUserModification($this->_getUser()->getId());
-
-                        if (isset($def['name'])) {
-                            $document->setName($def['name']);
-                        }
-                        if (isset($def['title'])) {
-                            $document->setTitle($def['title']);
-                        }
-                        if (isset($def['module'])) {
-                            $document->setModule($def['module']);
-                        }
-                        if (isset($def['controller'])) {
-                            $document->setController($def['controller']);
-                        }
-                        if (isset($def['action'])) {
-                            $document->setAction($def['action']);
-                        }
-                        if (isset($def['template'])) {
-                            $document->setTemplate($def['template']);
-                        }
-
-                        if (array_key_exists('data', $def)) {
-                            foreach ($def['data'] as $fieldLanguage => $fields) {
-                                if ($fieldLanguage !== $language) {
-                                    continue;
-                                }
-
-                                foreach ($fields as $field) {
-                                    $key = $field['key'];
-                                    $type = $field['type'];
-                                    $content = NULL;
-
-                                    if (array_key_exists('value', $field)) {
-                                        $content = $field['value'];
-                                    }
-
-                                    if (!empty($content)) {
-                                        if ($type === 'objectProperty') {
-                                            $document->setValue($key, $content);
-                                        } else {
-                                            $document->setRawElement($key, $type, $content);
-                                        }
-                                    }
-                                }
+                    if (array_key_exists('data', $def)) {
+                        foreach ($def['data'] as $fieldLanguage => $fields) {
+                            if ($fieldLanguage !== $defaultLanguage) {
+                                continue;
                             }
-                        }
 
-                        $document->setPublished(TRUE);
-                        $document->save();
+                            foreach ($fields as $field) {
+                                $key = $field['key'];
+                                $type = $field['type'];
+                                $content = NULL;
 
-                        //Link translations
-                        foreach ($languagesDone as $doneLanguage) {
-                            $translatedDocument = Document::getByPath("/" . $doneLanguage . "/" . $def['path'] . "/" . $def['key']);
+                                if (array_key_exists('value', $field)) {
+                                    $content = $field['value'];
+                                }
 
-                            if ($translatedDocument) {
-                                $service = new \Pimcore\Model\Document\Service();
-                                $service->addTranslation($document, $translatedDocument, $doneLanguage);
+                                if (!empty($content)) {
+                                    if ($type === 'objectProperty') {
+                                        $document->setValue($key, $content);
+                                    } else {
+                                        $document->setRawElement($key, $type, $content);
+                                    }
+                                }
                             }
                         }
                     }
+
+                    $document->setPublished(TRUE);
+                    $document->save();
+
                 }
             }
-
-            $languagesDone[] = $language;
         }
     }
 

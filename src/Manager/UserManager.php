@@ -173,7 +173,13 @@ class UserManager implements UserManagerInterface
         return $user;
     }
 
-    public function updateUser(UserInterface $user)
+    /**
+     * @param UserInterface $user
+     * @param array         $properties
+     *
+     * @return mixed
+     */
+    public function updateUser(UserInterface $user, $properties = [])
     {
         $new = FALSE;
 
@@ -182,6 +188,12 @@ class UserManager implements UserManagerInterface
             $new = TRUE;
             $user->setKey(\Pimcore\File::getValidFilename($user->getEmail()));
             $user->setParentId($this->memberStorageId);
+
+            if (!empty($properties)) {
+                foreach ($properties as $propKey => $propValue) {
+                    $user->setProperty($propKey, 'text', $propValue, FALSE);
+                }
+            }
         }
 
         if (!empty($user->getPlainPassword())) {
