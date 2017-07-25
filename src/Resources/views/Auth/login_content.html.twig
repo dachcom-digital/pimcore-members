@@ -6,10 +6,10 @@
     {% if csrf_token %}
         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
     {% endif %}
-    {% if target_path %}
+    {% if target_path is defined %}
         <input type="hidden" name="_target_path" value="{{ target_path }}" />
     {% endif %}
-    {% if failure_path %}
+    {% if failure_path is defined %}
         <input type="hidden" name="_failure_path" value="{{ failure_path }}" />
     {% endif %}
 
