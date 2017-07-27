@@ -7,4 +7,6 @@ interface GroupInterface
     public function getId();
 
     public function getName();
+
+    public function getRoles();
 }

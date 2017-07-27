@@ -58,37 +58,21 @@ abstract class AbstractUser extends Concrete implements UserInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function setRoles(array $roles)
-    {
-        $this->roles = [];
-        foreach ($roles as $role) {
-            $this->addRole($role);
-        }
-
-        return $this;
-    }
-
     public function getRoles()
     {
         $roles = $this->roles;
 
-        //@todo: roles for groups.
         /** @var GroupInterface $group */
         foreach ($this->getGroups() as $group) {
-            $roles = array_merge($roles, []);  //$group->getRoles()
+            $roles = array_merge($roles, $group->getRoles());
         }
 
         // we need to make sure to have at least one role
         $roles[] = static::ROLE_DEFAULT;
 
         return array_unique($roles);
-    }
-
-    public function getGroupRelations()
-    {
-
     }
 
     /**

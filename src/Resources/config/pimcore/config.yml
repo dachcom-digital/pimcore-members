@@ -10,10 +10,6 @@ pimcore:
                     membersGroupMultiselect: MembersBundle\CoreExtension\GroupMultiselect
 security:
 
-    role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
-
     providers:
         members:
             id: members.user_provider.username

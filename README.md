@@ -55,6 +55,7 @@ You need two classes: User and Group. So let's create it:
 | Name | Field Type | Comment |
 |---------------------|-------------|-------------------------------|
 | name | Input |  |
+| roles | Multiselection | Set "Options Provider Class or Service Name" to `MembersBundle\CoreExtension\Provider\RoleOptionsProvider` |
 
 > `membersGroup` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
 
