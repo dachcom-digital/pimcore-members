@@ -75,10 +75,18 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-     # event: check restrictions asset
+    # event: check restrictions asset
     members.event_listener.connector.lucene_search_asset_restriction:
         class: MembersBundle\EventListener\Connector\LuceneSearchAssetRestriction
         arguments:
             - '@members.security.restriction.uri'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: check restrictions asset
+    members.event_listener.connector.lucene_search_restriction_context:
+        class: MembersBundle\EventListener\Connector\LuceneSearchRestrictionContext
+        arguments:
+            - '@security.token_storage'
         tags:
             - { name: kernel.event_subscriber }

@@ -70,9 +70,12 @@ class HeadMetaListener extends AbstractFrontendListener implements EventSubscrib
             return;
         }
 
+        $groups = ['default'];
         $restrictionStorage = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
-        if(!is_null($restrictionStorage)) {
-            $this->headMeta->appendName('m:groups', implode(',', $restrictionStorage['current_route_restriction_groups']));
+        if(!is_null($restrictionStorage) && !empty($restrictionStorage['current_route_restriction_groups'])) {
+            $groups = $restrictionStorage['current_route_restriction_groups'];
         }
+
+        $this->headMeta->appendName('m:groups', implode(',', $groups));
     }
 }
