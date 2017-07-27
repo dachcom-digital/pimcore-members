@@ -82,6 +82,7 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Custom Form Types](docs/50_CustomFormTypes.md)
 - [Registration Types](docs/60_RegistrationTypes.md)
 - [Email Configuration](docs/70_EmailConfiguration.md)
+- [Roles](docs/80_Roles.md)
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)
