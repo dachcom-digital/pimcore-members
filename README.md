@@ -48,6 +48,9 @@ You need two classes: User and Group. So let's create it:
 | passwordRequestedAt | Date & Time | set to it read only |
 | groups | User Group | This field comes with Members |
 
+| allowApi | Checkbox | Optional: Only if you want to use the api guardian
+| apiToken | Input | Optional: Only if you want to use the api guardian. Make sure the token is a strong one.
+
 > `membersUser` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
 
 *Group*  
