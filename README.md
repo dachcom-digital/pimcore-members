@@ -31,7 +31,7 @@ But no worries, it's still simple to integrate.
 You need two classes: User and Group. So let's create it:
 
 *User*  
-1. Create a class and call it `membersUser`
+1. Create a class and call it `MembersUser`
 2. Add parent class: `\MembersBundle\Adapter\User\AbstractUser`
 3. Add fields:
 
@@ -48,7 +48,7 @@ You need two classes: User and Group. So let's create it:
 > `membersUser` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
 
 *Group*  
-1. Create a class and call it `membersGroup`
+1. Create a class and call it `MembersGroup`
 2. Add parent class: `\MembersBundle\Adapter\Group\AbstractGroup`
 3. Add fields:
 
