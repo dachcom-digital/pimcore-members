@@ -28,6 +28,9 @@ Since Members should be the one and only frontend authentication Bundle, we need
 But no worries, it's still simple to integrate.
 
 #### Class Installation
+
+> There is also a class installer command. If your not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
+
 You need two classes: User and Group. So let's create it:
 
 *User*  
