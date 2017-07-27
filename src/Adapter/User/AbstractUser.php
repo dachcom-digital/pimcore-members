@@ -66,7 +66,8 @@ abstract class AbstractUser extends Concrete implements UserInterface
 
         /** @var GroupInterface $group */
         foreach ($this->getGroups() as $group) {
-            $roles = array_merge($roles, $group->getRoles());
+            $groupRoles = $group->getRoles();
+            $roles = array_merge($roles, is_array($groupRoles) ? $groupRoles : []);
         }
 
         // we need to make sure to have at least one role

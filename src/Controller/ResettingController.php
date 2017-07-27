@@ -37,6 +37,7 @@ class ResettingController extends AbstractController
 
         /** @var $user UserInterface */
         $user = $this->get('members.manager.user')->findUserByUsernameOrEmail($username);
+
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 

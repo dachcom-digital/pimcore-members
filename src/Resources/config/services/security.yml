@@ -1,5 +1,10 @@
 services:
 
+    members.security.guard.token:
+        class: MembersBundle\Security\TokenAuthenticator
+        arguments:
+            - '@members.manager.user'
+
     members.security.user_checker:
         class: MembersBundle\Security\UserChecker
 

@@ -113,6 +113,27 @@ class UserManager implements UserManagerInterface
     }
 
     /**
+     * @param  string $token
+     *
+     * @return NULL|AbstractUser
+     */
+    public function findUserByApiToken($token)
+    {
+        /** @var AbstractListing $memberListing */
+        $memberListing = $this->classManager->getUserListing();
+        $memberListing->addConditionParam('allowApi = ?', 1);
+        $memberListing->addConditionParam('apiToken = ?', $token);
+
+        $elements = $memberListing->load();
+
+        if (count($elements) === 1) {
+            return $elements[0];
+        }
+
+        return NULL;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = TRUE)

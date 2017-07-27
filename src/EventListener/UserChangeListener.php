@@ -3,10 +3,11 @@
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Configuration\Configuration;
 use MembersBundle\Mailer\Mailer;
 use Pimcore\Event\Model\ObjectEvent;
 use Pimcore\Event\ObjectEvents;
-use Pimcore\Version;
+use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserChangeListener implements EventSubscriberInterface
@@ -17,13 +18,20 @@ class UserChangeListener implements EventSubscriberInterface
     protected $mailer;
 
     /**
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
      * RestrictionServiceListener constructor.
      *
      * @param Mailer $pimcoreMailer
+     * @param Configuration $configuration
      */
-    public function __construct(Mailer $pimcoreMailer)
+    public function __construct(Mailer $pimcoreMailer, Configuration $configuration)
     {
         $this->mailer = $pimcoreMailer;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -32,7 +40,7 @@ class UserChangeListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ObjectEvents::POST_UPDATE => 'handleObjectUpdate'
+            ObjectEvents::PRE_UPDATE => 'handleObjectUpdate'
         ];
     }
 
@@ -43,7 +51,8 @@ class UserChangeListener implements EventSubscriberInterface
     {
         $user = $e->getObject();
 
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof UserInterface
+            || $this->configuration->getConfig('post_register_type') !== 'confirm_by_admin') {
             return;
         }
 

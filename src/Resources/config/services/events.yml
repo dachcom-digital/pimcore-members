@@ -72,6 +72,7 @@ services:
         class: MembersBundle\EventListener\UserChangeListener
         arguments:
             - '@members.mailer'
+            - '@members.configuration'
         tags:
             - { name: kernel.event_subscriber }
 
