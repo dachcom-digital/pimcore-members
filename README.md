@@ -47,7 +47,6 @@ You need two classes: User and Group. So let's create it:
 | password | Password |  |
 | passwordRequestedAt | Date & Time | set to it read only |
 | groups | User Group | This field comes with Members |
-
 | allowApi | Checkbox | Optional: Only if you want to use the api guardian
 | apiToken | Input | Optional: Only if you want to use the api guardian. Make sure the token is a strong one.
 
