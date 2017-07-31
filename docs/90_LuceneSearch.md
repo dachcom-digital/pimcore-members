@@ -15,7 +15,6 @@ This authenticator comes with the Members Bundle, so there is nothing else to do
 > Feel free to add your custom authenticator if needed.
 
 ```yaml
-
 security:
     firewalls:
         members_fe:
@@ -70,21 +69,20 @@ class LuceneSearchCrawlerHeader implements EventSubscriberInterface
 3. Register a EventListener in `app/config/config.yml`:
 
 ```yaml
-
 # credentials of the new lucene search user
 parameters:
     lucene_search_user_name: 'lucene_search_crawler'
     lucene_search_password: 'crawler@universe.org'
 
-app.event_listener.lucene_search_crawler_header:
-    class: AppBundle\EventListener\LuceneSearchCrawlerHeader
-    arguments:
-        - '%lucene_search_user_name%'
-        - '%lucene_search_password%'
-    tags:
-        - { name: kernel.event_subscriber }
+services:
+    app.event_listener.lucene_search_crawler_header:
+        class: AppBundle\EventListener\LuceneSearchCrawlerHeader
+        arguments:
+            - '%lucene_search_user_name%'
+            - '%lucene_search_password%'
+        tags:
+            - { name: kernel.event_subscriber }
 ```
 
-4. Done
-Re-Run your crawler. All your restricted pages should be available in the index now. 
+4. Done! Re-Run your crawler. All your restricted pages should be available in the index now. 
 Don't worry, they are save since the Members Bundle automatically protects the user frontend search (check top of this page).

@@ -26,7 +26,7 @@ security:
             logout:
                 path: members_user_security_logout
                 target: /
-            anonymous:    true
+            anonymous: true
 
     access_control:
         - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
