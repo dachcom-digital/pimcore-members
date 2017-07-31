@@ -27,9 +27,6 @@ security:
                 path: members_user_security_logout
                 target: /
             anonymous:    true
-            guard:
-                authenticators:
-                    - 'members.security.guard.token'
 
     access_control:
         - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }

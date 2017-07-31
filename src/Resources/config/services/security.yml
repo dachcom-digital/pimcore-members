@@ -1,8 +1,9 @@
 services:
 
-    members.security.guard.token:
-        class: MembersBundle\Security\TokenAuthenticator
+    members.security.guard.lucene_search:
+        class: MembersBundle\Security\LuceneSearchAuthenticator
         arguments:
+            - '@members.security.password_encoder_factory'
             - '@members.manager.user'
 
     members.security.user_checker:

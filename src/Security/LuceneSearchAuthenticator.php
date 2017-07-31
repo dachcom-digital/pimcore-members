@@ -4,6 +4,7 @@ namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Manager\UserManager;
+use Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,8 +14,13 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class TokenAuthenticator extends AbstractGuardAuthenticator
+class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
 {
+    /**
+     * @var UserAwareEncoderFactory
+     */
+    protected $userAwareEncoderFactory;
+
     /**
      * @var UserManager
      */
@@ -23,10 +29,12 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     /**
      * LuceneSearchAuthenticator constructor.
      *
+     * @param UserAwareEncoderFactory $userAwareEncoderFactory
      * @param UserManager $userManager
      */
-    public function __construct(UserManager $userManager)
+    public function __construct(UserAwareEncoderFactory $userAwareEncoderFactory, UserManager $userManager)
     {
+        $this->userAwareEncoderFactory = $userAwareEncoderFactory;
         $this->userManager = $userManager;
     }
 
@@ -37,13 +45,25 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if (!$token = $request->headers->get('X-AUTH-TOKEN')) {
+        if (!$token = $request->headers->get('X-LUCENE-SEARCH-AUTHORIZATION')) {
             return NULL;
         }
 
-        return [
-            'token' => $token,
-        ];
+        $tokenParts = explode(' ', $token);
+        if (count($tokenParts) == 2 && $tokenParts[0] === 'Basic') {
+            try {
+                $decoded = base64_decode($tokenParts[1]);
+                $usernameAndPassword = explode(':', $decoded);
+                if (count($usernameAndPassword) == 2) {
+                    return [
+                        'username' => $usernameAndPassword[0],
+                        'password' => $usernameAndPassword[1]
+                    ];
+                }
+            } catch (\Exception $e) {
+                return NULL;
+            }
+        }
     }
 
     /**
@@ -54,13 +74,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        $apiKey = $credentials['token'];
-
-        if (NULL === $apiKey) {
-            return NULL;
-        }
-
-        $user = $this->userManager->findUserByApiToken($apiKey);
+        $user = $this->userManager->findUserByUsername($credentials['username']);
 
         if (!$user instanceof AbstractUser) {
             return NULL;
@@ -77,7 +91,8 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return TRUE;
+        $encoder = $this->userAwareEncoderFactory->getEncoder($user);
+        return $encoder->isPasswordValid($credentials['password'], $credentials['password'], '');
     }
 
     /**
@@ -89,7 +104,8 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        return NULL;
+        $request->attributes->set('user', $token->getUser());
+        return null;
     }
 
     /**
