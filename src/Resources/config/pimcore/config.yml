@@ -17,7 +17,7 @@ security:
     firewalls:
 
         members_fe:
-            pattern: ^/
+            pattern: ^/(?!(admin)).*$
             form_login:
                 login_path: members_user_security_login
                 check_path: members_user_security_check
