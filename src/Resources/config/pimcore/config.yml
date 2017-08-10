@@ -47,11 +47,11 @@ members:
 
     user:
         adapter:
-            class_name: 'membersUser'
+            class_name: 'MembersUser'
 
     group:
         adapter:
-            class_name: 'membersGroup'
+            class_name: 'MembersGroup'
 
     auth:
         adapter:
