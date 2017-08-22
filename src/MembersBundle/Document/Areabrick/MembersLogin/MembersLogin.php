@@ -93,4 +93,20 @@ class MembersLogin extends AbstractTemplateAreabrick
     {
         return '';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHtmlTagOpen(Info $info)
+    {
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHtmlTagClose(Info $info)
+    {
+        return '';
+    }
 }
