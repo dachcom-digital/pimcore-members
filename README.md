@@ -2,7 +2,7 @@
 Add frontend user authentication and document restriction to pimcore 5.0.
 
 #### Requirements
-* Pimcore 5
+* Pimcore 5. Only with Build 96 or greater.
 
 #### Features
 * Create Members in Backend
