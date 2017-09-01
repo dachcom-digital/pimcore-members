@@ -135,9 +135,8 @@ class RestrictionController extends AdminController
             $hasRestriction = FALSE;
         }
 
-        //remove restriction since they has been disabled.
-        if (!isset($settings->membersDocumentRestrict)) {
-
+        //remove restriction since no group is selected any more.
+        if (empty($settings->membersDocumentUserGroups)) {
             if ($hasRestriction === TRUE) {
                 $restriction->delete();
             }

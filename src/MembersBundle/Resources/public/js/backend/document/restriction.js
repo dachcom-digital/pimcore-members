@@ -176,53 +176,6 @@ pimcore.plugin.members.document.restriction = Class.create({
         }
 
         restrictionItems.push(
-            {
-                xtype:'checkbox',
-                name: 'membersDocumentRestrict',
-                fieldLabel: t('members_enable_document_restriction'),
-                checked: this.data.isActive,
-                disabled: this.data.isInherited === true
-            }
-        );
-
-        var showInheritElements = this.cType === 'page'
-            || this.cType === 'object'
-            || (this.cType === 'asset' && this.element.type === 'folder');
-
-        if(showInheritElements) {
-
-            restrictionItems.push({
-                xtype:'checkbox',
-                name: 'membersDocumentInheritable',
-                fieldLabel: t('members_enable_document_inheritable'),
-                checked: this.data.inherit || this.element.type === 'folder',
-                readOnly: this.element.type === 'folder',
-                disabled: this.data.isInherited === true,
-                listeners: {
-
-                    afterrender: function(e,b) {
-                        var me = this;
-                        if(_self.element.type === 'folder') {
-
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: me.el,
-                                title: 'Info',
-                                width: 200,
-                                showDelay:50,
-                                html: t('members_enable_document_inheritable_locked'),
-                                listeners: {
-                                    scope: me
-                                }
-                            });
-
-                            me.setStyle('opacity', 0.5);
-                        }
-                    }
-                }
-            });
-        }
-
-        restrictionItems.push(
             Ext.create('Ext.ux.form.MultiSelect', {
                 name: 'membersDocumentUserGroups',
                 triggerAction: 'all',
@@ -245,6 +198,42 @@ pimcore.plugin.members.document.restriction = Class.create({
                 }
             })
         );
+
+        var showInheritElements = this.cType === 'page'
+            || this.cType === 'object'
+            || (this.cType === 'asset' && this.element.type === 'folder');
+
+        if(showInheritElements) {
+
+            restrictionItems.push({
+                xtype:'checkbox',
+                name: 'membersDocumentInheritable',
+                fieldLabel: t('members_enable_document_inheritable'),
+                checked: this.data.inherit || this.element.type === 'folder',
+                readOnly: this.element.type === 'folder',
+                disabled: this.data.isInherited === true,
+                listeners: {
+                    afterrender: function(e,b) {
+                        var me = this;
+                        if(_self.element.type === 'folder') {
+
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: me.el,
+                                title: 'Info',
+                                width: 200,
+                                showDelay:50,
+                                html: t('members_enable_document_inheritable_locked'),
+                                listeners: {
+                                    scope: me
+                                }
+                            });
+
+                            me.setStyle('opacity', 0.5);
+                        }
+                    }
+                }
+            });
+        }
 
         this.layout = new Ext.FormPanel({
 
