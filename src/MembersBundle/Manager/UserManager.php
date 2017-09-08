@@ -5,7 +5,7 @@ namespace MembersBundle\Manager;
 use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\Listing\AbstractListing;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Version;
 
 class UserManager implements UserManagerInterface
@@ -28,7 +28,7 @@ class UserManager implements UserManagerInterface
     public function __construct($classManager)
     {
         $this->classManager = $classManager;
-        $this->memberStorageId = Object::getByPath('/members')->getId();
+        $this->memberStorageId = DataObject::getByPath('/members')->getId();
     }
 
     public function getClass()

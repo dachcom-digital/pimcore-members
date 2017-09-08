@@ -29,7 +29,7 @@ class ClassManager
             return FALSE;
         }
 
-        $listing = 'Pimcore\\Model\\Object\\' . ucfirst($className['adapter']['class_name']);
+        $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
 
         if (!\Pimcore\Tool::classExists($listing)) {
             return FALSE;
@@ -46,7 +46,7 @@ class ClassManager
             return FALSE;
         }
 
-        $listing = 'Pimcore\\Model\\Object\\' . ucfirst($className['adapter']['class_name']);
+        $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
 
         if (!\Pimcore\Tool::classExists($listing)) {
             return FALSE;
@@ -63,7 +63,7 @@ class ClassManager
             return FALSE;
         }
 
-        $class = 'Pimcore\\Model\\Object\\' . ucfirst($className['adapter']['class_name']);
+        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
 
         return $class;
     }

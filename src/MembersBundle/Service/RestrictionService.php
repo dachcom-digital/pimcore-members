@@ -108,8 +108,8 @@ class RestrictionService
 
         $list = NULL;
 
-        if ($obj instanceof \Pimcore\Model\Object\AbstractObject) {
-            $list = new \Pimcore\Model\Object\Listing();
+        if ($obj instanceof \Pimcore\Model\DataObject\AbstractObject) {
+            $list = new \Pimcore\Model\DataObject\Listing();
             $list->setCondition("o_type = ? AND o_path LIKE ?", ['object', $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(o_path) ASC', FALSE);
         } else if ($obj instanceof \Pimcore\Model\Document) {
@@ -235,8 +235,8 @@ class RestrictionService
 
                 $currentPath = array_shift($paths);
 
-                if ($obj instanceof Model\Object\AbstractObject) {
-                    $class = '\Pimcore\Model\Object\AbstractObject';
+                if ($obj instanceof Model\DataObject\AbstractObject) {
+                    $class = '\Pimcore\Model\DataObject\AbstractObject';
                 } else if ($obj instanceof Model\Document) {
                     $class = '\Pimcore\Model\Document';
                 } else if ($obj instanceof Model\Asset) {

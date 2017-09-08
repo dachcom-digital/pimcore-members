@@ -7,7 +7,6 @@ use Pimcore\Translation\Translator;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class FlashListener implements EventSubscriberInterface
 {

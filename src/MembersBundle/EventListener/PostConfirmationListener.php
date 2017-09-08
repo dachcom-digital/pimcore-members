@@ -2,7 +2,6 @@
 
 namespace MembersBundle\EventListener;
 
-use MembersBundle\Adapter\Member\MemberInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Mailer\Mailer;

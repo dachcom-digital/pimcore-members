@@ -2,8 +2,6 @@
 
 namespace MembersBundle\Controller;
 
-use MembersBundle\Configuration\Configuration;
-use Pimcore\Model\Object;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;

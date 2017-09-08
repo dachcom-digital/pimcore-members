@@ -57,7 +57,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo %Object(user,{\"method\" : \"getUsername\"});!</p><p>Ihr Account wurde erfolgreich aktiviert. Bitte klicken Sie <a href=\"%Text(loginpage);\">hier</a> um zur Anmeldeseite zu gelangen.</p><p>Mit besten Grüßen, das Team.</p>"
+                    "value": "<p>Hallo %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>Ihr Account wurde erfolgreich aktiviert. Bitte klicken Sie <a href=\"%Text(loginpage);\">hier</a> um zur Anmeldeseite zu gelangen.</p><p>Mit besten Grüßen, das Team.</p>"
                 }
             ],
             "en": [
@@ -69,7 +69,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hi %Object(user,{\"method\" : \"getUsername\"});!</p><p>Your account has been successfully activated. Please click <a href=\"%Text(loginpage);\">here</a> to open the login page.</p><p>Regards, the Team.</p>"
+                    "value": "<p>Hi %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>Your account has been successfully activated. Please click <a href=\"%Text(loginpage);\">here</a> to open the login page.</p><p>Regards, the Team.</p>"
                 }
             ]
         }
@@ -92,7 +92,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo %Object(user,{\"method\" : \"getUsername\"});!</p><p>Besuchen Sie bitte folgende Seite, um Ihr Passwort zurückzusetzen: %Text(confirmationUrl);!</p><p>Mit besten Grüßen, das Team.</p>"
+                    "value": "<p>Hallo %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>Besuchen Sie bitte folgende Seite, um Ihr Passwort zurückzusetzen: %Text(confirmationUrl);!</p><p>Mit besten Grüßen, das Team.</p>"
                 }
             ],
             "en": [
@@ -104,7 +104,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo %Object(user,{\"method\" : \"getUsername\"});!</p><p>To reset your password, click <a href=\"%Text(confirmationUrl);\">here</a>.</p><p>Regards, the Team.</p>"
+                    "value": "<p>Hallo %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>To reset your password, click <a href=\"%Text(confirmationUrl);\">here</a>.</p><p>Regards, the Team.</p>"
                 }
             ]
         }
@@ -127,7 +127,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo Admin,</p><p>eine neue Registrierung wurde gespeichert.</p><p>Benutzer: <a href=\"%Text(deeplink);\">%Object(user,{\"method\" : \"getUsername\"});</a></p><p>Mit besten Grüßen, das Team.</p>"
+                    "value": "<p>Hallo Admin,</p><p>eine neue Registrierung wurde gespeichert.</p><p>Benutzer: <a href=\"%Text(deeplink);\">%DataObject(user,{\"method\" : \"getUsername\"});</a></p><p>Mit besten Grüßen, das Team.</p>"
                 }
             ],
             "en": [
@@ -139,7 +139,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hi Admin,</p><p>a new registration has been stored.</p><p>User: <a href=\"%Text(deeplink);\">%Object(user,{\"method\" : \"getUsername\"});</a></p><p>Regards, the Team.</p>"
+                    "value": "<p>Hi Admin,</p><p>a new registration has been stored.</p><p>User: <a href=\"%Text(deeplink);\">%DataObject(user,{\"method\" : \"getUsername\"});</a></p><p>Regards, the Team.</p>"
                 }
             ]
         }

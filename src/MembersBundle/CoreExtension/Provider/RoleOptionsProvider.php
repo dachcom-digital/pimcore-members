@@ -2,8 +2,8 @@
 
 namespace MembersBundle\CoreExtension\Provider;
 
-use Pimcore\Model\Object\ClassDefinition\DynamicOptionsProvider\MultiSelectOptionsProviderInterface;
-use Pimcore\Model\Object\ClassDefinition\Data;
+use Pimcore\Model\DataObject\ClassDefinition\DynamicOptionsProvider\MultiSelectOptionsProviderInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data;
 use Psr\Container\ContainerInterface;
 
 class RoleOptionsProvider implements MultiSelectOptionsProviderInterface

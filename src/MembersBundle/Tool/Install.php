@@ -8,7 +8,7 @@ use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Model\Tool\Setup;
 use Pimcore\Tool;
 use Pimcore\Model\Document;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Translation;
 use Symfony\Component\Filesystem\Filesystem;
@@ -139,10 +139,10 @@ class Install extends AbstractInstaller
     private function installObjectFolder()
     {
         //install object folder "members" and lock it!
-        $membersPath = Object\Folder::getByPath('/members');
+        $membersPath = DataObject\Folder::getByPath('/members');
 
-        if (!$membersPath instanceof Object\Folder) {
-            $obj = Object\Folder::create(
+        if (!$membersPath instanceof DataObject\Folder) {
+            $obj = DataObject\Folder::create(
                 [
                     'o_parentId'         => 1,
                     'o_creationDate'     => time(),

@@ -3,9 +3,9 @@
 namespace MembersBundle\CoreExtension;
 
 use Pimcore\Model\Element;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 
-class GroupMultiselect extends Object\ClassDefinition\Data\Relations\AbstractRelations
+class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\AbstractRelations
 {
     /**
      * Static type of this element.
@@ -43,10 +43,10 @@ class GroupMultiselect extends Object\ClassDefinition\Data\Relations\AbstractRel
     }
 
     /**
-     * @see Object\ClassDefinition\Data::getDataFromEditmode
+     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
      *
      * @param array $data
-     * @param null|Object\AbstractObject $object
+     * @param null|DataObject\AbstractObject $object
      * @param mixed $params
      *
      * @return array
@@ -61,7 +61,7 @@ class GroupMultiselect extends Object\ClassDefinition\Data\Relations\AbstractRel
         $elements = [];
         if (is_array($data) && count($data) > 0) {
             foreach ($data as $groupId) {
-                $e = Object::getById($groupId);
+                $e = DataObject::getById($groupId);
                 if ($e instanceof Element\ElementInterface) {
                     $elements[] = $e;
                 }
@@ -165,7 +165,7 @@ class GroupMultiselect extends Object\ClassDefinition\Data\Relations\AbstractRel
             foreach ($data as $element) {
                 $e = NULL;
                 if ($element['type'] == 'object') {
-                    $e = Object::getById($element['dest_id']);
+                    $e = DataObject::getById($element['dest_id']);
                 }
                 if ($e instanceof Element\ElementInterface) {
                     $elements[] = $e;

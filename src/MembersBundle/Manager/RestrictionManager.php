@@ -10,7 +10,7 @@ use MembersBundle\Security\RestrictionUri;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
-use Pimcore\Model\Object;
+use Pimcore\Model\DataObject;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RestrictionManager
@@ -61,7 +61,7 @@ class RestrictionManager
 
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } else if ($element instanceof Object) {
+        } else if ($element instanceof DataObject) {
             $restriction = $this->getRestrictionElement($element, 'object');
         } else if ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
@@ -97,7 +97,7 @@ class RestrictionManager
         $restriction = FALSE;
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } else if ($element instanceof Object) {
+        } else if ($element instanceof DataObject) {
             $restriction = $this->getRestrictionElement($element, 'object');
         } else if ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
@@ -183,7 +183,7 @@ class RestrictionManager
             } else {
                 $restrictionConfig = $this->configuration->getConfig('restriction');
                 $allowedTypes = $restrictionConfig['allowed_objects'];
-                if ($element instanceof Object\AbstractObject && in_array($element->getClass()->getName(), $allowedTypes)) {
+                if ($element instanceof DataObject\AbstractObject && in_array($element->getClass()->getName(), $allowedTypes)) {
                     $restriction = Restriction::getByTargetId($element->getId(), $cType);
                 }
             }

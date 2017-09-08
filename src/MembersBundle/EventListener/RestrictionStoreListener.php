@@ -7,8 +7,7 @@ use Pimcore\Event\AssetEvents;
 use Pimcore\Event\DocumentEvents;
 use Pimcore\Event\Model\AssetEvent;
 use Pimcore\Event\Model\DocumentEvent;
-use Pimcore\Event\Model\ObjectEvent;
-use Pimcore\Event\ObjectEvents;
+use Pimcore\Event\DataObjectEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -42,15 +41,15 @@ class RestrictionStoreListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ObjectEvents::PRE_DELETE   => 'handleObjectDeletion',
+            DataObjectEvents::PRE_DELETE   => 'handleObjectDeletion',
             DocumentEvents::PRE_DELETE => 'handleDocumentDeletion',
             AssetEvents::PRE_DELETE    => 'handleAssetDeletion',
 
-            ObjectEvents::POST_ADD   => 'handleObjectAdd',
+            DataObjectEvents::POST_ADD   => 'handleObjectAdd',
             DocumentEvents::POST_ADD => 'handleDocumentAdd',
             AssetEvents::POST_ADD    => 'handleAssetAdd',
 
-            ObjectEvents::POST_UPDATE   => 'handleObjectUpdate',
+            DataObjectEvents::POST_UPDATE   => 'handleObjectUpdate',
             DocumentEvents::POST_UPDATE => 'handleDocumentUpdate',
             AssetEvents::POST_UPDATE    => 'handleAssetUpdate'
         ];
@@ -73,17 +72,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
     }
 
     /**
-     * @param ObjectEvent $e
+     * @param DataObjectEvents $e
      */
-    public function handleObjectDeletion(ObjectEvent $e)
+    public function handleObjectDeletion(DataObjectEvents $e)
     {
         $this->serviceRestriction->deleteRestriction($e->getObject(), 'object');
     }
 
     /**
-     * @param ObjectEvent $e
+     * @param DataObjectEvents $e
      */
-    public function handleObjectAdd(ObjectEvent $e)
+    public function handleObjectAdd(DataObjectEvents $e)
     {
         $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
     }
@@ -105,9 +104,9 @@ class RestrictionStoreListener implements EventSubscriberInterface
     }
 
     /**
-     * @param ObjectEvent $e
+     * @param DataObjectEvents $e
      */
-    public function handleObjectUpdate(ObjectEvent $e)
+    public function handleObjectUpdate(DataObjectEvents $e)
     {
         $params = $this->requestStack->getMasterRequest()->get('values');
 
