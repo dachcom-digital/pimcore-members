@@ -8,6 +8,7 @@ use Pimcore\Event\DocumentEvents;
 use Pimcore\Event\Model\AssetEvent;
 use Pimcore\Event\Model\DocumentEvent;
 use Pimcore\Event\DataObjectEvents;
+use Pimcore\Event\Model\DataObjectEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -72,17 +73,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
     }
 
     /**
-     * @param DataObjectEvents $e
+     * @param DataObjectEvent $e
      */
-    public function handleObjectDeletion(DataObjectEvents $e)
+    public function handleObjectDeletion(DataObjectEvent $e)
     {
         $this->serviceRestriction->deleteRestriction($e->getObject(), 'object');
     }
 
     /**
-     * @param DataObjectEvents $e
+     * @param DataObjectEvent $e
      */
-    public function handleObjectAdd(DataObjectEvents $e)
+    public function handleObjectAdd(DataObjectEvent $e)
     {
         $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
     }
@@ -104,9 +105,9 @@ class RestrictionStoreListener implements EventSubscriberInterface
     }
 
     /**
-     * @param DataObjectEvents $e
+     * @param DataObjectEvent $e
      */
-    public function handleObjectUpdate(DataObjectEvents $e)
+    public function handleObjectUpdate(DataObjectEvent $e)
     {
         $params = $this->requestStack->getMasterRequest()->get('values');
 
