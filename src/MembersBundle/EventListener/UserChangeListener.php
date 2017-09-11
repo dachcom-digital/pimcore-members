@@ -6,6 +6,7 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Mailer\Mailer;
 use Pimcore\Event\DataObjectEvents;
+use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -34,7 +35,7 @@ class UserChangeListener implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public static function getSubscribedEvents()
     {
@@ -44,9 +45,9 @@ class UserChangeListener implements EventSubscriberInterface
     }
 
     /**
-     * @param DataObjectEvents $e
+     * @param DataObjectEvent $e
      */
-    public function handleObjectUpdate(DataObjectEvents $e)
+    public function handleObjectUpdate(DataObjectEvent $e)
     {
         $user = $e->getObject();
 
