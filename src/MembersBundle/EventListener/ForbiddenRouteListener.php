@@ -5,10 +5,10 @@ namespace MembersBundle\EventListener;
 use MembersBundle\Event\StaticRouteEvent;
 use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\MembersEvents;
-use Pimcore\Bundle\CoreBundle\EventListener\Frontend\AbstractFrontendListener;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Http\RequestHelper;
 use Pimcore\Model\DataObject\AbstractObject;
-use Pimcore\Service\Request\PimcoreContextResolver;
+use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Symfony\Cmf\Bundle\RoutingBundle\Routing\DynamicRouter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,8 +16,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Routing\RouterInterface;
 
-class ForbiddenRouteListener extends AbstractFrontendListener implements EventSubscriberInterface
+class ForbiddenRouteListener implements EventSubscriberInterface
 {
+    use PimcoreContextAwareTrait;
+
     /**
      * @var RestrictionManager
      */

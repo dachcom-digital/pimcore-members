@@ -36,7 +36,7 @@ services:
 
     # validator constraints
     members.validator.email_already_exist:
-            class: MembersBundle\Validator\Constraints\IsUniqueEmail
+        class: MembersBundle\Validator\Constraints\IsUniqueEmail
 
     # validator constraints
     members.constraint.email_already_exist:

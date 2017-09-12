@@ -1,0 +1,60 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # event: check auth
+    MembersBundle\EventListener\AuthenticationListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: user flash message translations
+    MembersBundle\EventListener\FlashListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: user resetting: post add and update events of objects, assets, documents.
+    MembersBundle\EventListener\ResettingListener:
+        arguments:
+            $tokenTtl: '%members.resetting.token_ttl%'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # listen to routes and redirect them if necessary
+    MembersBundle\EventListener\ForbiddenRouteListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+     # event: adds groups meta tags to HeadMeta view helper
+    MembersBundle\EventListener\Frontend\HeadMetaListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: handle post confirmation type
+    MembersBundle\EventListener\PostConfirmationListener:
+        arguments:
+            $postEventType: '%members.registration.event.type%'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: post add and update events of objects, assets, documents.
+    MembersBundle\EventListener\RestrictionStoreListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event: listen to changes on user updates. send mails if available.
+    MembersBundle\EventListener\UserChangeListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event (optional): check restrictions asset
+    MembersBundle\EventListener\Connector\LuceneSearchAssetRestriction:
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # event (optional): check restriction context in frontend search
+    MembersBundle\EventListener\Connector\LuceneSearchRestrictionContext:
+        tags:
+            - { name: kernel.event_subscriber }

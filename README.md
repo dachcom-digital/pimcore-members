@@ -2,7 +2,7 @@
 Add frontend user authentication and document restriction to pimcore 5.0.
 
 #### Requirements
-* Pimcore 5. Only with Build 105 or greater.
+* Pimcore 5. Only with Build 108 or greater.
 
 #### Pimcore 4 
 Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-members/tree/pimcore4).

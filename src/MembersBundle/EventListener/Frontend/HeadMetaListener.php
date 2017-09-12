@@ -3,9 +3,9 @@
 namespace MembersBundle\EventListener\Frontend;
 
 use MembersBundle\Manager\RestrictionManager;
-use Pimcore\Bundle\CoreBundle\EventListener\Frontend\AbstractFrontendListener;
-use Pimcore\Service\Request\DocumentResolver as DocumentResolverService;
-use Pimcore\Service\Request\PimcoreContextResolver;
+use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
+use Pimcore\Http\Request\Resolver\DocumentResolver as DocumentResolverService;
+use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Pimcore\Templating\Helper\HeadMeta;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -14,8 +14,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Adds Meta Data entries of document to HeadMeta view helper
  */
-class HeadMetaListener extends AbstractFrontendListener implements EventSubscriberInterface
+class HeadMetaListener implements EventSubscriberInterface
 {
+    use PimcoreContextAwareTrait;
+
     /**
      * @var DocumentResolverService
      */
