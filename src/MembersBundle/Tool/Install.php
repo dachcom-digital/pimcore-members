@@ -2,10 +2,11 @@
 
 namespace MembersBundle\Tool;
 
-use Pimcore\Cache\Runtime;
+use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 
 use Pimcore\Model\Tool\Setup;
+use Pimcore\Model\User;
 use Pimcore\Tool;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
@@ -18,9 +19,14 @@ use MembersBundle\Configuration\Configuration;
 class Install extends AbstractInstaller
 {
     /**
+     * @var TokenStorageUserResolver
+     */
+    protected $resolver;
+
+    /**
      * @var Serializer
      */
-    private $serializer;
+    protected $serializer;
 
     /**
      * @var string
@@ -33,19 +39,16 @@ class Install extends AbstractInstaller
     private $fileSystem;
 
     /**
-     * @var User
-     */
-    protected $_user;
-
-    /**
      * Install constructor.
      *
+     * @param TokenStorageUserResolver $resolver
      * @param Serializer $serializer
      */
-    public function __construct(Serializer $serializer)
+    public function __construct(TokenStorageUserResolver $resolver, Serializer $serializer)
     {
         parent::__construct();
 
+        $this->resolver = $resolver;
         $this->serializer = $serializer;
         $this->installSourcesPath = __DIR__ . '/../Resources/install';
         $this->fileSystem = new Filesystem();
@@ -146,8 +149,8 @@ class Install extends AbstractInstaller
                 [
                     'o_parentId'         => 1,
                     'o_creationDate'     => time(),
-                    'o_userOwner'        => $this->_getUser()->getId(),
-                    'o_userModification' => $this->_getUser()->getId(),
+                    'o_userOwner'        => $this->getUserId(),
+                    'o_userModification' => $this->getUserId(),
                     'o_key'              => 'members',
                     'o_published'        => TRUE
                 ]
@@ -182,8 +185,8 @@ class Install extends AbstractInstaller
                     $document = new $class();
                     $document->setParent(Document::getByPath('/' . $def['path']));
                     $document->setKey($def['key']);
-                    $document->setUserOwner($this->_getUser()->getId());
-                    $document->setUserModification($this->_getUser()->getId());
+                    $document->setUserOwner($this->getUserId());
+                    $document->setUserModification($this->getUserId());
 
                     if (isset($def['name'])) {
                         $document->setName($def['name']);
@@ -291,15 +294,17 @@ class Install extends AbstractInstaller
     }
 
     /**
-     * @return User
+     * @return int
      */
-    protected function _getUser()
+    protected function getUserId()
     {
-        if (!$this->_user) {
-            $this->_user = Runtime::get('pimcore_admin_user');
+        $userId = 0;
+        $user = $this->resolver->getUser();
+        if($user instanceof User) {
+            $userId = $this->resolver->getUser()->getId();
         }
 
-        return $this->_user;
+        return $userId;
     }
 
 }

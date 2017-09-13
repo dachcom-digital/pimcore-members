@@ -4,6 +4,7 @@ services:
     members.tool.installer:
         class: MembersBundle\Tool\Install
         arguments:
+            - '@pimcore_admin.security.token_storage_user_resolver'
             - '@pimcore_admin.serializer'
 
     # tool: installer
