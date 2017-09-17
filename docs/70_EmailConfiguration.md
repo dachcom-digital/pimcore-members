@@ -41,21 +41,21 @@ members:
             register_confirmed: '/{_locale}/email/register-confirmed'
             register_password_resetting: '/{_locale}/email/password-reset'
             admin_register_notification: '/{_locale}/email/admin-register-notification'
-    sites:
-        -
-            main_domain: 'your-domain1'
-            emails:
-                register_confirm: '/domain1/email/register-confirm'
-                register_confirmed: '/domain1/email/register-confirmed'
-                register_password_resetting: '/domain1/email/password-reset'
-                admin_register_notification: '/domain1/email/admin-register-notification'
-        -
-            main_domain: 'your-domain2'
-            emails:
-                register_confirm: '/domain2/{_locale}/email/register-confirm'
-                register_confirmed: '/domain2/{_locale}/email/register-confirmed'
-                register_password_resetting: '/domain2/{_locale}/email/password-reset'
-                admin_register_notification: '/domain2/{_locale}/email/admin-register-notification'
+        sites:
+            -
+                main_domain: 'your-domain1'
+                emails:
+                    register_confirm: '/domain1/email/register-confirm'
+                    register_confirmed: '/domain1/email/register-confirmed'
+                    register_password_resetting: '/domain1/email/password-reset'
+                    admin_register_notification: '/domain1/email/admin-register-notification'
+            -
+                main_domain: 'your-domain2'
+                emails:
+                    register_confirm: '/domain2/{_locale}/email/register-confirm'
+                    register_confirmed: '/domain2/{_locale}/email/register-confirmed'
+                    register_password_resetting: '/domain2/{_locale}/email/password-reset'
+                    admin_register_notification: '/domain2/{_locale}/email/admin-register-notification'
 ```
 
 ### Locale Mapping
