@@ -89,9 +89,9 @@ class RestrictionManager
         $user = $this->getUser();
 
         $status = [
-            'state'                            => self::RESTRICTION_STATE_NOT_LOGGED_IN,
-            'section'                          => self::RESTRICTION_SECTION_NOT_ALLOWED,
-            'current_route_restriction_groups' => []
+            'state'              => self::RESTRICTION_STATE_NOT_LOGGED_IN,
+            'section'            => self::RESTRICTION_SECTION_NOT_ALLOWED,
+            'restriction_groups' => []
         ];
 
         $restriction = FALSE;
@@ -107,6 +107,10 @@ class RestrictionManager
             $status['state'] = self::RESTRICTION_STATE_LOGGED_IN;
         }
 
+        if (is_array($restriction->getRelatedGroups())) {
+            $status['restriction_groups'] = $restriction->getRelatedGroups();
+        }
+
         if ($restriction === FALSE) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
@@ -120,16 +124,11 @@ class RestrictionManager
             return $status;
         }
 
-        if (is_array($restriction->getRelatedGroups())) {
-            $status['current_route_restriction_groups'] = $restriction->getRelatedGroups();
-        }
-
         //check if user is not logged in.
         if (!$user instanceof UserInterface) {
             return $status;
         } else {
             $status['section'] = $this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups());
-
             return $status;
         }
     }
@@ -214,6 +213,7 @@ class RestrictionManager
         }
 
         $user = $token->getUser();
+
         return $user instanceof UserInterface ? $user : NULL;
     }
 }

@@ -74,8 +74,8 @@ class HeadMetaListener implements EventSubscriberInterface
 
         $groups = ['default'];
         $restrictionStorage = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
-        if(!is_null($restrictionStorage) && !empty($restrictionStorage['current_route_restriction_groups'])) {
-            $groups = $restrictionStorage['current_route_restriction_groups'];
+        if(!is_null($restrictionStorage) && !empty($restrictionStorage['restriction_groups'])) {
+            $groups = $restrictionStorage['restriction_groups'];
         }
 
         $this->headMeta->appendName('m:groups', implode(',', $groups));

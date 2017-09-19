@@ -1,23 +1,24 @@
 # Pimcore Members
 Add frontend user authentication and document restriction to pimcore 5.0.
 
-#### Requirements
+## Requirements
 * Pimcore 5. Only with Build 108 or greater.
 
-#### Pimcore 4 
+## Pimcore 4 
 Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-members/tree/pimcore4).
 
-#### Features
+## Features
 * Create Members in Backend
 * Allow Members to register in frontend
 * Restrict Documents, Objects and Assets to specific User Roles
 
-### Installation
+* * *
 
-#### Composer
+## Installation
+
+### Composer
 1. Add code below to your `composer.json`    
 2. Activate & install it through backend
-3. Clear Cache
 
 ```json
 "require" : {
@@ -25,12 +26,12 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 }
 ```
 
-#### Basics
+### Basics
 Unlike members1, this bundle does not install any classes for you any more.
 Since Members should be the one and only frontend authentication Bundle, we need to add the most flexibility as possible.
 But no worries, it's still simple to integrate.
 
-#### Class Installation
+### Class Installation
 
 > There is also a class installer command. If your not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
 
@@ -67,21 +68,10 @@ You need two classes: User and Group. So let's create it:
 
 Feel free to add additional fields since those are just the required ones. That's it. Members will use those classes to manage authentication and group management.
 
-#### Frontend Implementation
-
-**Navigation:** Do **not** use the default nav builder extension (`pimcore_build_nav`). Just use the `members_build_nav` to build secure menus. 
-Otherwise your restricted pages will show up. This twig extension will also handel your navigation cache strategy.
-
-**Usage**  
-```twig
-{% set nav = members_build_nav(currentDoc, documentRootDoc, null, true) %}
-{{ pimcore_render_nav(nav, 'menu', 'renderMenu', { maxDepth: 2 }) }}
-```
-
-#### Email Implementation
+### Email Implementation
 You're almost there, just check the [email configuration](docs/70_EmailConfiguration.md) and you're good to go.
 
-### Further Information
+### User Management: Further Information
 - [Custom Class Names](docs/20_CustomClassName.md)
 - [Frontend Routes & Views](docs/30_FrontendRoutes.md)
 - [Available Events](docs/40_Events.md)
@@ -90,6 +80,16 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Email Configuration](docs/70_EmailConfiguration.md)
 - [Roles](docs/80_Roles.md)
 - [Use LuceneSearch with Members](docs/90_LuceneSearch.md)
+
+* * *
+
+## Restrictions
+Learn more about the Members Restriction feature:
+
+- [Brief Overview](docs/200_Restrictions.md)
+- [Restricted Navigation](docs/210_RestrictedNavigation.md)
+- [Restricted Routing](docs/220_RestrictedRouting.md)
+- [Restricted Listing](docs/230_RestrictListing.md)
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)
