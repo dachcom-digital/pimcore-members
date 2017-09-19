@@ -107,10 +107,6 @@ class RestrictionManager
             $status['state'] = self::RESTRICTION_STATE_LOGGED_IN;
         }
 
-        if (is_array($restriction->getRelatedGroups())) {
-            $status['restriction_groups'] = $restriction->getRelatedGroups();
-        }
-
         if ($restriction === FALSE) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
@@ -122,6 +118,11 @@ class RestrictionManager
             }
 
             return $status;
+        }
+
+
+        if (is_array($restriction->getRelatedGroups())) {
+            $status['restriction_groups'] = $restriction->getRelatedGroups();
         }
 
         //check if user is not logged in.

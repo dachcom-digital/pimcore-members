@@ -90,6 +90,7 @@ Learn more about the Members Restriction feature:
 - [Restricted Navigation](docs/210_RestrictedNavigation.md)
 - [Restricted Routing](docs/220_RestrictedRouting.md)
 - [Restricted Listing](docs/230_RestrictListing.md)
+- [Protected Asset Downloader](docs/240_AssetProtection.md)
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)
