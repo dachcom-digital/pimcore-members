@@ -15,15 +15,3 @@ services:
             - '\MembersBundle\Adapter\User\AbstractUser'
         tags:
             - { name: form.type, alias: members_user_registration }
-
-    # that's not nice. is there a better way?
-    members.event_listener.post_confirmation:
-        class: MembersBundle\EventListener\PostConfirmationListener
-        arguments:
-            - '@members.mailer'
-            - '@router'
-            - '@session'
-            - '@members.tool.token_generator'
-            - '%members.registration.event.type%'
-        tags:
-            - { name: kernel.event_subscriber }

@@ -53,17 +53,18 @@ class RegistrationController extends AbstractController
 
             if ($form->isValid()) {
 
+                $userManager->updateUser($user, $this->getUserProperties($request));
+
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
 
-                $userManager->updateUser($user, $this->getUserProperties($request));
-
-                if (NULL === $response = $event->getResponse()) {
+                if (NULL === $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
                     $response = new RedirectResponse($url);
                 }
 
-                $dispatcher->dispatch(MembersEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+                $event = new FilterUserResponseEvent($user, $request, $response);
+                $dispatcher->dispatch(MembersEvents::REGISTRATION_COMPLETED, $event);
 
                 return $response;
             }
