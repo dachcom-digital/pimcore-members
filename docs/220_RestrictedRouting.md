@@ -18,7 +18,7 @@ First, create a service in your `app/config/services.yml`:
 ```yaml
 app.event_listener.members.restriction.staticroute:
     class: AppBundle\EventListener\MembersStaticRouteListener
-    tags:`
+    tags:
         - { name: kernel.event_subscriber }
 ```
 

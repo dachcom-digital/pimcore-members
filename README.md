@@ -12,6 +12,9 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 * Allow Members to register in frontend
 * Restrict Documents, Objects and Assets to specific User Roles
 
+## Bundles supporting Members
+- [CoreShop](https://github.com/coreshop/CoreShop/)
+
 * * *
 
 ## Installation
