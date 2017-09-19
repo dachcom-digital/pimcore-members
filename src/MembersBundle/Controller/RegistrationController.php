@@ -58,7 +58,7 @@ class RegistrationController extends AbstractController
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
 
-                if (NULL === $event->getResponse()) {
+                if (NULL === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
                     $response = new RedirectResponse($url);
                 }
@@ -78,7 +78,7 @@ class RegistrationController extends AbstractController
         }
 
         return $this->renderTemplate('@Members/Registration/register.html.twig', [
-            'form'     => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 

@@ -96,6 +96,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $user->setPublished(FALSE);
         if (NULL === $user->getConfirmationToken()) {
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
+            $user->save();
         }
 
         $this->mailer->sendConfirmationEmailMessage($user);
