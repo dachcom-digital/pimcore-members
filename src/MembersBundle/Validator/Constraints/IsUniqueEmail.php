@@ -9,7 +9,7 @@ class IsUniqueEmail extends Constraint
     /**
      * @var string
      */
-    public $message = 'email_already_used';
+    public $message = 'members.validation.email_already_used';
 
     /**
      * @return string

@@ -3,20 +3,13 @@
 {% block members_user_content %}
 
     <div class="members register">
-
         <div class="row">
-
             <a name="members-register-form"></a>
-
             <div class="col-xs-12">
-
                 <h2 class="text-center">{{ 'Sign up'|trans }} {{ 'or'|trans }} <a href="{{ path('members_user_security_login') }}">{{ 'Login'|trans }}</a></h2>
                 {% include '@Members/Registration/register_content.html.twig' with { type: 'create' } %}
-
             </div>
-
         </div>
-
     </div>
 
 {% endblock members_user_content %}

@@ -1,3 +1,6 @@
+parameters:
+    validator.translation_domain: 'messages'
+
 pimcore:
     security:
         encoder_factories:
