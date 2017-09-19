@@ -5,6 +5,7 @@ namespace MembersBundle\EventListener;
 use MembersBundle\Event\StaticRouteEvent;
 use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\MembersEvents;
+use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Http\RequestHelper;
 use Pimcore\Model\DataObject\AbstractObject;
@@ -106,23 +107,23 @@ class ForbiddenRouteListener implements EventSubscriberInterface
     }
 
     /**
-     * @param $restriction
+     * @param ElementRestriction $elementRestriction
      *
      * @return bool|string
      */
-    private function getRouteForRestriction($restriction)
+    private function getRouteForRestriction(ElementRestriction $elementRestriction)
     {
         //section allowed
-        if ($restriction['section'] == RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
+        if ($elementRestriction->getSection() == RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
             return FALSE;
         } //not allowed
-        else if ($restriction['state'] === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
-            && $restriction['section'] === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
+        else if ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
+            && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
             return 'members_user_security_login';
         } //logged in but no allowed.
-        else if ($restriction['state'] === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
-            && $restriction['section'] === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
+        else if ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
+            && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
             return 'members_user_restriction_refused';
         }

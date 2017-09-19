@@ -43,7 +43,7 @@ class NavigationExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('members_build_nav', [$this, 'buildNavigation']),
+            new \Twig_Function('members_build_nav', [$this, 'buildNavigation']),
         ];
     }
 
@@ -91,8 +91,8 @@ class NavigationExtension extends \Twig_Extension
             $navigationRootDocument,
             $htmlMenuPrefix,
             function (\Pimcore\Navigation\Page\Document $document, AbstractModel $page) {
-                $restriction = $this->restrictionManager->getElementRestrictionStatus($page);
-                if ($restriction['section'] !== RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
+                $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($page);
+                if ($restrictionElement->getSection() !== RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
                     $document->setActive(FALSE);
                     $document->setVisible(FALSE);
                 }

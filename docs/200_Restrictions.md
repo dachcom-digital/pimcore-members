@@ -54,5 +54,16 @@ To get current restriction information about a document, object or asset, just c
 <?php
 
 $element = Pimcore\Model\Asset::getById(1);
+/** @var \MembersBundle\Restriction\ElementRestriction $restriction */
 $restriction = $this->container->get('members.manager.restriction')->getElementRestrictionStatus($element);
+
+//get restriction group ids
+echo $restriction->getRestrictionGroups();
+
+//get section
+echo $restriction->getSection();
+
+//get state
+echo $restriction->getState();
+
 ```

@@ -144,9 +144,9 @@ class RestrictionUri
 
             //proxy is available so asset is wrapped in some object data
             $object = $proxyId !== FALSE ? Model\DataObject\AbstractObject::getById($proxyId) : $asset;
-            $restriction = $this->restrictionManager->getElementRestrictionStatus($object);
+            $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($object);
 
-            if ($restriction['section'] === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED) {
+            if ($restrictionElement->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED) {
                 continue;
             }
 

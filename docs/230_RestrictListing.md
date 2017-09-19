@@ -29,8 +29,9 @@ If you can't or won't modify the sql query, you can use these statements to chec
 use MembersBundle\Manager\RestrictionManager;
 
 $element = 'your_object|your_asset|your_document';
-$assetRestriction = $this->container->get('members.manager.restriction')->getElementRestrictionStatus($element);
-if($assetRestriction['section'] === RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
+/** @var \MembersBundle\Restriction\ElementRestriction $restriction */
+$restriction = $this->container->get('members.manager.restriction')->getElementRestrictionStatus($element);
+if($restriction->getSection() === RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
     //allowed!
 }
 ```

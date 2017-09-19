@@ -21,8 +21,8 @@ class IsUniqueEmailValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (count($this->userManager->findUserByCondition('email = ?', [$value])) > 0) {
-            $this->context->buildViolation($constraint->message)
-                // ->setParameter('{{ email_address }}', $value)
+            $this->context
+                ->buildViolation($constraint->message)
                 ->addViolation();
         }
     }

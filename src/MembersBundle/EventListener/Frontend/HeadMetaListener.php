@@ -3,6 +3,7 @@
 namespace MembersBundle\EventListener\Frontend;
 
 use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Http\Request\Resolver\DocumentResolver as DocumentResolverService;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
@@ -73,9 +74,10 @@ class HeadMetaListener implements EventSubscriberInterface
         }
 
         $groups = ['default'];
-        $restrictionStorage = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
-        if(!is_null($restrictionStorage) && !empty($restrictionStorage['restriction_groups'])) {
-            $groups = $restrictionStorage['restriction_groups'];
+        /** @var ElementRestriction $restrictionElement */
+        $elementRestriction = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
+        if($elementRestriction instanceof ElementRestriction && !empty($elementRestriction->getRestrictionGroups())) {
+            $groups = $elementRestriction->getRestrictionGroups();
         }
 
         $this->headMeta->appendName('m:groups', implode(',', $groups));

@@ -5,6 +5,7 @@ namespace MembersBundle\Manager;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
+use MembersBundle\Restriction\ElementRestriction;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Security\RestrictionUri;
 use Pimcore\Model\AbstractModel;
@@ -82,17 +83,12 @@ class RestrictionManager
     /**
      * @param AbstractModel $element
      *
-     * @return array
+     * @return ElementRestriction
      */
     public function getElementRestrictionStatus(AbstractModel $element)
     {
         $user = $this->getUser();
-
-        $status = [
-            'state'              => self::RESTRICTION_STATE_NOT_LOGGED_IN,
-            'section'            => self::RESTRICTION_SECTION_NOT_ALLOWED,
-            'restriction_groups' => []
-        ];
+        $elementRestriction = new ElementRestriction();
 
         $restriction = FALSE;
         if ($element instanceof Document) {
@@ -104,32 +100,32 @@ class RestrictionManager
         }
 
         if ($user instanceof UserInterface) {
-            $status['state'] = self::RESTRICTION_STATE_LOGGED_IN;
+            $elementRestriction->setState(self::RESTRICTION_STATE_LOGGED_IN);
         }
 
         if ($restriction === FALSE) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
-                $status['section'] = $this->isFrontendRequestByAdmin() || strpos($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER) === FALSE
+                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || strpos($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER) === FALSE
                     ? self::RESTRICTION_SECTION_ALLOWED
-                    : self::RESTRICTION_SECTION_NOT_ALLOWED;
+                    : self::RESTRICTION_SECTION_NOT_ALLOWED);
             } else {
-                $status['section'] = self::RESTRICTION_SECTION_ALLOWED;
+                $elementRestriction->setSection(self::RESTRICTION_SECTION_ALLOWED);
             }
 
-            return $status;
+            return $elementRestriction;
         }
 
         if (is_array($restriction->getRelatedGroups())) {
-            $status['restriction_groups'] = $restriction->getRelatedGroups();
+            $elementRestriction->setRestrictionGroups($restriction->getRelatedGroups());
         }
 
         //check if user is not logged in.
         if (!$user instanceof UserInterface) {
-            return $status;
+            return $elementRestriction;
         } else {
-            $status['section'] = $this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups());
-            return $status;
+            $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
+            return $elementRestriction;
         }
     }
 

@@ -108,16 +108,16 @@ class RestrictionService
 
         $list = NULL;
 
-        if ($obj instanceof \Pimcore\Model\DataObject\AbstractObject) {
-            $list = new \Pimcore\Model\DataObject\Listing();
+        if ($obj instanceof Model\DataObject\AbstractObject) {
+            $list = new Model\DataObject\Listing();
             $list->setCondition("o_type = ? AND o_path LIKE ?", ['object', $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(o_path) ASC', FALSE);
-        } else if ($obj instanceof \Pimcore\Model\Document) {
-            $list = new \Pimcore\Model\Document\Listing();
+        } else if ($obj instanceof Model\Document) {
+            $list = new Model\Document\Listing();
             $list->setCondition("type = ? AND path LIKE ?", ['page', $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', FALSE);
-        } else if ($obj->getType() === 'folder' && $obj instanceof \Pimcore\Model\Asset) {
-            $list = new \Pimcore\Model\Asset\Listing();
+        } else if ($obj->getType() === 'folder' && $obj instanceof Model\Asset) {
+            $list = new Model\Asset\Listing();
             $list->setCondition("path LIKE ?", [$obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', FALSE);
         }
@@ -232,7 +232,6 @@ class RestrictionService
                 }
 
                 $paths = array_reverse($paths);
-
                 $currentPath = array_shift($paths);
 
                 if ($obj instanceof Model\DataObject\AbstractObject) {
@@ -265,6 +264,11 @@ class RestrictionService
             }
         }
 
-        return ['path' => $parentPath, 'key' => $parentKey, 'id' => $parentId, 'restriction' => $restriction];
+        return [
+            'path'        => $parentPath,
+            'key'         => $parentKey,
+            'id'          => $parentId,
+            'restriction' => $restriction
+        ];
     }
 }
