@@ -14,7 +14,7 @@ members:
 Once activated, you'll see a restriction tab in every document.
 
 ### Document Inheritance
-If your enable the inheritance checkbox, all Sub-Documents will inherit the restriction.
+If your enable the inheritance checkbox, all subdocuments will inherit the restriction.
 
 > If you're adding a new child element to a inheritable document, it will automatically adopt the restriction.
 
@@ -32,7 +32,7 @@ members:
 Now you should see a restriction tab in all of those defined objects.
 
 ### Object Inheritance
-If your enable the inheritance checkbox, all Sub-Objects will inherit the restriction.
+If your enable the inheritance checkbox, all subobjects will inherit the restriction.
 
 > If you're adding a new child element to a inheritable object, it will automatically adopt the restriction.
 
@@ -43,6 +43,16 @@ After you've activated the restriction globally, you're able to restrict assets.
 
 ### Assets Inheritance
 Since assets can't have child assets you need to create a folder first.
-Open the folder and you'll see the inheritance checkbox. If you activate it, all assets will inherit all the restriction infos from this folder.
+Open the folder and you'll see the inheritance checkbox. If you activate it, all assets will inherit all the restriction information from this folder.
 
 > If you're adding a new asset into a inheritable folder, it will automatically adopt the restriction.
+
+## Global Restriction Check Helper
+To get current restriction information about a document, object or asset, just call the restriction manager:
+
+```php
+<?php
+
+$element = Pimcore\Model\Asset::getById(1);
+$restriction = $this->container->get('members.manager.restriction')->getElementRestrictionStatus($element);
+```

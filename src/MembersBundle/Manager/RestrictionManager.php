@@ -120,7 +120,6 @@ class RestrictionManager
             return $status;
         }
 
-
         if (is_array($restriction->getRelatedGroups())) {
             $status['restriction_groups'] = $restriction->getRelatedGroups();
         }
