@@ -3,7 +3,7 @@
 ## members.restriction.staticroute
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESTRICTION_CHECK_STATICROUTE` |
 | **name** | `members.restriction.staticroute` |
 | **class** | `\MembersBundle\Event\StaticRouteEvent` |
@@ -12,7 +12,7 @@
 ## members.change_password.edit.initialize
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:CHANGE_PASSWORD_INITIALIZE` |
 | **name** | `members.change_password.edit.initialize` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -21,7 +21,7 @@
 ## members.change_password.edit.success
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:CHANGE_PASSWORD_SUCCESS` |
 | **name** | `members.change_password.edit.success` |
 | **class** | `\MembersBundle\Event\FormEvent` |
@@ -30,7 +30,7 @@
 ## members.change_password.edit.completed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:CHANGE_PASSWORD_COMPLETED` |
 | **name** | `members.change_password.edit.completed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
@@ -39,7 +39,7 @@
 ## members.profile.edit.initialize
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:PROFILE_EDIT_INITIALIZE` |
 | **name** | `members.change_password.edit.initialize` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -48,7 +48,7 @@
 ## members.profile.edit.success
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:PROFILE_EDIT_SUCCESS` |
 | **name** | `members.change_password.edit.success` |
 | **class** | `\MembersBundle\Event\FormEvent` |
@@ -57,7 +57,7 @@
 ## members.change_password.edit.completed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:PROFILE_EDIT_COMPLETED` |
 | **name** | `members.change_password.edit.completed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
@@ -66,7 +66,7 @@
 ## members.registration.initialize
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_INITIALIZE` |
 | **name** | `members.registration.initialize` |
 | **class** | `\MembersBundle\Event\UserEvent` |
@@ -75,7 +75,7 @@
 ## members.registration.success
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_SUCCESS` |
 | **name** | `members.registration.success` |
 | **class** | `\MembersBundle\Event\FormEvent` |
@@ -84,7 +84,7 @@
 ## members.registration.failure
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_FAILURE` |
 | **name** | `members.registration.failure` |
 | **class** | `\MembersBundle\Event\FormEvent` |
@@ -93,7 +93,7 @@
 ## members.registration.completed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_COMPLETED` |
 | **name** | `members.registration.completed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
@@ -102,7 +102,7 @@
 ## members.registration.confirm
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_CONFIRM` |
 | **name** | `members.registration.confirm` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -111,7 +111,7 @@
 ## members.registration.confirmed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:REGISTRATION_CONFIRMED` |
 | **name** | `members.registration.confirmed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
@@ -121,7 +121,7 @@
 ## members.resetting.reset.request
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_RESET_REQUEST` |
 | **name** | `members.resetting.reset.request` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -130,7 +130,7 @@
 ## members.resetting.reset.initialize
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_RESET_INITIALIZE` |
 | **name** | `members.resetting.reset.initialize` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -139,7 +139,7 @@
 ## members.resetting.reset.success
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_RESET_SUCCESS` |
 | **name** | `members.resetting.reset.success` |
 | **class** | `\MembersBundle\Event\FormEvent` |
@@ -148,7 +148,7 @@
 ## members.resetting.reset.completed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_RESET_COMPLETED` |
 | **name** | `members.resetting.reset.completed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
@@ -157,7 +157,7 @@
 ## members.security.implicit_login
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:SECURITY_IMPLICIT_LOGIN` |
 | **name** | `members.security.implicit_login` |
 | **class** | `\MembersBundle\Event\UserEvent` |
@@ -166,7 +166,7 @@
 ## members.resetting.send_email.initialize
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_SEND_EMAIL_INITIALIZE` |
 | **name** | `members.resetting.send_email.initialize` |
 | **class** | `\MembersBundle\Event\GetResponseNullableUserEvent` |
@@ -175,7 +175,7 @@
 ## members.resetting.send_email.confirm
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_SEND_EMAIL_CONFIRM` |
 | **name** | `members.resetting.send_email.confirm` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
@@ -184,7 +184,7 @@
 ## members.resetting.send_email.completed
 
 | Type | Reference |
-| --- | --- |
+|:--- |:--- |
 | **const** | `\MembersEvent:RESETTING_SEND_EMAIL_COMPLETED` |
 | **name** | `members.resetting.send_email.completed` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
