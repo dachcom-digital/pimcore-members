@@ -1,6 +1,6 @@
 # Restrictions
 
-The Restriction Feature is disable by default. So activate it first:
+The Restriction Feature is disabled by default. So activate it first:
 
 ```yaml
 members:
@@ -8,7 +8,7 @@ members:
         enabled: true
 ```
 
-> Note: You need to create some groups, before you can enable the restrictions.
+> Note: You need to create some groups before you can enable the restrictions.
 
 ## Enable Document Restriction
 Once activated, you'll see a restriction tab in every document.
