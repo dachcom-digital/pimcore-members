@@ -62,7 +62,7 @@ class RestrictionQuery
         }
 
         $query->where('members_restrictions.targetId IS NULL ' . $orQuery);
-        $query->group('id');
+        $query->group($queryIdentifier);
 
     }
 }

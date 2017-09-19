@@ -8,11 +8,11 @@ This is the recommended way.
 ```php
 <?php
 
-use Pimcore\Model\Object;
-use Pimcore\Db\ZendCompatibility;
+use Pimcore\Model\DataObject;
+use Pimcore\Db\ZendCompatibility\QueryBuilder;
 
-$listing = Object\YourObject::getList();
-$listing->onCreateQuery(function (ZendCompatibility $query) use ($listing) {
+$listing = DataObject\YourObject::getList();
+$listing->onCreateQuery(function (QueryBuilder $query) use ($listing) {
     $this->container->get('members.security.restriction.query')
         ->addRestrictionInjection($query, $listing);
 });
