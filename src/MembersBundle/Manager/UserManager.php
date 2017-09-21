@@ -4,12 +4,18 @@ namespace MembersBundle\Manager;
 
 use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Configuration\Configuration;
 use Pimcore\Model\Listing\AbstractListing;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Version;
 
 class UserManager implements UserManagerInterface
 {
+    /**
+     * @var Configuration
+     */
+    protected $configuration;
+
     /**
      * @var ClassManager
      */
@@ -23,10 +29,12 @@ class UserManager implements UserManagerInterface
     /**
      * userManager constructor.
      *
-     * @param ClassManager $classManager
+     * @param Configuration $configuration
+     * @param ClassManager  $classManager
      */
-    public function __construct($classManager)
+    public function __construct(Configuration $configuration, ClassManager $classManager)
     {
+        $this->configuration = $configuration;
         $this->classManager = $classManager;
         $this->memberStorageId = DataObject::getByPath('/members')->getId();
     }
@@ -186,13 +194,12 @@ class UserManager implements UserManagerInterface
         //It's a new user!
         if (empty($user->getKey())) {
             $new = TRUE;
-            $user->setKey(\Pimcore\File::getValidFilename($user->getEmail()));
-            $user->setParentId($this->memberStorageId);
+            $user = $this->setupNewUser($user);
+        }
 
-            if (!empty($properties)) {
-                foreach ($properties as $propKey => $propValue) {
-                    $user->setProperty($propKey, 'text', $propValue, FALSE);
-                }
+        if (!empty($properties)) {
+            foreach ($properties as $propKey => $propValue) {
+                $user->setProperty($propKey, 'text', $propValue, FALSE);
             }
         }
 
@@ -201,6 +208,40 @@ class UserManager implements UserManagerInterface
         }
 
         return $new ? $this->saveWithVersion($user) : $this->saveWithoutVersion($user);
+    }
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return UserInterface
+     */
+    private function setupNewUser(UserInterface $user)
+    {
+        $user->setKey(\Pimcore\File::getValidFilename($user->getEmail()));
+        $user->setParentId($this->memberStorageId);
+
+        $userGroups = [];
+        $userConfiguration = $this->configuration->getConfig('user');
+        foreach($userConfiguration['initial_groups'] as $group) {
+            $listing = $this->classManager->getGroupListing();
+            $listing->setUnpublished(FALSE);
+
+            if(is_string($group)) {
+                $listing->setCondition('name = ?', [$group]);
+            } else {
+                $listing->setCondition('oo_id = ?', [$group]);
+            }
+
+            $objects = $listing->getObjects();
+
+            if(count($objects) > 0) {
+                $userGroups[] = $objects[0];
+            }
+        }
+
+        $user->setGroups($userGroups);
+
+        return $user;
     }
 
     /**
