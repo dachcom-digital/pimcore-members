@@ -2,8 +2,8 @@
 
 The MembersBundle tries to protected your documents by default. For that a event listener will watch every request.
 
-1. If the route is not protected, the page gets disabled
-2. If the route is protected and the user is not logged and not allowed to open the page, he will get redirected via the `members_user_security_login` route.
+1. If the route is not protected, the restriction will be skipped
+2. If the route is protected and the user is not logged in and not allowed to open the page, he will get redirected via the `members_user_security_login` route.
 3. If the route is protected and the user is logged in but has not the right privileges, he will get redirected via the `members_user_restriction_refused` route. 
 
 ## Static Route Routing
@@ -18,7 +18,7 @@ First, create a service in your `app/config/services.yml`:
 ```yaml
 app.event_listener.members.restriction.staticroute:
     class: AppBundle\EventListener\MembersStaticRouteListener
-    tags:`
+    tags:
         - { name: kernel.event_subscriber }
 ```
 

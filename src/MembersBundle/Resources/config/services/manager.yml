@@ -10,6 +10,7 @@ services:
     members.manager.user:
         class: MembersBundle\Manager\UserManager
         arguments:
+            - '@members.configuration'
             - '@members.manager.class'
 
     # manager: restriction

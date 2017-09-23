@@ -12,6 +12,9 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 * Allow Members to register in frontend
 * Restrict Documents, Objects and Assets to specific User Roles
 
+## Bundles supporting Members
+- [CoreShop](https://github.com/coreshop/CoreShop/)
+
 * * *
 
 ## Installation
@@ -78,8 +81,9 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Custom Form Types](docs/50_CustomFormTypes.md)
 - [Registration Types](docs/60_RegistrationTypes.md)
 - [Email Configuration](docs/70_EmailConfiguration.md)
-- [Roles](docs/80_Roles.md)
-- [Use LuceneSearch with Members](docs/90_LuceneSearch.md)
+- [Groups](docs/80_Groups.md)
+- [Roles](docs/90_Roles.md)
+- [Use LuceneSearch with Members](docs/100_LuceneSearch.md)
 
 * * *
 

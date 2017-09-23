@@ -5,20 +5,17 @@ pimcore:
     security:
         encoder_factories:
             MembersBundle\Adapter\User\UserInterface: members.security.password_encoder_factory
-
     objects:
         class_definitions:
             data:
                 map:
                     membersGroupMultiselect: MembersBundle\CoreExtension\GroupMultiselect
-security:
 
+security:
     providers:
         members:
             id: members.user_provider.username
-
     firewalls:
-
         members_fe:
             pattern: ^/(?!(admin)).*$
             form_login:
@@ -30,14 +27,12 @@ security:
                 path: members_user_security_logout
                 target: /
             anonymous: true
-
     access_control:
         - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_locale/members/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
 
 members:
-
     send_admin_mail_after_register: false
     send_user_mail_after_confirmed: false
 
@@ -46,21 +41,18 @@ members:
 
     restriction:
         enabled: false
-        allowed_objects: []
-
+        allowed_objects: ~
     user:
         adapter:
             class_name: 'MembersUser'
-
+        initial_groups: ~
     group:
         adapter:
             class_name: 'MembersGroup'
-
     auth:
         adapter:
-            class_name:
-            object_path:
-
+            class_name: ~
+            object_path: ~
     emails:
         default:
             register_confirm: '/email/register-confirm'

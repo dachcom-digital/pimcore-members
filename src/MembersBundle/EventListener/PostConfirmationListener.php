@@ -7,6 +7,7 @@ use MembersBundle\Event\FormEvent;
 use MembersBundle\Mailer\Mailer;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
+use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -96,9 +97,9 @@ class PostConfirmationListener implements EventSubscriberInterface
         $user->setPublished(FALSE);
         if (NULL === $user->getConfirmationToken()) {
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
-            $user->save();
         }
 
+        $this->saveUser($user);
         $this->mailer->sendConfirmationEmailMessage($user);
 
         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
@@ -118,6 +119,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $user = $event->getForm()->getData();
 
         $user->setPublished(FALSE);
+        $this->saveUser($user);
 
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
@@ -137,5 +139,20 @@ class PostConfirmationListener implements EventSubscriberInterface
         /** @var $user UserInterface */
         $user = $event->getForm()->getData();
         $user->setPublished(TRUE);
+        $this->saveUser($user);
+    }
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return mixed
+     */
+    private function saveUser($user)
+    {
+        Version::disable();
+        $state = $user->save();
+        Version::enable();
+
+        return $state;
     }
 }
