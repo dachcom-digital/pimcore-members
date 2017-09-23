@@ -10,6 +10,7 @@ use Pimcore\Event\Model\DocumentEvent;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class RestrictionStoreListener implements EventSubscriberInterface
@@ -27,7 +28,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
     /**
      * RestrictionServiceListener constructor.
      *
-     * @param RequestStack       $requestStack
+     * @param RequestStack $requestStack
      * @param RestrictionService $serviceRestriction
      */
     public function __construct(RequestStack $requestStack, RestrictionService $serviceRestriction)
@@ -42,17 +43,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            DataObjectEvents::PRE_DELETE   => 'handleObjectDeletion',
+            DataObjectEvents::PRE_DELETE => 'handleObjectDeletion',
             DocumentEvents::PRE_DELETE => 'handleDocumentDeletion',
-            AssetEvents::PRE_DELETE    => 'handleAssetDeletion',
+            AssetEvents::PRE_DELETE => 'handleAssetDeletion',
 
-            DataObjectEvents::POST_ADD   => 'handleObjectAdd',
+            DataObjectEvents::POST_ADD => 'handleObjectAdd',
             DocumentEvents::POST_ADD => 'handleDocumentAdd',
-            AssetEvents::POST_ADD    => 'handleAssetAdd',
+            AssetEvents::POST_ADD => 'handleAssetAdd',
 
-            DataObjectEvents::POST_UPDATE   => 'handleObjectUpdate',
+            DataObjectEvents::POST_UPDATE => 'handleObjectUpdate',
             DocumentEvents::POST_UPDATE => 'handleDocumentUpdate',
-            AssetEvents::POST_UPDATE    => 'handleAssetUpdate'
+            AssetEvents::POST_UPDATE => 'handleAssetUpdate'
         ];
     }
 
@@ -109,15 +110,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleObjectUpdate(DataObjectEvent $e)
     {
-        $params = $this->requestStack->getMasterRequest()->get('values');
+        if ($this->requestStack->getMasterRequest() instanceof Request) {
+            $params = $this->requestStack->getMasterRequest()->get('values');
 
-        //only trigger update if object gets moved.
-        //default restriction object update gets handled by restrictionController.
-        if ($params === NULL) {
-            return;
+            //only trigger update if object gets moved.
+            //default restriction object update gets handled by restrictionController.
+            if ($params === NULL) {
+                return;
+            }
+
+            $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
         }
-
-        $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
     }
 
     /**
@@ -125,15 +128,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleDocumentUpdate(DocumentEvent $e)
     {
-        $params = $this->requestStack->getMasterRequest()->get('parentId');
+        if ($this->requestStack->getMasterRequest() instanceof Request) {
+            $params = $this->requestStack->getMasterRequest()->get('parentId');
 
-        //only trigger update if page gets moved.
-        //default restriction page update gets handled by restrictionController.
-        if ($params === NULL) {
-            return;
+            //only trigger update if page gets moved.
+            //default restriction page update gets handled by restrictionController.
+            if ($params === NULL) {
+                return;
+            }
+
+            $this->serviceRestriction->checkRestrictionContext($e->getDocument(), 'page');
         }
-
-        $this->serviceRestriction->checkRestrictionContext($e->getDocument(), 'page');
     }
 
     /**
@@ -141,14 +146,16 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleAssetUpdate(AssetEvent $e)
     {
-        $params = $this->requestStack->getMasterRequest()->get('parentId');
+        if ($this->requestStack->getMasterRequest() instanceof Request) {
+            $params = $this->requestStack->getMasterRequest()->get('parentId');
 
-        //only trigger update if asset gets moved.
-        //default restriction asset update gets handled by restrictionController.
-        if ($params === NULL) {
-            return;
+            //only trigger update if asset gets moved.
+            //default restriction asset update gets handled by restrictionController.
+            if ($params === NULL) {
+                return;
+            }
+
+            $this->serviceRestriction->checkRestrictionContext($e->getAsset(), 'asset');
         }
-
-        $this->serviceRestriction->checkRestrictionContext($e->getAsset(), 'asset');
     }
 }
