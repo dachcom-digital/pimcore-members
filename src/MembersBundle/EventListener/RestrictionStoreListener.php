@@ -10,6 +10,7 @@ use Pimcore\Event\Model\DocumentEvent;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class RestrictionStoreListener implements EventSubscriberInterface
@@ -42,17 +43,17 @@ class RestrictionStoreListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            DataObjectEvents::PRE_DELETE   => 'handleObjectDeletion',
-            DocumentEvents::PRE_DELETE => 'handleDocumentDeletion',
-            AssetEvents::PRE_DELETE    => 'handleAssetDeletion',
+            DataObjectEvents::PRE_DELETE => 'handleObjectDeletion',
+            DocumentEvents::PRE_DELETE   => 'handleDocumentDeletion',
+            AssetEvents::PRE_DELETE      => 'handleAssetDeletion',
 
-            DataObjectEvents::POST_ADD   => 'handleObjectAdd',
-            DocumentEvents::POST_ADD => 'handleDocumentAdd',
-            AssetEvents::POST_ADD    => 'handleAssetAdd',
+            DataObjectEvents::POST_ADD => 'handleObjectAdd',
+            DocumentEvents::POST_ADD   => 'handleDocumentAdd',
+            AssetEvents::POST_ADD      => 'handleAssetAdd',
 
-            DataObjectEvents::POST_UPDATE   => 'handleObjectUpdate',
-            DocumentEvents::POST_UPDATE => 'handleDocumentUpdate',
-            AssetEvents::POST_UPDATE    => 'handleAssetUpdate'
+            DataObjectEvents::POST_UPDATE => 'handleObjectUpdate',
+            DocumentEvents::POST_UPDATE   => 'handleDocumentUpdate',
+            AssetEvents::POST_UPDATE      => 'handleAssetUpdate'
         ];
     }
 
@@ -109,6 +110,10 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleObjectUpdate(DataObjectEvent $e)
     {
+        if (!$this->requestStack->getMasterRequest() instanceof Request) {
+            return;
+        }
+
         $params = $this->requestStack->getMasterRequest()->get('values');
 
         //only trigger update if object gets moved.
@@ -125,6 +130,10 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleDocumentUpdate(DocumentEvent $e)
     {
+        if (!$this->requestStack->getMasterRequest() instanceof Request) {
+            return;
+        }
+
         $params = $this->requestStack->getMasterRequest()->get('parentId');
 
         //only trigger update if page gets moved.
@@ -141,6 +150,10 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleAssetUpdate(AssetEvent $e)
     {
+        if (!$this->requestStack->getMasterRequest() instanceof Request) {
+            return;
+        }
+
         $params = $this->requestStack->getMasterRequest()->get('parentId');
 
         //only trigger update if asset gets moved.
