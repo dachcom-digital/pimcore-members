@@ -18,11 +18,13 @@ $downloadLink = $this
 If you want to get multiple downloads at once, you can use the generateAssetPackageUrl() method. 
 This will create a zip file on the fly, so no temp files on your server!
 
+>**Important:** Your server need the zip module to create streamed zip files!
+
 ```php
 <?php
 
 
-//these assets needs to be protected!
+//these assets need to be protected!
 $download1 = \Pimcore\Model\Asset::getById(1);
 $download2 = \Pimcore\Model\Asset::getById(2);
 
