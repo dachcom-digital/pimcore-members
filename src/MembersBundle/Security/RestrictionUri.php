@@ -28,19 +28,47 @@ class RestrictionUri
     }
 
     /**
-     * @param string|Model\Asset $asset         if string, getByPath will be triggered.
-     * @param bool|int           $objectProxyId Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
-     *                                          the object has restriction but the asset does not.
-     *                                          If $objectProxyId is given, this method will check for the object restriction instead of the asset.
+     * @param string|Model\Asset $asset            if string, getByPath will be triggered.
+     * @param bool|int           $objectProxyId    Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
+     *                                             the object has restriction but the asset does not.
+     *                                             If $objectProxyId is given, this method will check for the object restriction instead of the asset.
+     * @param bool               $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
      *
      * @return string
      * @throws \Exception
      */
-    public function generateAssetUrl($asset = '', $objectProxyId = FALSE)
+    public function generateAssetUrl($asset = '', $objectProxyId = FALSE, $checkRestriction = FALSE)
     {
-        $urlData = $this->getAssetData($asset, $objectProxyId);
+        $urlData = $this->getAssetData($asset, $objectProxyId, $checkRestriction);
+        $url = empty($urlData) ? '' : $this->generateUrl([$urlData]);
+        return $url;
+    }
 
-        return $this->generateUrl([$urlData]);
+    /**
+     * @see generateAssetUrl serves data as zip.
+     *
+     * @param bool  $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
+     * @param array $assetData        array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
+     *
+     * @return string
+     * @throws \Exception
+     */
+    public function generateAssetPackageUrl($assetData = [], $checkRestriction = FALSE)
+    {
+        if (!is_array($assetData)) {
+            throw new \InvalidArgumentException('assetData has to be a array.');
+        }
+
+        $urlData = [];
+        foreach ($assetData as $asset) {
+            $url = $this->getAssetData($asset['asset'], isset($asset['objectProxyId']) ? $asset['objectProxyId'] : FALSE, $checkRestriction);
+            if(empty($url)) {
+                continue;
+            }
+            $urlData[] = $url;
+        }
+
+        return empty($urlData) ? '' : $this->generateUrl($urlData);
     }
 
     /**
@@ -94,28 +122,6 @@ class RestrictionUri
     }
 
     /**
-     * @see generateAssetUrl serves data as zip.
-     *
-     * @param array $assetData array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public function generateAssetPackageUrl($assetData = [])
-    {
-        if (!is_array($assetData)) {
-            throw new \InvalidArgumentException('assetData has to be a array.');
-        }
-
-        $urlData = [];
-        foreach ($assetData as $asset) {
-            $urlData[] = $this->getAssetData($asset['asset'], isset($asset['objectProxyId']) ? $asset['objectProxyId'] : FALSE);
-        }
-
-        return $this->generateUrl($urlData);
-    }
-
-    /**
      * Decodes given Url
      *
      * @param $requestData
@@ -131,7 +137,6 @@ class RestrictionUri
         }
 
         $dataToProcess = [];
-
         foreach ($fileInfo as $file) {
             $assetId = $file->f;
             $proxyId = $file->p;
@@ -163,22 +168,30 @@ class RestrictionUri
     /**
      * @param string $asset
      * @param        $objectProxyId
+     * @param        $checkRestriction
      *
      * @return array
      * @throws \Exception
      */
-    private static function getAssetData($asset = '', $objectProxyId)
+    private function getAssetData($asset = '', $objectProxyId = FALSE, $checkRestriction = FALSE)
     {
         if (is_string($asset)) {
             $asset = Model\Asset::getByPath($asset);
+        }
+
+        if (!$asset instanceof Model\Asset) {
+            return [];
         }
 
         if (strpos($asset->getFullPath(), self::PROTECTED_ASSET_FOLDER) === FALSE) {
             throw new \Exception('Asset is not in protected environment: "' . $asset->getFullPath() . '". Please move asset to "' . self::PROTECTED_ASSET_FOLDER . '".');
         }
 
-        if (!$asset instanceof Model\Asset) {
-            throw new \Exception('given data is not a asset.');
+        if($checkRestriction === TRUE) {
+            $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($asset);
+            if ($restrictionElement->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED) {
+                return [];
+            }
         }
 
         return [

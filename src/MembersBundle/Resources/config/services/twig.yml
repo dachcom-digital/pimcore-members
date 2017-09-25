@@ -8,3 +8,10 @@ services:
         public: false
         tags:
             - { name: twig.extension }
+    members.twig.extension.restriction_uri:
+        class: MembersBundle\Twig\Extension\RestrictionUriExtension
+        arguments:
+            - '@members.security.restriction.uri'
+        public: false
+        tags:
+            - { name: twig.extension }
