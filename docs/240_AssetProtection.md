@@ -63,7 +63,7 @@ If you want to generate protected urls in twig, use these extensions to generate
 <a href="{{ members_generate_asset_package_url([12,40]) }}" class="protected-link">download protected package</a>
 
 {# generate protected link only if content is available for current user #}
-{{ dump(members_generate_asset_package_url(12, true)) }}
+{{ dump(members_generate_asset_package_url([12,40], true)) }}
 ```
 
 > **Note:** Don't worry if you skip the second argument (default is false), since every download link will check for a valid user restriction!
