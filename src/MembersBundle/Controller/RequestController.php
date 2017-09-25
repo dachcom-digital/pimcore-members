@@ -2,39 +2,45 @@
 
 namespace MembersBundle\Controller;
 
+use Pimcore\Model;
+use Pimcore\Tool\Console;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Security\RestrictionUri;
-use Pimcore\Model;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RequestController extends AbstractController
 {
+    const BUFFER_SIZE = 8192;
+
     /**
      * @param null $hash
+     *
+     * @return StreamedResponse
      */
     public function serveAction($hash = NULL)
     {            
-        $requestData = $hash;
-
         if($this->container->get('members.configuration')->getConfig('restriction')['enabled'] === FALSE) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
-        if (empty($requestData)) {
+        if (empty($hash)) {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
 
         /** @var RestrictionUri $restrictionUri */
         $restrictionUri = $this->container->get('members.security.restriction.uri');
-        $dataToProcess = $restrictionUri->decodeAssetUrl($requestData);
+        $dataToProcess = $restrictionUri->decodeAssetUrl($hash);
 
         if ($dataToProcess === FALSE) {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
 
         if (count($dataToProcess) == 1) {
-            $this->serveFile($dataToProcess[0]);
+            return $this->serveFile($dataToProcess[0]);
         } else if (count($dataToProcess) > 1) {
-            $this->serveZip($dataToProcess);
+            return  $this->serveZip($dataToProcess);
         } else {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
@@ -42,90 +48,106 @@ class RequestController extends AbstractController
 
     /**
      * @param Model\Asset $asset
+     *
+     * @return StreamedResponse
      */
     private function serveFile(Model\Asset $asset)
     {
+        $forceDownload = TRUE;
+        $contentType = $asset->getMimetype();
+
         /** @var Configuration $configuration */
         $configuration = $this->container->get('members.configuration');
         $hasLuceneSearch = $configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
 
-        $forceDownload = TRUE;
-        $contentType = 'application/octet-stream';
-
-        if ($hasLuceneSearch) {
+        if ($hasLuceneSearch === TRUE) {
             /** @var \LuceneSearchBundle\Tool\CrawlerState $crawlerState */
             $crawlerState = $this->container->get('lucene_search.tool.crawler_state');
             if ($crawlerState->isLuceneSearchCrawler() && in_array($asset->getMimetype(), ['application/pdf'])) {
                 $forceDownload = FALSE;
-                $contentType = $asset->getMimetype();
             }
         }
 
-        $size = $asset->getFileSize('noformatting');
-        $quoted = sprintf('"%s"', addcslashes(basename($asset->getFileName()), '"\\'));
+        $response = new StreamedResponse();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', $contentType);
+        $response->headers->set('Connection', 'Keep-Alive');
+        $response->headers->set('Expires', 0);
+        $response->headers->set('Provider', 'Pimcore-Members');
+        $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Content-Length', $asset->getFileSize('noformatting'));
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            $forceDownload ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE,
+            basename($asset->getFileName())
+        ));
 
-        if ($forceDownload === TRUE) {
-            header('Content-Description: File Transfer');
-            header('Content-Transfer-Encoding: binary');
-            header('Content-Disposition: attachment; filename=' . $quoted);
+        if ($forceDownload === FALSE) {
+            $response->headers->set('Content-Description', 'File Transfer');
+            $response->headers->set('Content-Transfer-Encoding', 'binary');
         }
 
-        header('Content-Type: ' . $contentType);
-        header('Connection: Keep-Alive');
-        header('Provider: Pimcore-Members');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        header('Content-Length: ' . $size);
-
-        set_time_limit(0);
-
-        $file = @fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
-
-        while (!feof($file)) {
-            print(@fread($file, 1024 * 8));
-            ob_flush();
+        $response->setCallback(function () use($asset) {
             flush();
-        }
+            ob_flush();
+            $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
+            flush();
+            ob_flush();
+            while (!feof($handle)) {
+                print(fread($handle, self::BUFFER_SIZE));
+                flush();
+                ob_flush();
+            }
+        });
 
-        exit;
+        return $response;
+
     }
 
     /**
      * @param $assets
+     *
+     * @return StreamedResponse
      */
     private function serveZip($assets)
     {
-        $fileName = 'package';
-
-        header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename="' . $fileName . '.zip"');
-        header('Content-Transfer-Encoding: binary');
-
-        mb_http_output('pass');
-
-        ob_clean();
-        flush();
-
+        $fileName = 'package.zip';
         $files = '';
 
         /** @var Model\Asset $asset */
         foreach ($assets as $asset) {
-            $files .= '"' . PIMCORE_ASSET_DIRECTORY . $asset->getFullPath() . '" ';
+            $filePath = rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath());
+            $files .= '"' . $filePath . '" ';
         }
 
-        $fp = popen('zip -r -j - ' . $files, 'r');
+        $response = new StreamedResponse();
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $fileName
+        ));
 
-        $bufferSize = 8192;
-        $buff = '';
+        $zibLib = Console::getExecutable('zip');
+        if (empty($zibLib)) {
+            throw new NotFoundHttpException('zip extension not found on this server.');
+        }
 
-        while (!feof($fp)) {
-            $buff = fread($fp, $bufferSize);
+        $response->setCallback(function () use($files) {
+            mb_http_output('pass');
+            flush();
             ob_flush();
-            echo $buff;
-        }
+            $handle = popen('zip -r -j - ' . $files, 'r');
+            while (!feof($handle)) {
+                print(fread($handle, self::BUFFER_SIZE));
+                flush();
+                ob_flush();
+            }
+            pclose($handle);
+        });
 
-        pclose($fp);
-        exit;
+        return $response;
+
     }
 }
