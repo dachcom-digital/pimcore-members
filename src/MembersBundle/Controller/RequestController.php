@@ -91,8 +91,6 @@ class RequestController extends AbstractController
             flush();
             ob_flush();
             $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
-            flush();
-            ob_flush();
             while (!feof($handle)) {
                 print(fread($handle, self::BUFFER_SIZE));
                 flush();
