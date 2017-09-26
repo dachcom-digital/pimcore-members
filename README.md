@@ -69,7 +69,6 @@ if($objectRestriction['section'] === \Members\Tool\Observer::SECTION_NOT_ALLOWED
 ```
 
 ### Documents
-
 **Hide restricted pages in navigation**  
 Pimcore does not allow to manipulate the navigation globally without caching it.
 Members provides some helpers to fix that. Use your *pimcoreNavigation* like that:
@@ -88,7 +87,6 @@ Members provides some helpers to fix that. Use your *pimcoreNavigation* like tha
 ```
 
 ### Assets
-
 The Members Plugin will install a protected folder called "restricted-assets". all assets placed in this folder are protected from frontend calls.
 
 **Get protected asset resource**  
@@ -193,7 +191,16 @@ Returning the object will be enough, Members takes care of everything else.
 );
 ```
 
-### Email Notifications
+## Authentication via API
+If you're using a custom api with authentication you may want to disable the session handling to prevent [session locking](https://zend18.zendesk.com/hc/en-us/articles/205880128-Lock-Picking-PHP-Sessions).
+To use a session-less auth storage, define the `MEMBERS_API_MODE` constant:
+
+```php
+<?php
+define('MEMBERS_API_MODE', TRUE);
+```
+
+## Email Notifications
 **Register Confirm**   
 *Note*: only works if `actions.postRegister` has been set to `confirm`  
 Send a confirmation link to user to activate account.
@@ -209,7 +216,7 @@ Send a notification mail to admin if a user has been successfully activated his 
 **Password Reset**  
 Send a email with a password reset link.
 
-### Event API
+## Event API
 For more information about using Event API please check [pimcore documentation](https://www.pimcore.org/wiki/pages/viewpage.action?pageId=16854309).
 
 **Example**  
