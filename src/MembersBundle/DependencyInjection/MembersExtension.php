@@ -2,12 +2,12 @@
 
 namespace MembersBundle\DependencyInjection;
 
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
 use MembersBundle\Configuration\Configuration as BundleConfiguration;
-use Symfony\Component\Yaml\Yaml;
 
 class MembersExtension extends Extension
 {
@@ -24,7 +24,7 @@ class MembersExtension extends Extension
         $loader->load('services.yml');
         //$loader->load('profiler.yml');
 
-        $configManagerDefinition = $container->getDefinition('members.configuration');
+        $configManagerDefinition = $container->getDefinition(BundleConfiguration::class);
         $configManagerDefinition->addMethodCall('setConfig', [ $config ]);
 
         if(file_exists(BundleConfiguration::SYSTEM_CONFIG_FILE_PATH)) {

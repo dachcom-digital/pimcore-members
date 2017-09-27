@@ -6,10 +6,12 @@ Generate protected asset download urls:
 ```php
 <?php
 
+use MembersBundle\Security\RestrictionUri;
+
 //this asset needs to be a protected one!
 $download = \Pimcore\Model\Asset::getById(1);
 $downloadLink = $this
-                    ->container->get('members.security.restriction.uri')
+                    ->container->get(RestrictionUri::class)
                     ->generateAssetUrl($download);
 
 //$downloadLink: domain.com/members/request-data/W3siZiI6NiwicCI6ZmFsc2V9XQ
@@ -25,6 +27,7 @@ This will create a zip file on the fly, so no temp files on your server!
 ```php
 <?php
 
+use MembersBundle\Security\RestrictionUri;
 
 //these assets need to be protected!
 $download1 = \Pimcore\Model\Asset::getById(1);
@@ -36,7 +39,7 @@ $packageData = [
 ];
 
 $downloadLink = $this
-                    ->container->get('members.security.restriction.uri')
+                    ->container->get(RestrictionUri::class)
                     ->generateAssetPackageUrl($packageData, TRUE);
 
 //since the second argument is set to TRUE, the link will only available if the current user is correctly authenticated.

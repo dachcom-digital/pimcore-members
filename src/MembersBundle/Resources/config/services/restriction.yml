@@ -1,5 +1,9 @@
 services:
 
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
     # service: restriction
-    members.service.restriction:
-        class: MembersBundle\Restriction\RestrictionService
+    MembersBundle\Restriction\RestrictionService: ~

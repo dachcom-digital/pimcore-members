@@ -9,7 +9,7 @@ But those events are useless unless you let the LuceneSearch Bundle know about i
 So, there is still work to do: To allow LuceneSearch to crawl all the restricted routes, you need to implement a guardian. Don't worry, it's very easy!
 
 ### Implement Guardian
-Simple add the `members.security.guard.lucene_search` service to your `app/config/config.yml`.
+Simple add the `MembersBundle\Security\LuceneSearchAuthenticator` service to your `app/config/config.yml`.
 This authenticator comes with the Members Bundle, so there is nothing else to do. From now on, your system will watch every request for a lucene search crawl event.
 
 > Feel free to add your custom authenticator if needed.
@@ -20,7 +20,7 @@ security:
         members_fe:
             guard:
                 authenticators:
-                    - 'members.security.guard.lucene_search'
+                    - MembersBundle\Security\LuceneSearchAuthenticator
 ```
 
 ### Add Authentication Information to Crawler Request

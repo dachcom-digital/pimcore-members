@@ -13,7 +13,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Translation;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 use MembersBundle\Configuration\Configuration;
 
 class Install extends AbstractInstaller
@@ -24,7 +24,7 @@ class Install extends AbstractInstaller
     protected $resolver;
 
     /**
-     * @var Serializer
+     * @var SerializerInterface
      */
     protected $serializer;
 
@@ -42,9 +42,9 @@ class Install extends AbstractInstaller
      * Install constructor.
      *
      * @param TokenStorageUserResolver $resolver
-     * @param Serializer $serializer
+     * @param SerializerInterface $serializer
      */
-    public function __construct(TokenStorageUserResolver $resolver, Serializer $serializer)
+    public function __construct(TokenStorageUserResolver $resolver, SerializerInterface $serializer)
     {
         parent::__construct();
 

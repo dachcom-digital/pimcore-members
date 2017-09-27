@@ -1,26 +1,26 @@
 services:
 
-    members.security.guard.lucene_search:
-        class: MembersBundle\Security\LuceneSearchAuthenticator
-        arguments:
-            - '@members.security.password_encoder_factory'
-            - '@members.manager.user'
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
 
-    members.security.user_checker:
-        class: MembersBundle\Security\UserChecker
+     # security: restriction uri parser
+    MembersBundle\Security\RestrictionUri: ~
 
-    members.security.password_encoder_factory:
-        class: Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory
-        arguments:
-            - Pimcore\Security\Encoder\PasswordFieldEncoder
-            - ['password']
+     # security: restriction query parser
+    MembersBundle\Security\RestrictionQuery: ~
 
-    members.user_provider.username:
-        class: MembersBundle\Security\UserProvider
-        arguments:
-            - '@members.manager.user'
+    MembersBundle\Security\UserCheckerInterface: '@MembersBundle\Security\UserChecker'
+    MembersBundle\Security\UserChecker: ~
 
-    members.user_provider.username_email:
-        class: MembersBundle\Security\EmailUserProvider
+    MembersBundle\Security\UserProvider: ~
+
+    MembersBundle\Security\EmailUserProvider: ~
+
+    MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory:
         arguments:
-            - '@members.manager.user'
+            $className: 'Pimcore\Security\Encoder\PasswordFieldEncoder'
+            $arguments: ['password']
+
+    MembersBundle\Security\LuceneSearchAuthenticator: ~

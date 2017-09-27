@@ -3,6 +3,7 @@
 namespace MembersBundle\Controller\Admin;
 
 use MembersBundle\Adapter\Group\GroupInterface;
+use MembersBundle\Manager\ClassManager;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Restriction\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
@@ -18,7 +19,7 @@ class RestrictionController extends AdminController
     public function getGlobalSettingsAction()
     {
         /** @var Configuration $configuration */
-        $configuration = $this->container->get('members.configuration');
+        $configuration = $this->container->get(Configuration::class);
 
         return $this->json(['settings' => $configuration->getConfigArray()]);
     }
@@ -29,7 +30,7 @@ class RestrictionController extends AdminController
     public function getGroupsAction()
     {
         /** @var AbstractListing $list */
-        $list = $this->container->get('members.manager.class')->getGroupListing();
+        $list = $this->container->get(ClassManager::class)->getGroupListing();
 
         if ($list === FALSE) {
             return $this->json([]);
@@ -107,7 +108,7 @@ class RestrictionController extends AdminController
     public function setDocumentRestrictionConfigAction(Request $request)
     {
         /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->container->get('members.service.restriction');
+        $restrictionService = $this->container->get(RestrictionService::class);
 
         $data = json_decode($request->query->get('data'));
 
@@ -208,7 +209,7 @@ class RestrictionController extends AdminController
     public function getNextParentRestrictionAction(Request $request)
     {
         /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->container->get('members.service.restriction');
+        $restrictionService = $this->container->get(RestrictionService::class);
 
         $elementId = $request->query->get('docId');
         $cType = $request->query->get('cType');

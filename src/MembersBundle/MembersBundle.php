@@ -2,6 +2,7 @@
 
 namespace MembersBundle;
 
+use MembersBundle\Tool\Install;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 
 class MembersBundle extends AbstractPimcoreBundle
@@ -11,7 +12,7 @@ class MembersBundle extends AbstractPimcoreBundle
      */
     public function getInstaller()
     {
-        return $this->container->get('members.tool.installer');
+        return $this->container->get(Install::class);
     }
 
     /**

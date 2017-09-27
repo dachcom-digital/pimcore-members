@@ -1,6 +1,8 @@
 services:
-    members.mailer:
-        class: MembersBundle\Mailer\Mailer
-        arguments:
-            - '@router'
-            - '@members.configuration'
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    MembersBundle\Mailer\Mailer: ~

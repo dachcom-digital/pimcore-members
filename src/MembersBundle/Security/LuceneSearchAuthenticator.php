@@ -4,7 +4,7 @@ namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Manager\UserManager;
-use Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory;
+use MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

@@ -7,8 +7,10 @@ use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Event\GetResponseNullableUserEvent;
 use MembersBundle\Event\GetResponseUserEvent;
+use MembersBundle\Mailer\Mailer;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
+use MembersBundle\Tool\TokenGenerator;
 use MembersBundle\Tool\TokenGeneratorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -36,7 +38,7 @@ class ResettingController extends AbstractController
         $username = $request->request->get('username');
 
         /** @var $user UserInterface */
-        $user = $this->get('members.manager.user')->findUserByUsernameOrEmail($username);
+        $user = $this->get(UserManager::class)->findUserByUsernameOrEmail($username);
 
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
@@ -49,9 +51,8 @@ class ResettingController extends AbstractController
             return $event->getResponse();
         }
 
-        $ttl = $this->container->getParameter('members.resetting.retry_ttl');
-
-        if (NULL !== $user && !$user->isPasswordRequestNonExpired($ttl)) {
+        $ttl = $this->getParameter('members.resetting.retry_ttl');
+        if ($user !== NULL && !$user->isPasswordRequestNonExpired($ttl)) {
 
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
@@ -62,7 +63,7 @@ class ResettingController extends AbstractController
 
             if (NULL === $user->getConfirmationToken()) {
                 /** @var $tokenGenerator TokenGeneratorInterface */
-                $tokenGenerator = $this->get('members.tool.token_generator');
+                $tokenGenerator = $this->get(TokenGenerator::class);
                 $user->setConfirmationToken($tokenGenerator->generateToken());
             }
 
@@ -74,9 +75,9 @@ class ResettingController extends AbstractController
                 return $event->getResponse();
             }
 
-            $this->get('members.mailer')->sendResettingEmailMessage($user);
+            $this->get(Mailer::class)->sendResettingEmailMessage($user);
             $user->setPasswordRequestedAt(new \Carbon\Carbon());
-            $this->get('members.manager.user')->updateUser($user);
+            $this->get(UserManager::class)->updateUser($user);
 
             /* Dispatch completed event */
             $event = new GetResponseUserEvent($user, $request);
@@ -120,7 +121,7 @@ class ResettingController extends AbstractController
         /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('members.resetting.form.factory');
         /** @var $userManager UserManager */
-        $userManager = $this->get('members.manager.user');
+        $userManager = $this->get(UserManager::class);
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
@@ -145,8 +146,6 @@ class ResettingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_RESET_SUCCESS, $event);
-
-            $userManager->updateUser($user);
 
             if (NULL === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_profile_show');

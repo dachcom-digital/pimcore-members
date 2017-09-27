@@ -9,6 +9,7 @@ use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
+use Pimcore\Http\RequestHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +25,7 @@ class ProfileController extends AbstractController
      */
     public function showAction(Request $request)
     {
-        if($this->container->get('pimcore.http.request_helper')->isFrontendRequestByAdmin($request)) {
+        if($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
             return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
         }
 
@@ -68,7 +69,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var $userManager UserManager */
-            $userManager = $this->get('members.manager.user');
+            $userManager = $this->get(UserManager::class);
 
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::PROFILE_EDIT_SUCCESS, $event);

@@ -50,7 +50,7 @@ class ChangePasswordController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             /** @var $userManager UserManager */
-            $userManager = $this->get('members.manager.user');
+            $userManager = $this->get(UserManager::class);
 
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::CHANGE_PASSWORD_SUCCESS, $event);

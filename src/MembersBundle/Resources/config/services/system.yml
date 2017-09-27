@@ -1,0 +1,20 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    # tool: installer
+    MembersBundle\Tool\Install: ~
+
+    # tool: installer
+    MembersBundle\Tool\TokenGenerator: ~
+
+    # configuration
+    MembersBundle\Configuration\Configuration: ~
+
+    # session: configurator
+    MembersBundle\Session\SessionConfigurator:
+        tags:
+            - { name: pimcore.session.configurator }

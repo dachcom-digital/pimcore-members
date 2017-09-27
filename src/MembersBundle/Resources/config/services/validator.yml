@@ -1,0 +1,14 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    # validator constraints
+    MembersBundle\Validator\Constraints\IsUniqueEmail: ~
+
+    # validator constraints
+    MembersBundle\Validator\Constraints\IsUniqueEmailValidator:
+        tags:
+            - { name: validator.constraint_validator, alias: members.constraint.email_already_exist }

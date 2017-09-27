@@ -1,17 +1,14 @@
 services:
-    members.twig.extension.navigation:
-        class: MembersBundle\Twig\Extension\NavigationExtension
-        arguments:
-            - '@pimcore.templating.view_helper.navigation'
-            - '@members.manager.restriction'
-            - '@security.token_storage'
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
         public: false
+
+    MembersBundle\Twig\Extension\NavigationExtension:
         tags:
             - { name: twig.extension }
-    members.twig.extension.restriction_uri:
-        class: MembersBundle\Twig\Extension\RestrictionUriExtension
-        arguments:
-            - '@members.security.restriction.uri'
-        public: false
+
+    MembersBundle\Twig\Extension\RestrictionUriExtension:
         tags:
             - { name: twig.extension }

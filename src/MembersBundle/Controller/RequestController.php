@@ -21,7 +21,7 @@ class RequestController extends AbstractController
      */
     public function serveAction($hash = NULL)
     {            
-        if($this->container->get('members.configuration')->getConfig('restriction')['enabled'] === FALSE) {
+        if($this->container->get(Configuration::class)->getConfig('restriction')['enabled'] === FALSE) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
@@ -30,7 +30,7 @@ class RequestController extends AbstractController
         }
 
         /** @var RestrictionUri $restrictionUri */
-        $restrictionUri = $this->container->get('members.security.restriction.uri');
+        $restrictionUri = $this->container->get(RestrictionUri::class);
         $dataToProcess = $restrictionUri->decodeAssetUrl($hash);
 
         if ($dataToProcess === FALSE) {
@@ -57,12 +57,12 @@ class RequestController extends AbstractController
         $contentType = $asset->getMimetype();
 
         /** @var Configuration $configuration */
-        $configuration = $this->container->get('members.configuration');
+        $configuration = $this->container->get(Configuration::class);
         $hasLuceneSearch = $configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
 
         if ($hasLuceneSearch === TRUE) {
             /** @var \LuceneSearchBundle\Tool\CrawlerState $crawlerState */
-            $crawlerState = $this->container->get('lucene_search.tool.crawler_state');
+            $crawlerState = $this->container->get(\LuceneSearchBundle\Tool\CrawlerState::class);
             if ($crawlerState->isLuceneSearchCrawler() && in_array($asset->getMimetype(), ['application/pdf'])) {
                 $forceDownload = FALSE;
             }

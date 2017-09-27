@@ -10,10 +10,11 @@ This is the recommended way.
 
 use Pimcore\Model\DataObject;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use MembersBundle\Security\RestrictionQuery;
 
 $listing = DataObject\YourObject::getList();
 $listing->onCreateQuery(function (QueryBuilder $query) use ($listing) {
-    $this->container->get('members.security.restriction.query')
+    $this->container->get(RestrictionQuery::class)
         ->addRestrictionInjection($query, $listing);
 });
 
@@ -30,7 +31,7 @@ use MembersBundle\Manager\RestrictionManager;
 
 $element = 'your_object|your_asset|your_document';
 /** @var \MembersBundle\Restriction\ElementRestriction $restriction */
-$restriction = $this->container->get('members.manager.restriction')->getElementRestrictionStatus($element);
+$restriction = $this->container->get(RestrictionManager::class)->getElementRestrictionStatus($element);
 if($restriction->getSection() === RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
     //allowed!
 }

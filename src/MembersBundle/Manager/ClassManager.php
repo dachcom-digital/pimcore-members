@@ -16,7 +16,7 @@ class ClassManager
      *
      * @param $configuration
      */
-    public function __construct($configuration)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }

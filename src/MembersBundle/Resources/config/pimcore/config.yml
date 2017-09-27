@@ -4,7 +4,7 @@ parameters:
 pimcore:
     security:
         encoder_factories:
-            MembersBundle\Adapter\User\UserInterface: members.security.password_encoder_factory
+            MembersBundle\Adapter\User\UserInterface: MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory
     objects:
         class_definitions:
             data:
@@ -14,7 +14,7 @@ pimcore:
 security:
     providers:
         members:
-            id: members.user_provider.username
+            id: MembersBundle\Security\UserProvider
     firewalls:
         members_fe:
             pattern: ^/(?!(admin)).*$

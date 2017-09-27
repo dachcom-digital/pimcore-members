@@ -29,7 +29,7 @@ class RegistrationController extends AbstractController
         $formFactory = $this->get('members.registration.form.factory');
 
         /** @var $userManager UserManager */
-        $userManager = $this->get('members.manager.user');
+        $userManager = $this->get(UserManager::class);
 
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
@@ -95,7 +95,7 @@ class RegistrationController extends AbstractController
         }
 
         $sessionBag->remove('members_user_send_confirmation_email/email');
-        $user = $this->get('members.manager.user')->findUserByEmail($email);
+        $user = $this->get(UserManager::class)->findUserByEmail($email);
 
         if (NULL === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
@@ -117,7 +117,7 @@ class RegistrationController extends AbstractController
         }
 
         $sessionBag->remove('members_user_send_confirmation_email/email');
-        $user = $this->get('members.manager.user')->findUserByEmail($email);
+        $user = $this->get(UserManager::class)->findUserByEmail($email);
 
         if (NULL === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
@@ -136,7 +136,7 @@ class RegistrationController extends AbstractController
     public function confirmAction(Request $request, $token)
     {
         /** @var $userManager UserManager */
-        $userManager = $this->get('members.manager.user');
+        $userManager = $this->get(UserManager::class);
 
         /** @var UserInterface $user */
         $user = $userManager->findUserByConfirmationToken($token);
