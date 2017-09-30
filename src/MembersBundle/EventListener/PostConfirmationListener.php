@@ -5,9 +5,9 @@ namespace MembersBundle\EventListener;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Mailer\Mailer;
+use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
-use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -15,6 +15,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PostConfirmationListener implements EventSubscriberInterface
 {
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
     /**
      * @var Mailer
      */
@@ -43,6 +48,7 @@ class PostConfirmationListener implements EventSubscriberInterface
     /**
      * EmailConfirmationListener constructor.
      *
+     * @param UserManagerInterface  $userManager
      * @param Mailer                $pimcoreMailer
      * @param UrlGeneratorInterface $router
      * @param SessionInterface      $session
@@ -50,12 +56,14 @@ class PostConfirmationListener implements EventSubscriberInterface
      * @param string                $postEventType
      */
     public function __construct(
+        UserManagerInterface $userManager,
         Mailer $pimcoreMailer,
         UrlGeneratorInterface $router,
         SessionInterface $session,
         TokenGenerator $tokenGenerator,
         $postEventType
     ) {
+        $this->userManager = $userManager;
         $this->mailer = $pimcoreMailer;
         $this->tokenGenerator = $tokenGenerator;
         $this->router = $router;
@@ -99,7 +107,7 @@ class PostConfirmationListener implements EventSubscriberInterface
             $user->setConfirmationToken($this->tokenGenerator->generateToken());
         }
 
-        $this->saveUser($user);
+        $this->userManager->updateUser($user);
         $this->mailer->sendConfirmationEmailMessage($user);
 
         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
@@ -119,7 +127,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $user = $event->getForm()->getData();
 
         $user->setPublished(FALSE);
-        $this->saveUser($user);
+        $this->userManager->updateUser($user);
 
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
@@ -139,20 +147,6 @@ class PostConfirmationListener implements EventSubscriberInterface
         /** @var $user UserInterface */
         $user = $event->getForm()->getData();
         $user->setPublished(TRUE);
-        $this->saveUser($user);
-    }
-
-    /**
-     * @param UserInterface $user
-     *
-     * @return mixed
-     */
-    private function saveUser($user)
-    {
-        Version::disable();
-        $state = $user->save();
-        Version::enable();
-
-        return $state;
+        $this->userManager->updateUser($user);
     }
 }

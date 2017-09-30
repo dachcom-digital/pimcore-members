@@ -5,14 +5,19 @@ namespace MembersBundle\EventListener;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Event\GetResponseUserEvent;
+use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
-use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ResettingListener implements EventSubscriberInterface
 {
+    /**
+     * @var UserManagerInterface
+     */
+    private $userManager;
+
     /**
      * @var UrlGeneratorInterface
      */
@@ -26,11 +31,16 @@ class ResettingListener implements EventSubscriberInterface
     /**
      * ResettingListener constructor.
      *
+     * @param UserManagerInterface $userManager
      * @param UrlGeneratorInterface $router
      * @param int                   $tokenTtl
      */
-    public function __construct(UrlGeneratorInterface $router, $tokenTtl)
-    {
+    public function __construct(
+        UserManagerInterface $userManager,
+        UrlGeneratorInterface $router,
+        $tokenTtl
+    ) {
+        $this->userManager = $userManager;
         $this->router = $router;
         $this->tokenTtl = $tokenTtl;
     }
@@ -68,7 +78,7 @@ class ResettingListener implements EventSubscriberInterface
         $user->setConfirmationToken(NULL);
         $user->setPasswordRequestedAt(NULL);
         $user->setPublished(TRUE);
-        $this->saveUser($user);
+        $this->userManager->updateUser($user);
     }
 
     /**
@@ -79,19 +89,5 @@ class ResettingListener implements EventSubscriberInterface
         if (!$event->getUser()->isAccountNonLocked()) {
             $event->setResponse(new RedirectResponse($this->router->generate('members_user_resetting_request')));
         }
-    }
-
-    /**
-     * @param UserInterface $user
-     *
-     * @return mixed
-     */
-    private function saveUser($user)
-    {
-        Version::disable();
-        $state = $user->save();
-        Version::enable();
-
-        return $state;
     }
 }

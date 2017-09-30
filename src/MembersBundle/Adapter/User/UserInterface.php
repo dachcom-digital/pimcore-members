@@ -81,6 +81,13 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getEmail();
 
     /**
+     * Gets the plain password.
+     *
+     * @return string
+     */
+    public function getPlainPassword();
+
+    /**
      * @param $groups
      *
      * @return mixed
@@ -103,6 +110,15 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      * @return mixed
      */
     public function getPasswordRequestedAt();
+
+    /**
+     * Checks whether the password reset request has expired.
+     *
+     * @param int $ttl Requests older than this many seconds will be considered expired
+     *
+     * @return int
+     */
+    public function isPasswordRequestNonExpired($ttl);
 
     /**
      * @return mixed

@@ -6,7 +6,7 @@ services:
         public: true
 
     # manager: class
-    MembersBundle\Manager\ClassManagerInterface: 'MembersBundle\Manager\ClassManager'
+    MembersBundle\Manager\ClassManagerInterface: '@MembersBundle\Manager\ClassManager'
     MembersBundle\Manager\ClassManager: ~
 
     # manager: user
