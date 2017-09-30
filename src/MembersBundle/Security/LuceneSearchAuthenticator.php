@@ -2,8 +2,8 @@
 
 namespace MembersBundle\Security;
 
-use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Manager\UserManagerInterface;
+use MembersBundle\Adapter\User\UserInterface as MembersUserInterface;
 use MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -72,13 +72,12 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
      * @param mixed                 $credentials
      * @param UserProviderInterface $userProvider
      *
-     * @return AbstractUser
+     * @return MembersUserInterface
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $user = $this->userManager->findUserByUsername($credentials['username']);
-
-        if (!$user instanceof AbstractUser) {
+        if (!$user instanceof MembersUserInterface) {
             return NULL;
         }
 

@@ -75,11 +75,15 @@ parameters:
     lucene_search_password: 'crawler@universe.org'
 
 services:
-    app.event_listener.lucene_search_crawler_header:
-        class: AppBundle\EventListener\LuceneSearchCrawlerHeader
+
+    _defaults:
+        autowire: true
+        public: false
+        
+    AppBundle\EventListener\LuceneSearchCrawlerHeader:
         arguments:
-            - '%lucene_search_user_name%'
-            - '%lucene_search_password%'
+            $userName: '%lucene_search_user_name%'
+            $password: '%lucene_search_password%'
         tags:
             - { name: kernel.event_subscriber }
 ```
