@@ -2,7 +2,6 @@
 
 namespace MembersBundle\Manager;
 
-use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Adapter\User\UserInterface;
 
 interface UserManagerInterface
@@ -18,7 +17,7 @@ interface UserManagerInterface
      * @param      $token
      * @param bool $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByConfirmationToken($token, $includeUnpublished = TRUE);
 
@@ -26,7 +25,7 @@ interface UserManagerInterface
      * @param      $emailAddress
      * @param bool $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByEmail($emailAddress, $includeUnpublished = TRUE);
 
@@ -36,7 +35,7 @@ interface UserManagerInterface
      * @param  string $username
      * @param bool    $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByUsername($username, $includeUnpublished = TRUE);
 
