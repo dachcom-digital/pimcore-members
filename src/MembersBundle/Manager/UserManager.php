@@ -17,7 +17,7 @@ class UserManager implements UserManagerInterface
     protected $configuration;
 
     /**
-     * @var ClassManager
+     * @var ClassManagerInterface
      */
     protected $classManager;
 
@@ -30,9 +30,9 @@ class UserManager implements UserManagerInterface
      * userManager constructor.
      *
      * @param Configuration $configuration
-     * @param ClassManager  $classManager
+     * @param ClassManagerInterface  $classManager
      */
-    public function __construct(Configuration $configuration, ClassManager $classManager)
+    public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
         $this->configuration = $configuration;
         $this->classManager = $classManager;

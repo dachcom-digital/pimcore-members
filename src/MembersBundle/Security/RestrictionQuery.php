@@ -4,23 +4,23 @@ namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Listing;
 
 class RestrictionQuery
 {
     /**
-     * @var RestrictionManager
+     * @var RestrictionManagerInterface
      */
     protected $restrictionManager;
 
     /**
      * RestrictionUri constructor.
      *
-     * @param RestrictionManager $restrictionManager
+     * @param RestrictionManagerInterface $restrictionManager
      */
-    public function __construct(RestrictionManager $restrictionManager)
+    public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;
     }

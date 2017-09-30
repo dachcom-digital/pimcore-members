@@ -50,7 +50,7 @@ class ProfileController extends AbstractController
         }
 
         /** @var $dispatcher EventDispatcherInterface */
-        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher = $this->container->get('event_dispatcher');
 
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::PROFILE_EDIT_INITIALIZE, $event);
@@ -60,7 +60,7 @@ class ProfileController extends AbstractController
         }
 
         /** @var $formFactory FactoryInterface */
-        $formFactory = $this->get('members.profile.form.factory');
+        $formFactory = $this->container->get('members.profile.form.factory');
 
         $form = $formFactory->createForm();
         $form->setData($user);
@@ -69,7 +69,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var $userManager UserManager */
-            $userManager = $this->get(UserManager::class);
+            $userManager = $this->container->get(UserManager::class);
 
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::PROFILE_EDIT_SUCCESS, $event);

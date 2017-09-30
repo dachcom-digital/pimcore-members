@@ -3,7 +3,7 @@
 namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\User\AbstractUser;
-use MembersBundle\Manager\UserManager;
+use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +22,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
     protected $userAwareEncoderFactory;
 
     /**
-     * @var UserManager
+     * @var UserManagerInterface
      */
     protected $userManager;
 
@@ -30,10 +30,12 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
      * LuceneSearchAuthenticator constructor.
      *
      * @param UserAwareEncoderFactory $userAwareEncoderFactory
-     * @param UserManager $userManager
+     * @param UserManagerInterface $userManager
      */
-    public function __construct(UserAwareEncoderFactory $userAwareEncoderFactory, UserManager $userManager)
-    {
+    public function __construct(
+        UserAwareEncoderFactory $userAwareEncoderFactory,
+        UserManagerInterface $userManager
+    ) {
         $this->userAwareEncoderFactory = $userAwareEncoderFactory;
         $this->userManager = $userManager;
     }

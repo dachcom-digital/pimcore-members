@@ -3,7 +3,7 @@
 namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Manager\UserManager;
+use MembersBundle\Manager\UserManagerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface as SecurityUserInterface;
@@ -12,16 +12,16 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     /**
-     * @var UserManager
+     * @var UserManagerInterface
      */
     protected $userManager;
 
     /**
      * Constructor.
      *
-     * @param UserManager $userManager
+     * @param UserManagerInterface $userManager
      */
-    public function __construct(UserManager $userManager)
+    public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;
     }

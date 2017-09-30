@@ -3,6 +3,7 @@
 namespace MembersBundle\EventListener\Frontend;
 
 use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Http\Request\Resolver\DocumentResolver as DocumentResolverService;
@@ -30,17 +31,17 @@ class HeadMetaListener implements EventSubscriberInterface
     protected $headMeta;
 
     /**
-     * @var RestrictionManager
+     * @var RestrictionManagerInterface
      */
     protected $restrictionManager;
 
     /**
-     * @param DocumentResolverService $documentResolverService
-     * @param HeadMeta                $headMeta
-     * @param RestrictionManager      $restrictionManager
+     * @param DocumentResolverService     $documentResolverService
+     * @param HeadMeta                    $headMeta
+     * @param RestrictionManagerInterface $restrictionManager
      */
     public function __construct(
-        RestrictionManager $restrictionManager,
+        RestrictionManagerInterface $restrictionManager,
         DocumentResolverService $documentResolverService,
         HeadMeta $headMeta
     ) {
@@ -76,7 +77,7 @@ class HeadMetaListener implements EventSubscriberInterface
         $groups = ['default'];
         /** @var ElementRestriction $restrictionElement */
         $elementRestriction = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
-        if($elementRestriction instanceof ElementRestriction && !empty($elementRestriction->getRestrictionGroups())) {
+        if ($elementRestriction instanceof ElementRestriction && !empty($elementRestriction->getRestrictionGroups())) {
             $groups = $elementRestriction->getRestrictionGroups();
         }
 

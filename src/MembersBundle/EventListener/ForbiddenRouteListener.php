@@ -4,6 +4,7 @@ namespace MembersBundle\EventListener;
 
 use MembersBundle\Event\StaticRouteEvent;
 use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
@@ -22,7 +23,7 @@ class ForbiddenRouteListener implements EventSubscriberInterface
     use PimcoreContextAwareTrait;
 
     /**
-     * @var RestrictionManager
+     * @var RestrictionManagerInterface
      */
     protected $restrictionManager;
 
@@ -39,14 +40,14 @@ class ForbiddenRouteListener implements EventSubscriberInterface
     /**
      * ForbiddenRouteListener constructor.
      *
-     * @param RestrictionManager $restrictionManager
-     * @param RouterInterface    $r
-     * @param RequestHelper    $requestHelper
+     * @param RestrictionManagerInterface $restrictionManager
+     * @param RouterInterface             $router
+     * @param RequestHelper               $requestHelper
      */
-    public function __construct(RestrictionManager $restrictionManager, RouterInterface $r, RequestHelper $requestHelper)
+    public function __construct(RestrictionManagerInterface $restrictionManager, RouterInterface $router, RequestHelper $requestHelper)
     {
         $this->restrictionManager = $restrictionManager;
-        $this->router = $r;
+        $this->router = $router;
         $this->requestHelper = $requestHelper;
     }
 
@@ -91,7 +92,7 @@ class ForbiddenRouteListener implements EventSubscriberInterface
             );
 
             $restrictionObject = $routeEvent->getStaticRouteObject();
-            if($restrictionObject instanceof AbstractObject) {
+            if ($restrictionObject instanceof AbstractObject) {
                 $restriction = $this->restrictionManager->getElementRestrictionStatus($restrictionObject);
             }
         }

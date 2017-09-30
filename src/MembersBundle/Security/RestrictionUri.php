@@ -3,6 +3,7 @@
 namespace MembersBundle\Security;
 
 use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model;
 
@@ -13,16 +14,16 @@ class RestrictionUri
     const MEMBERS_REQUEST_URL = '/members/request-data/';
 
     /**
-     * @var RestrictionManager
+     * @var RestrictionManagerInterface
      */
     protected $restrictionManager;
 
     /**
      * RestrictionUri constructor.
      *
-     * @param RestrictionManager $restrictionManager
+     * @param RestrictionManagerInterface $restrictionManager
      */
-    public function __construct(RestrictionManager $restrictionManager)
+    public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;
     }

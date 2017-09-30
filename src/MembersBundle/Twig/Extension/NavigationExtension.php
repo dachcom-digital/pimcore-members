@@ -5,6 +5,7 @@ namespace MembersBundle\Twig\Extension;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManager;
+use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Document;
 use Pimcore\Navigation\Container;
@@ -19,7 +20,7 @@ class NavigationExtension extends \Twig_Extension
     private $navigationHelper;
 
     /**
-     * @var RestrictionManager
+     * @var RestrictionManagerInterface
      */
     private $restrictionManager;
 
@@ -29,12 +30,15 @@ class NavigationExtension extends \Twig_Extension
     private $tokenStorage;
 
     /**
-     * @param Navigation            $navigationHelper
-     * @param RestrictionManager    $restrictionManager
-     * @param TokenStorageInterface $tokenStorage
+     * @param Navigation                  $navigationHelper
+     * @param RestrictionManagerInterface $restrictionManager
+     * @param TokenStorageInterface       $tokenStorage
      */
-    public function __construct(Navigation $navigationHelper, RestrictionManager $restrictionManager, TokenStorageInterface $tokenStorage)
-    {
+    public function __construct(
+        Navigation $navigationHelper,
+        RestrictionManagerInterface $restrictionManager,
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->navigationHelper = $navigationHelper;
         $this->restrictionManager = $restrictionManager;
         $this->tokenStorage = $tokenStorage;
@@ -65,7 +69,7 @@ class NavigationExtension extends \Twig_Extension
         $cacheKey = $cache;
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if(!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== FALSE) {
+        if (!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== FALSE) {
 
             $mergedCacheKey = is_bool($cache) ? '' : $cache;
 

@@ -4,7 +4,7 @@ namespace MembersBundle\Manager;
 
 use MembersBundle\Configuration\Configuration;
 
-class ClassManager
+class ClassManager implements ClassManagerInterface
 {
     /**
      * @var Configuration
@@ -21,10 +21,12 @@ class ClassManager
         $this->configuration = $configuration;
     }
 
+    /**
+     * @return bool
+     */
     public function getGroupListing()
     {
         $className = $this->configuration->getConfig('group');
-
         if (empty($className['adapter']['class_name'])) {
             return FALSE;
         }
@@ -38,6 +40,9 @@ class ClassManager
         return $listing::getList();
     }
 
+    /**
+     * @return bool
+     */
     public function getUserListing()
     {
         $className = $this->configuration->getConfig('user');
@@ -55,6 +60,9 @@ class ClassManager
         return $listing::getList();
     }
 
+    /**
+     * @return bool|string
+     */
     public function getUserClass()
     {
         $className = $this->configuration->getConfig('user');

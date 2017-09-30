@@ -17,8 +17,13 @@ services:
 
     # event: user resetting: post add and update events of objects, assets, documents.
     MembersBundle\EventListener\ResettingListener:
-        arguments:
-            $tokenTtl: '%members.resetting.token_ttl%'
+            arguments:
+                $tokenTtl: '%members.resetting.token_ttl%'
+            tags:
+                - { name: kernel.event_subscriber }
+
+    # event: update user after a successful login
+    MembersBundle\EventListener\LastLoginListener:
         tags:
             - { name: kernel.event_subscriber }
 

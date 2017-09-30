@@ -14,7 +14,7 @@ use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class RestrictionManager
+class RestrictionManager implements RestrictionManagerInterface
 {
     const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
 
