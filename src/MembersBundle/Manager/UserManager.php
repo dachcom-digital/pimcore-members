@@ -29,8 +29,8 @@ class UserManager implements UserManagerInterface
     /**
      * userManager constructor.
      *
-     * @param Configuration $configuration
-     * @param ClassManagerInterface  $classManager
+     * @param Configuration         $configuration
+     * @param ClassManagerInterface $classManager
      */
     public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
@@ -197,12 +197,14 @@ class UserManager implements UserManagerInterface
             $user = $this->setupNewUser($user);
         }
 
+        // update page properties.
         if (!empty($properties)) {
             foreach ($properties as $propKey => $propValue) {
                 $user->setProperty($propKey, 'text', $propValue, FALSE);
             }
         }
 
+        // Transfer plain password after a fresh register or a password reset action.
         if (!empty($user->getPlainPassword())) {
             $user->setPassword($user->getPlainPassword());
         }
@@ -222,11 +224,11 @@ class UserManager implements UserManagerInterface
 
         $userGroups = [];
         $userConfiguration = $this->configuration->getConfig('user');
-        foreach($userConfiguration['initial_groups'] as $group) {
+        foreach ($userConfiguration['initial_groups'] as $group) {
             $listing = $this->classManager->getGroupListing();
             $listing->setUnpublished(FALSE);
 
-            if(is_string($group)) {
+            if (is_string($group)) {
                 $listing->setCondition('name = ?', [$group]);
             } else {
                 $listing->setCondition('oo_id = ?', [$group]);
@@ -234,7 +236,7 @@ class UserManager implements UserManagerInterface
 
             $objects = $listing->getObjects();
 
-            if(count($objects) > 0) {
+            if (count($objects) > 0) {
                 $userGroups[] = $objects[0];
             }
         }

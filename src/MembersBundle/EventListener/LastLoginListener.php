@@ -45,7 +45,6 @@ class LastLoginListener implements EventSubscriberInterface
     public function onImplicitLogin(UserEvent $event)
     {
         $user = $event->getUser();
-
         $user->setLastLogin(new Carbon());
         $this->userManager->updateUser($user);
     }
