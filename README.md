@@ -25,7 +25,7 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "dev-master",
+    "dachcom-digital/members" : "~2.0.0"
 }
 ```
 
