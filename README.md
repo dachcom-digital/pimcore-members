@@ -48,14 +48,17 @@ You need two classes: User and Group. So let's create it:
 | Name | Field Type | Comment |
 |---------------------|-------------|-------------------------------|
 | userName | Input |  |
-| email | Input |  |
+| email | Input |  **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
 | confirmationToken | Input | set to it read only |
 | lastLogin | Date & Time | set to it read only |
-| password | Password |  |
+| password | Password | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
 | passwordRequestedAt | Date & Time | set to it read only |
 | groups | User Group | This field comes with Members |
 
 > `membersUser` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
+
+#### Customer Data Framework
+If you want to use the [Customer Data Framework](https://github.com/pimcore/customer-data-framework) you need to do some further work. Read more about it [here](docs/300_CustomerDataFw.md).
 
 *Group*  
 1. Create a class and call it `MembersGroup`
