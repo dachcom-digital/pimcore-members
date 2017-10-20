@@ -49,10 +49,10 @@ You need two classes: User and Group. So let's create it:
 |---------------------|-------------|-------------------------------|
 | userName | Input |  |
 | email | Input |  **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
-| confirmationToken | Input | set to it read only |
-| lastLogin | Date & Time | set to it read only |
+| confirmationToken | Input | must set to it read only |
+| lastLogin | Date & Time | must set to it read only |
 | password | Password | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
-| passwordRequestedAt | Date & Time | set to it read only |
+| passwordRequestedAt | Date & Time | must set to it read only |
 | groups | User Group | This field comes with Members |
 
 > `membersUser` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
