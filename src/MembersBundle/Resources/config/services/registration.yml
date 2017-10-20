@@ -13,6 +13,6 @@ services:
     members.registration.form.type:
         class: MembersBundle\Form\Type\RegistrationFormType
         arguments:
-            - '\MembersBundle\Adapter\User\AbstractUser'
+            - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_registration }

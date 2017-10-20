@@ -13,6 +13,6 @@ services:
     members.profile.form.type:
         class: MembersBundle\Form\Type\ProfileFormType
         arguments:
-            - '\MembersBundle\Adapter\User\AbstractUser'
+            - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_profile }

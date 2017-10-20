@@ -2,7 +2,6 @@
 
 namespace MembersBundle\Manager;
 
-use MembersBundle\Adapter\User\AbstractUser;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Model\Listing\AbstractListing;
@@ -56,7 +55,7 @@ class UserManager implements UserManagerInterface
      * @param      $token
      * @param bool $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByConfirmationToken($token, $includeUnpublished = TRUE)
     {
@@ -78,7 +77,7 @@ class UserManager implements UserManagerInterface
      * @param      $emailAddress
      * @param bool $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByEmail($emailAddress, $includeUnpublished = TRUE)
     {
@@ -102,7 +101,7 @@ class UserManager implements UserManagerInterface
      * @param  string $username
      * @param bool    $includeUnpublished
      *
-     * @return NULL|AbstractUser
+     * @return NULL|UserInterface
      */
     public function findUserByUsername($username, $includeUnpublished = TRUE)
     {

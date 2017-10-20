@@ -13,6 +13,6 @@ services:
     members.resetting.form.type:
         class: MembersBundle\Form\Type\ResettingFormType
         arguments:
-            - '\MembersBundle\Adapter\User\AbstractUser'
+            - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_resetting }
