@@ -89,7 +89,7 @@ class Install extends AbstractInstaller
     public function uninstall()
     {
         if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
-            $this->fileSystem->rename(
+            $this->fileSystem->remove(
                 Configuration::SYSTEM_CONFIG_FILE_PATH,
                 PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle/config_backup.yml'
             );

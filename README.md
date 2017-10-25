@@ -21,12 +21,23 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 
 ### Composer
 1. Add code below to your `composer.json`    
-2. Activate & install it through backend
 
 ```json
 "require" : {
     "dachcom-digital/members" : "~2.0.0"
 }
+```
+
+2.1 Activate & install it through backend.
+2.2 Via CLI:
+
+```bash
+bin/console pimcore:bundle:enable MembersBundle
+bin/console pimcore:bundle:install MembersBundle
+# optional:
+bin/console members:install:class
+# optional to be sure assets are symlinked:
+bin/console assets:install --symlink --relative
 ```
 
 ### Basics
