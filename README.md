@@ -98,6 +98,7 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Groups](docs/80_Groups.md)
 - [Roles](docs/90_Roles.md)
 - [Use LuceneSearch with Members](docs/100_LuceneSearch.md)
+- [Use the Pimcore Customer Framework with Members](docs/300_CustomerDataFw.md)
 
 * * *
 
