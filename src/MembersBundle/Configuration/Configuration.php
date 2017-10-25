@@ -7,6 +7,8 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Configuration
 {
+    const SYSTEM_CONFIG_DIR_PATH = PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle';
+
     const SYSTEM_CONFIG_FILE_PATH = PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle/config.yml';
 
     /**

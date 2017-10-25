@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Tool;
 
+use MembersBundle\MembersBundle;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 
@@ -15,6 +16,7 @@ use Pimcore\Model\Translation;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\SerializerInterface;
 use MembersBundle\Configuration\Configuration;
+use Symfony\Component\Yaml\Yaml;
 
 class Install extends AbstractInstaller
 {
@@ -59,7 +61,7 @@ class Install extends AbstractInstaller
      */
     public function install()
     {
-        $this->copyConfigFiles();
+        $this->installOrUpdateConfigFile();
 
         // @fixme: manage routing and documents?
         // @see https://github.com/pimcore/pimcore/issues/1733
@@ -70,6 +72,15 @@ class Install extends AbstractInstaller
         $this->injectDbData();
 
         return TRUE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update()
+    {
+        $this->installOrUpdateConfigFile();
+        $this->installTranslations();
     }
 
     /**
@@ -122,20 +133,29 @@ class Install extends AbstractInstaller
      */
     public function canBeUpdated()
     {
-        return FALSE;
+        $needUpdate = FALSE;
+        if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
+            $config = Yaml::parse(file_get_contents(Configuration::SYSTEM_CONFIG_FILE_PATH));
+            if($config['version'] !== MembersBundle::BUNDLE_VERSION) {
+                $needUpdate = TRUE;
+            }
+        }
+
+        return $needUpdate;
     }
 
     /**
-     * copy sample config file - if not exists.
+     * install / update config file.
      */
-    private function copyConfigFiles()
+    private function installOrUpdateConfigFile()
     {
-        if (!$this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
-            $this->fileSystem->copy(
-                $this->installSourcesPath . '/config.yml',
-                Configuration::SYSTEM_CONFIG_FILE_PATH
-            );
+        if(!$this->fileSystem->exists(Configuration::SYSTEM_CONFIG_DIR_PATH)) {
+            $this->fileSystem->mkdir(Configuration::SYSTEM_CONFIG_DIR_PATH);
         }
+
+        $config = ['version' => MembersBundle::BUNDLE_VERSION];
+        $yml = Yaml::dump($config);
+        file_put_contents(Configuration::SYSTEM_CONFIG_FILE_PATH, $yml);
 
     }
 

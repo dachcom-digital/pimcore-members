@@ -35,7 +35,10 @@ class UserManager implements UserManagerInterface
     {
         $this->configuration = $configuration;
         $this->classManager = $classManager;
-        $this->memberStorageId = DataObject::getByPath('/members')->getId();
+        $membersStorePath = DataObject::getByPath('/members');
+        if($membersStorePath instanceof DataObject\Folder) {
+            $this->memberStorageId = DataObject::getByPath('/members')->getId();
+        }
     }
 
     public function getClass()

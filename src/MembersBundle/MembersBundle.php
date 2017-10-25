@@ -7,12 +7,22 @@ use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 
 class MembersBundle extends AbstractPimcoreBundle
 {
+    const BUNDLE_VERSION = '2.0.1';
+
     /**
      * {@inheritdoc}
      */
     public function getInstaller()
     {
         return $this->container->get(Install::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVersion()
+    {
+        return self::BUNDLE_VERSION;
     }
 
     /**
