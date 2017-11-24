@@ -36,9 +36,9 @@ Prefix: `/{_locale}/members/profile`
 
 | Route name | Path | View | Methods |
 |------------------------------|--------------|----------------------|-----------|
-| members_user_profile_show | / | Auth/show.html.twig | GET |
-| members_user_profile_edit | /edit | Auth/edit.html.twig | GET, POST |
-| members_user_restriction_refused | /refused | Auth/refused.html.twig | GET |
+| members_user_profile_show | / | Profile/show.html.twig | GET |
+| members_user_profile_edit | /edit | Profile/edit.html.twig | GET, POST |
+| members_user_restriction_refused | /refused | Profile/refused.html.twig | GET |
 
 ### Resetting
 
