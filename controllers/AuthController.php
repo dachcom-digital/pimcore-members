@@ -13,7 +13,7 @@ class Members_AuthController extends Action
      */
     public function loginFromAreaAction()
     {
-        if ($this->hasParam('lang')) {
+        if ($this->hasParam('lang') && !empty($this->getParam('lang'))) {
             $locale = new \Zend_Locale($this->getParam('lang'));
             \Zend_Registry::set('Zend_Locale', $locale);
         }
@@ -42,8 +42,21 @@ class Members_AuthController extends Action
      */
     public function loginAction()
     {
-        $this->view->back = $this->getParam('back')
-            ? $this->getParam('back')
+        $requestBackUri = NULL;
+        if ($this->hasParam('back') && !empty($this->getParam('back'))) {
+            $requestBackUri = $this->getParam('back');
+            //allow to modify redirect url
+            $results = \Pimcore::getEventManager()->trigger('members.login.back.redirect', NULL, [
+                'redirect' => $requestBackUri,
+                'origin'   => $this->getParam('origin')
+            ]);
+            if ($results->count()) {
+                $requestBackUri = $results->last();
+            }
+        }
+
+        $this->view->back = !is_null($requestBackUri)
+            ? $requestBackUri
             : (\Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
                 ? \Members\Model\Configuration::getLocalizedPath('routes.login.redirectAfterSuccess')
                 : \Members\Model\Configuration::getLocalizedPath('routes.profile')
@@ -150,7 +163,7 @@ class Members_AuthController extends Action
                             }
 
                             //allow to modify redirect url
-                            $results = \Pimcore::getEventManager()->trigger('members.login.redirect', NULL, [
+                            $results = \Pimcore::getEventManager()->trigger('members.login.back.redirect', NULL, [
                                 'redirect' => $redirect,
                                 'origin'   => $this->getParam('origin')
                             ]);

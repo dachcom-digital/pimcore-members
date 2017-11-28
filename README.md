@@ -253,13 +253,11 @@ Validate view restricted objects (see section Objects)
 **`members.path.route`**  
 Allows to modify the members frontend path. Members only handles the`%lang` placeholder which in some cases isn't enough.
 
-**`members.login.redirect`**
-Allows to modify the members redirect path after a login.
+**`members.login.back.redirect`**
+Allows to modify the members "back" redirect path after a login.
 
 **`members.action.logout`**  
 Triggered after logout action.
-
-
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)
