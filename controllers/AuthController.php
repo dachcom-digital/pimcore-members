@@ -48,7 +48,7 @@ class Members_AuthController extends Action
             //allow to modify redirect url
             $results = \Pimcore::getEventManager()->trigger('members.login.back.redirect', NULL, [
                 'redirect' => $requestBackUri,
-                'origin'   => $this->getParam('origin')
+                'origin'   => $this->getRequest()->getRequestUri()
             ]);
             if ($results->count()) {
                 $requestBackUri = $results->last();
