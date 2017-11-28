@@ -13,7 +13,7 @@ class Members_AuthController extends Action
      */
     public function loginFromAreaAction()
     {
-        if (!\Zend_Registry::isRegistered('Zend_Locale') && $this->getParam('lang')) {
+        if ($this->hasParam('lang')) {
             $locale = new \Zend_Locale($this->getParam('lang'));
             \Zend_Registry::set('Zend_Locale', $locale);
         }
@@ -30,7 +30,7 @@ class Members_AuthController extends Action
             if (!empty($loginData['redirect'])) {
                 $this->redirect($loginData['redirect']);
             }
-        } else if ($loginData['error'] === FALSE) {
+        } elseif ($loginData['error'] === FALSE) {
             if (!empty($loginData['redirect'])) {
                 $this->redirect($loginData['redirect']);
             }
@@ -53,9 +53,9 @@ class Members_AuthController extends Action
 
         if ($loginData['error'] === TRUE && $loginData['message'] === 'ALREADY_LOGGED_IN') {
             $this->redirect($loginData['redirect']);
-        } else if ($loginData['error'] === TRUE) {
+        } elseif ($loginData['error'] === TRUE) {
             $this->view->error = $this->translate->_($loginData['message']);
-        } else if ($loginData['error'] === FALSE) {
+        } elseif ($loginData['error'] === FALSE) {
             if (!empty($loginData['redirect'])) {
                 $this->redirect($loginData['redirect']);
             }
@@ -115,7 +115,6 @@ class Members_AuthController extends Action
      */
     private function parseLoginAction()
     {
-
         $error = FALSE;
         $message = NULL;
         $redirect = NULL;
@@ -149,6 +148,17 @@ class Members_AuthController extends Action
                             } else {
                                 $redirect = $backParam;
                             }
+
+                            //allow to modify redirect url
+                            $results = \Pimcore::getEventManager()->trigger('members.login.redirect', NULL, [
+                                'redirect' => $redirect,
+                                'origin'   => $this->getParam('origin')
+                            ]);
+
+                            if ($results->count()) {
+                                $redirect = $results->last();
+                            }
+
                         } else {
                             $redirect = Configuration::getLocalizedPath('routes.profile');
                         }
@@ -171,8 +181,8 @@ class Members_AuthController extends Action
             }
         }
 
-        if ($error && $this->_getParam('origin')) {
-            $redirect = $this->_getParam('origin');
+        if ($error && $this->hasParam('origin')) {
+            $redirect = $this->getParam('origin');
         }
 
         return ['error' => $error, 'message' => $message, 'redirect' => $redirect];

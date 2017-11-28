@@ -30,6 +30,16 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
         //allow website to use own scripts
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/scripts');
         $view->addScriptPath(PIMCORE_PLUGINS_PATH . '/Members/views/layouts');
+    }
+
+    /**
+     * @param \Zend_Controller_Request_Abstract $request
+     */
+    public function postDispatch(\Zend_Controller_Request_Abstract $request)
+    {
+        parent::postDispatch($request);
+
+        $view = self::$renderer->view;
 
         if ($request->getParam('pimcore_request_source') === 'staticroute') {
             if ($view instanceof \Pimcore\View) {
@@ -38,7 +48,6 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
                 //if event is empty, add "default" to m:groups and allow document view!.
                 $objectRestriction = ['default'];
                 $boundedObject = NULL;
-
                 $boEvent = \Pimcore::getEventManager()->trigger('members.restriction.object', NULL, ['params' => $request->getParams()]);
 
                 if ($boEvent->count()) {
@@ -57,10 +66,8 @@ class Frontend extends \Zend_Controller_Plugin_Abstract
             }
         } else if ($request->getParam('document') instanceof Page) {
             $document = $request->getParam('document');
-
             $groups = Observer::getDocumentRestrictedGroups($document);
             $view->headMeta()->appendName('m:groups', implode(',', $groups), []);
-
             $this->handleDocumentAuthentication($request->getParam('document'));
         }
     }

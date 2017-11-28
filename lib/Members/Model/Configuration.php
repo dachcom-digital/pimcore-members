@@ -133,6 +133,10 @@ class Configuration extends Model\AbstractModel
         $configEntry->save();
     }
 
+    /**
+     * @param $param
+     * @return mixed
+     */
     public static function getLocalizedPath($param)
     {
         $data = self::get($param);
