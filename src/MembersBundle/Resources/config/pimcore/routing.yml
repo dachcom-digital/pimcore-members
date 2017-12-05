@@ -19,24 +19,3 @@ members.controller.admin.delete_document_restriction_config:
 members.asset_request:
     path: /members/request-data/{hash}
     defaults: { _controller: MembersBundle:Request:serve }
-
-# frontend routing
-members_auth:
-    resource: '@MembersBundle/Resources/config/pimcore/routing/auth.yml'
-    prefix: /{_locale}/members
-
-members_registration:
-    resource: '@MembersBundle/Resources/config/pimcore/routing/registration.yml'
-    prefix: /{_locale}/members/register
-
-members_change_password:
-    resource: '@MembersBundle/Resources/config/pimcore/routing/change_password.yml'
-    prefix: /{_locale}/members/profile
-
-members_profile:
-    resource: '@MembersBundle/Resources/config/pimcore/routing/profile.yml'
-    prefix: /{_locale}/members/profile
-
-members_resetting:
-    resource: '@MembersBundle/Resources/config/pimcore/routing/resetting.yml'
-    prefix: /{_locale}/members/resetting

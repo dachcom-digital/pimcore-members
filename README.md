@@ -18,6 +18,7 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 * * *
 
 ## Installation
+Please read the installation instructions before going deep with Members!
 
 ### Composer
 1. Add code below to your `composer.json`    
@@ -40,12 +41,28 @@ bin/console members:install:class
 bin/console assets:install --symlink --relative
 ```
 
-### Basics
+3. Install Routes
+Members does not include any routes per default. Otherwise it would be hard for you to change or override included routes. 
+
+**Include all Routes**
+```yaml
+# app/config/routing.yml
+app:
+    resource: '@MembersBundle/Resources/config/pimcore/routing/all.yml'
+```
+
+**Just include some Routes**
+```yaml
+# app/config/routing.yml
+members_auth:
+    resource: '@MembersBundle/Resources/config/pimcore/routing/auth.yml'
+    prefix: /{_locale}/members #change your prefix if you have to.
+```
+
+### Class Installation
 Unlike members1, this bundle does not install any classes for you any more.
 Since Members should be the one and only frontend authentication Bundle, we need to add the most flexibility as possible.
 But no worries, it's still simple to integrate.
-
-### Class Installation
 
 > There is also a class installer command. If your not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
 
