@@ -20,7 +20,7 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 ## Installation
 Please read the installation instructions before going deep with Members!
 
-### Composer
+### Composer Installation
 1. Add code below to your `composer.json`    
 
 ```json
@@ -41,7 +41,7 @@ bin/console members:install:class
 bin/console assets:install --symlink --relative
 ```
 
-3. Install Routes
+### Route Installation
 Members does not include any routes per default. Otherwise it would be hard for you to change or override included routes. 
 
 **Include all Routes**
@@ -102,8 +102,10 @@ If you want to use the [Customer Data Framework](https://github.com/pimcore/cust
 
 Feel free to add additional fields since those are just the required ones. That's it. Members will use those classes to manage authentication and group management.
 
-### Email Implementation
+### Email Configuration
 You're almost there, just check the [email configuration](docs/70_EmailConfiguration.md) and you're good to go.
+
+* * *
 
 ### User Management: Further Information
 - [Custom Class Names](docs/20_CustomClassName.md)
