@@ -1,7 +1,7 @@
 {
     "name": "dachcom-digital/members",
     "type": "pimcore-bundle",
-    "license": "GPL-3.0+",
+    "license": "GPL-3.0-or-later",
     "description": "Pimcore 5.x User, Object, Asset and Document Authentication",
     "keywords": ["pimcore", "members", "authentication"],
     "homepage": "https://github.com/dachcom-digital/pimcore-members",
