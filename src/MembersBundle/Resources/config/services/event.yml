@@ -49,6 +49,11 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    # event: post add and update events of objects
+    MembersBundle\EventListener\UniqueMembersDataListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
     # event: listen to changes on user updates. send mails if available.
     MembersBundle\EventListener\UserChangeListener:
         tags:
