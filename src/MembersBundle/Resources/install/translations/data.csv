@@ -26,7 +26,7 @@
 "members.layout.login","Anmelden","Log In"
 "members.layout.register","Registrieren","Register"
 "members.layout.logged_in_as","Angemeldet als %username%","Logged in as %username%"
-"members.form.username","Benuterzname","Username"
+"members.form.username","Benutzername","Username"
 "members.form.email","E-Mail-Adresse","Email"
 "members.form.current_password","Derzeitiges Passwort","Current password"
 "members.form.password","Passwort","Password"

@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProfileFormType extends AbstractType
 {
@@ -40,9 +41,9 @@ class ProfileFormType extends AbstractType
         }
 
         $builder->add('current_password', PasswordType::class, [
-            'label'              => 'members.form.current_password',
-            'mapped'             => FALSE,
-            'constraints'        => new UserPassword($constraintsOptions),
+            'label'       => 'members.form.current_password',
+            'mapped'      => false,
+            'constraints' => [new NotBlank(), new UserPassword($constraintsOptions)],
         ]);
     }
 
@@ -74,7 +75,7 @@ class ProfileFormType extends AbstractType
     protected function buildUserForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', NULL, ['label' => 'members.form.username'])
+            ->add('username', null, ['label' => 'members.form.username'])
             ->add('email', EmailType::class, ['label' => 'members.form.email']);
     }
 }

@@ -6,9 +6,9 @@ services:
         public: false
 
     # validator constraints
-    MembersBundle\Validator\Constraints\IsUniqueEmail: ~
+    MembersBundle\Validator\Constraints\PimcoreUniqueEntity: ~
 
     # validator constraints
-    MembersBundle\Validator\Constraints\IsUniqueEmailValidator:
+    MembersBundle\Validator\Constraints\PimcoreUniqueEntityValidator:
         tags:
-            - { name: validator.constraint_validator, alias: members.constraint.email_already_exist }
+            - { name: validator.constraint_validator, alias: members.validator.unique }

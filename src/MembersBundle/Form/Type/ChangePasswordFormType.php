@@ -38,9 +38,9 @@ class ChangePasswordFormType extends AbstractType
         }
 
         $builder->add('current_password', PasswordType::class, [
-            'label'              => 'members.form.current_password',
-            'mapped'             => FALSE,
-            'constraints'        => new UserPassword($constraintsOptions),
+            'label'       => 'members.form.current_password',
+            'mapped'      => false,
+            'constraints' => new UserPassword($constraintsOptions),
         ]);
 
         $builder->add('plainPassword', RepeatedType::class, [

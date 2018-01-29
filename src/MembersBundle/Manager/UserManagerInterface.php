@@ -6,10 +6,14 @@ use MembersBundle\Adapter\User\UserInterface;
 
 interface UserManagerInterface
 {
+    /**
+     * @return bool|string
+     */
     public function getClass();
 
     /**
-     * {@inheritdoc}
+     * @param UserInterface $user
+     * @return mixed
      */
     public function deleteUser(UserInterface $user);
 
@@ -17,45 +21,49 @@ interface UserManagerInterface
      * @param      $token
      * @param bool $includeUnpublished
      *
-     * @return NULL|UserInterface
+     * @return null|UserInterface
      */
-    public function findUserByConfirmationToken($token, $includeUnpublished = TRUE);
+    public function findUserByConfirmationToken($token, $includeUnpublished = true);
 
     /**
      * @param      $emailAddress
      * @param bool $includeUnpublished
      *
-     * @return NULL|UserInterface
+     * @return null|UserInterface
      */
-    public function findUserByEmail($emailAddress, $includeUnpublished = TRUE);
+    public function findUserByEmail($emailAddress, $includeUnpublished = true);
 
     /**
-     * @fixme: includeUnpublished?
-     *
      * @param  string $username
      * @param bool    $includeUnpublished
      *
-     * @return NULL|UserInterface
+     * @return null|UserInterface
      */
-    public function findUserByUsername($username, $includeUnpublished = TRUE);
+    public function findUserByUsername($username, $includeUnpublished = true);
 
     /**
-     * {@inheritdoc}
+     * @param string $condition
+     * @param array  $conditionVariables
+     * @param bool   $includeUnpublished
+     * @param bool   $returnSingle
+     * @return null|array|UserInterface
      */
-    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = TRUE);
+    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true);
 
     /**
-     * {@inheritdoc}
+     * @param $usernameOrEmail
+     * @return null|array|UserInterface
      */
     public function findUserByUsernameOrEmail($usernameOrEmail);
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
     public function findUsers();
 
     /**
-     * {@inheritdoc}
+     * @param UserInterface $user
+     * @return mixed
      */
     public function reloadUser(UserInterface $user);
 

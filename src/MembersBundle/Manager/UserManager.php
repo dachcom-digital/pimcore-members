@@ -25,22 +25,23 @@ class UserManager implements UserManagerInterface
      */
     protected $memberStorageId;
 
+
     /**
-     * userManager constructor.
-     *
-     * @param Configuration         $configuration
-     * @param ClassManagerInterface $classManager
+     * {@inheritdoc}
      */
     public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
         $this->configuration = $configuration;
         $this->classManager = $classManager;
         $membersStorePath = DataObject::getByPath('/members');
-        if($membersStorePath instanceof DataObject\Folder) {
+        if ($membersStorePath instanceof DataObject\Folder) {
             $this->memberStorageId = DataObject::getByPath('/members')->getId();
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getClass()
     {
         return $this->classManager->getUserClass();
@@ -55,12 +56,9 @@ class UserManager implements UserManagerInterface
     }
 
     /**
-     * @param      $token
-     * @param bool $includeUnpublished
-     *
-     * @return NULL|UserInterface
+     * {@inheritdoc}
      */
-    public function findUserByConfirmationToken($token, $includeUnpublished = TRUE)
+    public function findUserByConfirmationToken($token, $includeUnpublished = true)
     {
         /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
@@ -73,16 +71,13 @@ class UserManager implements UserManagerInterface
             return $elements[0];
         }
 
-        return NULL;
+        return null;
     }
 
     /**
-     * @param      $emailAddress
-     * @param bool $includeUnpublished
-     *
-     * @return NULL|UserInterface
+     * {@inheritdoc}
      */
-    public function findUserByEmail($emailAddress, $includeUnpublished = TRUE)
+    public function findUserByEmail($emailAddress, $includeUnpublished = true)
     {
         /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
@@ -95,18 +90,13 @@ class UserManager implements UserManagerInterface
             return $elements[0];
         }
 
-        return NULL;
+        return null;
     }
 
     /**
-     * @fixme: includeUnpublished?
-     *
-     * @param  string $username
-     * @param bool    $includeUnpublished
-     *
-     * @return NULL|UserInterface
+     * {@inheritdoc}
      */
-    public function findUserByUsername($username, $includeUnpublished = TRUE)
+    public function findUserByUsername($username, $includeUnpublished = true)
     {
         /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
@@ -119,13 +109,13 @@ class UserManager implements UserManagerInterface
             return $elements[0];
         }
 
-        return NULL;
+        return null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = TRUE)
+    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true)
     {
         /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
@@ -134,11 +124,11 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) === 1) {
-            return $elements[0];
+        if (count($elements) > 0) {
+            return $returnSingle ? $elements[0] : $elements;
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -184,25 +174,22 @@ class UserManager implements UserManagerInterface
     }
 
     /**
-     * @param UserInterface $user
-     * @param array         $properties
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function updateUser(UserInterface $user, $properties = [])
     {
-        $new = FALSE;
+        $new = false;
 
         //It's a new user!
         if (empty($user->getKey())) {
-            $new = TRUE;
+            $new = true;
             $user = $this->setupNewUser($user);
         }
 
         // update page properties.
         if (!empty($properties)) {
             foreach ($properties as $propKey => $propValue) {
-                $user->setProperty($propKey, 'text', $propValue, FALSE);
+                $user->setProperty($propKey, 'text', $propValue, false);
             }
         }
 
@@ -228,7 +215,7 @@ class UserManager implements UserManagerInterface
         $userConfiguration = $this->configuration->getConfig('user');
         foreach ($userConfiguration['initial_groups'] as $group) {
             $listing = $this->classManager->getGroupListing();
-            $listing->setUnpublished(FALSE);
+            $listing->setUnpublished(false);
 
             if (is_string($group)) {
                 $listing->setCondition('name = ?', [$group]);

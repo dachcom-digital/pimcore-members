@@ -2,7 +2,6 @@
 
 namespace MembersBundle\Form\Type;
 
-use MembersBundle\Validator\Constraints\IsUniqueEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -32,10 +31,9 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label'              => 'members.form.email',
-                'constraints'        => new IsUniqueEmail()
+                'label' => 'members.form.email'
             ])
-            ->add('username', NULL, ['label' => 'members.form.username'])
+            ->add('username', null, ['label' => 'members.form.username'])
             ->add('plainPassword', RepeatedType::class, [
                 'type'            => PasswordType::class,
                 'first_options'   => ['label' => 'members.form.password'],
