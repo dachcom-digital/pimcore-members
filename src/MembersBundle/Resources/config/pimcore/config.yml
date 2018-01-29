@@ -18,6 +18,7 @@ security:
     firewalls:
         members_fe:
             pattern: ^/(?!(admin)).*$
+            logout_on_user_change: true
             form_login:
                 login_path: members_user_security_login
                 check_path: members_user_security_check

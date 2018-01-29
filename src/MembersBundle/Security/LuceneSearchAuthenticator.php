@@ -13,8 +13,9 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\AuthenticatorInterface;
 
-class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
+class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements AuthenticatorInterface
 {
     /**
      * @var UserAwareEncoderFactory
@@ -30,7 +31,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
      * LuceneSearchAuthenticator constructor.
      *
      * @param UserAwareEncoderFactory $userAwareEncoderFactory
-     * @param UserManagerInterface $userManager
+     * @param UserManagerInterface    $userManager
      */
     public function __construct(
         UserAwareEncoderFactory $userAwareEncoderFactory,
@@ -42,14 +43,29 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
 
     /**
      * @param Request $request
+     * @return array|bool|string
+     */
+    public function supports(Request $request)
+    {
+        return $request->headers->get('X-LUCENE-SEARCH-AUTHORIZATION') !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function supportsRememberMe()
+    {
+        return false;
+    }
+
+    /**
+     * @param Request $request
      *
      * @return array|null
      */
     public function getCredentials(Request $request)
     {
-        if (!$token = $request->headers->get('X-LUCENE-SEARCH-AUTHORIZATION')) {
-            return NULL;
-        }
+        $token = $request->headers->get('X-LUCENE-SEARCH-AUTHORIZATION');
 
         $tokenParts = explode(' ', $token);
         if (count($tokenParts) == 2 && $tokenParts[0] === 'Basic') {
@@ -63,7 +79,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
                     ];
                 }
             } catch (\Exception $e) {
-                return NULL;
+                return null;
             }
         }
     }
@@ -78,7 +94,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
     {
         $user = $this->userManager->findUserByUsername($credentials['username']);
         if (!$user instanceof MembersUserInterface) {
-            return NULL;
+            return null;
         }
 
         return $user;
@@ -130,17 +146,12 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator
      *
      * @return JsonResponse
      */
-    public function start(Request $request, AuthenticationException $authException = NULL)
+    public function start(Request $request, AuthenticationException $authException = null)
     {
         $data = [
             'message' => 'Authentication Required'
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
-    }
-
-    public function supportsRememberMe()
-    {
-        return FALSE;
     }
 }
