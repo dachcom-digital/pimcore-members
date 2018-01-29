@@ -50,7 +50,7 @@ services:
             - { name: kernel.event_subscriber }
 
     # event: post add and update events of objects
-    MembersBundle\EventListener\UniqueMembersDataListener:
+    MembersBundle\EventListener\MembersCompletenessListener:
         tags:
             - { name: kernel.event_subscriber }
 

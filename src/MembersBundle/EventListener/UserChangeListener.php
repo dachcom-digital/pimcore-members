@@ -25,7 +25,7 @@ class UserChangeListener implements EventSubscriberInterface
     /**
      * RestrictionServiceListener constructor.
      *
-     * @param Mailer $pimcoreMailer
+     * @param Mailer        $pimcoreMailer
      * @param Configuration $configuration
      */
     public function __construct(Mailer $pimcoreMailer, Configuration $configuration)
@@ -40,7 +40,7 @@ class UserChangeListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            DataObjectEvents::PRE_UPDATE => 'handleObjectUpdate'
+            DataObjectEvents::PRE_UPDATE => ['handleObjectUpdate', 0]
         ];
     }
 
@@ -56,19 +56,19 @@ class UserChangeListener implements EventSubscriberInterface
             return;
         }
 
-        $couldSendMail = FALSE;
-        $versionIsPublished = FALSE;
-        $userLastVersion = $user->getLatestVersion(TRUE);
+        $couldSendMail = false;
+        $versionIsPublished = false;
+        $userLastVersion = $user->getLatestVersion(true);
 
         if ($userLastVersion instanceof Version) {
             $versionIsPublished = $userLastVersion->getData()->getPublished();
         }
 
-        if ($versionIsPublished === FALSE && $user->getPublished() === TRUE) {
-            $couldSendMail = TRUE;
+        if ($versionIsPublished === false && $user->getPublished() === true) {
+            $couldSendMail = true;
         }
 
-        if($couldSendMail) {
+        if ($couldSendMail) {
             $this->mailer->sendConfirmedEmailMessage($user);
         }
     }

@@ -52,12 +52,22 @@ class Mailer implements MailerInterface
      */
     public function sendConfirmedEmailMessage(UserInterface $user)
     {
-        if ($this->configuration->getConfig('send_user_mail_after_confirmed') === FALSE) {
+        if ($this->configuration->getConfig('send_user_mail_after_confirmed') === false) {
             return;
         }
 
+        $options = [];
+        if (!empty($user->getProperty('_user_locale'))) {
+            $options['_locale'] = $user->getProperty('_user_locale');
+        }
+
+        $context = $this->router->getContext();
+        if (!empty($user->getProperty('_site_domain'))) {
+            $context->setHost($user->getProperty('_site_domain'));
+        }
+
         $template = $this->getMailTemplatePath('register_confirmed', $user);
-        $url = $this->router->generate('members_user_security_login', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->router->generate('members_user_security_login', $options, UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
             'user'      => $user,
@@ -88,7 +98,7 @@ class Mailer implements MailerInterface
      */
     public function sendAdminNotificationEmailMessage(UserInterface $user)
     {
-        if ($this->configuration->getConfig('send_admin_mail_after_register') === FALSE) {
+        if ($this->configuration->getConfig('send_admin_mail_after_register') === false) {
             return;
         }
 
@@ -97,7 +107,7 @@ class Mailer implements MailerInterface
 
         $mailParams = [
             'user'     => $user,
-            'deeplink' => $url . '?' .'object_' . $user->getId() . '_object' //thanks pimcore.
+            'deeplink' => $url . '?' . 'object_' . $user->getId() . '_object' //thanks pimcore.
         ];
 
         $this->sendMessage($template, $mailParams, (string)$user->getEmail());
@@ -113,7 +123,6 @@ class Mailer implements MailerInterface
     protected function sendMessage($documentPath, $mailParams, $toEmail)
     {
         $emailDocument = Email::getByPath($documentPath);
-
         if (!$emailDocument instanceof Email) {
             throw new \Exception(sprintf('document not found in "%s"', $documentPath));
         }
@@ -139,21 +148,19 @@ class Mailer implements MailerInterface
         $userSite = $user->getProperty('_site_domain');
 
         $templateBranch = $templates['default'];
-        if(!empty($userSite) && !empty($templates['sites'])) {
-
+        if (!empty($userSite) && !empty($templates['sites'])) {
             $key = array_search($userSite, array_column($templates['sites'], 'main_domain'));
-
-            if($key !== FALSE) {
+            if ($key !== false) {
                 $templateBranch = $templates['sites'][$key]['emails'];
             }
         }
 
         $requestedTemplate = $templateBranch[$type];
-        if(!empty($userLocale) && strpos($requestedTemplate, '{_locale}') !== FALSE) {
+        if (!empty($userLocale) && strpos($requestedTemplate, '{_locale}') !== false) {
             $_requestedTemplate = str_replace('{_locale}', $userLocale, $requestedTemplate);
 
             //fallback: there is maybe a nice locale to url transform, like "de_CH" => "de-ch"
-            if(!Service::pathExists($_requestedTemplate) && strpos($userLocale, '_') !== FALSE) {
+            if (!Service::pathExists($_requestedTemplate) && strpos($userLocale, '_') !== false) {
                 $_requestedTemplate = str_replace('{_locale}', strtolower(str_replace('_', '-', $userLocale)), $requestedTemplate);
             }
 
