@@ -56,18 +56,8 @@ class Mailer implements MailerInterface
             return;
         }
 
-        $options = [];
-        if (!empty($user->getProperty('_user_locale'))) {
-            $options['_locale'] = $user->getProperty('_user_locale');
-        }
-
-        $context = $this->router->getContext();
-        if (!empty($user->getProperty('_site_domain'))) {
-            $context->setHost($user->getProperty('_site_domain'));
-        }
-
         $template = $this->getMailTemplatePath('register_confirmed', $user);
-        $url = $this->router->generate('members_user_security_login', $options, UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generateUrl('members_user_security_login', $user);
 
         $mailParams = [
             'user'      => $user,
@@ -83,7 +73,7 @@ class Mailer implements MailerInterface
     public function sendResettingEmailMessage(UserInterface $user)
     {
         $template = $this->getMailTemplatePath('register_password_resetting', $user);
-        $url = $this->router->generate('members_user_resetting_reset', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generateUrl('members_user_resetting_reset', $user, ['token' => $user->getConfirmationToken()]);
 
         $mailParams = [
             'user'            => $user,
@@ -103,14 +93,14 @@ class Mailer implements MailerInterface
         }
 
         $template = $this->getMailTemplatePath('admin_register_notification', $user);
-        $url = $this->router->generate('pimcore_admin_login_deeplink', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->generateUrl('pimcore_admin_login_deeplink', $user);
 
         $mailParams = [
             'user'     => $user,
             'deeplink' => $url . '?' . 'object_' . $user->getId() . '_object' //thanks pimcore.
         ];
 
-        $this->sendMessage($template, $mailParams, (string)$user->getEmail());
+        $this->sendMessage($template, $mailParams, 'templateTo');
     }
 
     /**
@@ -128,7 +118,17 @@ class Mailer implements MailerInterface
         }
 
         $email = new Mail();
-        $email->addTo($toEmail);
+
+        if ($toEmail === 'templateTo') {
+            $recipient = $emailDocument->getTo();
+            if (empty($recipient)) {
+                throw new \Exception(sprintf('admin email document with id "%s" does not have a valid recipient.', $emailDocument->getId()));
+            }
+        } else {
+            $recipient = $toEmail;
+        }
+
+        $email->addTo($recipient);
         $email->setDocument($emailDocument);
         $email->setParams($mailParams);
         $email->send();
@@ -168,5 +168,25 @@ class Mailer implements MailerInterface
         }
 
         return $requestedTemplate;
+    }
+
+    /**
+     * @param string        $route
+     * @param UserInterface $user
+     * @param array         $options
+     * @return string
+     */
+    private function generateUrl($route = '', UserInterface $user, $options = [])
+    {
+        if (!empty($user->getProperty('_user_locale'))) {
+            $options['_locale'] = $user->getProperty('_user_locale');
+        }
+
+        $context = $this->router->getContext();
+        if (!empty($user->getProperty('_site_domain'))) {
+            $context->setHost($user->getProperty('_site_domain'));
+        }
+
+        return $this->router->generate($route, $options, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }
