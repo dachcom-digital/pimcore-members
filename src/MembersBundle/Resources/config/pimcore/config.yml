@@ -26,6 +26,7 @@ security:
                 csrf_token_generator: security.csrf.token_manager
             logout:
                 path: members_user_security_logout
+                invalidate_session: false
                 target: /
             anonymous: true
     access_control:
