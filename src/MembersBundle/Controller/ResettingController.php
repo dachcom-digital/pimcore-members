@@ -12,6 +12,7 @@ use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
 use MembersBundle\Tool\TokenGeneratorInterface;
+use Pimcore\Http\RequestHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,8 +117,11 @@ class ResettingController extends AbstractController
      *
      * @return null|RedirectResponse|Response
      */
-    public function resetAction(Request $request, $token)
+    public function resetAction(Request $request, $token=null)
     {
+        if($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
+            return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
+        }
         /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('members.resetting.form.factory');
         /** @var $userManager UserManager */
