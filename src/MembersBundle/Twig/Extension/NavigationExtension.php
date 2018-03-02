@@ -67,7 +67,7 @@ class NavigationExtension extends \Twig_Extension
     ): Container {
 
         $cacheKey = $cache;
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
         if (!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== FALSE) {
 
