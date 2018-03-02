@@ -2,7 +2,7 @@
 
 namespace MembersBundle\Manager;
 
-use MembersBundle\Security\UserCheckerInterface;
+use MembersBundle\Security\UserChecker;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -42,14 +42,14 @@ class LoginManager implements LoginManagerInterface
      * LoginManager constructor.
      *
      * @param TokenStorageInterface                  $tokenStorage
-     * @param UserCheckerInterface                   $userChecker
+     * @param UserChecker                            $userChecker
      * @param SessionAuthenticationStrategyInterface $sessionStrategy
      * @param RequestStack                           $requestStack
      * @param RememberMeServicesInterface|null       $rememberMeService
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
-        UserCheckerInterface $userChecker,
+        UserChecker $userChecker,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         RequestStack $requestStack,
         RememberMeServicesInterface $rememberMeService = NULL
