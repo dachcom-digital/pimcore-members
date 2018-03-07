@@ -8,7 +8,9 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\ClassManagerInterface;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
+use Pimcore\Model\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 
 class MembersCompletenessListener implements EventSubscriberInterface
 {
@@ -28,14 +30,23 @@ class MembersCompletenessListener implements EventSubscriberInterface
     protected $configuration;
 
     /**
-     * {@inheritdoc}
+     * @var TokenStorageUserResolver
+     */
+    private $userResolver;
+
+    /**
+     * @param ClassManagerInterface    $classManager
+     * @param Configuration            $configuration
+     * @param TokenStorageUserResolver $tokenStorageUserResolver
      */
     public function __construct(
         ClassManagerInterface $classManager,
-        Configuration $configuration
+        Configuration $configuration,
+        TokenStorageUserResolver $tokenStorageUserResolver
     ) {
         $this->classManager = $classManager;
         $this->configuration = $configuration;
+        $this->userResolver   = $tokenStorageUserResolver;
     }
 
     /**
@@ -58,6 +69,10 @@ class MembersCompletenessListener implements EventSubscriberInterface
     public function checkUniqueness(DataObjectEvent $e)
     {
         $object = $e->getObject();
+
+        if (!$this->userResolver->getUser() instanceof User) {
+            return;
+        }
 
         if ($object instanceof UserInterface) {
             $memberListing = $this->classManager->getUserListing();
@@ -97,6 +112,10 @@ class MembersCompletenessListener implements EventSubscriberInterface
     public function checkProperties(DataObjectEvent $e)
     {
         $object = $e->getObject();
+
+        if (!$this->userResolver->getUser() instanceof User) {
+            return;
+        }
 
         if (!$object instanceof UserInterface || $object->isPublished() === false) {
             return;
