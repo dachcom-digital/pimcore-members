@@ -63,7 +63,7 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
         }
 
 
-        $condition = '';
+        $condition = [];
         $values = [];
         foreach ($criteria as $criteriaName => $criteriaValue) {
             $condition[] = $criteriaName . ' = ?';
