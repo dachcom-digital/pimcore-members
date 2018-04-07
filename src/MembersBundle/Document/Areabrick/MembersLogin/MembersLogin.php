@@ -3,6 +3,7 @@
 namespace MembersBundle\Document\Areabrick\MembersLogin;
 
 use MembersBundle\Document\Builder\BrickBuilder;
+use MembersBundle\Form\Factory\FactoryInterface;
 use Pimcore\Extension\Document\Areabrick\AbstractTemplateAreabrick;
 use Pimcore\Model\Document\Tag\Area\Info;
 
@@ -14,13 +15,22 @@ class MembersLogin extends AbstractTemplateAreabrick
     protected $brickBuilder;
 
     /**
+     * @var FactoryInterface
+     */
+    protected $formFactory;
+
+    /**
      * MembersLogin constructor.
      *
-     * @param BrickBuilder $brickBuilder
+     * @param BrickBuilder     $brickBuilder
+     * @param FactoryInterface $formFactory
      */
-    public function __construct(BrickBuilder $brickBuilder)
-    {
+    public function __construct(
+        BrickBuilder $brickBuilder,
+        FactoryInterface $formFactory
+    ) {
         $this->brickBuilder = $brickBuilder;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -41,7 +51,26 @@ class MembersLogin extends AbstractTemplateAreabrick
             ->setSnippetAfterLogin($showSnippedWhenLoggedIn)
             ->setHideAfterLogin($hideWhenLoggedIn);
 
-        foreach ($this->brickBuilder->getViewParams() as $key => $param) {
+        $formParams = [];
+        $params = $this->brickBuilder->getViewParams();
+
+        if(isset($params['failure_path'])) {
+            $formParams['_target_path'] = $params['failure_path'];
+        }
+
+        if(isset($params['last_username'])) {
+            $formParams['last_username'] = $params['last_username'];
+        }
+
+        if(isset($params['failure_path'])) {
+            $formParams['_failure_path'] = $params['failure_path'];
+        }
+
+        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        $form = $this->formFactory->createUnnamedForm($formParams);
+
+        $view->form = $form->createView();
+        foreach ($params as $key => $param) {
             $view->{$key} = $param;
         }
     }
@@ -51,7 +80,7 @@ class MembersLogin extends AbstractTemplateAreabrick
      */
     public function hasEditTemplate()
     {
-        return TRUE;
+        return true;
     }
 
     /**

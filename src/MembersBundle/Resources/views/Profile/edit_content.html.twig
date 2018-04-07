@@ -1,6 +1,7 @@
-{{ form_start(form, { 'action': path('members_user_profile_edit'), 'attr': { 'class': 'members_user_profile_edit' } }) }}
+{% extends '@Members/Form/form_wrapper.html.twig' %}
+
+{% block form %}
+    {{ form_start(form, { 'action': path('members_user_profile_edit'), 'attr': {'novalidate': 'novalidate', 'class': 'members_user_profile_edit' } }) }}
     {{ form_widget(form) }}
-    <div>
-        <input type="submit" value="{{ 'members.profile.edit.submit'|trans }}" />
-    </div>
-{{ form_end(form) }}
+    {{ form_end(form) }}
+{% endblock form %}

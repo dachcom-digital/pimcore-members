@@ -1,5 +1,20 @@
 services:
 
+    #form resetting request factory
+    members.resetting_request.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - '%members_user.resetting_request.form.name%'
+            - '%members_user.resetting_request.form.type%'
+            - '%members_user.resetting_request.form.validation_groups%'
+
+    #form resetting request type
+    members.resetting_request.form.type:
+        class: MembersBundle\Form\Type\ResettingRequestFormType
+        tags:
+            - { name: form.type, alias: members_user_resetting_request }
+
     #form resetting factory
     members.resetting.form.factory:
         class: MembersBundle\Form\Factory\FormFactory

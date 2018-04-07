@@ -15,37 +15,39 @@ class AuthController extends AbstractController
      */
     public function loginAction(Request $request)
     {
+        $authErrorKey = Security::AUTHENTICATION_ERROR;
+        $lastUsernameKey = Security::LAST_USERNAME;
+
         /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
         $session = $request->getSession();
 
-        $authErrorKey = Security::AUTHENTICATION_ERROR;
-        $lastUsernameKey = Security::LAST_USERNAME;
+        // last username entered by the user
+        $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
+
+        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('members.security.login.form.factory');
+        $form = $formFactory->createUnnamedForm(['last_username' => $lastUsername]);
+
+        $form->handleRequest($request);
 
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
-        } elseif (NULL !== $session && $session->has($authErrorKey)) {
+        } elseif (null !== $session && $session->has($authErrorKey)) {
             $error = $session->get($authErrorKey);
             $session->remove($authErrorKey);
         } else {
-            $error = NULL;
+            $error = null;
         }
 
         if (!$error instanceof AuthenticationException) {
-            $error = NULL; // The value does not come from the security component.
+            $error = null; // The value does not come from the security component.
         }
 
-        // last username entered by the user
-        $lastUsername = (NULL === $session) ? '' : $session->get($lastUsernameKey);
-
-        $csrfToken = $this->has('security.csrf.token_manager')
-            ? $this->get('security.csrf.token_manager')->getToken('authenticate')->getValue()
-            : NULL;
-
         $authParams = [
+            'form'          => $form->createView(),
             'last_username' => $lastUsername,
-            'error'         => $error,
-            'csrf_token'    => $csrfToken
+            'error'         => $error
         ];
 
         return $this->renderTemplate('@Members/Auth/login.html.twig', $authParams);

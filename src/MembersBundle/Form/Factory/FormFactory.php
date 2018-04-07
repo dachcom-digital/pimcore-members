@@ -34,7 +34,7 @@ class FormFactory implements FactoryInterface
      * @param string               $type
      * @param array                $validationGroups
      */
-    public function __construct(FormFactoryInterface $formFactory, $name, $type, array $validationGroups = NULL)
+    public function __construct(FormFactoryInterface $formFactory, $name, $type, array $validationGroups = null)
     {
         $this->formFactory = $formFactory;
         $this->name = $name;
@@ -48,7 +48,15 @@ class FormFactory implements FactoryInterface
     public function createForm(array $options = [])
     {
         $options = array_merge(['validation_groups' => $this->validationGroups], $options);
+        return $this->formFactory->createNamed($this->name, $this->type, null, $options);
+    }
 
-        return $this->formFactory->createNamed($this->name, $this->type, NULL, $options);
+    /**
+     * {@inheritdoc}
+     */
+    public function createUnnamedForm(array $options = [])
+    {
+        $options = array_merge(['validation_groups' => $this->validationGroups], $options);
+        return $this->formFactory->createNamed('', $this->type, null, $options);
     }
 }

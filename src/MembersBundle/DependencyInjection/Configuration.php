@@ -5,7 +5,9 @@ namespace MembersBundle\DependencyInjection;
 use MembersBundle\Form\Type\ChangePasswordFormType;
 use MembersBundle\Form\Type\ProfileFormType;
 use MembersBundle\Form\Type\RegistrationFormType;
+use MembersBundle\Form\Type\LoginFormType;
 use MembersBundle\Form\Type\ResettingFormType;
+use MembersBundle\Form\Type\ResettingRequestFormType;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -75,6 +77,25 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('relations')
                     ->addDefaultsIfNotSet()
                     ->children()
+
+                        ->arrayNode('login')
+                            ->addDefaultsIfNotSet()
+                            ->canBeUnset()
+                            ->children()
+                                ->arrayNode('form')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('type')->defaultValue(LoginFormType::class)->end()
+                                        ->scalarNode('name')->defaultValue('members_user_login_form')->end()
+                                        ->arrayNode('validation_groups')
+                                            ->prototype('scalar')->end()
+                                            ->defaultValue(['Login', 'Default'])
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+
                         ->arrayNode('profile')
                             ->addDefaultsIfNotSet()
                             ->canBeUnset()
@@ -123,6 +144,24 @@ class Configuration implements ConfigurationInterface
                                             ->arrayNode('validation_groups')
                                                 ->prototype('scalar')->end()
                                                 ->defaultValue(['Registration', 'Default'])
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+
+                        ->arrayNode('resetting_request')
+                            ->addDefaultsIfNotSet()
+                            ->canBeUnset()
+                                ->children()
+                                    ->arrayNode('form')
+                                    ->addDefaultsIfNotSet()
+                                        ->children()
+                                        ->scalarNode('type')->defaultValue(ResettingRequestFormType::class)->end()
+                                        ->scalarNode('name')->defaultValue('members_user_resetting_request_form')->end()
+                                        ->arrayNode('validation_groups')
+                                            ->prototype('scalar')->end()
+                                            ->defaultValue(['ResetPassword', 'Default'])
                                         ->end()
                                     ->end()
                                 ->end()

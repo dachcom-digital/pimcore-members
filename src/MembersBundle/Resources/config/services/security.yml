@@ -23,3 +23,18 @@ services:
             $arguments: ['password']
 
     MembersBundle\Security\LuceneSearchAuthenticator: ~
+
+    #form login request factory
+    members.security.login.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - '%members_user.login.form.name%'
+            - '%members_user.login.form.type%'
+            - '%members_user.login.form.validation_groups%'
+
+    #form login type
+    members.security.login.form.login:
+        class: MembersBundle\Form\Type\LoginFormType
+        tags:
+            - { name: form.type, alias: members_user_resetting }

@@ -22,11 +22,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ResettingController extends AbstractController
 {
     /**
+     * @param Request $request
      * @return Response
      */
-    public function requestAction()
+    public function requestAction(Request $request)
     {
-        return $this->renderTemplate('@Members/Resetting/request.html.twig');
+        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('members.resetting_request.form.factory');
+
+        $form = $formFactory->createUnnamedForm();
+        $form->handleRequest($request);
+
+        $params = ['form' => $form->createView()];
+
+        return $this->renderTemplate('@Members/Resetting/request.html.twig', $params);
     }
 
     /**
@@ -122,6 +131,7 @@ class ResettingController extends AbstractController
         if ($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
             return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
         }
+
         /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('members.resetting.form.factory');
         /** @var $userManager UserManager */

@@ -1,26 +1,13 @@
-{% if error %}
-    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
+{% extends '@Members/Form/form_wrapper.html.twig' %}
 
-<form action="{{ path('members_user_security_check') }}" method="post">
-    {% if csrf_token %}
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-    {% endif %}
-    {% if target_path is defined %}
-        <input type="hidden" name="_target_path" value="{{ target_path }}" />
-    {% endif %}
-    {% if failure_path is defined %}
-        <input type="hidden" name="_failure_path" value="{{ failure_path }}" />
+{% block form %}
+
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <label for="username">{{ 'members.auth.login.username'|trans }}</label>
-    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+    {{ form_start(form, { 'action': path('members_user_security_check'), 'attr': {'novalidate': 'novalidate', 'class': 'members_user_login' } }) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
 
-    <label for="password">{{ 'members.auth.login.password'|trans }}</label>
-    <input type="password" id="password" name="_password" required="required" />
-
-    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-    <label for="remember_me">{{ 'members.auth.login.remember_me'|trans }}</label>
-
-    <input type="submit" id="_submit" name="_submit" value="{{ 'members.auth.login.submit'|trans }}" />
-</form>
+{% endblock form %}

@@ -10,4 +10,9 @@ interface FactoryInterface
      * @return FormInterface
      */
     public function createForm();
+
+    /**
+     * @return FormInterface
+     */
+    public function createUnnamedForm();
 }

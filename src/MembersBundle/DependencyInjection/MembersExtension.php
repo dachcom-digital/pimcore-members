@@ -36,6 +36,10 @@ class MembersExtension extends Extension
         $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
         $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
 
+        foreach($config['relations']['login']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.login.form.' . $confName, $confValue);
+        }
+
         foreach($config['relations']['profile']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.profile.form.' . $confName, $confValue);
         }
@@ -46,6 +50,10 @@ class MembersExtension extends Extension
 
         foreach($config['relations']['registration']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.registration.form.' . $confName, $confValue);
+        }
+
+        foreach($config['relations']['resetting_request']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.resetting_request.form.' . $confName, $confValue);
         }
 
         foreach($config['relations']['resetting']['form'] as $confName => $confValue) {

@@ -5,6 +5,7 @@ namespace MembersBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
@@ -49,6 +50,8 @@ class ChangePasswordFormType extends AbstractType
             'second_options'  => ['label' => 'members.form.new_password_confirmation'],
             'invalid_message' => 'members.validation.password.mismatch',
         ]);
+
+        $builder->add('submit', SubmitType::class, ['label' => 'members.change_password.submit']);
     }
 
     /**

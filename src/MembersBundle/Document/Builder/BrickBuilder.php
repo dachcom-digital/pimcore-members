@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class BrickBuilder
 {
@@ -26,11 +25,6 @@ class BrickBuilder
     protected $includeRenderer;
 
     /**
-     * @var CsrfTokenManagerInterface
-     */
-    protected $csrfTokenManager;
-
-    /**
      * @var TokenStorage
      */
     protected $tokenStorage;
@@ -43,37 +37,37 @@ class BrickBuilder
     /**
      * @var string
      */
-    protected $logoutUri = NULL;
+    protected $logoutUri = null;
 
     /**
      * @var bool
      */
-    protected $hideAfterLogin = FALSE;
+    protected $hideAfterLogin = false;
 
     /**
      * @var Document
      */
-    protected $redirectPage= NULL;
+    protected $redirectPage = null;
 
     /**
      * @var Document\Snippet
      */
-    protected $successSnippet = NULL;
+    protected $successSnippet = null;
 
     /**
      * @var Request
      */
-    protected $request = FALSE;
+    protected $request = false;
 
     /**
      * @var bool
      */
-    protected $editMode = FALSE;
+    protected $editMode = false;
 
     /**
      * @var string
      */
-    protected $error = NULL;
+    protected $error = null;
 
     /**
      * @var array
@@ -89,18 +83,15 @@ class BrickBuilder
      * AreaBuilder constructor.
      *
      * @param TokenStorage              $tokenStorage
-     * @param CsrfTokenManagerInterface $csrfTokenManager
      * @param IncludeRenderer           $includeRenderer
      * @param UrlGeneratorInterface     $urlGenerator
      */
     public function __construct(
         TokenStorage $tokenStorage,
-        CsrfTokenManagerInterface $csrfTokenManager,
         IncludeRenderer $includeRenderer,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->tokenStorage = $tokenStorage;
-        $this->csrfTokenManager = $csrfTokenManager;
         $this->includeRenderer = $includeRenderer;
         $this->urlGenerator = $urlGenerator;
     }
@@ -130,7 +121,7 @@ class BrickBuilder
      *
      * @return $this
      */
-    public function setEditMode($isEditMode = FALSE)
+    public function setEditMode($isEditMode = false)
     {
         $this->editMode = $isEditMode;
 
@@ -181,11 +172,11 @@ class BrickBuilder
      *
      * @return $this
      */
-    public function setHideAfterLogin($hide = FALSE)
+    public function setHideAfterLogin($hide = false)
     {
         if (is_string($hide)) {
             $this->hideAfterLogin = $hide === '1';
-        } else if (is_bool($hide)) {
+        } elseif (is_bool($hide)) {
             $this->hideAfterLogin = $hide;
         }
 
@@ -214,7 +205,7 @@ class BrickBuilder
         if ($this->editMode) {
             //only show backend note
             $template = $this->getTemplate('area-not-available');
-        } else if (!$this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
+        } elseif (!$this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
 
             $authErrorKey = Security::AUTHENTICATION_ERROR;
             $lastUsernameKey = Security::LAST_USERNAME;
@@ -222,25 +213,23 @@ class BrickBuilder
             // get the error if any (works with forward and redirect -- see below)
             if ($this->request->attributes->has($authErrorKey)) {
                 $error = $this->request->attributes->get($authErrorKey);
-            } elseif (NULL !== $this->request->getSession() && $this->request->getSession()->has($authErrorKey)) {
+            } elseif (null !== $this->request->getSession() && $this->request->getSession()->has($authErrorKey)) {
                 $error = $this->request->getSession()->get($authErrorKey);
                 $this->request->getSession()->remove($authErrorKey);
             } else {
-                $error = NULL;
+                $error = null;
             }
 
             if (!$error instanceof AuthenticationException) {
-                $error = NULL; // The value does not come from the security component.
+                $error = null; // The value does not come from the security component.
             }
 
             // last username entered by the user
-            $lastUsername = (NULL === $this->request->getSession()) ? '' : $this->request->getSession()->get($lastUsernameKey);
-            $csrfToken = $this->csrfTokenManager->getToken('authenticate')->getValue();
+            $lastUsername = (null === $this->request->getSession()) ? '' : $this->request->getSession()->get($lastUsernameKey);
 
             $params = array_merge($params, [
                 'last_username' => $lastUsername,
                 'error'         => $error,
-                'csrf_token'    => $csrfToken,
                 'target_path'   => is_null($this->redirectPage) ? $this->request->getRequestUri() : $this->redirectPage->getFullPath(),
                 'failure_path'  => $this->request->getRequestUri()
             ]);
@@ -248,7 +237,7 @@ class BrickBuilder
             $template = $this->getTemplate('area-login');
         } elseif ($this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
 
-            if ($this->hideAfterLogin === FALSE && !is_null($this->successSnippet)) {
+            if ($this->hideAfterLogin === false && !is_null($this->successSnippet)) {
 
                 $snippetParams = [
                     'user'         => $this->tokenStorage->getToken()->getUser(),
@@ -262,7 +251,7 @@ class BrickBuilder
                 $params['members_snippet_content'] = $placeholder->replacePlaceholders($snippetContent, $snippetParams);
 
                 $template = $this->getTemplate('area-logged-in-snippet');
-            } elseif ($this->hideAfterLogin === FALSE) {
+            } elseif ($this->hideAfterLogin === false) {
                 $template = $this->getTemplate('area-logged-in');
             }
         }

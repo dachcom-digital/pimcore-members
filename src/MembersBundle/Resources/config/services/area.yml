@@ -4,7 +4,6 @@ services:
         shared: false
         arguments:
             - '@security.token_storage'
-            - '@security.csrf.token_manager'
             - '@pimcore.templating.include_renderer'
             - '@router'
 
@@ -12,5 +11,6 @@ services:
         class: MembersBundle\Document\Areabrick\MembersLogin\MembersLogin
         arguments:
             - '@members.brick.builder'
+            - '@members.security.login.form.factory'
         tags:
             - { name: pimcore.area.brick, id: members_login }
