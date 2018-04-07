@@ -26,6 +26,7 @@ security:
                 invalidate_session: false
                 target: /
             anonymous: true
+            user_checker: MembersBundle\Security\UserChecker
     access_control:
         - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
