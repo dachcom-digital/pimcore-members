@@ -27,3 +27,5 @@ members:
         adapter:
             class_name: 'MembersCustomer'
 ```
+
+7. Install Pimcore Members
