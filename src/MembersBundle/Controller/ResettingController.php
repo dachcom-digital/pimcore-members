@@ -12,6 +12,7 @@ use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
 use MembersBundle\Tool\TokenGeneratorInterface;
+use Pimcore\Http\RequestHelper;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,21 +48,21 @@ class ResettingController extends AbstractController
         $event = new GetResponseNullableUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
         $ttl = $this->getParameter('members.resetting.retry_ttl');
-        if ($user !== NULL && !$user->isPasswordRequestNonExpired($ttl)) {
+        if ($user !== null && !$user->isPasswordRequestNonExpired($ttl)) {
 
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
 
-            if (NULL !== $event->getResponse()) {
+            if (null !== $event->getResponse()) {
                 return $event->getResponse();
             }
 
-            if (NULL === $user->getConfirmationToken()) {
+            if (null === $user->getConfirmationToken()) {
                 /** @var $tokenGenerator TokenGeneratorInterface */
                 $tokenGenerator = $this->get(TokenGenerator::class);
                 $user->setConfirmationToken($tokenGenerator->generateToken());
@@ -71,7 +72,7 @@ class ResettingController extends AbstractController
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_CONFIRM, $event);
 
-            if (NULL !== $event->getResponse()) {
+            if (null !== $event->getResponse()) {
                 return $event->getResponse();
             }
 
@@ -83,7 +84,7 @@ class ResettingController extends AbstractController
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_COMPLETED, $event);
 
-            if (NULL !== $event->getResponse()) {
+            if (null !== $event->getResponse()) {
                 return $event->getResponse();
             }
         }
@@ -116,8 +117,11 @@ class ResettingController extends AbstractController
      *
      * @return null|RedirectResponse|Response
      */
-    public function resetAction(Request $request, $token)
+    public function resetAction(Request $request, $token = null)
     {
+        if ($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
+            return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
+        }
         /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
         $formFactory = $this->get('members.resetting.form.factory');
         /** @var $userManager UserManager */
@@ -127,14 +131,14 @@ class ResettingController extends AbstractController
 
         $user = $userManager->findUserByConfirmationToken($token);
 
-        if (NULL === $user) {
+        if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with "confirmation token" does not exist for value "%s"', $token));
         }
 
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::RESETTING_RESET_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
@@ -147,7 +151,7 @@ class ResettingController extends AbstractController
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_RESET_SUCCESS, $event);
 
-            if (NULL === $response = $event->getResponse()) {
+            if (null === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_profile_show');
                 $response = new RedirectResponse($url);
             }
