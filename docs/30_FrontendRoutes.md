@@ -50,3 +50,11 @@ Prefix: `/{_locale}/members/resetting`
 | members_user_resetting_send_email | /send-email | -- | POST |
 | members_user_resetting_check_email | /check-email | Resetting/check_email.html.twig | GET |
 | members_user_resetting_reset | /reset/{token} | Resetting/reset.html.twig | GET, POST |
+
+### Delete Account
+
+Prefix: `/{_locale}/members/profile`
+
+| Route name | Path | View | Methods |
+|------------------------------|--------------|----------------------|-----------|
+| members_user_delete_account | /delete-account | deleteAccount/delete_account.html.twig | GET, POST |

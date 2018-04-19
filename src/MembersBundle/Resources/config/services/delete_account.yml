@@ -1,0 +1,19 @@
+services:
+
+    #form delete_account factory
+    members.delete_account.form.factory:
+        public: true
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - '%members_user.delete_account.form.name%'
+            - '%members_user.delete_account.form.type%'
+            - '%members_user.delete_account.form.validation_groups%'
+
+    #form delete_account type
+    members.delete_account.form.type:
+        class: MembersBundle\Form\Type\DeleteAccountFormType
+        arguments:
+            - '\MembersBundle\Adapter\User\UserInterface'
+        tags:
+            - { name: form.type, alias: members_user_delete_account }

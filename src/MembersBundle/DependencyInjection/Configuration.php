@@ -3,6 +3,7 @@
 namespace MembersBundle\DependencyInjection;
 
 use MembersBundle\Form\Type\ChangePasswordFormType;
+use MembersBundle\Form\Type\DeleteAccountFormType;
 use MembersBundle\Form\Type\ProfileFormType;
 use MembersBundle\Form\Type\RegistrationFormType;
 use MembersBundle\Form\Type\LoginFormType;
@@ -182,6 +183,24 @@ class Configuration implements ConfigurationInterface
                                         ->arrayNode('validation_groups')
                                             ->prototype('scalar')->end()
                                             ->defaultValue(['ResetPassword', 'Default'])
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+						->end()
+
+                        ->arrayNode('delete_account')
+                            ->addDefaultsIfNotSet()
+                            ->canBeUnset()
+                                ->children()
+                                    ->arrayNode('form')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('type')->defaultValue(DeleteAccountFormType::class)->end()
+                                        ->scalarNode('name')->defaultValue('members_user_delete_account_form')->end()
+                                        ->arrayNode('validation_groups')
+                                            ->prototype('scalar')->end()
+                                            ->defaultValue(['DeleteAccount', 'Default'])
                                         ->end()
                                     ->end()
                                 ->end()

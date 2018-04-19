@@ -40,5 +40,10 @@ members:
                 type:               MembersBundle\Form\Type\ResettingFormType
                 name:               members_user_resetting_form
                 validation_groups:  [ResetPassword, Default]
-            
+        delete_account:
+            form:
+                type:               MembersBundle\Form\Type\DeleteAccountFormType
+                name:               members_user_delete_account_form
+                validation_groups:  [DeleteAccount, Default]
+
 ```

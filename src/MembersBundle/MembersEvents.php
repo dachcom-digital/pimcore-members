@@ -195,4 +195,32 @@ final class MembersEvents
      * @Event("MembersBundle\Event\GetResponseUserEvent")
      */
     const RESETTING_SEND_EMAIL_COMPLETED = 'members.resetting.send_email.completed';
+
+    /**
+     * The DELETE_ACCOUNT_INITIALIZE event occurs when the delete account process is initialized.
+     *
+     * This event allows you to set the response to bypass the processing.
+     *
+     * @Event("MembersBundle\Event\GetResponseUserEvent")
+     */
+    const DELETE_ACCOUNT_INITIALIZE = 'members.delete_account.confirm.initialize';
+
+    /**
+     * The DELETE_ACCOUNT_SUCCESS event occurs when the delete account form is submitted successfully.
+     *
+     * This event allows you to delete additional data objects from the system.
+     *
+     * @Event("MembersBundle\Event\FormEvent ")
+     */
+    const DELETE_ACCOUNT_SUCCESS = 'members.delete_account.confirm.success';
+
+    /**
+     * The DELETE_ACCOUNT_COMPLETED event occurs after deleting the user object in the delete account process.
+     *
+     * This event allows you to access the response which will be sent.
+     *
+     * @Event("MembersBundle\Event\FilterUserResponseEvent")
+     */
+    const DELETE_ACCOUNT_COMPLETED = 'members.delete_account.confirm.completed';
+
 }

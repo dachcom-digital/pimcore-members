@@ -1,0 +1,5 @@
+# frontend delete account
+members_user_delete_account:
+    path: /delete-account
+    defaults: { _controller: MembersBundle:DeleteAccount:deleteAccount }
+    methods:  [GET, POST]

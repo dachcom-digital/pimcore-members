@@ -18,3 +18,7 @@ members_profile:
 members_resetting:
     resource: '@MembersBundle/Resources/config/pimcore/routing/resetting.yml'
     prefix: /{_locale}/members/resetting
+
+members_delete_account:
+    resource: '@MembersBundle/Resources/config/pimcore/routing/delete_account.yml'
+    prefix: /{_locale}/members/profile

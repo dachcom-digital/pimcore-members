@@ -60,5 +60,9 @@ class MembersExtension extends Extension
             $container->setParameter('members_user.resetting.form.' . $confName, $confValue);
         }
 
+        foreach($config['relations']['delete_account']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.delete_account.form.' . $confName, $confValue);
+		}
+
     }
 }
