@@ -46,7 +46,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
     ) {
         $this->classManager = $classManager;
         $this->configuration = $configuration;
-        $this->userResolver   = $tokenStorageUserResolver;
+        $this->userResolver = $tokenStorageUserResolver;
     }
 
     /**

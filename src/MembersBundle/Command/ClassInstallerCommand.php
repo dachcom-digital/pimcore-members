@@ -34,7 +34,7 @@ class ClassInstallerCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', FALSE);
+        $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', false);
 
         if (!$helper->ask($input, $output, $question)) {
             return;
@@ -44,7 +44,7 @@ class ClassInstallerCommand extends ContainerAwareCommand
             $class = new ClassDefinition();
             $id = $class->getDao()->getIdByName($className);
 
-            if ($id !== FALSE) {
+            if ($id !== false) {
                 $output->writeln(sprintf('<comment>Class "%s" already exists.</comment>', $className));
                 continue;
             }
@@ -74,7 +74,7 @@ class ClassInstallerCommand extends ContainerAwareCommand
             $path = realpath(dirname(__FILE__) . '/../Resources/install/classes') . '/' . $filename;
             $path = realpath($path);
 
-            if (FALSE === $path || !is_file($path)) {
+            if (false === $path || !is_file($path)) {
                 throw new \RuntimeException(sprintf(
                     'Class export for class "%s" was expected in "%s" but file does not exist',
                     $className, $path

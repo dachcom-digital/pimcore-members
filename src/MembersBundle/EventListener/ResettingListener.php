@@ -31,7 +31,7 @@ class ResettingListener implements EventSubscriberInterface
     /**
      * ResettingListener constructor.
      *
-     * @param UserManagerInterface $userManager
+     * @param UserManagerInterface  $userManager
      * @param UrlGeneratorInterface $router
      * @param int                   $tokenTtl
      */
@@ -75,9 +75,9 @@ class ResettingListener implements EventSubscriberInterface
         /** @var $user UserInterface */
         $user = $event->getForm()->getData();
 
-        $user->setConfirmationToken(NULL);
-        $user->setPasswordRequestedAt(NULL);
-        $user->setPublished(TRUE);
+        $user->setConfirmationToken(null);
+        $user->setPasswordRequestedAt(null);
+        $user->setPublished(true);
         $this->userManager->updateUser($user);
     }
 

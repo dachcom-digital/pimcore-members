@@ -16,12 +16,11 @@ class RequestController extends AbstractController
 
     /**
      * @param null $hash
-     *
      * @return StreamedResponse
      */
-    public function serveAction($hash = NULL)
-    {            
-        if($this->container->get(Configuration::class)->getConfig('restriction')['enabled'] === FALSE) {
+    public function serveAction($hash = null)
+    {
+        if ($this->container->get(Configuration::class)->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
@@ -33,14 +32,14 @@ class RequestController extends AbstractController
         $restrictionUri = $this->container->get(RestrictionUri::class);
         $dataToProcess = $restrictionUri->decodeAssetUrl($hash);
 
-        if ($dataToProcess === FALSE) {
+        if ($dataToProcess === false) {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
 
         if (count($dataToProcess) == 1) {
             return $this->serveFile($dataToProcess[0]);
-        } else if (count($dataToProcess) > 1) {
-            return  $this->serveZip($dataToProcess);
+        } elseif (count($dataToProcess) > 1) {
+            return $this->serveZip($dataToProcess);
         } else {
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
@@ -48,23 +47,22 @@ class RequestController extends AbstractController
 
     /**
      * @param Model\Asset $asset
-     *
      * @return StreamedResponse
      */
     private function serveFile(Model\Asset $asset)
     {
-        $forceDownload = TRUE;
+        $forceDownload = true;
         $contentType = $asset->getMimetype();
 
         /** @var Configuration $configuration */
         $configuration = $this->container->get(Configuration::class);
         $hasLuceneSearch = $configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
 
-        if ($hasLuceneSearch === TRUE) {
+        if ($hasLuceneSearch === true) {
             /** @var \LuceneSearchBundle\Tool\CrawlerState $crawlerState */
             $crawlerState = $this->container->get(\LuceneSearchBundle\Tool\CrawlerState::class);
             if ($crawlerState->isLuceneSearchCrawler() && in_array($asset->getMimetype(), ['application/pdf'])) {
-                $forceDownload = FALSE;
+                $forceDownload = false;
             }
         }
 
@@ -82,12 +80,12 @@ class RequestController extends AbstractController
             basename($asset->getFileName())
         ));
 
-        if ($forceDownload === FALSE) {
+        if ($forceDownload === false) {
             $response->headers->set('Content-Description', 'File Transfer');
             $response->headers->set('Content-Transfer-Encoding', 'binary');
         }
 
-        $response->setCallback(function () use($asset) {
+        $response->setCallback(function () use ($asset) {
             flush();
             ob_flush();
             $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
@@ -104,7 +102,6 @@ class RequestController extends AbstractController
 
     /**
      * @param $assets
-     *
      * @return StreamedResponse
      */
     private function serveZip($assets)
@@ -132,7 +129,7 @@ class RequestController extends AbstractController
             throw new NotFoundHttpException('zip extension not found on this server.');
         }
 
-        $response->setCallback(function () use($files) {
+        $response->setCallback(function () use ($files) {
             mb_http_output('pass');
             flush();
             ob_flush();

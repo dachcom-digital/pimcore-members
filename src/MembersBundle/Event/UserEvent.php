@@ -24,7 +24,7 @@ class UserEvent extends Event
      * @param UserInterface $user
      * @param Request|null  $request
      */
-    public function __construct(UserInterface $user, Request $request = NULL)
+    public function __construct(UserInterface $user, Request $request = null)
     {
         $this->user = $user;
         $this->request = $request;

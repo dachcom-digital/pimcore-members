@@ -19,7 +19,6 @@ class ChangePasswordController extends AbstractController
 {
     /**
      * @param Request $request
-     *
      * @return null|RedirectResponse|Response
      */
     public function changePasswordAction(Request $request)
@@ -35,7 +34,7 @@ class ChangePasswordController extends AbstractController
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::CHANGE_PASSWORD_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
@@ -57,7 +56,7 @@ class ChangePasswordController extends AbstractController
 
             $userManager->updateUser($user);
 
-            if (NULL === $response = $event->getResponse()) {
+            if (null === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_profile_show');
                 $response = new RedirectResponse($url);
             }

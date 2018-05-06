@@ -82,9 +82,9 @@ class BrickBuilder
     /**
      * AreaBuilder constructor.
      *
-     * @param TokenStorage              $tokenStorage
-     * @param IncludeRenderer           $includeRenderer
-     * @param UrlGeneratorInterface     $urlGenerator
+     * @param TokenStorage          $tokenStorage
+     * @param IncludeRenderer       $includeRenderer
+     * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(
         TokenStorage $tokenStorage,
@@ -98,7 +98,6 @@ class BrickBuilder
 
     /**
      * @param $sourceType
-     *
      * @return $this
      */
     public function setup($sourceType)
@@ -109,6 +108,10 @@ class BrickBuilder
         return $this;
     }
 
+    /**
+     * @param Request $request
+     * @return $this
+     */
     public function setRequest(Request $request)
     {
         $this->request = $request;
@@ -118,7 +121,6 @@ class BrickBuilder
 
     /**
      * @param bool $isEditMode
-     *
      * @return $this
      */
     public function setEditMode($isEditMode = false)
@@ -128,11 +130,19 @@ class BrickBuilder
         return $this;
     }
 
+    /**
+     * @param        $name
+     * @param string $path
+     */
     public function setTemplate($name, $path = '')
     {
         $this->templates[$name] = $path;
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getTemplate($name)
     {
         return $this->templates[$name];
@@ -141,7 +151,6 @@ class BrickBuilder
     /**
      * @param Document $page
      * Allowed Types: 'page', 'link', 'hardlink'
-     *
      * @return $this
      */
     public function setRedirectAfterSuccess($page)
@@ -155,7 +164,6 @@ class BrickBuilder
 
     /**
      * @param Document\Snippet $snippet
-     *
      * @return $this
      */
     public function setSnippetAfterLogin($snippet)
@@ -169,7 +177,6 @@ class BrickBuilder
 
     /**
      * @param string|bool $hide
-     *
      * @return $this
      */
     public function setHideAfterLogin($hide = false)

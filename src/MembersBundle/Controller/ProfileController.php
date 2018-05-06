@@ -20,12 +20,11 @@ class ProfileController extends AbstractController
 {
     /**
      * @param Request $request
-     *
      * @return Response
      */
     public function showAction(Request $request)
     {
-        if($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
+        if ($this->container->get(RequestHelper::class)->isFrontendRequestByAdmin($request)) {
             return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
         }
 
@@ -39,7 +38,6 @@ class ProfileController extends AbstractController
 
     /**
      * @param Request $request
-     *
      * @return null|RedirectResponse|Response
      */
     public function editAction(Request $request)
@@ -55,7 +53,7 @@ class ProfileController extends AbstractController
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::PROFILE_EDIT_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
@@ -76,7 +74,7 @@ class ProfileController extends AbstractController
 
             $userManager->updateUser($user);
 
-            if (NULL === $response = $event->getResponse()) {
+            if (null === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_profile_show');
                 $response = new RedirectResponse($url);
             }
@@ -91,6 +89,10 @@ class ProfileController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     public function refusedAction(Request $request)
     {
         $user = $this->getUser();

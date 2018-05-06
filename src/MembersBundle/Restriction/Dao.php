@@ -25,7 +25,7 @@ class Dao extends Model\Dao\AbstractDao
     {
         $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE id  = ?', [$id]);
 
-        if ($data === FALSE) {
+        if ($data === false) {
             throw new \Exception('Object with the ID ' . $id . ' doesn\'t exists');
         } else {
             $data = $this->addRelationData($data);
@@ -41,11 +41,14 @@ class Dao extends Model\Dao\AbstractDao
      *
      * @throws \Exception
      */
-    public function getByField($field, $value = NULL, $cType = 'page')
+    public function getByField($field, $value = null, $cType = 'page')
     {
-        $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE ' . $field . ' = ? AND ctype = ?', [$value, $cType]);
+        $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE ' . $field . ' = ? AND ctype = ?', [
+            $value,
+            $cType
+        ]);
 
-        if ($data === FALSE) {
+        if ($data === false) {
             throw new \Exception('Object (Type: ' . $cType . ') with the ' . $field . ' ' . $value . ' doesn\'t exists');
         } else {
             $data = $this->addRelationData($data);
@@ -55,21 +58,21 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
-     * Save object to database
      * @return bool
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function save()
     {
         $saveData = [
 
-            'targetId'    => $this->model->getTargetId(),
-            'ctype'       => $this->model->getCtype(),
+            'targetId' => $this->model->getTargetId(),
+            'ctype' => $this->model->getCtype(),
             'isInherited' => (int)$this->model->isInherited(),
-            'inherit'     => (int)$this->model->getInherit()
+            'inherit' => (int)$this->model->getInherit()
 
         ];
 
-        if ($this->model->getId() !== NULL) {
+        if ($this->model->getId() !== null) {
             $this->db->update($this->tableName, $saveData, ['id' => $this->model->getId()]);
         } else {
             $this->db->insert($this->tableName, $saveData);
@@ -78,19 +81,18 @@ class Dao extends Model\Dao\AbstractDao
 
         $this->saveRelations();
 
-        return TRUE;
+        return true;
     }
 
     /**
      * @param $data
-     *
      * @return mixed
      */
     private function addRelationData($data)
     {
         $relations = $this->db->fetchAll('SELECT * FROM ' . $this->tableRelationName . ' WHERE restrictionId  = ?', [$data['id']]);
 
-        if ($relations !== FALSE) {
+        if ($relations !== false) {
             foreach ($relations as $relation) {
                 $data['relatedGroups'][] = $relation['groupId'];
             }
@@ -101,6 +103,7 @@ class Dao extends Model\Dao\AbstractDao
 
     /**
      * @return bool
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function saveRelations()
     {
@@ -111,7 +114,7 @@ class Dao extends Model\Dao\AbstractDao
 
         //set related Groups
         if (empty($groups)) {
-            return FALSE;
+            return false;
         }
 
         foreach ($groups as $groupId) {
@@ -123,11 +126,11 @@ class Dao extends Model\Dao\AbstractDao
             $this->db->insert($this->tableRelationName, $saveData);
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
-     * Delete Data
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function delete()
     {

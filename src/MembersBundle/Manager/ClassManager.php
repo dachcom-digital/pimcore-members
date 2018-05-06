@@ -28,13 +28,13 @@ class ClassManager implements ClassManagerInterface
     {
         $className = $this->configuration->getConfig('group');
         if (empty($className['adapter']['class_name'])) {
-            return FALSE;
+            return false;
         }
 
         $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
 
         if (!\Pimcore\Tool::classExists($listing)) {
-            return FALSE;
+            return false;
         }
 
         return $listing::getList();
@@ -48,13 +48,13 @@ class ClassManager implements ClassManagerInterface
         $className = $this->configuration->getConfig('user');
 
         if (empty($className['adapter']['class_name'])) {
-            return FALSE;
+            return false;
         }
 
         $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
 
         if (!\Pimcore\Tool::classExists($listing)) {
-            return FALSE;
+            return false;
         }
 
         return $listing::getList();
@@ -68,7 +68,7 @@ class ClassManager implements ClassManagerInterface
         $className = $this->configuration->getConfig('user');
 
         if (empty($className['adapter']['class_name'])) {
-            return FALSE;
+            return false;
         }
 
         $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);

@@ -39,16 +39,16 @@ class LuceneSearchAssetRestriction implements EventSubscriberInterface
     {
         $uri = $event->getResource()->getUri()->toString();
 
-        if (strpos($uri, 'members/request-data') !== FALSE) {
+        if (strpos($uri, 'members/request-data') !== false) {
             try {
                 $key = end(explode('/', $uri));
-                $restrictedAssetInfo =  $this->restrictionUri->getAssetUrlInformation($key);
-                if ($restrictedAssetInfo !== FALSE) {
+                $restrictedAssetInfo = $this->restrictionUri->getAssetUrlInformation($key);
+                if ($restrictedAssetInfo !== false) {
                     $event->setAsset($restrictedAssetInfo['asset']);
                     $event->setRestrictions($restrictedAssetInfo['restrictionGroups']);
                 }
 
-            } catch(\ReflectionException $e) {
+            } catch (\ReflectionException $e) {
                 \Pimcore\Logger::err($e->getMessage());
             }
         }

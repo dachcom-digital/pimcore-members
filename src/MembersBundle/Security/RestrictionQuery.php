@@ -26,14 +26,14 @@ class RestrictionQuery
     }
 
     /**
-     * @param QueryBuilder $query
+     * @param QueryBuilder                           $query
      * @param \Pimcore\Model\Listing\AbstractListing $listing
-     * @param string $queryIdentifier
+     * @param string                                 $queryIdentifier
      */
-    public function addRestrictionInjection( QueryBuilder $query, Listing\AbstractListing $listing, $queryIdentifier = 'o_id')
+    public function addRestrictionInjection(QueryBuilder $query, Listing\AbstractListing $listing, $queryIdentifier = 'o_id')
     {
         //always show data in backend.
-        if($this->restrictionManager->isFrontendRequestByAdmin()) {
+        if ($this->restrictionManager->isFrontendRequestByAdmin()) {
             return;
         }
 
@@ -41,15 +41,15 @@ class RestrictionQuery
         if ($this->restrictionManager->getUser() instanceof UserInterface) {
             $groups = $this->restrictionManager->getUser()->getGroups();
             /** @var GroupInterface $group */
-            foreach($groups as $group) {
+            foreach ($groups as $group) {
                 $allowedGroups[] = $group->getId();
             }
         }
 
         $cType = 'object';
-        if( $listing instanceof \Pimcore\Model\Asset\Listing) {
+        if ($listing instanceof \Pimcore\Model\Asset\Listing) {
             $cType = 'asset';
-        } else if( $listing instanceof \Pimcore\Model\Document\Listing) {
+        } elseif ($listing instanceof \Pimcore\Model\Document\Listing) {
             $cType = 'page';
         }
 
@@ -57,7 +57,7 @@ class RestrictionQuery
         $query->joinLeft(['members_group_relations' => 'members_group_relations'], 'members_group_relations.restrictionId = members_restrictions.id', '');
 
         $orQuery = '';
-        if(count($allowedGroups) > 0) {
+        if (count($allowedGroups) > 0) {
             $orQuery = 'OR (members_restrictions.ctype = "' . $cType . '" AND members_group_relations.groupId IN (' . implode(',', $allowedGroups) . ') )';
         }
 

@@ -40,7 +40,6 @@ class ResettingController extends AbstractController
 
     /**
      * @param Request $request
-     *
      * @return null|RedirectResponse|Response
      */
     public function sendEmailAction(Request $request)
@@ -103,7 +102,6 @@ class ResettingController extends AbstractController
 
     /**
      * @param Request $request
-     *
      * @return RedirectResponse|Response
      */
     public function checkEmailAction(Request $request)
@@ -123,7 +121,6 @@ class ResettingController extends AbstractController
     /**
      * @param Request $request
      * @param         $token
-     *
      * @return null|RedirectResponse|Response
      */
     public function resetAction(Request $request, $token = null)

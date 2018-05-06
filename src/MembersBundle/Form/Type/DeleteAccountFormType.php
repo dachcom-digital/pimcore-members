@@ -34,18 +34,18 @@ class DeleteAccountFormType extends AbstractType
     {
 
         $builder->add('current_password', RepeatedType::class, [
-			'type'		  => PasswordType::class,
+            'type'            => PasswordType::class,
             'first_options'   => ['label' => 'members.form.current_password'],
-			'second_options'  => ['label' => 'members.form.current_password_confirmation'],
-            'label'       => 'members.form.current_password',
-            'mapped'      => false,
+            'second_options'  => ['label' => 'members.form.current_password_confirmation'],
+            'label'           => 'members.form.current_password',
+            'mapped'          => false,
             'invalid_message' => 'members.validation.password.mismatch',
-            'constraints' => [new UserPassword(['message' => 'members.validation.current_password.invalid'])],
+            'constraints'     => [new UserPassword(['message' => 'members.validation.current_password.invalid'])],
         ]);
 
         $builder->add('deleteConfirm', CheckboxType::class, [
-			'label'	=> 'members.form.delete_account.confirm',
-			'mapped' => false,
+            'label'       => 'members.form.delete_account.confirm',
+            'mapped'      => false,
             'constraints' => [new IsTrue(['message' => 'members.validation.delete_account.confirm_not_checked'])],
         ]);
 

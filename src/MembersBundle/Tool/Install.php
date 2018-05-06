@@ -44,7 +44,7 @@ class Install extends AbstractInstaller
      * Install constructor.
      *
      * @param TokenStorageUserResolver $resolver
-     * @param SerializerInterface $serializer
+     * @param SerializerInterface      $serializer
      */
     public function __construct(TokenStorageUserResolver $resolver, SerializerInterface $serializer)
     {
@@ -71,7 +71,7 @@ class Install extends AbstractInstaller
         $this->installTranslations();
         $this->injectDbData();
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -125,7 +125,7 @@ class Install extends AbstractInstaller
      */
     public function needsReloadAfterInstall()
     {
-        return FALSE;
+        return false;
     }
 
     /**
@@ -133,11 +133,11 @@ class Install extends AbstractInstaller
      */
     public function canBeUpdated()
     {
-        $needUpdate = FALSE;
+        $needUpdate = false;
         if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
             $config = Yaml::parse(file_get_contents(Configuration::SYSTEM_CONFIG_FILE_PATH));
-            if($config['version'] !== MembersBundle::BUNDLE_VERSION) {
-                $needUpdate = TRUE;
+            if ($config['version'] !== MembersBundle::BUNDLE_VERSION) {
+                $needUpdate = true;
             }
         }
 
@@ -149,7 +149,7 @@ class Install extends AbstractInstaller
      */
     private function installOrUpdateConfigFile()
     {
-        if(!$this->fileSystem->exists(Configuration::SYSTEM_CONFIG_DIR_PATH)) {
+        if (!$this->fileSystem->exists(Configuration::SYSTEM_CONFIG_DIR_PATH)) {
             $this->fileSystem->mkdir(Configuration::SYSTEM_CONFIG_DIR_PATH);
         }
 
@@ -172,11 +172,11 @@ class Install extends AbstractInstaller
                     'o_userOwner'        => $this->getUserId(),
                     'o_userModification' => $this->getUserId(),
                     'o_key'              => 'members',
-                    'o_published'        => TRUE
+                    'o_published'        => true
                 ]
             );
 
-            $obj->setLocked(TRUE);
+            $obj->setLocked(true);
             $obj->update();
         }
     }
@@ -189,7 +189,7 @@ class Install extends AbstractInstaller
 
         $defaultLanguage = \Pimcore\Config::getSystemConfig()->general->defaultLanguage;
 
-        if(!in_array($defaultLanguage, ['de', 'en'])) {
+        if (!in_array($defaultLanguage, ['de', 'en'])) {
             $defaultLanguage = 'en';
         }
 
@@ -236,7 +236,7 @@ class Install extends AbstractInstaller
                             foreach ($fields as $field) {
                                 $key = $field['key'];
                                 $type = $field['type'];
-                                $content = NULL;
+                                $content = null;
 
                                 if (array_key_exists('value', $field)) {
                                     $content = $field['value'];
@@ -253,7 +253,7 @@ class Install extends AbstractInstaller
                         }
                     }
 
-                    $document->setPublished(TRUE);
+                    $document->setPublished(true);
                     $document->save();
 
                 }
@@ -269,12 +269,12 @@ class Install extends AbstractInstaller
         $folderName = 'restricted-assets';
 
         if (Asset\Folder::getByPath('/' . $folderName) instanceof Asset\Folder) {
-            return FALSE;
+            return false;
         }
 
         $folder = new Asset\Folder();
         $folder->setCreationDate(time());
-        $folder->setLocked(TRUE);
+        $folder->setLocked(true);
         $folder->setUserOwner(1);
         $folder->setUserModification(0);
         $folder->setParentId(1);
@@ -300,8 +300,8 @@ class Install extends AbstractInstaller
     {
         $csv = $this->installSourcesPath . '/translations/data.csv';
         $csvAdmin = $this->installSourcesPath . '/translations/admin/data.csv';
-        Translation\Website::importTranslationsFromFile($csv, TRUE, Tool\Admin::getLanguages());
-        Translation\Admin::importTranslationsFromFile($csvAdmin, TRUE, Tool\Admin::getLanguages());
+        Translation\Website::importTranslationsFromFile($csv, true, Tool\Admin::getLanguages());
+        Translation\Admin::importTranslationsFromFile($csvAdmin, true, Tool\Admin::getLanguages());
     }
 
     /**
@@ -320,7 +320,7 @@ class Install extends AbstractInstaller
     {
         $userId = 0;
         $user = $this->resolver->getUser();
-        if($user instanceof User) {
+        if ($user instanceof User) {
             $userId = $this->resolver->getUser()->getId();
         }
 

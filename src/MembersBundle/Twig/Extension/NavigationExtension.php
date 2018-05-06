@@ -44,6 +44,9 @@ class NavigationExtension extends \Twig_Extension
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions(): array
     {
         return [
@@ -56,20 +59,19 @@ class NavigationExtension extends \Twig_Extension
      * @param Document|null $navigationRootDocument
      * @param string|null   $htmlMenuPrefix
      * @param bool          $cache
-     *
      * @return Container
      */
     public function buildNavigation(
         Document $activeDocument,
-        Document $navigationRootDocument = NULL,
-        string $htmlMenuPrefix = NULL,
-        $cache = TRUE
+        Document $navigationRootDocument = null,
+        string $htmlMenuPrefix = null,
+        $cache = true
     ): Container {
 
         $cacheKey = $cache;
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
-        if (!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== FALSE) {
+        if (!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== false) {
 
             $mergedCacheKey = is_bool($cache) ? '' : $cache;
 
@@ -97,8 +99,8 @@ class NavigationExtension extends \Twig_Extension
             function (\Pimcore\Navigation\Page\Document $document, AbstractModel $page) {
                 $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($page);
                 if ($restrictionElement->getSection() !== RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
-                    $document->setActive(FALSE);
-                    $document->setVisible(FALSE);
+                    $document->setActive(false);
+                    $document->setVisible(false);
                 }
 
                 return $page;

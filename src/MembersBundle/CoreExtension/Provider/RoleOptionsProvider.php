@@ -25,6 +25,9 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
         'ROLE_PIMCORE_ADMIN'
     ];
 
+    /**
+     * RoleOptionsProvider constructor
+     */
     public function __construct()
     {
         $systemRoles = \Pimcore::getKernel()->getContainer()->getParameter('security.role_hierarchy.roles');
@@ -34,7 +37,6 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
     /**
      * @param array $context
      * @param       $fieldDefinition Data
-     *
      * @return array
      */
     public function getOptions($context, $fieldDefinition)
@@ -65,18 +67,16 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
     /**
      * @param $context         array
      * @param $fieldDefinition Data
-     *
      * @return bool
      */
     public function hasStaticOptions($context, $fieldDefinition)
     {
-        return FALSE;
+        return false;
     }
 
     /**
      * @param $context         array
      * @param $fieldDefinition Data
-     *
      * @return mixed
      */
     public function getDefaultValue($context, $fieldDefinition)

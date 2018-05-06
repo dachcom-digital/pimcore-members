@@ -20,6 +20,9 @@ class RestrictionUriExtension extends \Twig_Extension
         $this->restrictionUri = $restrictionUri;
     }
 
+    /**
+     * @return array
+     */
     public function getFunctions(): array
     {
         return [
@@ -28,23 +31,33 @@ class RestrictionUriExtension extends \Twig_Extension
         ];
     }
 
-    public function buildAssetUrl($assetId = NULL, $checkRestriction = FALSE)
+    /**
+     * @param null $assetId
+     * @param bool $checkRestriction
+     * @return string
+     */
+    public function buildAssetUrl($assetId = null, $checkRestriction = false)
     {
         $download = Asset::getById($assetId);
-        if(!$download instanceof Asset) {
+        if (!$download instanceof Asset) {
             return '';
         }
 
-        return $this->restrictionUri->generateAssetUrl($download, FALSE, $checkRestriction);
+        return $this->restrictionUri->generateAssetUrl($download, false, $checkRestriction);
 
     }
 
-    public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = FALSE)
+    /**
+     * @param array $assetIds
+     * @param bool  $checkRestriction
+     * @return string
+     */
+    public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = false)
     {
         $packageData = [];
-        foreach($assetIds as $assetId) {
+        foreach ($assetIds as $assetId) {
             $asset = Asset::getById($assetId);
-            if(!$asset instanceof Asset) {
+            if (!$asset instanceof Asset) {
                 continue;
             }
             $packageData[] = ['asset' => $asset];

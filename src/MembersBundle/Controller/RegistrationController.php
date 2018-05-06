@@ -20,7 +20,6 @@ class RegistrationController extends AbstractController
 {
     /**
      * @param Request $request
-     *
      * @return null|RedirectResponse|Response
      */
     public function registerAction(Request $request)
@@ -40,7 +39,7 @@ class RegistrationController extends AbstractController
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::REGISTRATION_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
@@ -58,7 +57,7 @@ class RegistrationController extends AbstractController
                 $event = new FormEvent($form, $request);
                 $dispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
 
-                if (NULL === $response = $event->getResponse()) {
+                if (null === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
                     $response = new RedirectResponse($url);
                 }
@@ -72,7 +71,7 @@ class RegistrationController extends AbstractController
             $event = new FormEvent($form, $request);
             $dispatcher->dispatch(MembersEvents::REGISTRATION_FAILURE, $event);
 
-            if (NULL !== $response = $event->getResponse()) {
+            if (null !== $response = $event->getResponse()) {
                 return $response;
             }
         }
@@ -97,7 +96,7 @@ class RegistrationController extends AbstractController
         $sessionBag->remove('members_user_send_confirmation_email/email');
         $user = $this->get(UserManager::class)->findUserByEmail($email);
 
-        if (NULL === $user) {
+        if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
         }
 
@@ -119,7 +118,7 @@ class RegistrationController extends AbstractController
         $sessionBag->remove('members_user_send_confirmation_email/email');
         $user = $this->get(UserManager::class)->findUserByEmail($email);
 
-        if (NULL === $user) {
+        if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
         }
 
@@ -130,7 +129,6 @@ class RegistrationController extends AbstractController
     /**
      * @param Request $request
      * @param         $token
-     *
      * @return null|RedirectResponse|Response
      */
     public function confirmAction(Request $request, $token)
@@ -141,22 +139,22 @@ class RegistrationController extends AbstractController
         /** @var UserInterface $user */
         $user = $userManager->findUserByConfirmationToken($token);
 
-        if (NULL === $user) {
+        if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 
         /** @var $dispatcher EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
 
-        $user->setConfirmationToken(NULL);
-        $user->setPublished(TRUE);
+        $user->setConfirmationToken(null);
+        $user->setPublished(true);
 
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRM, $event);
 
         $userManager->updateUser($user);
 
-        if (NULL === $response = $event->getResponse()) {
+        if (null === $response = $event->getResponse()) {
             $url = $this->generateUrl('members_user_registration_confirmed');
             $response = new RedirectResponse($url);
         }
@@ -196,7 +194,6 @@ class RegistrationController extends AbstractController
 
     /**
      * @param Request $request
-     *
      * @return array
      */
     private function getUserProperties($request)
@@ -207,7 +204,7 @@ class RegistrationController extends AbstractController
             '_user_locale' => $request->getLocale()
         ];
 
-        if($siteResolver->isSiteRequest()) {
+        if ($siteResolver->isSiteRequest()) {
             $userProperties['_site_domain'] = $siteResolver->getSite($request)->getMainDomain();
         }
 

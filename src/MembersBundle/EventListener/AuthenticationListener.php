@@ -57,6 +57,7 @@ class AuthenticationListener implements EventSubscriberInterface
         try {
             $this->loginManager->logInUser($this->firewallName, $event->getUser(), $event->getResponse());
             $eventDispatcher->dispatch(MembersEvents::SECURITY_IMPLICIT_LOGIN, new UserEvent($event->getUser(), $event->getRequest()));
-        } catch (AccountStatusException $ex) { }
+        } catch (AccountStatusException $ex) {
+        }
     }
 }

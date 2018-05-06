@@ -21,7 +21,7 @@ class LoginFormType extends AbstractType
         $builder->add('_username', null, [
             'label'       => 'members.auth.login.username',
             'constraints' => [new NotBlank()],
-            'data' => $options['last_username']
+            'data'        => $options['last_username']
         ])->add('_password', PasswordType::class, [
             'label'       => 'members.auth.login.password',
             'constraints' => [new NotBlank()],
@@ -52,7 +52,7 @@ class LoginFormType extends AbstractType
         $resolver->setDefaults([
             'csrf_token_id'   => 'authenticate',
             'csrf_field_name' => '_csrf_token',
-            'last_username' => null,
+            'last_username'   => null,
             '_target_path'    => null,
             '_failure_path'   => null,
         ]);

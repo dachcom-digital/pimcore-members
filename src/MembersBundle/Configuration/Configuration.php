@@ -70,7 +70,7 @@ class Configuration
         return $this->config[$slot];
     }
 
-    public function getLocalizedPath($slot, $locale = NULL)
+    public function getLocalizedPath($slot, $locale = null)
     {
         $data = $this->getConfig($slot);
 
@@ -83,7 +83,7 @@ class Configuration
             $event
         );
 
-        if($event->hasArgument('url')) {
+        if ($event->hasArgument('url')) {
             $url = $event->getArgument('url');
         } else {
             $lang = '';
@@ -110,7 +110,7 @@ class Configuration
      *
      * @return mixed
      */
-    public function getSystemConfig($slot = NULL)
+    public function getSystemConfig($slot = null)
     {
         return $this->systemConfig[$slot];
     }
@@ -125,7 +125,7 @@ class Configuration
         try {
             $hasExtension = $this->bundleManager->isEnabled($bundleName);
         } catch (\Exception $e) {
-            $hasExtension = FALSE;
+            $hasExtension = false;
         }
 
         return $hasExtension;

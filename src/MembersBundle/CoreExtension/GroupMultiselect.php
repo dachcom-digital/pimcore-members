@@ -9,6 +9,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
 {
     /**
      * Static type of this element.
+     *
      * @var string
      */
     public $fieldtype = 'membersGroupMultiselect';
@@ -25,7 +26,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      *
      * @return string
      */
-    public function getDataForEditmode($data, $object = NULL, $params = [])
+    public function getDataForEditmode($data, $object = null, $params = [])
     {
         $returnIds = [];
 
@@ -45,10 +46,9 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
     /**
      * @see DataObject\ClassDefinition\Data::getDataFromEditmode
      *
-     * @param array $data
+     * @param array                          $data
      * @param null|DataObject\AbstractObject $object
-     * @param mixed $params
-     *
+     * @param mixed                          $params
      * @return array
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
@@ -75,10 +75,9 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param       $data
      * @param null  $object
      * @param array $params
-     *
      * @return array|null
      */
-    public function getDataForResource($data, $object = NULL, $params = [])
+    public function getDataForResource($data, $object = null, $params = [])
     {
         $return = [];
 
@@ -102,7 +101,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
             return [];
         } else {
             //return null if data was null  - this indicates data was not loaded
-            return NULL;
+            return null;
         }
     }
 
@@ -110,7 +109,6 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param       $data
      * @param null  $object
      * @param array $params
-     *
      * @return null|string
      * @throws \Exception
      */
@@ -142,7 +140,6 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
     /**
      * @param       $object
      * @param array $params
-     *
      * @return array|mixed|null
      */
     public function preGetData($object, $params = [])
@@ -155,15 +152,14 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param array $data
      * @param null  $object
      * @param array $params
-     *
      * @return array
      */
-    public function getDataFromResource($data = [], $object = NULL, $params = [])
+    public function getDataFromResource($data = [], $object = null, $params = [])
     {
         $elements = [];
         if (is_array($data) && count($data) > 0) {
             foreach ($data as $element) {
-                $e = NULL;
+                $e = null;
                 if ($element['type'] == 'object') {
                     $e = DataObject::getById($element['dest_id']);
                 }

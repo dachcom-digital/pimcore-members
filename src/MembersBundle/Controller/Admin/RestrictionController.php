@@ -32,7 +32,7 @@ class RestrictionController extends AdminController
         /** @var AbstractListing $list */
         $list = $this->container->get(ClassManager::class)->getGroupListing();
 
-        if ($list === FALSE) {
+        if ($list === false) {
             return $this->json([]);
         }
 
@@ -48,9 +48,9 @@ class RestrictionController extends AdminController
                 ]
             ];
 
-            $data['leaf'] = TRUE;
+            $data['leaf'] = true;
             $data['iconCls'] = 'pimcore_icon_roles';
-            $data['allowChildren'] = FALSE;
+            $data['allowChildren'] = false;
 
             $groups[] = $data;
         }
@@ -60,19 +60,18 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function getDocumentRestrictionConfigAction(Request $request)
     {
         $documentId = $request->query->get('docId');
         $cType = $request->query->get('cType');
 
-        $restriction = NULL;
+        $restriction = null;
 
-        $isActive = FALSE;
-        $isInherited = FALSE;
-        $inherit = FALSE;
+        $isActive = false;
+        $isInherited = false;
+        $inherit = false;
         $userGroups = [];
 
         try {
@@ -82,7 +81,7 @@ class RestrictionController extends AdminController
         }
 
         if (!is_null($restriction)) {
-            $isActive = TRUE;
+            $isActive = true;
             $isInherited = $restriction->isInherited();
             $inherit = $restriction->getInherit();
             $userGroups = $restriction->getRelatedGroups();
@@ -90,7 +89,7 @@ class RestrictionController extends AdminController
         }
 
         return $this->json([
-            'success'     => TRUE,
+            'success'     => true,
             'docId'       => (int)$documentId,
             'cType'       => $cType,
             'isActive'    => $isActive,
@@ -102,8 +101,7 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function setDocumentRestrictionConfigAction(Request $request)
     {
@@ -120,43 +118,43 @@ class RestrictionController extends AdminController
         $type = 'document';
         if ($cType == 'object') {
             $type = 'object';
-        } else if ($cType == 'asset') {
+        } elseif ($cType == 'asset') {
             $type = 'asset';
         }
 
         $obj = \Pimcore\Model\Element\Service::getElementById($type, $docId);
 
-        $restriction = NULL;
-        $hasRestriction = TRUE;
-        $active = FALSE;
+        $restriction = null;
+        $hasRestriction = true;
+        $active = false;
 
         try {
             $restriction = Restriction::getByTargetId($docId, $cType);
         } catch (\Exception $e) {
-            $hasRestriction = FALSE;
+            $hasRestriction = false;
         }
 
         //remove restriction since no group is selected any more.
         if (empty($settings->membersDocumentUserGroups)) {
-            if ($hasRestriction === TRUE) {
+            if ($hasRestriction === true) {
                 $restriction->delete();
             }
             //update or set restriction
         } else {
 
-            $active = TRUE;
+            $active = true;
 
             $membersDocumentInheritable = $settings->membersDocumentInheritable;
             $membersDocumentUserGroups = explode(',', $settings->membersDocumentUserGroups);
 
-            if ($hasRestriction === FALSE) {
+            if ($hasRestriction === false) {
                 $restriction = new Restriction();
                 $restriction->setTargetId($docId);
                 $restriction->setCtype($cType);
             }
 
             $restriction->setInherit($membersDocumentInheritable);
-            $restriction->setIsInherited(FALSE);
+            $restriction->setIsInherited(false);
             $restriction->setRelatedGroups($membersDocumentUserGroups);
             $restriction->save();
         }
@@ -167,7 +165,7 @@ class RestrictionController extends AdminController
         \Pimcore\Cache::clearTag('members');
 
         return $this->json([
-            'success'    => TRUE,
+            'success'    => true,
             'isActive'   => $active,
             'docId'      => (int)$settings->docId,
             'userGroups' => $active ? $restriction->getRelatedGroups() : []
@@ -176,8 +174,7 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function deleteDocumentRestrictionConfigAction(Request $request)
     {
@@ -186,7 +183,7 @@ class RestrictionController extends AdminController
         $docId = (int)$data->docId;
         $cType = $data->cType; //object|page
 
-        $restriction = FALSE;
+        $restriction = false;
 
         try {
             $restriction = Restriction::getByTargetId($docId, $cType);
@@ -194,17 +191,16 @@ class RestrictionController extends AdminController
         }
 
         //restriction has been disabled! remove everything!
-        if ($restriction !== FALSE) {
+        if ($restriction !== false) {
             $restriction->delete();
         }
 
-        return $this->json(['success' => TRUE]);
+        return $this->json(['success' => true]);
     }
 
     /**
      * @param Request $request
-     *
-     * @return \Pimcore\Bundle\AdminBundle\HttpFoundation\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function getNextParentRestrictionAction(Request $request)
     {
@@ -216,7 +212,7 @@ class RestrictionController extends AdminController
         $closestInheritanceParent = $restrictionService->findClosestInheritanceParent($elementId, $cType);
 
         return $this->json([
-            'success' => TRUE,
+            'success' => true,
             'key'     => $closestInheritanceParent['key'],
             'path'    => $closestInheritanceParent['path']
         ]);

@@ -52,19 +52,18 @@ class RestrictionManager implements RestrictionManagerInterface
 
     /**
      * @param AbstractModel $element
-     *
      * @return bool|array
      */
     public function getElementRestrictedGroups(AbstractModel $element)
     {
-        $restriction = FALSE;
+        $restriction = false;
         $groups[] = 'default';
 
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } else if ($element instanceof DataObject) {
+        } elseif ($element instanceof DataObject) {
             $restriction = $this->getRestrictionElement($element, 'object');
-        } else if ($element instanceof Asset) {
+        } elseif ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
         }
 
@@ -82,7 +81,6 @@ class RestrictionManager implements RestrictionManagerInterface
 
     /**
      * @param AbstractModel $element
-     *
      * @return ElementRestriction
      */
     public function getElementRestrictionStatus(AbstractModel $element)
@@ -90,12 +88,12 @@ class RestrictionManager implements RestrictionManagerInterface
         $user = $this->getUser();
         $elementRestriction = new ElementRestriction();
 
-        $restriction = FALSE;
+        $restriction = false;
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } else if ($element instanceof DataObject) {
+        } elseif ($element instanceof DataObject) {
             $restriction = $this->getRestrictionElement($element, 'object');
-        } else if ($element instanceof Asset) {
+        } elseif ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
         }
 
@@ -103,10 +101,10 @@ class RestrictionManager implements RestrictionManagerInterface
             $elementRestriction->setState(self::RESTRICTION_STATE_LOGGED_IN);
         }
 
-        if ($restriction === FALSE) {
+        if ($restriction === false) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
-                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || strpos($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER) === FALSE
+                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || strpos($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER) === false
                     ? self::RESTRICTION_SECTION_ALLOWED
                     : self::RESTRICTION_SECTION_NOT_ALLOWED);
             } else {
@@ -132,7 +130,6 @@ class RestrictionManager implements RestrictionManagerInterface
     /**
      * @param $userGroups
      * @param $elementGroups
-     *
      * @return string
      */
     private function filterAllowedSectionToUser($userGroups, $elementGroups)
@@ -159,21 +156,20 @@ class RestrictionManager implements RestrictionManagerInterface
     /**
      * @param        $element (document|object)
      * @param string $cType
-     *
      * @return bool|Restriction
      */
     private function getRestrictionElement($element, $cType = 'page')
     {
-        $restriction = FALSE;
+        $restriction = false;
 
         if ($this->isFrontendRequestByAdmin()) {
-            return FALSE;
+            return false;
         }
 
         try {
             if ($cType === 'page') {
                 $restriction = Restriction::getByTargetId($element->getId(), $cType);
-            } else if ($cType === 'asset') {
+            } elseif ($cType === 'asset') {
                 $restriction = Restriction::getByTargetId($element->getId(), $cType);
             } else {
                 $restrictionConfig = $this->configuration->getConfig('restriction');
@@ -205,11 +201,11 @@ class RestrictionManager implements RestrictionManagerInterface
         $token = $this->tokenStorage->getToken();
 
         if (is_null($token)) {
-            return NULL;
+            return null;
         }
 
         $user = $token->getUser();
 
-        return $user instanceof UserInterface ? $user : NULL;
+        return $user instanceof UserInterface ? $user : null;
     }
 }

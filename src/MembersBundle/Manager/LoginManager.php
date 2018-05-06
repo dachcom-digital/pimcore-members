@@ -19,7 +19,7 @@ class LoginManager implements LoginManagerInterface
     private $tokenStorage;
 
     /**
-     * @var UserCheckerInterface
+     * @var UserChecker
      */
     private $userChecker;
 
@@ -52,7 +52,7 @@ class LoginManager implements LoginManagerInterface
         UserChecker $userChecker,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         RequestStack $requestStack,
-        RememberMeServicesInterface $rememberMeService = NULL
+        RememberMeServicesInterface $rememberMeService = null
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->userChecker = $userChecker;
@@ -64,17 +64,17 @@ class LoginManager implements LoginManagerInterface
     /**
      * {@inheritdoc}
      */
-    final public function logInUser($firewallName, UserInterface $member, Response $response = NULL)
+    final public function logInUser($firewallName, UserInterface $member, Response $response = null)
     {
         $this->userChecker->checkPreAuth($member);
 
         $token = $this->createToken($firewallName, $member);
         $request = $this->requestStack->getCurrentRequest();
 
-        if (NULL !== $request) {
+        if (null !== $request) {
             $this->sessionStrategy->onAuthentication($request, $token);
 
-            if (NULL !== $response && NULL !== $this->rememberMeService) {
+            if (null !== $response && null !== $this->rememberMeService) {
                 $this->rememberMeService->loginSuccess($request, $response, $token);
             }
         }
@@ -90,6 +90,6 @@ class LoginManager implements LoginManagerInterface
      */
     protected function createToken($firewall, UserInterface $user)
     {
-        return new UsernamePasswordToken($user, NULL, $firewall, $user->getRoles());
+        return new UsernamePasswordToken($user, null, $firewall, $user->getRoles());
     }
 }

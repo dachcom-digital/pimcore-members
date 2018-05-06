@@ -9,12 +9,12 @@ class Restriction extends AbstractModel
     /**
      * @var integer
      */
-    public $id = NULL;
+    public $id = null;
 
     /**
      * @var string
      */
-    public $ctype = NULL;
+    public $ctype = null;
 
     /**
      * @var string
@@ -24,12 +24,12 @@ class Restriction extends AbstractModel
     /**
      * @var boolean
      */
-    public $isInherited = FALSE;
+    public $isInherited = false;
 
     /**
      * @var boolean
      */
-    public $inherit = FALSE;
+    public $inherit = false;
 
     /**
      * @var array
@@ -52,7 +52,6 @@ class Restriction extends AbstractModel
     /**
      * @param $id
      * @param $cType
-     *
      * @return Restriction
      */
     public static function getByTargetId($id, $cType = 'page')
@@ -89,7 +88,6 @@ class Restriction extends AbstractModel
 
     /**
      * @param string $cType
-     *
      * @return static
      */
     public function setCtype($cType)
@@ -108,7 +106,6 @@ class Restriction extends AbstractModel
 
     /**
      * @param integer $targetId
-     *
      * @return static
      */
     public function setTargetId($targetId)
@@ -127,7 +124,6 @@ class Restriction extends AbstractModel
 
     /**
      * @param array $relatedGroups
-     *
      * @return static
      */
     public function setRelatedGroups($relatedGroups)
@@ -148,6 +144,7 @@ class Restriction extends AbstractModel
 
     /**
      * Alias for getIsInherited()
+     *
      * @return boolean
      */
     public function isInherited()
@@ -157,7 +154,6 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $isInherited
-     *
      * @return static
      */
     public function setIsInherited($isInherited)
@@ -176,7 +172,6 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $inherit
-     *
      * @return static
      */
     public function setInherit($inherit)

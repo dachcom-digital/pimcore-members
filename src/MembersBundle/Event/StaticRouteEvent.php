@@ -27,9 +27,9 @@ class StaticRouteEvent extends Event
      * FilterUserResponseEvent constructor.
      *
      * @param Request $request
-     * @param string $routeName
+     * @param string  $routeName
      */
-    public function __construct($request, $routeName = NULL)
+    public function __construct($request, $routeName = null)
     {
         $this->request = $request;
         $this->routeName = $routeName;

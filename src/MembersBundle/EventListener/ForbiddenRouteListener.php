@@ -78,10 +78,10 @@ class ForbiddenRouteListener implements EventSubscriberInterface
             return;
         }
 
-        $restriction = FALSE;
+        $restriction = false;
 
-        if (strpos($event->getRequest()->attributes->get('_route'), 'document_') !== FALSE) {
-            $document = $event->getRequest()->get(DynamicRouter::CONTENT_KEY, NULL);
+        if (strpos($event->getRequest()->attributes->get('_route'), 'document_') !== false) {
+            $document = $event->getRequest()->get(DynamicRouter::CONTENT_KEY, null);
             $restriction = $this->restrictionManager->getElementRestrictionStatus($document);
         } elseif ($event->getRequest()->attributes->get('pimcore_request_source') === 'staticroute') {
 
@@ -97,10 +97,10 @@ class ForbiddenRouteListener implements EventSubscriberInterface
             }
         }
 
-        if ($restriction !== FALSE) {
+        if ($restriction !== false) {
             $event->getRequest()->attributes->set(RestrictionManager::REQUEST_RESTRICTION_STORAGE, $restriction);
             $restrictionRoute = $this->getRouteForRestriction($restriction);
-            if ($restrictionRoute !== FALSE) {
+            if ($restrictionRoute !== false) {
                 $response = new RedirectResponse($this->router->generate($restrictionRoute));
                 $event->setResponse($response);
             }
@@ -116,19 +116,19 @@ class ForbiddenRouteListener implements EventSubscriberInterface
     {
         //section allowed
         if ($elementRestriction->getSection() == RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
-            return FALSE;
+            return false;
         } //not allowed
-        else if ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
+        elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
             && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
             return 'members_user_security_login';
         } //logged in but no allowed.
-        else if ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
+        elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
             && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
             return 'members_user_restriction_refused';
         }
 
-        return FALSE;
+        return false;
     }
 }

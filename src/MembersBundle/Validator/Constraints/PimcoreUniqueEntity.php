@@ -6,6 +6,9 @@ use Symfony\Component\Validator\Constraint;
 
 class PimcoreUniqueEntity extends Constraint
 {
+    /**
+     * @var array
+     */
     public $fields = [];
 
     /**
@@ -37,6 +40,9 @@ class PimcoreUniqueEntity extends Constraint
         return 'members.validator.unique';
     }
 
+    /**
+     * @return string
+     */
     public function getDefaultOption()
     {
         return 'fields';

@@ -18,7 +18,6 @@ class DeleteAccountController extends AbstractController
 {
     /**
      * @param Request $request
-     *
      * @return null|RedirectResponse|Response
      */
     public function deleteAccountAction(Request $request)

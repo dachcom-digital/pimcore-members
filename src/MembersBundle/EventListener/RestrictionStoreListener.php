@@ -118,7 +118,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
 
         //only trigger update if object gets moved.
         //default restriction object update gets handled by restrictionController.
-        if ($params === NULL) {
+        if ($params === null) {
             return;
         }
 
@@ -138,7 +138,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
 
         //only trigger update if page gets moved.
         //default restriction page update gets handled by restrictionController.
-        if ($params === NULL) {
+        if ($params === null) {
             return;
         }
 
@@ -158,7 +158,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
 
         //only trigger update if asset gets moved.
         //default restriction asset update gets handled by restrictionController.
-        if ($params === NULL) {
+        if ($params === null) {
             return;
         }
 
