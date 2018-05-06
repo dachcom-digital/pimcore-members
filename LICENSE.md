@@ -1,10 +1,10 @@
 # License
-Copyright (C) 2017 DACHCOM.DIGITAL
+Copyright (C) 2018 DACHCOM.DIGITAL
 
 This software is available under the GNU General Public License version 3 (GPLv3).
 
 ### GNU General Public License version 3 (GPLv3)
-If you decide to choose the GPLv3 license, you must comply with the following terms: 
+If you decide to choose the GPLv3 license, you must comply with the following terms:
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
