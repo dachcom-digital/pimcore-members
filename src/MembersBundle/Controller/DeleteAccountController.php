@@ -4,7 +4,6 @@ namespace MembersBundle\Controller;
 
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FilterUserResponseEvent;
-use MembersBundle\Event\UserEvent;
 use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManager;
@@ -35,7 +34,7 @@ class DeleteAccountController extends AbstractController
         $event = new GetResponseUserEvent($user, $request);
         $dispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_INITIALIZE, $event);
 
-        if (NULL !== $event->getResponse()) {
+        if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
@@ -55,9 +54,9 @@ class DeleteAccountController extends AbstractController
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_SUCCESS, $event);
 
-            //$userManager->deleteUser($user);
+            $userManager->deleteUser($user);
 
-            if (NULL === $response = $event->getResponse()) {
+            if (null === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_security_logout');
                 $response = new RedirectResponse($url);
             }
