@@ -25,7 +25,7 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~2.0.0"
+    "dachcom-digital/members" : "~2.1.0"
 }
 ```
 
