@@ -4,21 +4,30 @@ namespace Members\Auth;
 
 use Members\Auth\Storage;
 
-class Instance {
+class Instance
+{
+    /**
+     * @var \Zend_Auth
+     */
+    protected static $auth;
 
     /**
      * @return \Zend_Auth
      */
     public static function getAuth()
     {
-        $a = \Zend_Auth::getInstance();
-
-        if(defined('MEMBERS_API_MODE') && MEMBERS_API_MODE === TRUE) {
-            $a->setStorage(new Storage\Flow());
-        } else {
-            $a->setStorage(new Storage\Pimcore());
+        if (self::$auth instanceof \Zend_Auth) {
+            return self::$auth;
         }
 
-        return $a;
+        self::$auth = \Zend_Auth::getInstance();
+
+        if (defined('MEMBERS_API_MODE') && MEMBERS_API_MODE === TRUE) {
+            self::$auth->setStorage(new Storage\Flow());
+        } else {
+            self::$auth->setStorage(new Storage\Pimcore());
+        }
+
+        return self::$auth;
     }
 }
