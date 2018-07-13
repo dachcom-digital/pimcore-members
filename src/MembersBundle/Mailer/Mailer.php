@@ -93,7 +93,7 @@ class Mailer implements MailerInterface
         }
 
         $template = $this->getMailTemplatePath('admin_register_notification', $user);
-        $url = $this->generateUrl('pimcore_admin_login_deeplink', $user);
+        $url = $this->generateUrl('pimcore_admin_login_deeplink', $user, [], false);
 
         $mailParams = [
             'user'     => $user,
@@ -174,12 +174,15 @@ class Mailer implements MailerInterface
      * @param string        $route
      * @param UserInterface $user
      * @param array         $options
+     * @param bool          $addLocale
      * @return string
      */
-    private function generateUrl($route = '', UserInterface $user, $options = [])
+    private function generateUrl($route = '', UserInterface $user, $options = [], $addLocale = true)
     {
-        if (!empty($user->getProperty('_user_locale'))) {
-            $options['_locale'] = $user->getProperty('_user_locale');
+        if ($addLocale === true) {
+            if (!empty($user->getProperty('_user_locale'))) {
+                $options['_locale'] = $user->getProperty('_user_locale');
+            }
         }
 
         $context = $this->router->getContext();
