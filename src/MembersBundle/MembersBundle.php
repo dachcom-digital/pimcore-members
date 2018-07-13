@@ -7,7 +7,7 @@ use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 
 class MembersBundle extends AbstractPimcoreBundle
 {
-    const BUNDLE_VERSION = '2.1.0';
+    const BUNDLE_VERSION = '2.1.1';
 
     /**
      * {@inheritdoc}
@@ -33,15 +33,16 @@ class MembersBundle extends AbstractPimcoreBundle
         return [
             '/bundles/members/js/backend/startup.js',
             '/bundles/members/js/backend/document/restriction.js',
-
             '/bundles/members/js/pimcore/js/coreExtension/data/dataMultiselect.js',
             '/bundles/members/js/pimcore/js/coreExtension/data/membersGroupMultiselect.js',
-
             '/bundles/members/js/pimcore/js/coreExtension/tags/multiselect.js',
             '/bundles/members/js/pimcore/js/coreExtension/tags/membersGroupMultiselect.js'
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getCssPaths()
     {
         return [
