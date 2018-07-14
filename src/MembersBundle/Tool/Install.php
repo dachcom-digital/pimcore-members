@@ -2,10 +2,8 @@
 
 namespace MembersBundle\Tool;
 
-use MembersBundle\MembersBundle;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
-
 use Pimcore\Model\Tool\Setup;
 use Pimcore\Model\User;
 use Pimcore\Tool;
@@ -14,9 +12,10 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Translation;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Serializer\SerializerInterface;
-use MembersBundle\Configuration\Configuration;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Yaml\Yaml;
+use MembersBundle\MembersBundle;
+use MembersBundle\Configuration\Configuration;
 
 class Install extends AbstractInstaller
 {
@@ -26,7 +25,7 @@ class Install extends AbstractInstaller
     protected $resolver;
 
     /**
-     * @var SerializerInterface
+     * @var DecoderInterface
      */
     protected $serializer;
 
@@ -44,9 +43,9 @@ class Install extends AbstractInstaller
      * Install constructor.
      *
      * @param TokenStorageUserResolver $resolver
-     * @param SerializerInterface      $serializer
+     * @param DecoderInterface         $serializer
      */
-    public function __construct(TokenStorageUserResolver $resolver, SerializerInterface $serializer)
+    public function __construct(TokenStorageUserResolver $resolver, DecoderInterface $serializer)
     {
         parent::__construct();
 
@@ -133,6 +132,9 @@ class Install extends AbstractInstaller
      */
     public function canBeUpdated()
     {
+        $this->installEmails();
+
+
         $needUpdate = false;
         if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
             $config = Yaml::parse(file_get_contents(Configuration::SYSTEM_CONFIG_FILE_PATH));
@@ -159,6 +161,9 @@ class Install extends AbstractInstaller
 
     }
 
+    /**
+     * Create locked members object folder
+     */
     private function installObjectFolder()
     {
         //install object folder "members" and lock it!
@@ -181,11 +186,18 @@ class Install extends AbstractInstaller
         }
     }
 
+    /**
+     * Install preconfigured Emails
+     */
     private function installEmails()
     {
         $file = $this->installSourcesPath . '/emails-Members.json';
         $contents = file_get_contents($file);
         $docs = $this->serializer->decode($contents, 'json');
+
+        print_r($docs);
+
+        exit;
 
         $defaultLanguage = \Pimcore\Config::getSystemConfig()->general->defaultLanguage;
 
@@ -294,7 +306,7 @@ class Install extends AbstractInstaller
     }
 
     /**
-     *
+     * Install Translations for Website and Admin
      */
     public function installTranslations()
     {
@@ -304,9 +316,6 @@ class Install extends AbstractInstaller
         Translation\Admin::importTranslationsFromFile($csvAdmin, true, Tool\Admin::getLanguages());
     }
 
-    /**
-     *
-     */
     public function injectDbData()
     {
         $setup = new Setup();
