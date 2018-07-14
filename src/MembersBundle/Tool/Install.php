@@ -132,9 +132,6 @@ class Install extends AbstractInstaller
      */
     public function canBeUpdated()
     {
-        $this->installEmails();
-
-
         $needUpdate = false;
         if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
             $config = Yaml::parse(file_get_contents(Configuration::SYSTEM_CONFIG_FILE_PATH));
@@ -194,10 +191,6 @@ class Install extends AbstractInstaller
         $file = $this->installSourcesPath . '/emails-Members.json';
         $contents = file_get_contents($file);
         $docs = $this->serializer->decode($contents, 'json');
-
-        print_r($docs);
-
-        exit;
 
         $defaultLanguage = \Pimcore\Config::getSystemConfig()->general->defaultLanguage;
 
