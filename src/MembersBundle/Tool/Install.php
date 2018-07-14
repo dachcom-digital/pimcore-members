@@ -258,7 +258,7 @@ class Install extends AbstractInstaller
                         }
                     }
 
-                    $document->setPublished(true);
+                    $document->setPublished(1);
                     $document->save();
 
                 }
