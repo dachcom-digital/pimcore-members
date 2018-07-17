@@ -5,15 +5,15 @@ Add those lines to your `AppBundle/Resources/config/pimcore/config.yml`:
     
 ```yaml
 members:
-	# for the user class
-	user:
+    # for the user class
+    user:
     	adapter:
-        	class_name: 'customer' # default was 'MembersUser'
+            class_name: 'customer' # default was 'MembersUser'
         	
 	# for the group class
-	group:
-		adapter:
-			class_name: 'group' # default was 'MembersGroup'
+    group:
+        adapter:
+            class_name: 'group' # default was 'MembersGroup'
 ```
 
 > **Tip:** Add this to a separate config file.
