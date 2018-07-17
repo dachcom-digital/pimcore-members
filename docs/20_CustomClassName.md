@@ -9,8 +9,8 @@ members:
     user:
     	adapter:
             class_name: 'customer' # default was 'MembersUser'
-        	
-	# for the group class
+    
+    # for the group class
     group:
         adapter:
             class_name: 'group' # default was 'MembersGroup'
