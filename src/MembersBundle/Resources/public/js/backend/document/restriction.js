@@ -1,11 +1,5 @@
 pimcore.registerNS('pimcore.plugin.members.document.restriction');
 pimcore.plugin.members.document.restriction = Class.create({
-
-    /**
-     * @var string
-     */
-    layoutId: 'members_document_restriction_panel',
-
     /**
      *
      */
@@ -35,10 +29,7 @@ pimcore.plugin.members.document.restriction = Class.create({
      * constructor
      */
     initialize: function(doc) {
-
-        this.layoutId = this.layoutId + '_' + doc.id;
         this.element = doc;
-
     },
 
     setup: function ( cType )
@@ -146,15 +137,14 @@ pimcore.plugin.members.document.restriction = Class.create({
                         },
                         {
                             xtype: 'button',
-                            id: '',
                             name: 'membersDocumentInheritWarning',
                             text: t('members_unlock_inherit'),
                             style: 'margin:10px 0 10px 10px;',
                             handler: function (btn) {
 
-                                var $a = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentRestrict'),
-                                    $b = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentInheritable'),
-                                    $c = Ext.getCmp(this.layoutId).getForm().findField('membersDocumentUserGroups');
+                                var $a = this.layout.getForm().findField('membersDocumentRestrict'),
+                                    $b = this.layout.getForm().findField('membersDocumentInheritable'),
+                                    $c = this.layout.getForm().findField('membersDocumentUserGroups');
 
                                 if($a) { $a.enable(); }
                                 if($b) { $b.enable(); }
@@ -236,8 +226,6 @@ pimcore.plugin.members.document.restriction = Class.create({
         }
 
         this.layout = new Ext.FormPanel({
-
-            id: this.layoutId,
             title: t('members_restriction'),
             iconCls: 'members_icon_document_restriction',
             border: false,
