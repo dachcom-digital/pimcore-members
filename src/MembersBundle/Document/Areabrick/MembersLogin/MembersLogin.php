@@ -54,8 +54,8 @@ class MembersLogin extends AbstractTemplateAreabrick
         $formParams = [];
         $params = $this->brickBuilder->getViewParams();
 
-        if (isset($params['failure_path'])) {
-            $formParams['_target_path'] = $params['failure_path'];
+        if (isset($params['target_path'])) {
+            $formParams['_target_path'] = $params['target_path'];
         }
 
         if (isset($params['last_username'])) {
