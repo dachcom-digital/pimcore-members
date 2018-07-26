@@ -242,6 +242,8 @@ class Adapter implements \Zend_Auth_Adapter_Interface
             $list->addConditionParam('o_path LIKE ?', $this->objectPath . '%');
         }
 
+        $list->addConditionParam('o_published = ?', 1);
+
         return $list;
     }
 
