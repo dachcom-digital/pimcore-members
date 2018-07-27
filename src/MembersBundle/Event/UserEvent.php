@@ -11,12 +11,12 @@ class UserEvent extends Event
     /**
      * @var null|Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var UserInterface
      */
-    private $user;
+    protected $user;
 
     /**
      * UserEvent constructor.
