@@ -8,16 +8,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class GetResponseNullableUserEvent extends GetResponseUserEvent
 {
     /**
-     * @var null|UserInterface
-     */
-    protected $user;
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * GetResponseNullableUserEvent constructor.
      *
      * @param UserInterface|null $user
