@@ -5,13 +5,18 @@ namespace MembersBundle\EventListener;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Mailer\Mailer;
+use MembersBundle\Manager\UserManagerInterface;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
-use Pimcore\Model\Version;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserChangeListener implements EventSubscriberInterface
 {
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
     /**
      * @var Mailer
      */
@@ -23,13 +28,15 @@ class UserChangeListener implements EventSubscriberInterface
     protected $configuration;
 
     /**
-     * RestrictionServiceListener constructor.
+     * UserChangeListener constructor.
      *
-     * @param Mailer        $pimcoreMailer
-     * @param Configuration $configuration
+     * @param UserManagerInterface $userManager
+     * @param Mailer               $pimcoreMailer
+     * @param Configuration        $configuration
      */
-    public function __construct(Mailer $pimcoreMailer, Configuration $configuration)
+    public function __construct(UserManagerInterface $userManager, Mailer $pimcoreMailer, Configuration $configuration)
     {
+        $this->userManager = $userManager;
         $this->mailer = $pimcoreMailer;
         $this->configuration = $configuration;
     }
@@ -56,20 +63,16 @@ class UserChangeListener implements EventSubscriberInterface
             return;
         }
 
-        $couldSendMail = false;
-        $versionIsPublished = false;
-        $userLastVersion = $user->getLatestVersion(true);
-
-        if ($userLastVersion instanceof Version) {
-            $versionIsPublished = $userLastVersion->getData()->getPublished();
+        if ($user->getPublished() === false) {
+            return;
         }
 
-        if ($versionIsPublished === false && $user->getPublished() === true) {
-            $couldSendMail = true;
+        if ($user->getConfirmationToken() === null) {
+            return;
         }
 
-        if ($couldSendMail) {
-            $this->mailer->sendConfirmedEmailMessage($user);
-        }
+        $user->setConfirmationToken(null);
+        $this->userManager->updateUser($user);
+        $this->mailer->sendConfirmedEmailMessage($user);
     }
 }

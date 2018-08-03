@@ -85,6 +85,7 @@ class PostConfirmationListener implements EventSubscriberInterface
      * @see confirmByMail
      * @see confirmByAdmin
      * @see confirmInstant
+     *
      * @param FormEvent $event
      */
     public function onRegistrationSuccess(FormEvent $event)
@@ -126,8 +127,11 @@ class PostConfirmationListener implements EventSubscriberInterface
         $user = $event->getForm()->getData();
 
         $user->setPublished(false);
-        $this->userManager->updateUser($user);
+        if (null === $user->getConfirmationToken()) {
+            $user->setConfirmationToken($this->tokenGenerator->generateToken());
+        }
 
+        $this->userManager->updateUser($user);
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
