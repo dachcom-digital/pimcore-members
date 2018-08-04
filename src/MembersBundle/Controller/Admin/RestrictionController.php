@@ -139,7 +139,14 @@ class RestrictionController extends AdminController
         //remove restriction since no group is selected any more.
         if (empty($settings->membersDocumentUserGroups)) {
             if ($hasRestriction === true) {
-                $restriction->delete();
+                if (!$restriction->getIsInherited()) {
+                    $restriction->delete();
+                } else {
+                    $restriction->setInherit($membersDocumentInheritable);
+                    $restriction->setIsInherited(false);
+                    $restriction->setRelatedGroups($membersDocumentUserGroups);
+                    $restriction->save();
+                }
             }
             //update or set restriction
         } else {

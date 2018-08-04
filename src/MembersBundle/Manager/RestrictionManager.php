@@ -116,6 +116,10 @@ class RestrictionManager implements RestrictionManagerInterface
 
         if (is_array($restriction->getRelatedGroups())) {
             $elementRestriction->setRestrictionGroups($restriction->getRelatedGroups());
+
+            if (count($restriction->getRelatedGroups()) === 0) {
+                $elementRestriction->setSection(self::RESTRICTION_SECTION_ALLOWED);
+            }
         }
 
         //check if user is not logged in.
