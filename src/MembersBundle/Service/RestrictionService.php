@@ -62,7 +62,6 @@ class RestrictionService
         }
 
         if ($hasParentRestriction && !$hasRestriction) {
-
             $restriction = new Restriction();
             $restriction->setTargetId($obj->getId());
             $restriction->setCtype($cType);
@@ -111,7 +110,8 @@ class RestrictionService
             $list->setOrderKey('LENGTH(o_path) ASC', false);
         } elseif ($obj instanceof Model\Document) {
             $list = new Model\Document\Listing();
-            $list->setCondition("type = ? AND path LIKE ?", ['page', $obj->getFullPath() . '/%']);
+            $pathType = $obj instanceof Model\Document\Link ? 'link' : 'page';
+            $list->setCondition("type = ? AND path LIKE ?", [$pathType, $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', false);
         } elseif ($obj->getType() === 'folder' && $obj instanceof Model\Asset) {
             $list = new Model\Asset\Listing();
