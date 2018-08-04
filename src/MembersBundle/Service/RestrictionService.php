@@ -11,6 +11,7 @@ class RestrictionService
      *
      * @param $obj
      * @param $cType
+     *
      * @return bool
      */
     public function deleteRestriction($obj, $cType)
@@ -36,6 +37,7 @@ class RestrictionService
      *
      * @param \Pimcore\Model\AbstractModel $obj
      * @param string                       $cType
+     *
      * @return bool
      */
     public function checkRestrictionContext($obj, $cType)
@@ -85,6 +87,7 @@ class RestrictionService
     /**
      * @param $obj
      * @param $cType
+     *
      * @return bool
      */
     private function updateChildren($obj, $cType)
@@ -106,16 +109,16 @@ class RestrictionService
 
         if ($obj instanceof Model\DataObject\AbstractObject) {
             $list = new Model\DataObject\Listing();
-            $list->setCondition("o_type = ? AND o_path LIKE ?", ['object', $obj->getFullPath() . '/%']);
+            $list->setCondition('o_type = ? AND o_path LIKE ?', ['object', $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(o_path) ASC', false);
         } elseif ($obj instanceof Model\Document) {
             $list = new Model\Document\Listing();
             $pathType = $obj instanceof Model\Document\Link ? 'link' : 'page';
-            $list->setCondition("type = ? AND path LIKE ?", [$pathType, $obj->getFullPath() . '/%']);
+            $list->setCondition('type = ? AND path LIKE ?', [$pathType, $obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', false);
         } elseif ($obj->getType() === 'folder' && $obj instanceof Model\Asset) {
             $list = new Model\Asset\Listing();
-            $list->setCondition("path LIKE ?", [$obj->getFullPath() . '/%']);
+            $list->setCondition('path LIKE ?', [$obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', false);
         }
 
@@ -186,6 +189,7 @@ class RestrictionService
      * @param      $elementId
      * @param      $cType
      * @param bool $forcePathDetection
+     *
      * @return array
      */
     public function findClosestInheritanceParent($elementId, $cType, $forcePathDetection = false)
@@ -228,7 +232,6 @@ class RestrictionService
                 }
 
                 $paths = array_reverse($paths);
-                $currentPath = array_shift($paths);
 
                 if ($obj instanceof Model\DataObject\AbstractObject) {
                     $class = '\Pimcore\Model\DataObject\AbstractObject';
@@ -239,10 +242,8 @@ class RestrictionService
                 }
 
                 foreach ($paths as $p) {
-
                     /** @var \Pimcore\Model\AbstractModel $el */
                     if ($el = $class::getByPath($p)) {
-
                         $restriction = false;
                         try {
                             $restriction = Restriction::getByTargetId($el->getId(), $cType);
