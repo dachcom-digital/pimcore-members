@@ -77,7 +77,7 @@ class RequestController extends AbstractController
         $response->headers->set('Content-Length', $asset->getFileSize('noformatting'));
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
             $forceDownload ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE,
-            basename($asset->getFileName())
+            \Pimcore\File::getValidFilename(basename($asset->getFileName()))
         ));
 
         if ($forceDownload === false) {
