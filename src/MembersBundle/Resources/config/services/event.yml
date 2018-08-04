@@ -68,3 +68,7 @@ services:
     MembersBundle\EventListener\Connector\LuceneSearchRestrictionContext:
         tags:
             - { name: kernel.event_subscriber }
+
+    MembersBundle\EventListener\TreeListener:
+        tags:
+            - { name: kernel.event_subscriber }
