@@ -78,7 +78,7 @@ class RestrictionService
             $list = new Model\Document\Listing();
             $list->setCondition('type IN ("page", "link") AND path LIKE ?', [$obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', false);
-        } elseif ($obj->getType() === 'folder' && $obj instanceof Model\Asset) {
+        } elseif ($obj instanceof Model\Asset && $obj->getType() === 'folder') {
             $list = new Model\Asset\Listing();
             $list->setCondition('path LIKE ?', [$obj->getFullPath() . '/%']);
             $list->setOrderKey('LENGTH(path) ASC', false);
