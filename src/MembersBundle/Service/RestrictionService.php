@@ -57,7 +57,7 @@ class RestrictionService
         }
 
         //get closest inherit object with restriction
-        $closestInheritanceParent = self::findClosestInheritanceParent($obj->getId(), $cType, true);
+        $closestInheritanceParent = $this->findClosestInheritanceParent($obj->getId(), $cType, true);
         if (!is_null($closestInheritanceParent['id'])) {
             $parentRestriction = $closestInheritanceParent['restriction'];
             $hasParentRestriction = true;
@@ -74,12 +74,15 @@ class RestrictionService
             $restriction->setIsInherited(false);
             $restriction->save();
         } elseif ($hasParentRestriction && $hasRestriction) {
-            //nothing to do so far.
+            if ($restriction->isInherited()) {
+                $restriction->setRelatedGroups($parentRestriction->getRelatedGroups());
+                $restriction->save();
+            }
         } elseif (!$hasParentRestriction && !$hasRestriction) {
             //nothing to do so far.
         }
 
-        self::updateChildren($obj, $cType);
+        $this->updateChildren($obj, $cType);
 
         return true;
     }
@@ -98,7 +101,7 @@ class RestrictionService
         try {
             $mainNodeRestriction = Restriction::getByTargetId($obj->getId(), $cType);
         } catch (\Exception $e) {
-            $closestParent = self::findClosestInheritanceParent($obj->getId(), $cType);
+            $closestParent = $this->findClosestInheritanceParent($obj->getId(), $cType);
 
             if (!is_null($closestParent['id'])) {
                 $mainNodeRestriction = $closestParent['restriction'];
@@ -218,7 +221,7 @@ class RestrictionService
 
             if ($forcePathDetection === true || ($currentRestriction instanceof Restriction && $currentRestriction->getIsInherited() === true)) {
 
-                $path = urldecode($obj->getRealFullPath());
+                $path = urldecode($obj->getRealPath());
 
                 $paths = ['/'];
                 $tmpPaths = [];
