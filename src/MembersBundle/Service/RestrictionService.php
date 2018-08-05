@@ -50,7 +50,7 @@ class RestrictionService
         }
 
         //get closest inherit object with restriction
-        $closestInheritanceParent = $this->findClosestInheritanceParent($obj->getId(), $cType, true);
+        $closestInheritanceParent = $this->findClosestInheritanceParent($obj->getId(), $cType);
         if (!is_null($closestInheritanceParent['id'])) {
             $parentRestriction = $closestInheritanceParent['restriction'];
         }
@@ -105,7 +105,7 @@ class RestrictionService
             } catch (\Exception $e) {
             }
 
-            $closestInheritanceParent = $this->findClosestInheritanceParent($child->getId(), $cType, true);
+            $closestInheritanceParent = $this->findClosestInheritanceParent($child->getId(), $cType);
             if (!is_null($closestInheritanceParent['id'])) {
                 $parentRestriction = $closestInheritanceParent['restriction'];
             }
@@ -118,11 +118,10 @@ class RestrictionService
     /**
      * @param      $elementId
      * @param      $cType
-     * @param bool $forcePathDetection
      *
      * @return array
      */
-    public function findClosestInheritanceParent($elementId, $cType, $forcePathDetection = false)
+    public function findClosestInheritanceParent($elementId, $cType)
     {
         $type = 'document';
         if ($cType === 'object') {
@@ -131,61 +130,73 @@ class RestrictionService
             $type = 'asset';
         }
 
+        $data = [
+            'path'        => null,
+            'key'         => null,
+            'id'          => null,
+            'restriction' => null
+        ];
+
         $parentPath = null;
         $parentKey = null;
         $parentId = null;
         $restriction = null;
+        $currentRestriction = false;
 
         $obj = Model\Element\Service::getElementById($type, $elementId);
 
-        if ($obj instanceof Model\AbstractModel) {
-            $currentRestriction = false;
-            try {
-                $currentRestriction = Restriction::getByTargetId($obj->getId(), $cType);
-            } catch (\Exception $e) {
+        if (!$obj instanceof Model\AbstractModel) {
+            return $data;
+        }
+
+        try {
+            $currentRestriction = Restriction::getByTargetId($obj->getId(), $cType);
+        } catch (\Exception $e) {
+        }
+
+        if ($currentRestriction instanceof Restriction && $currentRestriction->getIsInherited() === false) {
+            return $data;
+        }
+
+        $path = urldecode($obj->getRealPath());
+
+        $paths = ['/'];
+        $tmpPaths = [];
+        $pathParts = array_filter(explode('/', $path));
+        foreach ($pathParts as $pathPart) {
+            $tmpPaths[] = $pathPart;
+            $t = '/' . implode('/', $tmpPaths);
+            if (!empty($t)) {
+                $paths[] = $t;
             }
+        }
 
-            if ($forcePathDetection === true || ($currentRestriction instanceof Restriction && $currentRestriction->getIsInherited() === true)) {
+        $paths = array_reverse($paths);
 
-                $path = urldecode($obj->getRealPath());
+        if ($obj instanceof Model\DataObject\AbstractObject) {
+            $class = '\Pimcore\Model\DataObject\AbstractObject';
+        } elseif ($obj instanceof Model\Document) {
+            $class = '\Pimcore\Model\Document';
+        } elseif ($obj instanceof Model\Asset) {
+            $class = '\Pimcore\Model\Asset';
+        }
 
-                $paths = ['/'];
-                $tmpPaths = [];
-                $pathParts = array_filter(explode('/', $path));
-                foreach ($pathParts as $pathPart) {
-                    $tmpPaths[] = $pathPart;
-                    $t = '/' . implode('/', $tmpPaths);
-                    if (!empty($t)) {
-                        $paths[] = $t;
-                    }
+        foreach ($paths as $p) {
+            /** @var \Pimcore\Model\AbstractModel $el */
+            if ($el = $class::getByPath($p)) {
+                $restriction = false;
+                try {
+                    $restriction = Restriction::getByTargetId($el->getId(), $cType);
+                } catch (\Exception $e) {
                 }
 
-                $paths = array_reverse($paths);
-
-                if ($obj instanceof Model\DataObject\AbstractObject) {
-                    $class = '\Pimcore\Model\DataObject\AbstractObject';
-                } elseif ($obj instanceof Model\Document) {
-                    $class = '\Pimcore\Model\Document';
-                } elseif ($obj instanceof Model\Asset) {
-                    $class = '\Pimcore\Model\Asset';
-                }
-
-                foreach ($paths as $p) {
-                    /** @var \Pimcore\Model\AbstractModel $el */
-                    if ($el = $class::getByPath($p)) {
-                        $restriction = false;
-                        try {
-                            $restriction = Restriction::getByTargetId($el->getId(), $cType);
-                        } catch (\Exception $e) {
-                        }
-
-                        if ($restriction instanceof Restriction && ($restriction->getInherit() === true || $restriction->getIsInherited() === true)) {
-                            $parentPath = $el->getFullPath();
-                            $parentKey = $el->getKey();
-                            $parentId = $el->getId();
-                            break;
-                        }
+                if ($restriction instanceof Restriction) {
+                    if ($restriction->getInherit() === true || $restriction->getIsInherited() === true) {
+                        $parentPath = $el->getFullPath();
+                        $parentKey = $el->getKey();
+                        $parentId = $el->getId();
                     }
+                    break;
                 }
             }
         }
@@ -199,10 +210,10 @@ class RestrictionService
     }
 
     /**
-     * @param $obj
-     * @param $cType
-     * @param $objectRestriction
-     * @param $parentRestriction
+     * @param                  $obj
+     * @param                  $cType
+     * @param Restriction|null $objectRestriction
+     * @param Restriction|null $parentRestriction
      */
     private function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
     {
@@ -232,8 +243,12 @@ class RestrictionService
 
         if ($hasParentRestriction && $hasRestriction) {
             if ($objectRestriction->isInherited()) {
-                $objectRestriction->setRelatedGroups($parentRestriction->getRelatedGroups());
-                $objectRestriction->save();
+                if ($parentRestriction->getInherit() === false && $parentRestriction->isInherited() === false) {
+                    $objectRestriction->delete();
+                } else {
+                    $objectRestriction->setRelatedGroups($parentRestriction->getRelatedGroups());
+                    $objectRestriction->save();
+                }
                 return;
             }
         }
