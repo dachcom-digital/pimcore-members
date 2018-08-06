@@ -1,5 +1,9 @@
 # Upgrade Notes
 
+#### Update from Version 2.1.x to Version 2.2.0
+- **[NEW FEATURE]**: Restriction Icons in Tree View. See [#63](https://github.com/dachcom-digital/pimcore-members/issues/63)
+- Some Bugfixes
+
 #### Update from Version 2.0.x to Version 2.1.0
 - **[BC BREAK]**: Members does not include any routes automatically anymore! Please include the [routes manually](https://github.com/dachcom-digital/pimcore-members#route-installation) if needed.
 - **[BC BREAK]**: Validation messages removed from `messages` domain. Read more about it [here](https://github.com/dachcom-digital/pimcore-members/issues/45).
