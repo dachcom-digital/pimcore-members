@@ -29,11 +29,19 @@ class TreeListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return [
-            AdminEvents::OBJECT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA   => ['handleObjectTree', 0],
-            AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA    => ['handleAssetTree', 0],
-            AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA => ['handleDocumentTree', 0],
+        $defaultEvents = [
+            AdminEvents::OBJECT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA => ['handleObjectTree', 0]
         ];
+
+        if (defined('\Pimcore\Event\AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA')) {
+            $defaultEvents[AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA] = ['handleAssetTree', 0];
+        }
+
+        if (defined('\Pimcore\Event\AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA')) {
+            $defaultEvents[AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA] = ['handleDocumentTree', 0];
+        }
+
+        return $defaultEvents;
     }
 
     /**
