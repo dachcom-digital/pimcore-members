@@ -59,7 +59,7 @@ class Plugin extends PluginLib\AbstractPlugin implements PluginLib\PluginInterfa
         \Pimcore::getEventManager()->attach('members.password.reset', ['Members\Events\Password', 'reset']);
         \Pimcore::getEventManager()->attach('members.password.change', ['Members\Events\Password', 'change']);
 
-        if (Configuration::get('actions.postRegister') !== FALSE) {
+        if (Configuration::get('actions.postRegister') !== FALSE && in_array(Configuration::get('actions.postRegister'), ['activate', 'confirm'])) {
             \Pimcore::getEventManager()->attach('members.register.post', ['Members\Events\Register', Configuration::get('actions.postRegister')]);
         }
     }
