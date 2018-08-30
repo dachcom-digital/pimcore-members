@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+#### Update from Version 2.2.0 to Version 2.2.1
+- implemented [PackageVersionTrait](https://github.com/pimcore/pimcore/blob/master/lib/Extension/Bundle/Traits/PackageVersionTrait.php)
+
 #### Update from Version 2.1.x to Version 2.2.0
 - **[NEW FEATURE]**: Restriction Icons in Tree View. See [#63](https://github.com/dachcom-digital/pimcore-members/issues/63)
 - Some Bugfixes
