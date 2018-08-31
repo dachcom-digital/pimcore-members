@@ -14,6 +14,7 @@ use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 class MembersBundle extends AbstractPimcoreBundle
 {
     use PackageVersionTrait;
+    const PACKAGE_NAME = 'dachcom-digital/members';
 
     /**
      * {@inheritdoc}
@@ -53,6 +54,7 @@ class MembersBundle extends AbstractPimcoreBundle
      */
     protected function getComposerPackageName(): string
     {
-        return 'dachcom-digital/members';
+        return self::PACKAGE_NAME;
     }
+
 }

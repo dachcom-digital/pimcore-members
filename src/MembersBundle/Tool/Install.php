@@ -2,20 +2,21 @@
 
 namespace MembersBundle\Tool;
 
+use MembersBundle\Configuration\Configuration;
+use MembersBundle\MembersBundle;
+use PackageVersions\Versions;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
 use Pimcore\Model\Tool\Setup;
+use Pimcore\Model\Translation;
 use Pimcore\Model\User;
 use Pimcore\Tool;
-use Pimcore\Model\Document;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\Asset;
-use Pimcore\Model\Translation;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Yaml\Yaml;
-use MembersBundle\MembersBundle;
-use MembersBundle\Configuration\Configuration;
 
 class Install extends AbstractInstaller
 {
@@ -40,6 +41,11 @@ class Install extends AbstractInstaller
     private $fileSystem;
 
     /**
+     * @var string
+     */
+    private $currentVersion;
+
+    /**
      * Install constructor.
      *
      * @param TokenStorageUserResolver $resolver
@@ -53,6 +59,8 @@ class Install extends AbstractInstaller
         $this->serializer = $serializer;
         $this->installSourcesPath = __DIR__ . '/../Resources/install';
         $this->fileSystem = new Filesystem();
+        $this->currentVersion = Versions::getVersion(MembersBundle::PACKAGE_NAME);
+
     }
 
     /**
@@ -135,7 +143,7 @@ class Install extends AbstractInstaller
         $needUpdate = false;
         if ($this->fileSystem->exists(Configuration::SYSTEM_CONFIG_FILE_PATH)) {
             $config = Yaml::parse(file_get_contents(Configuration::SYSTEM_CONFIG_FILE_PATH));
-            if ($config['version'] !== MembersBundle::BUNDLE_VERSION) {
+            if ($config['version'] !== $this->currentVersion) {
                 $needUpdate = true;
             }
         }
@@ -152,10 +160,9 @@ class Install extends AbstractInstaller
             $this->fileSystem->mkdir(Configuration::SYSTEM_CONFIG_DIR_PATH);
         }
 
-        $config = ['version' => MembersBundle::BUNDLE_VERSION];
+        $config = ['version' => $this->currentVersion];
         $yml = Yaml::dump($config);
         file_put_contents(Configuration::SYSTEM_CONFIG_FILE_PATH, $yml);
-
     }
 
     /**
@@ -199,7 +206,6 @@ class Install extends AbstractInstaller
         }
 
         foreach ($docs as $def) {
-
             $path = '/' . $def['path'] . '/' . $def['key'];
 
             if (!Document\Service::pathExists($path)) {
