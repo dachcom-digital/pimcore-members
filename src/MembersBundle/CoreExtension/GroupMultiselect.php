@@ -144,7 +144,13 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      */
     public function preGetData($object, $params = [])
     {
-        $data = $object->{$this->getName()};
+        // Pimcore 5.5: Properties are protected now.
+        if (method_exists($object, 'getObjectVar')) {
+            $data = $object->getObjectVar($this->getName());
+        } else {
+            $data = $object->{$this->getName()};
+        }
+
         return is_array($data) ? $data : [];
     }
 
