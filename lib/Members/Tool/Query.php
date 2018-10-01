@@ -44,6 +44,9 @@ class Query
 
             $query->where('members_restrictions.targetId IS NULL ' . $orQuery);
 
+            if ($cType === 'asset') {
+                $query->group('id');
+            }
         }
     }
 }
