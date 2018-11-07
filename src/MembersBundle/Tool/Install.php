@@ -10,7 +10,6 @@ use Pimcore\Extension\Bundle\Installer\AbstractInstaller;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
-use Pimcore\Model\Tool\Setup;
 use Pimcore\Model\Translation;
 use Pimcore\Model\User;
 use Pimcore\Tool;
@@ -317,8 +316,10 @@ class Install extends AbstractInstaller
 
     public function injectDbData()
     {
-        $setup = new Setup();
-        $setup->insertDump($this->installSourcesPath . '/sql/install.sql');
+        $sql = file_get_contents($this->installSourcesPath . '/sql/install.sql');
+        $db = \Pimcore\Db::get();
+        $db->query($sql);
+        return true;
     }
 
     /**
