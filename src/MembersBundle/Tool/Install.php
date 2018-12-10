@@ -21,6 +21,11 @@ use Symfony\Component\Yaml\Yaml;
 class Install extends AbstractInstaller
 {
     /**
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
      * @var TokenStorageUserResolver
      */
     protected $resolver;
@@ -48,19 +53,20 @@ class Install extends AbstractInstaller
     /**
      * Install constructor.
      *
+     * @param Configuration            $configuration
      * @param TokenStorageUserResolver $resolver
      * @param DecoderInterface         $serializer
      */
-    public function __construct(TokenStorageUserResolver $resolver, DecoderInterface $serializer)
+    public function __construct(Configuration $configuration, TokenStorageUserResolver $resolver, DecoderInterface $serializer)
     {
         parent::__construct();
 
+        $this->configuration = $configuration;
         $this->resolver = $resolver;
         $this->serializer = $serializer;
         $this->installSourcesPath = __DIR__ . '/../Resources/install';
         $this->fileSystem = new Filesystem();
         $this->currentVersion = Versions::getVersion(MembersBundle::PACKAGE_NAME);
-
     }
 
     /**
@@ -170,24 +176,13 @@ class Install extends AbstractInstaller
      */
     private function installObjectFolder()
     {
-        //install object folder "members" and lock it!
-        $membersPath = DataObject\Folder::getByPath('/members');
-
-        if (!$membersPath instanceof DataObject\Folder) {
-            $obj = DataObject\Folder::create(
-                [
-                    'o_parentId'         => 1,
-                    'o_creationDate'     => time(),
-                    'o_userOwner'        => $this->getUserId(),
-                    'o_userModification' => $this->getUserId(),
-                    'o_key'              => 'members',
-                    'o_published'        => true
-                ]
-            );
-
-            $obj->setLocked(true);
-            $obj->update();
+        // install object folder and lock it!
+        $storagePath = $this->configuration->getConfig('user')['storage_path'];
+        if (empty($storagePath) || DataObject\Service::pathExists($storagePath)) {
+            return false;
         }
+
+        DataObject\Service::createFolderByPath($storagePath, ['locked' => true]);
     }
 
     /**
