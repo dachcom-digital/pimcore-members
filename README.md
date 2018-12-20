@@ -40,7 +40,7 @@ After you have installed the Members Bundle via composer, open pimcore backend a
 - Click the green `+` Button in `Install/Uninstall` row
 
 ### Installation via CommandLine
-After you have installed the FormBuilder Bundle via composer:
+After you have installed the Members Bundle via composer:
 - Execute: `$ bin/console pimcore:bundle:enable MembersBundle`
 - Execute: `$ bin/console pimcore:bundle:install MembersBundle`
 
