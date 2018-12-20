@@ -1,0 +1,7 @@
+settings:
+    memory_limit: -1
+    colors: true
+paths:
+    log: var/logs
+include:
+  - tests

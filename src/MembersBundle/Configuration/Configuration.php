@@ -38,14 +38,6 @@ class Configuration
     }
 
     /**
-     * @return array
-     */
-    public function getConfigNode()
-    {
-        return $this->config;
-    }
-
-    /**
      * @return mixed
      */
     public function getConfigArray()
@@ -63,6 +55,12 @@ class Configuration
         return $this->config[$slot];
     }
 
+    /**
+     * @param string $slot
+     * @param null   $locale
+     *
+     * @return mixed
+     */
     public function getLocalizedPath($slot, $locale = null)
     {
         $data = $this->getConfig($slot);

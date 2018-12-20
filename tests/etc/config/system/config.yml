@@ -1,0 +1,14 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    - { resource: 'local/' }
+
+# don't send real emails in functional tests
+swiftmailer:
+    disable_delivery: true
+
+framework:
+    profiler:
+        enabled: true
+        collect: false
