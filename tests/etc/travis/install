@@ -60,6 +60,7 @@ mkdir $DACHCOM_BUNDLE_HOME/lib/$DACHCOM_BUNDLE_NAME/tests/_data/downloads
 
 mkdir -p $DACHCOM_BUNDLE_HOME/var/config
 cp $DACHCOM_BUNDLE_HOME/etc/config/system/config.yml app/config/config.yml
+cp $DACHCOM_BUNDLE_HOME/etc/config/system/routing.yml app/config/routing.yml
 cp app/config/parameters.example.yml app/config/parameters.yml
 
 for K in "${!DACHCOM_INSTALL_CONFIG_FILES[@]}"
