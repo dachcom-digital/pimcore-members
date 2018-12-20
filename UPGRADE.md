@@ -1,4 +1,13 @@
 # Upgrade Notes
+![upgrade](https://user-images.githubusercontent.com/700119/31535145-3c01a264-affa-11e7-8d86-f04c33571f65.png)  
+
+***
+
+After every update you should check the pimcore extension manager. 
+Just click the "update" button or execute the migration command to finish the bundle update.
+
+#### Update from Version 2.2.x to Version 2.3.0
+- **[ATTENTION]**: Installer has moved to the [MigrationBundle](https://github.com/dachcom-digital/pimcore-members/issues/74). After updating to this version you need to enable this extension again!
 
 #### Update from Version 2.2.0 to Version 2.2.1
 - implemented [PackageVersionTrait](https://github.com/pimcore/pimcore/blob/master/lib/Extension/Bundle/Traits/PackageVersionTrait.php)

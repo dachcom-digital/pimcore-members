@@ -9,17 +9,10 @@ class Configuration
 {
     const SYSTEM_CONFIG_DIR_PATH = PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle';
 
-    const SYSTEM_CONFIG_FILE_PATH = PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle/config.yml';
-
     /**
      * @var array
      */
     protected $config;
-
-    /**
-     * @var array
-     */
-    protected $systemConfig;
 
     /**
      * @var PimcoreBundleManager
@@ -95,24 +88,6 @@ class Configuration
         }
 
         return $url;
-    }
-
-    /**
-     * @param array $config
-     */
-    public function setSystemConfig($config = [])
-    {
-        $this->systemConfig = $config;
-    }
-
-    /**
-     * @param null $slot
-     *
-     * @return mixed
-     */
-    public function getSystemConfig($slot = null)
-    {
-        return $this->systemConfig[$slot];
     }
 
     /**
