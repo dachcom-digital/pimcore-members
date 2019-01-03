@@ -2,9 +2,18 @@
 
 namespace DachcomBundle\Test\Util;
 
+use Pimcore\Model\DataObject;
+
 class MembersHelper
 {
     const AREA_TEST_NAMESPACE = 'dachcomBundleTest';
+
+    public static function cleanUp()
+    {
+        $db = \Pimcore\Db::get();
+        $db->exec('TRUNCATE TABLE members_restrictions');
+        $db->exec('TRUNCATE TABLE members_group_relations');
+    }
 
     /**
      * @param string $name
@@ -33,5 +42,21 @@ class MembersHelper
         $data = sprintf('editableConfigurations.push(%s);', json_encode($editableConfig, ($prettyJson ? JSON_PRETTY_PRINT : JSON_ERROR_NONE)));
 
         return $data;
+    }
+
+    public static function reCreateMembersFolder()
+    {
+        //re-create members data folder.
+        try {
+            $folder = new DataObject\Folder();
+            $folder->setParentId(1);
+            $folder->setKey('members');
+            $folder->setLocked(true);
+            $folder->save();
+        } catch (\Exception $e) {
+            \Codeception\Util\Debug::debug(
+                sprintf('[MEMBERS ERROR] error while re-creating members object folder. message was: ' . $e->getMessage())
+            );
+        }
     }
 }

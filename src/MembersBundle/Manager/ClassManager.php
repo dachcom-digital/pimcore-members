@@ -22,37 +22,24 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function getGroupListing()
     {
-        $className = $this->configuration->getConfig('group');
-        if (empty($className['adapter']['class_name'])) {
+        $groupClass = $this->getGroupClass();
+        if (!\Pimcore\Tool::classExists($groupClass)) {
             return false;
         }
 
-        $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
-
-        if (!\Pimcore\Tool::classExists($listing)) {
-            return false;
-        }
-
-        return $listing::getList();
+        return $groupClass::getList();
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function getUserListing()
     {
-        $className = $this->configuration->getConfig('user');
-
-        if (empty($className['adapter']['class_name'])) {
-            return false;
-        }
-
-        $listing = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
-
+        $listing = $this->getUserClass();
         if (!\Pimcore\Tool::classExists($listing)) {
             return false;
         }
@@ -61,14 +48,29 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @return bool|string
+     * @inheritdoc
+     */
+    public function getGroupClass()
+    {
+        $className = $this->configuration->getConfig('group');
+        if (empty($className['adapter']['class_name'])) {
+            return '';
+        }
+
+        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
+
+        return $class;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getUserClass()
     {
         $className = $this->configuration->getConfig('user');
 
         if (empty($className['adapter']['class_name'])) {
-            return false;
+            return '';
         }
 
         $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);

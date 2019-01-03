@@ -2,20 +2,27 @@
 
 namespace MembersBundle\Manager;
 
+use Pimcore\Model\DataObject\Listing;
+
 interface ClassManagerInterface
 {
     /**
-     * @return bool
+     * @return Listing
      */
     public function getGroupListing();
 
     /**
-     * @return bool
+     * @return Listing
      */
     public function getUserListing();
 
     /**
-     * @return bool|string
+     * @return string
+     */
+    public function getGroupClass();
+
+    /**
+     * @return string
      */
     public function getUserClass();
 }

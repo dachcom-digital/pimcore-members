@@ -4,7 +4,6 @@ namespace MembersBundle\Manager;
 
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
-use Pimcore\Model\Listing\AbstractListing;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Version;
 
@@ -26,7 +25,10 @@ class UserManager implements UserManagerInterface
     protected $memberStorageId;
 
     /**
-     * {@inheritdoc}
+     * UserManager constructor.
+     *
+     * @param Configuration         $configuration
+     * @param ClassManagerInterface $classManager
      */
     public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
@@ -60,7 +62,6 @@ class UserManager implements UserManagerInterface
      */
     public function findUserByConfirmationToken($token, $includeUnpublished = true)
     {
-        /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('confirmationToken = ?', [$token]);
         $memberListing->setUnpublished($includeUnpublished);
@@ -79,7 +80,6 @@ class UserManager implements UserManagerInterface
      */
     public function findUserByEmail($emailAddress, $includeUnpublished = true)
     {
-        /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('email = ?', [$emailAddress]);
         $memberListing->setUnpublished($includeUnpublished);
@@ -98,7 +98,6 @@ class UserManager implements UserManagerInterface
      */
     public function findUserByUsername($username, $includeUnpublished = true)
     {
-        /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('userName = ?', [$username]);
         $memberListing->setUnpublished($includeUnpublished);
@@ -117,7 +116,6 @@ class UserManager implements UserManagerInterface
      */
     public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true)
     {
-        /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition($condition, $conditionVariables);
         $memberListing->setUnpublished($includeUnpublished);
@@ -148,7 +146,6 @@ class UserManager implements UserManagerInterface
      */
     public function findUsers()
     {
-        /** @var AbstractListing $memberListing */
         $memberListing = $this->classManager->getUserListing();
 
         return $memberListing->load();
@@ -186,7 +183,7 @@ class UserManager implements UserManagerInterface
             $user = $this->setupNewUser($user);
         }
 
-        // update page properties.
+        // update user properties.
         if (!empty($properties)) {
             foreach ($properties as $propKey => $propValue) {
                 $user->setProperty($propKey, 'text', $propValue, false);

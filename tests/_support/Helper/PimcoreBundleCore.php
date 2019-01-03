@@ -4,6 +4,7 @@ namespace DachcomBundle\Test\Helper;
 
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
+use Pimcore\Tool\Console;
 
 class PimcoreBundleCore extends Module
 {
@@ -36,7 +37,9 @@ class PimcoreBundleCore extends Module
     /**
      * @param $settings
      *
+     * @return string|void
      * @throws \Codeception\Exception\ModuleException
+     * @throws \Exception
      */
     private function installBundle($settings)
     {
@@ -59,5 +62,12 @@ class PimcoreBundleCore extends Module
         // install dachcom bundle
         $installer = $pimcoreModule->getContainer()->get($installerClass);
         $installer->install();
+
+        // install members classes
+        $cmd = sprintf('%s %s/bin/console members:install:class --no-interaction --env=test', Console::getExecutable('php'), PIMCORE_PROJECT_ROOT);
+        Console::exec($cmd);
+
+        \Pimcore::collectGarbage();
+
     }
 }

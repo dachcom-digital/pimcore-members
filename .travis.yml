@@ -14,6 +14,7 @@ env:
     - WEBDRIVER_HOST=localhost
     - WEBDRIVER_URL="http://localhost:8080/"
     - PIMCORE_TEST_DB_DSN="mysql://root@localhost/dachcom_bundle_test"
+    - PIMCORE_CLASS_DIRECTORY="${TRAVIS_BUILD_DIR}/lib/Members/tests/_output/var/classes/DataObject"
     - SYMFONY_DEPRECATIONS_HELPER=weak
 matrix:
     include:

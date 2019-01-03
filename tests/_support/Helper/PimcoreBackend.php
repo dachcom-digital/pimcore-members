@@ -6,7 +6,6 @@ use Codeception\Module;
 use Codeception\TestInterface;
 use DachcomBundle\Test\Util\FileGeneratorHelper;
 use DachcomBundle\Test\Util\MembersHelper;
-use Pimcore\Model\DataObject;
 use Pimcore\Model\Document\Email;
 use Pimcore\Model\Document\Page;
 use Pimcore\Model\Document\Snippet;
@@ -36,21 +35,9 @@ class PimcoreBackend extends Module
     public function _after(TestInterface $test)
     {
         TestHelper::cleanUp();
-
-        //re-create members data folder.
-        try {
-            $folder = new DataObject\Folder();
-            $folder->setParentId(1);
-            $folder->setKey('members');
-            $folder->setLocked(true);
-            $folder->save();
-        } catch (\Exception $e) {
-            \Codeception\Util\Debug::debug(
-                sprintf('[MEMBERS ERROR] error while re-creating members object folder. message was: ' . $e->getMessage())
-            );
-        }
-
         FileGeneratorHelper::cleanUp();
+        MembersHelper::cleanUp();
+        MembersHelper::reCreateMembersFolder();
 
         parent::_after($test);
     }
