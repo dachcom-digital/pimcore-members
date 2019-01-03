@@ -37,7 +37,7 @@ class PimcoreBackend extends Module
         TestHelper::cleanUp();
         FileGeneratorHelper::cleanUp();
         MembersHelper::cleanUp();
-        MembersHelper::reCreateMembersFolder();
+        MembersHelper::reCreateMembersStructure();
 
         parent::_after($test);
     }
@@ -299,7 +299,7 @@ class PimcoreBackend extends Module
      *
      * @return Log[]
      */
-    protected function getEmailsFromDocumentIds(array $documentIds)
+    public function getEmailsFromDocumentIds(array $documentIds)
     {
         $emailLogs = new Log\Listing();
         $emailLogs->addConditionParam(sprintf('documentId IN (%s)', implode(',', $documentIds)));
@@ -469,7 +469,6 @@ class PimcoreBackend extends Module
             sprintf('%s:1.hideWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE)        => $hideWhenLoggedIn,
             sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE) => $showSnippedWhenLoggedIn,
         ];
-
     }
 
     /**
@@ -484,7 +483,7 @@ class PimcoreBackend extends Module
     /**
      * @return Serializer
      */
-    protected function getSerializer()
+    public function getSerializer()
     {
         $serializer = null;
 

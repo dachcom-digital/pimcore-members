@@ -2,7 +2,7 @@
 
 namespace DachcomBundle\Test\Util;
 
-use Pimcore\Model\DataObject;
+use MembersBundle\Tool\Install;
 
 class MembersHelper
 {
@@ -44,19 +44,9 @@ class MembersHelper
         return $data;
     }
 
-    public static function reCreateMembersFolder()
+    public static function reCreateMembersStructure()
     {
-        //re-create members data folder.
-        try {
-            $folder = new DataObject\Folder();
-            $folder->setParentId(1);
-            $folder->setKey('members');
-            $folder->setLocked(true);
-            $folder->save();
-        } catch (\Exception $e) {
-            \Codeception\Util\Debug::debug(
-                sprintf('[MEMBERS ERROR] error while re-creating members object folder. message was: ' . $e->getMessage())
-            );
-        }
+        $installer = \Pimcore::getContainer()->get(Install::class);
+        $installer->initializeFreshSetup();
     }
 }

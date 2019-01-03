@@ -1,0 +1,3 @@
+members:
+    post_register_type: 'confirm_by_admin'
+    send_user_mail_after_confirmed: true

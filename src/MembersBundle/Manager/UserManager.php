@@ -221,7 +221,6 @@ class UserManager implements UserManagerInterface
             }
 
             $objects = $listing->getObjects();
-
             if (count($objects) > 0) {
                 $userGroups[] = $objects[0];
             }

@@ -12,3 +12,5 @@ modules:
             depends: \DachcomBundle\Test\Helper\PimcoreCore
         - \DachcomBundle\Test\Helper\PimcoreBackend
         - \DachcomBundle\Test\Helper\PimcoreUser
+        -   \DachcomBundle\Test\Helper\MembersFrontend:
+                depends: \DachcomBundle\Test\Helper\PimcoreBackend
