@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\Helper;
 
+use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
@@ -10,9 +11,8 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\MembersUser;
 use Pimcore\Model\Document\Email;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class MembersFrontend extends Module
+class MembersFrontend extends Module implements DependsOnModule
 {
     /**
      * @var PimcoreBackend
