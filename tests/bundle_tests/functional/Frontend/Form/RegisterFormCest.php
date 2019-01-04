@@ -1,11 +1,12 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Constraints;
+namespace DachcomBundle\Test\functional\Frontend\Form;
 
 use DachcomBundle\Test\FunctionalTester;
+use DachcomBundle\Test\Util\MembersHelper;
 use Pimcore\Model\Document\Email;
 
-class RegisterCest
+class RegisterFormCest
 {
     /**
      * @param FunctionalTester $I
@@ -29,13 +30,10 @@ class RegisterCest
      */
     public function testUserRegistrationFormConfirmByMail(FunctionalTester $I)
     {
-        $email = 'test@universe.org';
-        $userName = 'chuck';
-
         $this->register($I);
 
         $I->see('The user has been created successfully.', '.alert.flash-success');
-        $I->see(sprintf('An email has been sent to %s. It contains an activation link you must click to activate your account.', $email), 'p');
+        $I->see(sprintf('An email has been sent to %s. It contains an activation link you must click to activate your account.', MembersHelper::DEFAULT_FEU_EMAIL), 'p');
 
         $I->seeAUnpublishedUserAfterRegistration();
         $I->seeAUserWithValidToken();
@@ -46,7 +44,7 @@ class RegisterCest
 
         $confirmationLink = $I->haveConfirmationLinkInEmail($email);
         $I->amOnPage($confirmationLink);
-        $I->see(sprintf('Congrats %s, your account is now activated.', $userName), 'p');
+        $I->see(sprintf('Congrats %s, your account is now activated.', MembersHelper::DEFAULT_FEU_USERNAME), 'p');
 
         $I->seeAPublishedUserAfterRegistration();
         $I->seeAUserWithInvalidatedToken();
@@ -76,8 +74,7 @@ class RegisterCest
         $I->seeEmailIsNotSent($email);
 
         $user = $I->grabOneUserAfterRegistration();
-        $user->setPublished(true);
-        $user->save();
+        $I->publishAndConfirmAFrontendUser($user);
 
         $email = Email::getByPath('/email/register-confirmed');
         $I->seeEmailIsNotSent($email);
@@ -95,8 +92,7 @@ class RegisterCest
         $this->register($I);
 
         $user = $I->grabOneUserAfterRegistration();
-        $user->setPublished(true);
-        $user->save();
+        $I->publishAndConfirmAFrontendUser($user);
 
         $email = Email::getByPath('/email/register-confirmed');
         $I->canSeeEmailIsSent($email);
@@ -113,7 +109,7 @@ class RegisterCest
         $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_admin_notify.yml');
 
         $email = Email::getByPath('/email/admin-register-notification');
-        $email->setTo('test@universe.org');
+        $email->setTo('test-admin@universe.org');
         $email->save();
 
         $this->register($I);
@@ -132,7 +128,7 @@ class RegisterCest
         $this->register($I);
 
         $I->see('The user has been created successfully.', '.alert.flash-success');
-        $I->see('Congrats chuck, your account is now activated.', 'p');
+        $I->see(sprintf('Congrats %s, your account is now activated.', MembersHelper::DEFAULT_FEU_USERNAME), 'p');
 
         $I->seeAPublishedUserAfterRegistration();
         $I->seeAUserWithInvalidatedToken();
@@ -146,15 +142,25 @@ class RegisterCest
 
     /**
      * @param FunctionalTester $I
+     *
+     * @throws \Exception
+     */
+    public function testUserPropertiesAfterRegistration(FunctionalTester $I)
+    {
+        $this->register($I);
+
+        $user = $I->grabOneUserAfterRegistration();
+        $I->seePropertiesInFrontendUser($user, ['_user_locale']);
+    }
+
+    /**
+     * @param FunctionalTester $I
      */
     private function register(FunctionalTester $I)
     {
-        $email = 'test@universe.org';
-        $userName = 'chuck';
-
         $I->amOnPage('/en/members/register');
-        $I->fillField('form[name="members_user_registration_form"] input[type="email"][id="members_user_registration_form_email"]', $email);
-        $I->fillField('form[name="members_user_registration_form"] input[type="text"][id="members_user_registration_form_username"]', $userName);
+        $I->fillField('form[name="members_user_registration_form"] input[type="email"][id="members_user_registration_form_email"]', MembersHelper::DEFAULT_FEU_EMAIL);
+        $I->fillField('form[name="members_user_registration_form"] input[type="text"][id="members_user_registration_form_username"]', MembersHelper::DEFAULT_FEU_USERNAME);
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_first"]', 'password');
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_second"]', 'password');
         $I->click('Register');

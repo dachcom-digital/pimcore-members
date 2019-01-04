@@ -40,9 +40,9 @@ abstract class DachcomBundleTestCase extends TestCase
 
         $userObject = $userManager->createUser();
         $userObject->setParent($membersStoreObject);
-        $userObject->setEmail('test@universe.org');
-        $userObject->setUserName('chuck');
-        $userObject->setPlainPassword('test');
+        $userObject->setEmail(MembersHelper::DEFAULT_FEU_EMAIL);
+        $userObject->setUserName(MembersHelper::DEFAULT_FEU_USERNAME);
+        $userObject->setPlainPassword(MembersHelper::DEFAULT_FEU_PASSWORD);
         $userObject->setPublished($published);
 
         $user = $userManager->updateUser($userObject);

@@ -1,10 +1,11 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Constraints;
+namespace DachcomBundle\Test\functional\Frontend\Form;
 
 use DachcomBundle\Test\FunctionalTester;
+use DachcomBundle\Test\Util\MembersHelper;
 
-class LoginLogoutCest
+class LoginLogoutFormCest
 {
     /**
      * @param FunctionalTester $I
@@ -28,7 +29,7 @@ class LoginLogoutCest
     {
         $this->login($I);
         $I->see('invalid credentials.', 'div');
-        $I->haveANotLoggedInFrontEndUser();
+        $I->seeANotLoggedInFrontEndUser();
     }
 
     /**
@@ -37,10 +38,9 @@ class LoginLogoutCest
     public function testLoginWithInactiveUser(FunctionalTester $I)
     {
         $I->haveARegisteredFrontEndUser(false);
-
         $this->login($I);
         $I->see('Account is disabled.', 'div');
-        $I->haveANotLoggedInFrontEndUser();
+        $I->seeANotLoggedInFrontEndUser();
     }
 
     /**
@@ -50,7 +50,7 @@ class LoginLogoutCest
     {
         $I->haveARegisteredFrontEndUser(true);
         $this->login($I);
-        $I->haveALoggedInFrontEndUser(true);
+        $I->seeALoggedInFrontEndUser();
     }
 
     /**
@@ -60,10 +60,9 @@ class LoginLogoutCest
     {
         $I->haveARegisteredFrontEndUser(true);
         $this->login($I);
-        $I->haveALoggedInFrontEndUser(true);
-
+        $I->seeALoggedInFrontEndUser(true);
         $I->amOnPage('/en/members/logout');
-        $I->haveANotLoggedInFrontEndUser(true);
+        $I->seeANotLoggedInFrontEndUser();
     }
 
     /**
@@ -71,12 +70,9 @@ class LoginLogoutCest
      */
     private function login(FunctionalTester $I)
     {
-        $userName = 'chuck';
-        $password = 'test';
-
         $I->amOnPage('/en/members/login');
-        $I->fillField('form[class="members_user_login"] input[type="text"][name="_username"]', $userName);
-        $I->fillField('form[class="members_user_login"] input[type="password"][name="_password"]', $password);
+        $I->fillField('form[class="members_user_login"] input[type="text"][name="_username"]', MembersHelper::DEFAULT_FEU_USERNAME);
+        $I->fillField('form[class="members_user_login"] input[type="password"][name="_password"]', MembersHelper::DEFAULT_FEU_PASSWORD);
         $I->click('Log In');
     }
 }

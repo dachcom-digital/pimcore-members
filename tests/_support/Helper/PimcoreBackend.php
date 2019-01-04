@@ -135,11 +135,14 @@ class PimcoreBackend extends Module
     /**
      * Actor Function to place a members area on a document
      *
-     * @param Page $document
+     * @param Page         $document
+     * @param null|Page    $redirectAfterSuccessDocument
+     * @param null|Snippet $loginSnippet
      */
-    public function seeAMembersAreaElementPlacedOnDocument(Page $document)
+    public function seeAMembersAreaElementPlacedOnDocument(Page $document, $redirectAfterSuccessDocument = null, $loginSnippet = null)
     {
-        $document->setElements($this->createMembersArea());
+        $areaElement = $this->createMembersArea($redirectAfterSuccessDocument, $loginSnippet);
+        $document->setElements($areaElement);
 
         try {
             $document->save();
@@ -147,7 +150,7 @@ class PimcoreBackend extends Module
             \Codeception\Util\Debug::debug(sprintf('[MEMBERS ERROR] error while saving document. message was: ' . $e->getMessage()));
         }
 
-        $this->assertCount(6, $document->getElements());
+        $this->assertCount(count($areaElement), $document->getElements());
     }
 
     /**
@@ -422,38 +425,46 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * @param null|Page    $redirectAfterSuccessDocument
+     * @param null|Snippet $loginSnippet
+     * @param bool         $hideSnippetAfterLogin
+     *
      * @return array
      */
-    protected function createMembersArea()
+    protected function createMembersArea($redirectAfterSuccessDocument = null, $loginSnippet = null, $hideSnippetAfterLogin = false)
     {
         $blockArea = new Areablock();
         $blockArea->setName(MembersHelper::AREA_TEST_NAMESPACE);
 
-        $redirectAfterSuccess = new Href();
-        $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', MembersHelper::AREA_TEST_NAMESPACE));
-
-        $data = [
-            'id'      => 1,
-            'type'    => 'document',
-            'subtype' => 'page'
-        ];
-
-        $redirectAfterSuccess->setDataFromEditmode($data);
+        $redirectAfterSuccess = null;
+        if ($redirectAfterSuccessDocument instanceof Page) {
+            $redirectAfterSuccess = new Href();
+            $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', MembersHelper::AREA_TEST_NAMESPACE));
+            $data = [
+                'id'      => $redirectAfterSuccessDocument->getId(),
+                'type'    => 'document',
+                'subtype' => $redirectAfterSuccessDocument->getType()
+            ];
+            $redirectAfterSuccess->setDataFromEditmode($data);
+        }
 
         $hideWhenLoggedIn = new Checkbox();
         $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE));
-        $hideWhenLoggedIn->setDataFromEditmode(true);
+        $hideWhenLoggedIn->setDataFromEditmode($hideSnippetAfterLogin);
 
-        $showSnippedWhenLoggedIn = new Href();
-        $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE));
+        $showSnippedWhenLoggedIn = null;
+        if ($loginSnippet instanceof Snippet) {
+            $showSnippedWhenLoggedIn = new Href();
+            $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE));
 
-        $data2 = [
-            'id'      => 1,
-            'type'    => 'document',
-            'subtype' => 'snippet'
-        ];
+            $data2 = [
+                'id'      => $loginSnippet->getId(),
+                'type'    => 'document',
+                'subtype' => $loginSnippet->getType()
+            ];
 
-        $showSnippedWhenLoggedIn->setDataFromEditmode($data2);
+            $showSnippedWhenLoggedIn->setDataFromEditmode($data2);
+        }
 
         $blockArea->setDataFromEditmode([
             [
@@ -463,12 +474,20 @@ class PimcoreBackend extends Module
             ]
         ]);
 
-        return [
-            sprintf('%s', MembersHelper::AREA_TEST_NAMESPACE)                           => $blockArea,
-            sprintf('%s:1.redirectAfterSuccess', MembersHelper::AREA_TEST_NAMESPACE)    => $redirectAfterSuccess,
-            sprintf('%s:1.hideWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE)        => $hideWhenLoggedIn,
-            sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE) => $showSnippedWhenLoggedIn,
+        $data = [
+            sprintf('%s', MembersHelper::AREA_TEST_NAMESPACE)                    => $blockArea,
+            sprintf('%s:1.hideWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE) => $hideWhenLoggedIn
         ];
+
+        if ($redirectAfterSuccess !== null) {
+            $data[sprintf('%s:1.redirectAfterSuccess', MembersHelper::AREA_TEST_NAMESPACE)] = $redirectAfterSuccess;
+        }
+
+        if ($showSnippedWhenLoggedIn !== null) {
+            $data[sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE)] = $showSnippedWhenLoggedIn;
+        }
+
+        return $data;
     }
 
     /**

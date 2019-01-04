@@ -3,6 +3,7 @@
 namespace DachcomBundle\Test\unit\Manager;
 
 use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\UserManager;
 use Pimcore\Model\DataObject\MembersUser;
@@ -34,7 +35,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
 
-        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByEmail('test@universe.org'));
+        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByEmail(MembersHelper::DEFAULT_FEU_EMAIL));
     }
 
     public function testFindUserByUsername()
@@ -42,7 +43,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
 
-        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsername('chuck'));
+        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsername(MembersHelper::DEFAULT_FEU_USERNAME));
     }
 
     public function testFindUserByUsernameOrEmail()
@@ -50,8 +51,8 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
 
-        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsernameOrEmail('test@universe.org'));
-        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsernameOrEmail('chuck'));
+        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsernameOrEmail(MembersHelper::DEFAULT_FEU_EMAIL));
+        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsernameOrEmail(MembersHelper::DEFAULT_FEU_USERNAME));
     }
 
     public function testFindUserByCondition()
@@ -59,7 +60,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
 
-        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByCondition('email = ?', ['test@universe.org']));
+        $this->assertInstanceOf(UserInterface::class, $userManager->findUserByCondition('email = ?', [MembersHelper::DEFAULT_FEU_EMAIL]));
     }
 
     public function testFindPublishedUsers()

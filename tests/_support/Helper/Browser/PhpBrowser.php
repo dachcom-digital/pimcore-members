@@ -8,11 +8,13 @@ use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\Helper\PimcoreCore;
 use DachcomBundle\Test\Helper\PimcoreUser;
 use DachcomBundle\Test\Util\MembersHelper;
+use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\Document\Email;
 use Pimcore\Model\User;
 use Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\DataCollector\RequestDataCollector;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -128,6 +130,36 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
     }
 
     /**
+     * Actor Function to login into Members FrontEnd
+     *
+     * @param UserInterface $membersUser
+     */
+    public function amLoggedInAsFrontendUser(UserInterface $membersUser)
+    {
+        $firewallName = 'members_fe';
+
+        if (!$membersUser instanceof UserInterface) {
+            $this->debug(sprintf('[PIMCORE BUNDLE MODULE] user needs to be a instance of %s.', UserInterface::class));
+            return;
+        }
+
+        /** @var Session $session */
+        $session = $this->pimcoreCore->getContainer()->get('session');
+
+        $token = new UsernamePasswordToken($membersUser, null, $firewallName, $membersUser->getRoles());
+        $this->pimcoreCore->getContainer()->get('security.token_storage')->setToken($token);
+
+        $session->set('_security_' . $firewallName, serialize($token));
+        $session->save();
+
+        $cookie = new Cookie($session->getName(), $session->getId());
+
+        $this->pimcoreCore->client->getCookieJar()->clear();
+        $this->pimcoreCore->client->getCookieJar()->set($cookie);
+
+    }
+
+    /**
      * Actor Function to login into Pimcore Backend
      *
      * @param $username
@@ -232,5 +264,51 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
 
         return $emails;
 
+    }
+
+    /**
+     * Actor Function to see if last executed request is in given path
+     *
+     * @param string $expectedPath
+     */
+    public function seeLastRequestIsInPath(string $expectedPath)
+    {
+        $requestUri = $this->pimcoreCore->client->getInternalRequest()->getUri();
+        $requestServer = $this->pimcoreCore->client->getInternalRequest()->getServer();
+
+        $expectedUri = sprintf('http://%s%s', $requestServer['HTTP_HOST'], $expectedPath);
+
+        $this->assertEquals($expectedUri, $requestUri);
+    }
+
+    /**
+     * Actor Function to check if last _fragment request has given properties in request attributes.
+     *
+     * @param array $properties
+     */
+    public function seePropertiesInLastFragmentRequest(array $properties = [])
+    {
+        /** @var Profiler $profiler */
+        $profiler = $this->pimcoreCore->_getContainer()->get('profiler');
+
+        $tokens = $profiler->find('', '_fragment', 1, 'GET', '', '');
+        if (count($tokens) === 0) {
+            throw new \RuntimeException('No profile found. Is the profiler data collector enabled?');
+        }
+
+        $token = $tokens[0]['token'];
+        /** @var \Symfony\Component\HttpKernel\Profiler\Profile $profile */
+        $profile = $profiler->loadProfile($token);
+
+        if (!$profile instanceof Profile) {
+            throw new \RuntimeException(sprintf('Profile with token "%s" not found.', $token));
+        }
+
+        /** @var RequestDataCollector $requestCollector */
+        $requestCollector = $profile->getCollector('request');
+
+        foreach ($properties as $property) {
+            $this->assertTrue($requestCollector->getRequestAttributes()->has($property), sprintf('"%s" not found in request collector.', $property));
+        }
     }
 }

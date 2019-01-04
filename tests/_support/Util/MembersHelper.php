@@ -7,6 +7,9 @@ use MembersBundle\Tool\Install;
 class MembersHelper
 {
     const AREA_TEST_NAMESPACE = 'dachcomBundleTest';
+    const DEFAULT_FEU_USERNAME = 'chuck';
+    const DEFAULT_FEU_EMAIL = 'test@universe.org';
+    const DEFAULT_FEU_PASSWORD = 'default-password';
 
     public static function cleanUp()
     {

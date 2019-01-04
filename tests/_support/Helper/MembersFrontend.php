@@ -4,6 +4,7 @@ namespace DachcomBundle\Test\Helper;
 
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
+use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\UserManager;
@@ -35,32 +36,58 @@ class MembersFrontend extends Module implements DependsOnModule
         $this->pimcoreBackend = $connection;
     }
 
-    public function haveARegisteredFrontEndUser($published = false)
+    /**
+     * Actor Function to create a fully registered frontend user. Confirmation is optionally.
+     *
+     * @param bool $confirmed
+     *
+     * @return mixed
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function haveARegisteredFrontEndUser(bool $confirmed = false)
     {
-        $userManager = $this->getContainer()->get(UserManager::class);
         $configuration = $this->getContainer()->get(Configuration::class);
-
         $membersStoreObject = DataObject::getByPath($configuration->getConfig('storage_path'));
 
+        $userManager = $this->getContainer()->get(UserManager::class);
         $userObject = $userManager->createUser();
+
         $userObject->setParent($membersStoreObject);
-        $userObject->setEmail('test@universe.org');
-        $userObject->setUserName('chuck');
-        $userObject->setPlainPassword('test');
+        $userObject->setEmail(MembersHelper::DEFAULT_FEU_EMAIL);
+        $userObject->setUserName(MembersHelper::DEFAULT_FEU_USERNAME);
+        $userObject->setPlainPassword(MembersHelper::DEFAULT_FEU_PASSWORD);
         $userObject->setPublished(false);
 
         $user = $userManager->updateUser($userObject);
 
-        if ($published === true) {
-            $user->setConfirmationToken(null);
-            $user->setPublished(true);
-            $userManager->updateUser($user);
+        if ($confirmed === true) {
+            $this->publishAndConfirmAFrontendUser($user);
         }
 
         return $user;
     }
 
-    public function haveALoggedInFrontEndUser()
+    /**
+     * Actor Function to publish and confirm (triggered by updateUser()) a frontend user.
+     *
+     * @param UserInterface $user
+     *
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function publishAndConfirmAFrontendUser(UserInterface $user)
+    {
+        $user->setPublished(true);
+
+        $userManager = $this->getContainer()->get(UserManager::class);
+        $userManager->updateUser($user);
+    }
+
+    /**
+     * Actor function to see a logged in frontend user in session bag.
+     *
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function seeALoggedInFrontEndUser()
     {
         $tokenStorage = $this->getContainer()->get('security.token_storage');
 
@@ -68,12 +95,35 @@ class MembersFrontend extends Module implements DependsOnModule
         $this->assertInstanceOf(UserInterface::class, $tokenStorage->getToken()->getUser());
     }
 
-    public function haveANotLoggedInFrontEndUser()
+    /**
+     * Actor Function to see a not logged in frontend user in session bag.
+     *
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function seeANotLoggedInFrontEndUser()
     {
         $tokenStorage = $this->getContainer()->get('security.token_storage');
 
-        $this->assertNotNull($tokenStorage->getToken());
+        // null is ok in this case!
+        if (is_null($tokenStorage->getToken())) {
+            return;
+        }
+
         $this->assertSame('anon.', $tokenStorage->getToken()->getUser());
+    }
+
+    /**
+     * Actor Function to see properties in members user object
+     *
+     * @param UserInterface $user
+     * @param array         $expectedProperties
+     */
+    public function seePropertiesInFrontendUser(UserInterface $user, array $expectedProperties = [])
+    {
+        $userProperties = $user->getProperties();
+        foreach ($expectedProperties as $property) {
+            $this->assertArrayHasKey($property, $userProperties);
+        }
     }
 
     /**
@@ -81,7 +131,7 @@ class MembersFrontend extends Module implements DependsOnModule
      *
      * @param Email $email
      *
-     * @return string|null
+     * @return string
      */
     public function haveConfirmationLinkInEmail(Email $email)
     {
@@ -105,27 +155,59 @@ class MembersFrontend extends Module implements DependsOnModule
         $this->assertNotEmpty($link);
 
         return $link;
-
     }
 
+    /**
+     * Actor Function to check if no users are available in storage.
+     *
+     * @throws \Exception
+     */
+    public function seeNoFrontendUserInStorage()
+    {
+        $list = MembersUser::getList(['unpublished' => true]);
+        $users = $list->load();
+
+        $this->assertCount(0, $users);
+    }
+
+    /**
+     * Actor Function to check if the last registered user has an valid token.
+     *
+     * @throws \Exception
+     */
     public function seeAUserWithValidToken()
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertNotEmpty($user->getConfirmationToken());
     }
 
+    /**
+     * Actor Function to check if the last registered user has an invalid token.
+     *
+     * @throws \Exception
+     */
     public function seeAUserWithInvalidatedToken()
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertNull($user->getConfirmationToken());
     }
 
+    /**
+     * Actor Function to check if the last registered user is published.
+     *
+     * @throws \Exception
+     */
     public function seeAPublishedUserAfterRegistration()
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertTrue($user->getPublished());
     }
 
+    /**
+     * Actor Function to check if the last registered user is unpublished.
+     *
+     * @throws \Exception
+     */
     public function seeAUnpublishedUserAfterRegistration()
     {
         $user = $this->grabOneUserAfterRegistration();
@@ -133,6 +215,9 @@ class MembersFrontend extends Module implements DependsOnModule
     }
 
     /**
+     * Actor function to get the last registered frontend user.
+     * Only one user in storage is allowed here.
+     *
      * @return UserInterface
      * @throws \Exception
      */
@@ -145,7 +230,6 @@ class MembersFrontend extends Module implements DependsOnModule
         $this->assertInstanceOf(UserInterface::class, $users[0]);
 
         return $users[0];
-
     }
 
     /**

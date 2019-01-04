@@ -69,9 +69,9 @@ class MembersLogin extends AbstractTemplateAreabrick
         /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
         $form = $this->formFactory->createUnnamedForm($formParams);
 
-        $view->form = $form->createView();
+        $view->getParameters()->set('form', $form->createView());
         foreach ($params as $key => $param) {
-            $view->{$key} = $param;
+            $view->getParameters()->set($key, $param);
         }
     }
 
