@@ -18,7 +18,7 @@ class AssetRestrictionCest
 
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
 
-        $link = $I->haveAAssetDownloadLink($asset);
+        $link = $I->haveASingleAssetDownloadLink($asset);
 
         $I->amOnPage($link);
         $I->canSeePageNotFound();
@@ -40,7 +40,7 @@ class AssetRestrictionCest
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
         $I->amLoggedInAsFrontendUser($user);
 
-        $link = $I->haveAAssetDownloadLink($asset);
+        $link = $I->haveASingleAssetDownloadLink($asset);
 
         $I->amOnPage($link);
         $I->canSeePageNotFound();
@@ -62,7 +62,7 @@ class AssetRestrictionCest
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
         $I->amLoggedInAsFrontendUser($user);
 
-        $link = $I->haveAAssetDownloadLink($asset);
+        $link = $I->haveASingleAssetDownloadLink($asset);
 
         $I->seeDownloadLink($asset, $link);
     }
