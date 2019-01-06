@@ -1,0 +1,6 @@
+<div class="static-route-content">
+    {% block content %}
+        <h3>static route page</h3>
+        <div class="static-route-debug">object id: {{ app.request.get('object_id') }}</div>
+    {% endblock %}
+</div>

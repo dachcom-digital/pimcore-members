@@ -5,9 +5,11 @@ namespace DachcomBundle\Test\Helper;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use DachcomBundle\Test\Util\MembersHelper;
+use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\UserManager;
+use Pimcore\File;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\MembersUser;
 use Pimcore\Model\Document\Email;
@@ -37,14 +39,37 @@ class MembersFrontend extends Module implements DependsOnModule
     }
 
     /**
+     * Actor Function to create a frontend user group.
+     *
+     * @param string $name
+     *
+     * @return DataObject\MembersGroup
+     * @throws \Exception
+     */
+    public function haveAFrontendUserGroup(string $name = 'Group 1')
+    {
+        $group = new DataObject\MembersGroup();
+        $group->setKey(File::getValidFilename($name));
+        $group->setName($name);
+        $group->setPublished(true);
+        $group->setParent(DataObject::getByPath('/'));
+        $group->save();
+
+        $this->assertInstanceOf(GroupInterface::class, $group);
+
+        return $group;
+    }
+
+    /**
      * Actor Function to create a fully registered frontend user. Confirmation is optionally.
      *
-     * @param bool $confirmed
+     * @param bool  $confirmed
+     * @param array $groups
      *
      * @return mixed
      * @throws \Codeception\Exception\ModuleException
      */
-    public function haveARegisteredFrontEndUser(bool $confirmed = false)
+    public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [])
     {
         $configuration = $this->getContainer()->get(Configuration::class);
         $membersStoreObject = DataObject::getByPath($configuration->getConfig('storage_path'));
@@ -60,9 +85,16 @@ class MembersFrontend extends Module implements DependsOnModule
 
         $user = $userManager->updateUser($userObject);
 
+        if (count($groups) > 0) {
+            $user->setGroups($groups);
+            $userManager->updateUser($user);
+        }
+
         if ($confirmed === true) {
             $this->publishAndConfirmAFrontendUser($user);
         }
+
+        $this->assertInstanceOf(UserInterface::class, $user);
 
         return $user;
     }
@@ -80,6 +112,8 @@ class MembersFrontend extends Module implements DependsOnModule
 
         $userManager = $this->getContainer()->get(UserManager::class);
         $userManager->updateUser($user);
+
+        $this->assertTrue($user->getPublished());
     }
 
     /**

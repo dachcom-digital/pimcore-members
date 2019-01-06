@@ -6,13 +6,16 @@ use Codeception\Module;
 use Codeception\TestInterface;
 use DachcomBundle\Test\Util\FileGeneratorHelper;
 use DachcomBundle\Test\Util\MembersHelper;
+use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\Document\Email;
 use Pimcore\Model\Document\Page;
 use Pimcore\Model\Document\Snippet;
 use Pimcore\Model\Document\Tag\Checkbox;
+use Pimcore\Model\Staticroute;
 use Pimcore\Model\Tool\Email\Log;
 use Pimcore\Model\Document\Tag\Areablock;
 use Pimcore\Model\Document\Tag\Href;
+use Pimcore\Tests\Helper\ClassManager;
 use Pimcore\Tests\Util\TestHelper;
 use Pimcore\Translation\Translator;
 use Symfony\Component\DependencyInjection\Container;
@@ -113,6 +116,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * Actor function to generate a dummy asset file.
+     *
      * @param     $fileName
      * @param int $fileSizeInMb Mb
      */
@@ -122,6 +127,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * Actor function to see a generated dummy file in download directory.
+     *
      * @param $fileName
      */
     public function seeDownload($fileName)
@@ -262,6 +269,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * Actor Function to see rendered body text in given email
+     *
      * @param Email  $mail
      * @param string $string
      */
@@ -299,6 +308,66 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * Actor Function to generate a single static route.
+     *
+     * @param string $name
+     *
+     * @return Staticroute
+     */
+    public function haveAStaticRoute(string $name = 'test_route')
+    {
+        $data = [
+            'id'               => 1,
+            'name'             => $name,
+            'pattern'          => '/(\\w+)\\/members-test-route\\/(\\d+)$/',
+            'reverse'          => '/%_locale/members-test-route/%object_id',
+            'module'           => 'AppBundle',
+            'controller'       => '@AppBundle\\Controller\\DefaultController',
+            'action'           => 'staticRoute',
+            'variables'        => '_locale,object_id',
+            'defaults'         => null,
+            'siteId'           => [],
+            'priority'         => 0,
+            'legacy'           => false,
+            'creationDate'     => 1545383519,
+            'modificationDate' => 1545383619
+        ];
+
+        $route = new Staticroute();
+        $route->setValues($data);
+        $route->save();
+
+        $this->assertInstanceOf(Staticroute::class, $route);
+
+        return $route;
+    }
+
+    /**
+     * Actor Function to generate a pimcore class from json definition file.
+     *
+     * @param string $name
+     *
+     * @throws \Codeception\Exception\ModuleException
+     * @return ClassDefinition
+     */
+    public function haveAPimcoreClass(string $name = 'TestClass')
+    {
+        $cm = $this->getClassManager();
+
+        $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
+        $path = $bundleClass . '/etc/config/bundle/pimcore';
+
+        $class = $cm->setupClass($name, sprintf('%s/%s.json', $path, $name));
+        $this->assertInstanceOf(ClassDefinition::class, $class);
+
+        return $class;
+    }
+
+    /**
+     * API Function to get sent email ids from given document ids
+     *
+     * @public to allow usage from other modules
+     *
      * @param array $documentIds
      *
      * @return Log[]
@@ -309,6 +378,28 @@ class PimcoreBackend extends Module
         $emailLogs->addConditionParam(sprintf('documentId IN (%s)', implode(',', $documentIds)));
 
         return $emailLogs->load();
+    }
+
+    /**
+     * API Function to get pimcore serializer
+     *
+     * @public to allow usage from other modules
+     * @return Serializer
+     *
+     */
+    public function getSerializer()
+    {
+        $serializer = null;
+
+        try {
+            $serializer = $this->getContainer()->get('pimcore_admin.serializer');
+        } catch (\Exception $e) {
+            \Codeception\Util\Debug::debug(sprintf('[MEMBERS ERROR] error while getting pimcore admin serializer. message was: ' . $e->getMessage()));
+        }
+
+        $this->assertInstanceOf(Serializer::class, $serializer);
+
+        return $serializer;
     }
 
     /**
@@ -340,6 +431,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * API Function to create a page document
+     *
      * @param string      $key
      * @param null|string $action
      * @param null|string $controller
@@ -362,6 +455,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * API Function to create a email document
+     *
      * @param string $key
      * @param array  $params
      *
@@ -426,6 +521,8 @@ class PimcoreBackend extends Module
     }
 
     /**
+     * API Function to create a members area element.
+     *
      * @param null|Page    $redirectAfterSuccessDocument
      * @param null|Snippet $loginSnippet
      * @param bool         $hideAreaAfterLogin
@@ -501,20 +598,11 @@ class PimcoreBackend extends Module
     }
 
     /**
-     * @return Serializer
+     * @return Module|ClassManager
+     * @throws \Codeception\Exception\ModuleException
      */
-    public function getSerializer()
+    protected function getClassManager()
     {
-        $serializer = null;
-
-        try {
-            $serializer = $this->getContainer()->get('pimcore_admin.serializer');
-        } catch (\Exception $e) {
-            \Codeception\Util\Debug::debug(sprintf('[MEMBERS ERROR] error while getting pimcore admin serializer. message was: ' . $e->getMessage()));
-        }
-
-        $this->assertInstanceOf(Serializer::class, $serializer);
-
-        return $serializer;
+        return $this->getModule('\\' . ClassManager::class);
     }
 }

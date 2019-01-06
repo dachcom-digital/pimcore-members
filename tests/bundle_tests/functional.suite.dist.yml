@@ -1,16 +1,16 @@
 actor: FunctionalTester
 modules:
     enabled:
+        - \Pimcore\Tests\Helper\ClassManager
         - \DachcomBundle\Test\Helper\PimcoreCore:
-            connect_db: true
-            rebootable_client: true
+                connect_db: true
+                rebootable_client: true
         - \DachcomBundle\Test\Helper\PimcoreBundleCore:
-            run_installer: true
+                run_installer: true
         - \DachcomBundle\Test\Helper\Browser\PhpBrowser:
-            depends: \DachcomBundle\Test\Helper\PimcoreCore
-        - \DachcomBundle\Test\Helper\PimcoreAdminJson:
-            depends: \DachcomBundle\Test\Helper\PimcoreCore
+                depends: \DachcomBundle\Test\Helper\PimcoreCore
         - \DachcomBundle\Test\Helper\PimcoreBackend
         - \DachcomBundle\Test\Helper\PimcoreUser
-        -   \DachcomBundle\Test\Helper\MembersFrontend:
+        - \DachcomBundle\Test\Helper\MembersRestriction
+        - \DachcomBundle\Test\Helper\MembersFrontend:
                 depends: \DachcomBundle\Test\Helper\PimcoreBackend

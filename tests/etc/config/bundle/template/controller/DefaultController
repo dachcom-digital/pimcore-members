@@ -20,4 +20,8 @@ class DefaultController extends FrontendController
     public function snippetAction(Request $request)
     {
     }
+
+    public function staticRouteAction(Request $request)
+    {
+    }
 }
