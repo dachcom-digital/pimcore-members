@@ -138,10 +138,11 @@ class PimcoreBackend extends Module
      * @param Page         $document
      * @param null|Page    $redirectAfterSuccessDocument
      * @param null|Snippet $loginSnippet
+     * @param bool         $hideAreaAfterLogin
      */
-    public function seeAMembersAreaElementPlacedOnDocument(Page $document, $redirectAfterSuccessDocument = null, $loginSnippet = null)
+    public function seeAMembersAreaElementPlacedOnDocument(Page $document, $redirectAfterSuccessDocument = null, $loginSnippet = null, $hideAreaAfterLogin = false)
     {
-        $areaElement = $this->createMembersArea($redirectAfterSuccessDocument, $loginSnippet);
+        $areaElement = $this->createMembersArea($redirectAfterSuccessDocument, $loginSnippet, $hideAreaAfterLogin);
         $document->setElements($areaElement);
 
         try {
@@ -427,11 +428,11 @@ class PimcoreBackend extends Module
     /**
      * @param null|Page    $redirectAfterSuccessDocument
      * @param null|Snippet $loginSnippet
-     * @param bool         $hideSnippetAfterLogin
+     * @param bool         $hideAreaAfterLogin
      *
      * @return array
      */
-    protected function createMembersArea($redirectAfterSuccessDocument = null, $loginSnippet = null, $hideSnippetAfterLogin = false)
+    protected function createMembersArea($redirectAfterSuccessDocument = null, $loginSnippet = null, $hideAreaAfterLogin = false)
     {
         $blockArea = new Areablock();
         $blockArea->setName(MembersHelper::AREA_TEST_NAMESPACE);
@@ -450,7 +451,7 @@ class PimcoreBackend extends Module
 
         $hideWhenLoggedIn = new Checkbox();
         $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE));
-        $hideWhenLoggedIn->setDataFromEditmode($hideSnippetAfterLogin);
+        $hideWhenLoggedIn->setDataFromEditmode($hideAreaAfterLogin);
 
         $showSnippedWhenLoggedIn = null;
         if ($loginSnippet instanceof Snippet) {
