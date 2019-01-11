@@ -4,10 +4,17 @@ namespace MembersBundle;
 
 use MembersBundle\Tool\Install;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
+/**
+ * Class MembersBundle
+ *
+ * @package MembersBundle
+ */
 class MembersBundle extends AbstractPimcoreBundle
 {
-    const BUNDLE_VERSION = '2.1.1';
+    use PackageVersionTrait;
+    const PACKAGE_NAME = 'dachcom-digital/members';
 
     /**
      * {@inheritdoc}
@@ -15,14 +22,6 @@ class MembersBundle extends AbstractPimcoreBundle
     public function getInstaller()
     {
         return $this->container->get(Install::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getVersion()
-    {
-        return self::BUNDLE_VERSION;
     }
 
     /**
@@ -48,6 +47,14 @@ class MembersBundle extends AbstractPimcoreBundle
         return [
             '/bundles/members/css/admin.css'
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getComposerPackageName(): string
+    {
+        return self::PACKAGE_NAME;
     }
 
 }

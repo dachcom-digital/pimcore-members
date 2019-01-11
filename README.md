@@ -17,9 +17,6 @@ Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-membe
 * Allow Members to register in frontend
 * Restrict Documents, Objects and Assets to specific User Roles
 
-## Bundles supporting Members
-- [CoreShop](https://github.com/coreshop/CoreShop/)
-
 * * *
 
 ## Installation
@@ -30,20 +27,26 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~2.1.0"
+    "dachcom-digital/members" : "~2.3.0"
 }
 ```
 
-2.1 Activate & install it through backend.
-2.2 Via CLI:
+### Installation via Extension Manager
+After you have installed the Members Bundle via composer, open pimcore backend and go to `Tools` => `Extension`:
+- Click the green `+` Button in `Enable / Disable` row
+- Click the green `+` Button in `Install/Uninstall` row
+
+### Installation via CommandLine
+After you have installed the Members Bundle via composer:
+- Execute: `$ bin/console pimcore:bundle:enable MembersBundle`
+- Execute: `$ bin/console pimcore:bundle:install MembersBundle`
+
+#### Optional: Class Installation
+
+> Read more about the required classes [below](./README.md#class-installation)).
 
 ```bash
-bin/console pimcore:bundle:enable MembersBundle
-bin/console pimcore:bundle:install MembersBundle
-# optional:
 bin/console members:install:class
-# optional to be sure assets are symlinked:
-bin/console assets:install --symlink --relative
 ```
 
 ### Route Installation

@@ -14,3 +14,26 @@
 .members_icon_document_restriction {
     background: url(/bundles/members/img/lock.png) no-repeat scroll left center transparent !important;
 }
+
+.members-locked .x-grid-cell-inner .x-tree-node-text {
+    position: relative;
+}
+
+.members-locked .x-grid-cell-inner .x-tree-node-text:after {
+    content: "";
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 13px;
+    height: 14px;
+    left: -10px;
+    bottom: -4px;
+}
+
+.members-locked-main .x-grid-cell-inner .x-tree-node-text:after {
+    background-image: url(/bundles/members/img/tree_lock.png);
+}
+
+.members-locked-inherit .x-grid-cell-inner .x-tree-node-text:after {
+    background-image: url(/bundles/members/img/tree_lock_inherit.png);
+}

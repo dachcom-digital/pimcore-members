@@ -25,7 +25,6 @@ class UserManager implements UserManagerInterface
      */
     protected $memberStorageId;
 
-
     /**
      * {@inheritdoc}
      */
@@ -33,9 +32,10 @@ class UserManager implements UserManagerInterface
     {
         $this->configuration = $configuration;
         $this->classManager = $classManager;
-        $membersStorePath = DataObject::getByPath('/members');
-        if ($membersStorePath instanceof DataObject\Folder) {
-            $this->memberStorageId = DataObject::getByPath('/members')->getId();
+
+        $storagePath = $configuration->getConfig('storage_path');
+        if (($membersStoreObject = DataObject::getByPath($storagePath)) instanceof DataObject\Folder) {
+            $this->memberStorageId = $membersStoreObject->getId();
         }
     }
 

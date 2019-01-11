@@ -6,7 +6,13 @@ services:
         public: true
 
     # tool: installer
-    MembersBundle\Tool\Install: ~
+    MembersBundle\Tool\Install:
+        arguments:
+            $bundle: "@=service('kernel').getBundle('MembersBundle')"
+        calls:
+            - [setTokenStorageUserResolver, ['@Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver']]
+            - [setSerializer, ['@serializer']]
+            - [setConfiguration, ['@MembersBundle\Configuration\Configuration']]
 
     # tool: installer
     MembersBundle\Tool\TokenGenerator: ~

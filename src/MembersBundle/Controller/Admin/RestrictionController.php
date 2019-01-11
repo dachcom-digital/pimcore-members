@@ -19,7 +19,7 @@ class RestrictionController extends AdminController
     public function getGlobalSettingsAction()
     {
         /** @var Configuration $configuration */
-        $configuration = $this->container->get(Configuration::class);
+        $configuration = $this->get(Configuration::class);
 
         return $this->json(['settings' => $configuration->getConfigArray()]);
     }
@@ -30,7 +30,7 @@ class RestrictionController extends AdminController
     public function getGroupsAction()
     {
         /** @var AbstractListing $list */
-        $list = $this->container->get(ClassManager::class)->getGroupListing();
+        $list = $this->get(ClassManager::class)->getGroupListing();
 
         if ($list === false) {
             return $this->json([]);
@@ -60,6 +60,7 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function getDocumentRestrictionConfigAction(Request $request)
@@ -101,12 +102,13 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function setDocumentRestrictionConfigAction(Request $request)
     {
         /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->container->get(RestrictionService::class);
+        $restrictionService = $this->get(RestrictionService::class);
 
         $data = json_decode($request->query->get('data'));
 
@@ -141,7 +143,6 @@ class RestrictionController extends AdminController
             }
             //update or set restriction
         } else {
-
             $active = true;
 
             $membersDocumentInheritable = $settings->membersDocumentInheritable;
@@ -174,6 +175,7 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function deleteDocumentRestrictionConfigAction(Request $request)
@@ -200,12 +202,13 @@ class RestrictionController extends AdminController
 
     /**
      * @param Request $request
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function getNextParentRestrictionAction(Request $request)
     {
         /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->container->get(RestrictionService::class);
+        $restrictionService = $this->get(RestrictionService::class);
 
         $elementId = $request->query->get('docId');
         $cType = $request->query->get('cType');
