@@ -178,4 +178,26 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
         return $elements;
     }
 
+    /**
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     * @return array
+     */
+    public function loadData($data, $object = null, $params = [])
+    {
+        return $this->getDataFromResource($data, $object, $params);
+    }
+
+    /**
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     * @return array
+     */
+    public function prepareDataForPersistence($data, $object = null, $params = [])
+    {
+        return $this->getDataFromResource($data, $object, $params);
+    }
+
 }
