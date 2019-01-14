@@ -5,10 +5,13 @@ namespace MembersBundle\CoreExtension;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
+use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\Traits\ResourceDataTrait;
 use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 
 class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
 {
+    use ResourceDataTrait;
+
     /**
      * Static type of this element.
      *
