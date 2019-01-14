@@ -53,7 +53,7 @@ class ProfileFormCest
         $I->fillField('form[name="members_user_profile_form"] input[type="password"][id="members_user_profile_form_current_password"]', 'wrong-password');
         $I->click('Update');
 
-        $I->see('members.validation.current_password.invalid', '.form-error-message');
+        $I->see('The entered password is invalid.', '.form-error-message');
     }
 
     /**

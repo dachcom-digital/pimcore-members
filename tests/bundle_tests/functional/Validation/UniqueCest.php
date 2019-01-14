@@ -18,7 +18,7 @@ class UniqueCest
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_second"]', 'password');
         $I->click('Register');
 
-        $I->see('members.validation.email.already_used',  '.form-error-message');
+        $I->see('The email is already used.',  '.form-error-message');
     }
 
     public function testUniqueUsername(FunctionalTester $I)
@@ -32,7 +32,7 @@ class UniqueCest
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_second"]', 'password');
         $I->click('Register');
 
-        $I->see('members.validation.username.already_used',  '.form-error-message');
+        $I->see('The username is already used.',  '.form-error-message');
     }
 
 }
