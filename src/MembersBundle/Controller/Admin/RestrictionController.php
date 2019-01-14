@@ -104,6 +104,7 @@ class RestrictionController extends AdminController
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
      */
     public function setDocumentRestrictionConfigAction(Request $request)
     {
@@ -116,60 +117,33 @@ class RestrictionController extends AdminController
         $settings = $data->settings;
         $cType = $data->cType; //object|page|asset
 
-        //get all child elements and store them in members table!
-        $type = 'document';
+        $pimcoreType = 'document';
         if ($cType == 'object') {
-            $type = 'object';
+            $pimcoreType = 'object';
         } elseif ($cType == 'asset') {
-            $type = 'asset';
+            $pimcoreType = 'asset';
         }
 
-        $obj = \Pimcore\Model\Element\Service::getElementById($type, $docId);
+        $obj = \Pimcore\Model\Element\Service::getElementById($pimcoreType, $docId);
 
-        $restriction = null;
-        $hasRestriction = true;
-        $active = false;
+        $inheritableState = $settings->membersDocumentInheritable;
 
-        try {
-            $restriction = Restriction::getByTargetId($docId, $cType);
-        } catch (\Exception $e) {
-            $hasRestriction = false;
-        }
-
-        //remove restriction since no group is selected any more.
-        if (empty($settings->membersDocumentUserGroups)) {
-            if ($hasRestriction === true) {
-                $restriction->delete();
-            }
-            //update or set restriction
+        if ($inheritableState === 'on') {
+            $inheritable = true;
+        } elseif (is_null($inheritableState)) {
+            $inheritable = false;
         } else {
-            $active = true;
-
-            $membersDocumentInheritable = $settings->membersDocumentInheritable;
-            $membersDocumentUserGroups = explode(',', $settings->membersDocumentUserGroups);
-
-            if ($hasRestriction === false) {
-                $restriction = new Restriction();
-                $restriction->setTargetId($docId);
-                $restriction->setCtype($cType);
-            }
-
-            $restriction->setInherit($membersDocumentInheritable);
-            $restriction->setIsInherited(false);
-            $restriction->setRelatedGroups($membersDocumentUserGroups);
-            $restriction->save();
+            $inheritable = false;
         }
 
-        $restrictionService->checkRestrictionContext($obj, $cType);
-
-        //clear cache!
-        \Pimcore\Cache::clearTag('members');
+        $groups = array_filter(explode(',', $settings->membersDocumentUserGroups));
+        $restriction = $restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
 
         return $this->json([
             'success'    => true,
-            'isActive'   => $active,
+            'isActive'   => !empty($groups),
             'docId'      => (int)$settings->docId,
-            'userGroups' => $active ? $restriction->getRelatedGroups() : []
+            'userGroups' => !empty($groups) ? $restriction->getRelatedGroups() : []
         ]);
     }
 
@@ -183,7 +157,7 @@ class RestrictionController extends AdminController
         $data = json_decode($request->query->get('data'));
 
         $docId = (int)$data->docId;
-        $cType = $data->cType; //object|page
+        $cType = $data->cType; //object|page|asset
 
         $restriction = false;
 

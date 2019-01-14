@@ -6,6 +6,58 @@ use Pimcore\Model;
 
 class RestrictionService
 {
+    const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
+
+    /**
+     * @param Model\Element\ElementInterface $obj
+     * @param string                         $cType
+     * @param bool                           $inheritable
+     * @param bool                           $isInherited
+     * @param array                          $userGroupIds
+     *
+     * @return Restriction|null
+     * @throws \Exception
+     */
+    public function createRestriction(Model\Element\ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
+    {
+        if(!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
+            throw new \Exception(sprintf('restriction cType needs to be one of these: %s', implode(', ', self::ALLOWED_RESTRICTION_CTYPES)));
+        }
+        $restriction = null;
+        $hasRestriction = true;
+
+        try {
+            $restriction = Restriction::getByTargetId($obj->getId(), $cType);
+        } catch (\Exception $e) {
+            $hasRestriction = false;
+        }
+
+        //remove restriction since no group is selected any more.
+        if (empty($userGroupIds)) {
+            if ($hasRestriction === true) {
+                $restriction->delete();
+            }
+        } else {
+            if ($hasRestriction === false) {
+                $restriction = new Restriction();
+                $restriction->setTargetId($obj->getId());
+                $restriction->setCtype($cType);
+            }
+
+            $restriction->setInherit($inheritable);
+            $restriction->setIsInherited($isInherited);
+            $restriction->setRelatedGroups($userGroupIds);
+            $restriction->save();
+        }
+
+        $this->checkRestrictionContext($obj, $cType);
+
+        //clear cache!
+        \Pimcore\Cache::clearTag('members');
+
+        return $restriction;
+    }
+
     /**
      * Triggered by pre deletion events of all types.
      *
@@ -35,8 +87,8 @@ class RestrictionService
      * Triggered by post update events of all types ONLY when element gets moved in tree!
      * Check if element is in right context
      *
-     * @param \Pimcore\Model\AbstractModel $obj
-     * @param string                       $cType
+     * @param Model\Element\ElementInterface $obj
+     * @param string                         $cType
      */
     public function checkRestrictionContext($obj, $cType)
     {
