@@ -3,6 +3,7 @@ services:
     #form registration factory
     members.registration.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
+        public: true
         arguments:
             - '@form.factory'
             - '%members_user.registration.form.name%'

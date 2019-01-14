@@ -3,6 +3,7 @@ services:
     #form resetting request factory
     members.resetting_request.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
+        public: true
         arguments:
             - '@form.factory'
             - '%members_user.resetting_request.form.name%'
@@ -18,6 +19,7 @@ services:
     #form resetting factory
     members.resetting.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
+        public: true
         arguments:
             - '@form.factory'
             - '%members_user.resetting.form.name%'

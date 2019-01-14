@@ -38,14 +38,6 @@ class Configuration
     }
 
     /**
-     * @return array
-     */
-    public function getConfigNode()
-    {
-        return $this->config;
-    }
-
-    /**
      * @return mixed
      */
     public function getConfigArray()
@@ -61,33 +53,6 @@ class Configuration
     public function getConfig($slot)
     {
         return $this->config[$slot];
-    }
-
-    public function getLocalizedPath($slot, $locale = null)
-    {
-        $data = $this->getConfig($slot);
-
-        $event = new GenericEvent($this, [
-            'route' => $data
-        ]);
-
-        \Pimcore::getEventDispatcher()->dispatch(
-            'members.path.route',
-            $event
-        );
-
-        if ($event->hasArgument('url')) {
-            $url = $event->getArgument('url');
-        } else {
-            $lang = '';
-            if (!empty($locale)) {
-                $lang = (string)$locale;
-            }
-
-            $url = str_replace('/%lang', '/' . $lang, $data);
-        }
-
-        return $url;
     }
 
     /**

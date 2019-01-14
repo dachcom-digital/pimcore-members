@@ -7,27 +7,28 @@ use MembersBundle\Adapter\User\UserInterface;
 interface UserManagerInterface
 {
     /**
-     * @return bool|string
+     * @return string
      */
     public function getClass();
 
     /**
      * @param UserInterface $user
+     *
      * @return mixed
      */
     public function deleteUser(UserInterface $user);
 
     /**
-     * @param      $token
-     * @param bool $includeUnpublished
+     * @param string $token
+     * @param bool   $includeUnpublished
      *
      * @return null|UserInterface
      */
     public function findUserByConfirmationToken($token, $includeUnpublished = true);
 
     /**
-     * @param      $emailAddress
-     * @param bool $includeUnpublished
+     * @param string $emailAddress
+     * @param bool   $includeUnpublished
      *
      * @return null|UserInterface
      */
@@ -46,12 +47,14 @@ interface UserManagerInterface
      * @param array  $conditionVariables
      * @param bool   $includeUnpublished
      * @param bool   $returnSingle
+     *
      * @return null|array|UserInterface
      */
     public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true);
 
     /**
-     * @param $usernameOrEmail
+     * @param string $usernameOrEmail
+     *
      * @return null|array|UserInterface
      */
     public function findUserByUsernameOrEmail($usernameOrEmail);
@@ -63,6 +66,7 @@ interface UserManagerInterface
 
     /**
      * @param UserInterface $user
+     *
      * @return mixed
      */
     public function reloadUser(UserInterface $user);

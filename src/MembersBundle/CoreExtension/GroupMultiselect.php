@@ -4,9 +4,14 @@ namespace MembersBundle\CoreExtension;
 
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
+use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\Traits\ResourceDataTrait;
+use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 
-class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\AbstractRelations
+class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
 {
+    use ResourceDataTrait;
+
     /**
      * Static type of this element.
      *
@@ -15,9 +20,41 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
     public $fieldtype = 'membersGroupMultiselect';
 
     /**
+     * Type for the column to query
+     *
+     * @var string
+     */
+    public $queryColumnType = 'text';
+
+    /**
+     * Type for the generated phpdoc
+     *
+     * @var string
+     */
+    public $phpdocType = 'array';
+
+    /**
      * @var bool
      */
     public $relationType = true;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getQueryColumnType()
+    {
+        return 'text';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setQueryColumnType($queryColumnType)
+    {
+        $this->queryColumnType = $queryColumnType;
+
+        return $this;
+    }
 
     /**
      * @param string $data
@@ -49,6 +86,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param array                          $data
      * @param null|DataObject\AbstractObject $object
      * @param mixed                          $params
+     *
      * @return array
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
@@ -75,40 +113,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param       $data
      * @param null  $object
      * @param array $params
-     * @return array|null
-     */
-    public function getDataForResource($data, $object = null, $params = [])
-    {
-        $return = [];
-
-        if (is_array($data) && count($data) > 0) {
-            $counter = 1;
-            foreach ($data as $group) {
-                $return[] = [
-                    'src_id'    => $object->getId(),
-                    'dest_id'   => $group->getId(),
-                    'type'      => 'object',
-                    'fieldname' => $this->getName(),
-                    'index'     => $counter
-                ];
-
-                $counter++;
-            }
-
-            return $return;
-        } elseif (is_array($data) and count($data) === 0) {
-            //give empty array if data was not null
-            return [];
-        } else {
-            //return null if data was null  - this indicates data was not loaded
-            return null;
-        }
-    }
-
-    /**
-     * @param       $data
-     * @param null  $object
-     * @param array $params
+     *
      * @return null|string
      * @throws \Exception
      */
@@ -140,6 +145,7 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
     /**
      * @param       $object
      * @param array $params
+     *
      * @return array|mixed|null
      */
     public function preGetData($object, $params = [])
@@ -158,6 +164,56 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
      * @param array $data
      * @param null  $object
      * @param array $params
+     *
+     * @return array
+     */
+    public function loadData($data, $object = null, $params = [])
+    {
+        return $this->getDataFromResource($data, $object, $params);
+    }
+
+    /**
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     *
+     * @return array
+     */
+    public function prepareDataForPersistence($data, $object = null, $params = [])
+    {
+        $return = [];
+
+        if (is_array($data) && count($data) > 0) {
+            $counter = 1;
+            foreach ($data as $object) {
+                if ($object instanceof Element\ElementInterface) {
+                    $return[] = [
+                        'dest_id'   => $object->getId(),
+                        'type'      => Element\Service::getElementType($object),
+                        'fieldname' => $this->getName(),
+                        'index'     => $counter
+                    ];
+                }
+                $counter++;
+            }
+
+            return $return;
+        } elseif (is_array($data) and count($data) === 0) {
+            //give empty array if data was not null
+            return [];
+        } else {
+            //return null if data was null  - this indicates data was not loaded
+            return null;
+        }
+    }
+
+    /**
+     * BC Layer for pimcore < 5.6
+     *
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     *
      * @return array
      */
     public function getDataFromResource($data = [], $object = null, $params = [])
@@ -176,28 +232,6 @@ class GroupMultiselect extends DataObject\ClassDefinition\Data\Relations\Abstrac
         }
 
         return $elements;
-    }
-
-    /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     * @return array
-     */
-    public function loadData($data, $object = null, $params = [])
-    {
-        return $this->getDataFromResource($data, $object, $params);
-    }
-
-    /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     * @return array
-     */
-    public function prepareDataForPersistence($data, $object = null, $params = [])
-    {
-        return $this->getDataFromResource($data, $object, $params);
     }
 
 }

@@ -3,7 +3,6 @@
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Configuration\Configuration;
 use MembersBundle\Mailer\Mailer;
 use MembersBundle\Manager\UserManagerInterface;
 use Pimcore\Event\DataObjectEvents;
@@ -23,22 +22,25 @@ class UserChangeListener implements EventSubscriberInterface
     protected $mailer;
 
     /**
-     * @var Configuration
+     * @var string
      */
-    protected $configuration;
+    protected $postEventType;
 
     /**
      * UserChangeListener constructor.
      *
      * @param UserManagerInterface $userManager
      * @param Mailer               $pimcoreMailer
-     * @param Configuration        $configuration
+     * @param string               $postEventType
      */
-    public function __construct(UserManagerInterface $userManager, Mailer $pimcoreMailer, Configuration $configuration)
-    {
+    public function __construct(
+        UserManagerInterface $userManager,
+        Mailer $pimcoreMailer,
+        string $postEventType
+    ) {
         $this->userManager = $userManager;
         $this->mailer = $pimcoreMailer;
-        $this->configuration = $configuration;
+        $this->postEventType = $postEventType;
     }
 
     /**
@@ -58,8 +60,7 @@ class UserChangeListener implements EventSubscriberInterface
     {
         $user = $e->getObject();
 
-        if (!$user instanceof UserInterface
-            || $this->configuration->getConfig('post_register_type') !== 'confirm_by_admin') {
+        if (!$user instanceof UserInterface || $this->postEventType !== 'confirm_by_admin') {
             return;
         }
 

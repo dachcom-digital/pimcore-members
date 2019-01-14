@@ -289,8 +289,8 @@ class Install extends MigrationInstaller
             throw new AbortMigrationException(sprintf('Failed to install protected asset folder. error was: "%s"', $e->getMessage()));
         }
 
-        //now create .htaccess file to disallow every request to this folder (exept admin!
-        $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'a+');
+        //now create .htaccess file to disallow every request to this folder (except admin)!
+        $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'w+');
 
         $rule = 'RewriteEngine On' . "\n";
         $rule .= 'RewriteCond %{HTTP_HOST}==%{HTTP_REFERER} !^(.*?)==https?://\1/admin/ [OR]' . "\n";

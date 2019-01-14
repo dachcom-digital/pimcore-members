@@ -1,7 +1,9 @@
 {
     "description": null,
     "parentClass": "\\MembersBundle\\Adapter\\User\\AbstractUser",
+    "listingParentClass": null,
     "useTraits": null,
+    "listingUseTraits": null,
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
@@ -16,7 +18,7 @@
         "width": null,
         "height": null,
         "collapsible": false,
-        "collapsed": null,
+        "collapsed": false,
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
@@ -45,6 +47,8 @@
                         "columnLength": 190,
                         "phpdocType": "string",
                         "regex": "",
+                        "unique": null,
+                        "showCharCount": null,
                         "name": "userName",
                         "title": "User Name",
                         "tooltip": "",
@@ -68,6 +72,8 @@
                         "columnLength": 190,
                         "phpdocType": "string",
                         "regex": "",
+                        "unique": null,
+                        "showCharCount": null,
                         "name": "email",
                         "title": "email",
                         "tooltip": "",
@@ -91,6 +97,8 @@
                         "columnLength": 190,
                         "phpdocType": "string",
                         "regex": "",
+                        "unique": null,
+                        "showCharCount": null,
                         "name": "confirmationToken",
                         "title": "Confirmation Token",
                         "tooltip": "",
@@ -190,11 +198,11 @@
                         "style": "",
                         "permissions": null,
                         "datatype": "data",
-                        "columnType": "text",
-                        "queryColumnType": "text",
                         "invisible": false,
                         "visibleGridView": false,
-                        "visibleSearch": false
+                        "visibleSearch": false,
+                        "queryColumnType": "text",
+                        "phpdocType": "array"
                     }
                 ],
                 "locked": false
@@ -205,9 +213,11 @@
     "icon": "\/bundles\/members\/img\/objectUser.svg",
     "previewUrl": null,
     "group": null,
+    "linkGeneratorReference": null,
     "propertyVisibility": {
         "grid": {
             "id": true,
+            "key": false,
             "path": true,
             "published": true,
             "modificationDate": true,
@@ -215,6 +225,7 @@
         },
         "search": {
             "id": true,
+            "key": false,
             "path": true,
             "published": true,
             "modificationDate": true,

@@ -3,6 +3,7 @@ services:
     #form profile factory
     members.profile.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
+        public: true
         arguments:
             - '@form.factory'
             - '%members_user.profile.form.name%'

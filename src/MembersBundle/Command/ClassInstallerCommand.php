@@ -36,9 +36,10 @@ class ClassInstallerCommand extends ContainerAwareCommand
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', false);
 
-        if (!$helper->ask($input, $output, $question)) {
+        if ($input->isInteractive() === true && !$helper->ask($input, $output, $question)) {
             return;
         }
+
         foreach ($this->getClasses() as $className => $path) {
 
             $class = new ClassDefinition();

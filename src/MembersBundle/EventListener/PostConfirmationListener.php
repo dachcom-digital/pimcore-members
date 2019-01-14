@@ -61,7 +61,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         UrlGeneratorInterface $router,
         SessionInterface $session,
         TokenGenerator $tokenGenerator,
-        $postEventType
+        string $postEventType
     ) {
         $this->userManager = $userManager;
         $this->mailer = $pimcoreMailer;
