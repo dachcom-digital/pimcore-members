@@ -167,6 +167,55 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      *
      * @return array
      */
+    public function loadData($data, $object = null, $params = [])
+    {
+        return $this->getDataFromResource($data, $object, $params);
+    }
+
+    /**
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     *
+     * @return array
+     */
+    public function prepareDataForPersistence($data, $object = null, $params = [])
+    {
+        $return = [];
+
+        if (is_array($data) && count($data) > 0) {
+            $counter = 1;
+            foreach ($data as $object) {
+                if ($object instanceof Element\ElementInterface) {
+                    $return[] = [
+                        'dest_id'   => $object->getId(),
+                        'type'      => Element\Service::getElementType($object),
+                        'fieldname' => $this->getName(),
+                        'index'     => $counter
+                    ];
+                }
+                $counter++;
+            }
+
+            return $return;
+        } elseif (is_array($data) and count($data) === 0) {
+            //give empty array if data was not null
+            return [];
+        } else {
+            //return null if data was null  - this indicates data was not loaded
+            return null;
+        }
+    }
+
+    /**
+     * BC Layer for pimcore < 5.6
+     *
+     * @param array $data
+     * @param null  $object
+     * @param array $params
+     *
+     * @return array
+     */
     public function getDataFromResource($data = [], $object = null, $params = [])
     {
         $elements = [];
@@ -185,27 +234,4 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
         return $elements;
     }
 
-    /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     *
-     * @return array
-     */
-    public function loadData($data, $object = null, $params = [])
-    {
-        return $this->getDataFromResource($data, $object, $params);
-    }
-
-    /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     *
-     * @return array
-     */
-    public function prepareDataForPersistence($data, $object = null, $params = [])
-    {
-        return $this->getDataFromResource($data, $object, $params);
-    }
 }
