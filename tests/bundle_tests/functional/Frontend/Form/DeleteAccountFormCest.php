@@ -40,7 +40,7 @@ class DeleteAccountFormCest
             MembersHelper::DEFAULT_FEU_PASSWORD);
         $I->click('Delete account');
 
-        $I->see('members.validation.delete_account.confirm_not_checked', '.form-error-message');
+        $I->see('You have to confirm the account deletion.', '.form-error-message');
     }
 
     /**
