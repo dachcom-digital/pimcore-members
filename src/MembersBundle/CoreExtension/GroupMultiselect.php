@@ -4,14 +4,11 @@ namespace MembersBundle\CoreExtension;
 
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\ClassDefinition\Data\Extension;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
 use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 
 class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
 {
-    use Extension\QueryColumnType;
-
     /**
      * Static type of this element.
      *
@@ -44,6 +41,16 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     public function getQueryColumnType()
     {
         return 'text';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setQueryColumnType($queryColumnType)
+    {
+        $this->queryColumnType = $queryColumnType;
+
+        return $this;
     }
 
     /**
