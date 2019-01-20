@@ -9,12 +9,15 @@ trait UserTrait
 {
     /**
      * The salt to use for hashing.
+     *
      * @var string
      */
     protected $salt;
 
     /**
-     * Plain password. Used for model validation. Must not be persisted.
+     * Plain password. Used for model validation.
+     * Must not be persisted.
+     *
      * @var string
      */
     protected $plainPassword;
@@ -41,12 +44,13 @@ trait UserTrait
     {
         // user has no salt as we use password_hash
         // which handles the salt by itself
-        return NULL;
+        return null;
     }
 
     /**
      * Trigger the hash calculation to remove the plain text password from the instance. This
      * is necessary to make sure no plain text passwords are serialized.
+     *
      * @inheritDoc
      */
     public function eraseCredentials()
