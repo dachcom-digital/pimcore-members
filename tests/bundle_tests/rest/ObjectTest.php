@@ -28,6 +28,7 @@ class UserTest extends RestTestCase
         $unsavedObject->setParentId(1);
         $unsavedObject->setUserOwner(1);
         $unsavedObject->setUserModification(1);
+        $unsavedObject->setPublished(1);
         $unsavedObject->setCreationDate(time());
         $unsavedObject->setKey(uniqid() . rand(10, 99));
 
@@ -60,6 +61,7 @@ class UserTest extends RestTestCase
         $unsavedObject->setParentId(1);
         $unsavedObject->setUserOwner(1);
         $unsavedObject->setUserModification(1);
+        $unsavedObject->setPublished(1);
         $unsavedObject->setCreationDate(time());
         $unsavedObject->setKey(uniqid() . rand(10, 99));
 
