@@ -1,8 +1,10 @@
 class_name: RestTester
 modules:
     enabled:
-        - \Pimcore\Tests\Helper\Pimcore:
+        - \DachcomBundle\Test\Helper\PimcoreCore:
             connect_db: true
+        - \DachcomBundle\Test\Helper\PimcoreBundleCore:
+            run_installer: true
         - \Pimcore\Tests\Helper\ClassManager
         - \Pimcore\Tests\Helper\Model
         - \Pimcore\Tests\Helper\PimcoreRest:
