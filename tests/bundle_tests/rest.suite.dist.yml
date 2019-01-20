@@ -5,9 +5,7 @@ modules:
             connect_db: true
         - \DachcomBundle\Test\Helper\PimcoreBundleCore:
             run_installer: true
-        - \Pimcore\Tests\Helper\ClassManager
-        - \Pimcore\Tests\Helper\Model
-        - \Pimcore\Tests\Helper\PimcoreRest:
+        - \DachcomBundle\Test\Helper\PimcoreRest:
             url: /webservice/rest
             depends: \Pimcore\Tests\Helper\Pimcore
 

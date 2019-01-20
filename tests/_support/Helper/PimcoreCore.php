@@ -50,6 +50,7 @@ class PimcoreCore extends PimcoreCoreModule
      */
     public function _afterSuite()
     {
+       \Pimcore::collectGarbage();
         $this->clearCache();
         parent::_afterSuite();
     }
@@ -114,6 +115,8 @@ class PimcoreCore extends PimcoreCoreModule
      */
     protected function clearCache($force = true)
     {
+        \Codeception\Util\Debug::debug('[PIMCORE] Clear Cache!');
+
         $fileSystem = new Filesystem();
 
         try {
