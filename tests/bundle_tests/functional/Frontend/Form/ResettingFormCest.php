@@ -22,6 +22,8 @@ class ResettingFormCest
 
     /**
      * @param FunctionalTester $I
+     *
+     * @throws \Codeception\Exception\ModuleException
      */
     public function testResettingByUsername(FunctionalTester $I)
     {
@@ -31,9 +33,25 @@ class ResettingFormCest
 
     /**
      * @param FunctionalTester $I
+     *
+     * @throws \Codeception\Exception\ModuleException
      */
     public function testResettingByEmailAddress(FunctionalTester $I)
     {
+        $user = $I->haveARegisteredFrontEndUser(true);
+        $this->triggerResetForm($I, $user->getEmail());
+    }
+
+
+    /**
+     * @param FunctionalTester $I
+     *
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function testResettingWithAdminConfirm(FunctionalTester $I)
+    {
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yml');
+
         $user = $I->haveARegisteredFrontEndUser(true);
         $this->triggerResetForm($I, $user->getEmail());
     }

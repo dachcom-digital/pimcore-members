@@ -72,6 +72,10 @@ class UserChangeListener implements EventSubscriberInterface
             return;
         }
 
+        if ($user->getPasswordRequestedAt() !== null) {
+            return;
+        }
+
         $user->setConfirmationToken(null);
         $this->userManager->updateUser($user);
         $this->mailer->sendConfirmedEmailMessage($user);
