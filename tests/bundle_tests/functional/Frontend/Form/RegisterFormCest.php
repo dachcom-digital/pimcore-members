@@ -27,6 +27,8 @@ class RegisterFormCest
 
     /**
      * @param FunctionalTester $I
+     *
+     * @throws \Exception
      */
     public function testUserRegistrationFormConfirmByMail(FunctionalTester $I)
     {
@@ -120,6 +122,8 @@ class RegisterFormCest
 
     /**
      * @param FunctionalTester $I
+     *
+     * @throws \Exception
      */
     public function testUserRegistrationFormConfirmInstant(FunctionalTester $I)
     {
