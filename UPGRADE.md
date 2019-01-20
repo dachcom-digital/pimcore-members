@@ -8,6 +8,9 @@ Just click the "update" button or execute the migration command to finish the bu
 
 #### Update from Version 2.2.x to Version 2.3.0
 - **[ATTENTION]**: Installer has moved to the [MigrationBundle](https://github.com/dachcom-digital/pimcore-members/issues/74). After updating to this version you need to enable this extension again!
+- **[ATTENTION]**: The user class validation is now mapped via UserInterface (see [#76](https://github.com/dachcom-digital/pimcore-members/issues/76)).
+- **[ATTENTION]**: Validation messages has been moved to validation files (see [#66](https://github.com/dachcom-digital/pimcore-members/issues/66)).
+- Various Fixes: [See Milestone](https://github.com/dachcom-digital/pimcore-members/milestone/5?closed=1).
 
 #### Update from Version 2.2.0 to Version 2.2.1
 - implemented [PackageVersionTrait](https://github.com/pimcore/pimcore/blob/master/lib/Extension/Bundle/Traits/PackageVersionTrait.php)
