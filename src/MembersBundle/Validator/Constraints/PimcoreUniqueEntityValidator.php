@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Validator\Constraints;
 
+use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -26,8 +27,8 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
     }
 
     /**
-     * @param \Pimcore\Model\DataObject\MembersUser $entity
-     * @param Constraint                            $constraint
+     * @param UserInterface $entity
+     * @param Constraint    $constraint
      */
     public function validate($entity, Constraint $constraint)
     {
@@ -40,7 +41,6 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
         }
 
         $fields = (array)$constraint->fields;
-
 
         if (0 === count($fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');
@@ -61,7 +61,6 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
 
             $criteria[$fieldName] = $entity->$getter();
         }
-
 
         $condition = [];
         $values = [];
