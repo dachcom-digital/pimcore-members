@@ -20,7 +20,7 @@ class RestrictionService
      */
     public function createRestriction(Model\Element\ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
     {
-        if(!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
+        if (!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
             throw new \Exception(sprintf('restriction cType needs to be one of these: %s', implode(', ', self::ALLOWED_RESTRICTION_CTYPES)));
         }
         $restriction = null;
@@ -204,6 +204,7 @@ class RestrictionService
         try {
             $currentRestriction = Restriction::getByTargetId($obj->getId(), $cType);
         } catch (\Exception $e) {
+            // fail silently
         }
 
         if ($currentRestriction instanceof Restriction && $currentRestriction->getIsInherited() === false) {
@@ -225,12 +226,17 @@ class RestrictionService
 
         $paths = array_reverse($paths);
 
+        $class = null;
         if ($obj instanceof Model\DataObject\AbstractObject) {
             $class = '\Pimcore\Model\DataObject\AbstractObject';
         } elseif ($obj instanceof Model\Document) {
             $class = '\Pimcore\Model\Document';
         } elseif ($obj instanceof Model\Asset) {
             $class = '\Pimcore\Model\Asset';
+        }
+
+        if ($class === null) {
+            return $data;
         }
 
         foreach ($paths as $p) {

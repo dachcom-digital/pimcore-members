@@ -11,8 +11,8 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\UserManager;
 use Pimcore\File;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\MembersUser;
 use Pimcore\Model\Document\Email;
+use Pimcore\Model\DataObject\MembersUser;
 use Symfony\Component\DependencyInjection\Container;
 
 class MembersFrontend extends Module implements DependsOnModule

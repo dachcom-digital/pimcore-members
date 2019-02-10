@@ -3,7 +3,6 @@
 namespace MembersBundle\Configuration;
 
 use Pimcore\Extension\Bundle\PimcoreBundleManager;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 class Configuration
 {
@@ -46,7 +45,7 @@ class Configuration
     }
 
     /**
-     * @param $slot
+     * @param string $slot
      *
      * @return mixed
      */
