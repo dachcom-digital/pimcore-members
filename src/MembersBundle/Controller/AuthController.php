@@ -17,15 +17,15 @@ class AuthController extends AbstractController
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;
 
-        /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
         $session = $request->getSession();
 
         // last username entered by the user
         $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
 
-        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.security.login.form.factory');
-        $form = $formFactory->createUnnamedForm(['last_username' => $lastUsername]);
+        $form = $formFactory->createUnnamedFormWithOption(['last_username' => $lastUsername]);
 
         $form->handleRequest($request);
 

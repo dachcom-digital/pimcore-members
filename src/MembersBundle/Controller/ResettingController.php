@@ -23,11 +23,12 @@ class ResettingController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function requestAction(Request $request)
     {
-        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.resetting_request.form.factory');
 
         $form = $formFactory->createUnnamedForm();
@@ -40,16 +41,17 @@ class ResettingController extends AbstractController
 
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function sendEmailAction(Request $request)
     {
         $username = $request->request->get('username');
 
-        /** @var $user UserInterface */
+        /** @var UserInterface $user */
         $user = $this->get(UserManager::class)->findUserByUsernameOrEmail($username);
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         /* Dispatch init event */
@@ -71,7 +73,7 @@ class ResettingController extends AbstractController
             }
 
             if (null === $user->getConfirmationToken()) {
-                /** @var $tokenGenerator TokenGeneratorInterface */
+                /** @var TokenGeneratorInterface $tokenGenerator */
                 $tokenGenerator = $this->get(TokenGenerator::class);
                 $user->setConfirmationToken($tokenGenerator->generateToken());
             }
@@ -102,6 +104,7 @@ class ResettingController extends AbstractController
 
     /**
      * @param Request $request
+     *
      * @return RedirectResponse|Response
      */
     public function checkEmailAction(Request $request)
@@ -120,7 +123,8 @@ class ResettingController extends AbstractController
 
     /**
      * @param Request $request
-     * @param         $token
+     * @param string  $token
+     *
      * @return null|RedirectResponse|Response
      */
     public function resetAction(Request $request, $token = null)
@@ -129,11 +133,11 @@ class ResettingController extends AbstractController
             return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
         }
 
-        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
+        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.resetting.form.factory');
-        /** @var $userManager UserManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
-        /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
+        /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         $user = $userManager->findUserByConfirmationToken($token);

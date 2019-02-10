@@ -27,7 +27,7 @@ class DeleteAccountController extends AbstractController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         $event = new GetResponseUserEvent($user, $request);
@@ -37,7 +37,7 @@ class DeleteAccountController extends AbstractController
             return $event->getResponse();
         }
 
-        /** @var $formFactory FactoryInterface */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->get('members.delete_account.form.factory');
 
         $form = $formFactory->createForm();
@@ -47,7 +47,7 @@ class DeleteAccountController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /** @var $userManager UserManager */
+            /** @var UserManager $userManager */
             $userManager = $this->get(UserManager::class);
 
             $event = new GetResponseUserEvent($user, $request);

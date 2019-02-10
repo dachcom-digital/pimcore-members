@@ -40,9 +40,17 @@ class MembersLogin extends AbstractTemplateAreabrick
     {
         $view = $info->getView();
 
-        $redirectAfterSuccess = $this->getDocumentTag($info->getDocument(), 'href', 'redirectAfterSuccess')->getElement();
-        $showSnippedWhenLoggedIn = $this->getDocumentTag($info->getDocument(), 'href', 'showSnippedWhenLoggedIn')->getElement();
-        $hideWhenLoggedIn = $this->getDocumentTag($info->getDocument(), 'checkbox', 'hideWhenLoggedIn')->isChecked();
+         /** @var \Pimcore\Model\Document\Tag\Href $redirectAfterSuccessElement */
+        $redirectAfterSuccessElement = $this->getDocumentTag($info->getDocument(), 'href', 'redirectAfterSuccess');
+        $redirectAfterSuccess = $redirectAfterSuccessElement->getElement();
+
+         /** @var \Pimcore\Model\Document\Tag\Href $showSnippedWhenLoggedInElement */
+        $showSnippedWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'href', 'showSnippedWhenLoggedIn');
+        $showSnippedWhenLoggedIn = $showSnippedWhenLoggedInElement->getElement();
+
+        /** @var \Pimcore\Model\Document\Tag\Checkbox $hideWhenLoggedInElement */
+        $hideWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'checkbox', 'hideWhenLoggedIn');
+        $hideWhenLoggedIn = $hideWhenLoggedInElement->isChecked();
 
         $this->brickBuilder->setup('area')
             ->setRequest($info->getRequest())
@@ -66,8 +74,8 @@ class MembersLogin extends AbstractTemplateAreabrick
             $formParams['_failure_path'] = $params['failure_path'];
         }
 
-        /** @var $formFactory \MembersBundle\Form\Factory\FactoryInterface */
-        $form = $this->formFactory->createUnnamedForm($formParams);
+        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
+        $form = $this->formFactory->createUnnamedFormWithOption($formParams);
 
         $view->getParameters()->set('form', $form->createView());
         foreach ($params as $key => $param) {

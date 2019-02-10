@@ -8,7 +8,6 @@ use MembersBundle\Restriction\Restriction;
 use MembersBundle\Restriction\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use MembersBundle\Configuration\Configuration;
-use Pimcore\Model\Listing\AbstractListing;
 use Symfony\Component\HttpFoundation\Request;
 
 class RestrictionController extends AdminController
@@ -29,7 +28,6 @@ class RestrictionController extends AdminController
      */
     public function getGroupsAction()
     {
-        /** @var AbstractListing $list */
         $list = $this->get(ClassManager::class)->getGroupListing();
 
         if ($list === false) {
@@ -168,7 +166,7 @@ class RestrictionController extends AdminController
 
         //restriction has been disabled! remove everything!
         if ($restriction !== false) {
-            $restriction->delete();
+            $restriction->getDao()->delete();
         }
 
         return $this->json(['success' => true]);

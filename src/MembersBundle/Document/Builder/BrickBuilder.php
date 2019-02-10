@@ -97,7 +97,8 @@ class BrickBuilder
     }
 
     /**
-     * @param $sourceType
+     * @param string $sourceType
+     *
      * @return $this
      */
     public function setup($sourceType)
@@ -110,6 +111,7 @@ class BrickBuilder
 
     /**
      * @param Request $request
+     *
      * @return $this
      */
     public function setRequest(Request $request)
@@ -121,6 +123,7 @@ class BrickBuilder
 
     /**
      * @param bool $isEditMode
+     *
      * @return $this
      */
     public function setEditMode($isEditMode = false)
@@ -131,7 +134,7 @@ class BrickBuilder
     }
 
     /**
-     * @param        $name
+     * @param string $name
      * @param string $path
      */
     public function setTemplate($name, $path = '')
@@ -140,7 +143,8 @@ class BrickBuilder
     }
 
     /**
-     * @param $name
+     * @param string $name
+     *
      * @return mixed
      */
     public function getTemplate($name)
@@ -151,6 +155,7 @@ class BrickBuilder
     /**
      * @param Document $page
      * Allowed Types: 'page', 'link', 'hardlink'
+     *
      * @return $this
      */
     public function setRedirectAfterSuccess($page)
@@ -164,6 +169,7 @@ class BrickBuilder
 
     /**
      * @param Document\Snippet $snippet
+     *
      * @return $this
      */
     public function setSnippetAfterLogin($snippet)
@@ -177,6 +183,7 @@ class BrickBuilder
 
     /**
      * @param string|bool $hide
+     *
      * @return $this
      */
     public function setHideAfterLogin($hide = false)

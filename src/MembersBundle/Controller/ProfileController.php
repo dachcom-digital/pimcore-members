@@ -47,7 +47,7 @@ class ProfileController extends AbstractController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->container->get('event_dispatcher');
 
         $event = new GetResponseUserEvent($user, $request);
@@ -57,7 +57,7 @@ class ProfileController extends AbstractController
             return $event->getResponse();
         }
 
-        /** @var $formFactory FactoryInterface */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->container->get('members.profile.form.factory');
 
         $form = $formFactory->createForm();
@@ -66,7 +66,7 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var $userManager UserManager */
+            /** @var UserManager $userManager */
             $userManager = $this->container->get(UserManager::class);
 
             $event = new FormEvent($form, $request);

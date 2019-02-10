@@ -131,8 +131,8 @@ class TreeListener implements EventSubscriberInterface
     }
 
     /**
-     * @param $id
-     * @param $type
+     * @param int    $id
+     * @param string $type
      *
      * @return bool|Restriction
      */

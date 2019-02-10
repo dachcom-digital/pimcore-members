@@ -99,7 +99,7 @@ class PostConfirmationListener implements EventSubscriberInterface
      */
     private function confirmByMail(FormEvent $event)
     {
-        /** @var $user UserInterface */
+        /** @var UserInterface $user */
         $user = $event->getForm()->getData();
 
         $user->setPublished(false);
@@ -123,7 +123,7 @@ class PostConfirmationListener implements EventSubscriberInterface
      */
     private function confirmByAdmin(FormEvent $event)
     {
-        /** @var $user UserInterface */
+        /** @var UserInterface $user */
         $user = $event->getForm()->getData();
 
         $user->setPublished(false);
@@ -147,7 +147,7 @@ class PostConfirmationListener implements EventSubscriberInterface
      */
     private function confirmInstant(FormEvent $event)
     {
-        /** @var $user UserInterface */
+        /** @var UserInterface $user */
         $user = $event->getForm()->getData();
         $user->setPublished(true);
         $this->userManager->updateUser($user);

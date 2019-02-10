@@ -20,17 +20,18 @@ class RegistrationController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function registerAction(Request $request)
     {
-        /** @var $formFactory FactoryInterface */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->get('members.registration.form.factory');
 
-        /** @var $userManager UserManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         /** @var UserInterface $user */
@@ -128,12 +129,13 @@ class RegistrationController extends AbstractController
 
     /**
      * @param Request $request
-     * @param         $token
+     * @param string  $token
+     *
      * @return null|RedirectResponse|Response
      */
     public function confirmAction(Request $request, $token)
     {
-        /** @var $userManager UserManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
 
         /** @var UserInterface $user */
@@ -143,7 +145,7 @@ class RegistrationController extends AbstractController
             throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         $user->setConfirmationToken(null);
@@ -194,6 +196,7 @@ class RegistrationController extends AbstractController
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     private function getUserProperties($request)

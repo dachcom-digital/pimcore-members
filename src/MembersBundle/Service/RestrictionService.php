@@ -35,7 +35,7 @@ class RestrictionService
         //remove restriction since no group is selected any more.
         if (empty($userGroupIds)) {
             if ($hasRestriction === true) {
-                $restriction->delete();
+                $restriction->getDao()->delete();
             }
         } else {
             if ($hasRestriction === false) {
@@ -47,7 +47,7 @@ class RestrictionService
             $restriction->setInherit($inheritable);
             $restriction->setIsInherited($isInherited);
             $restriction->setRelatedGroups($userGroupIds);
-            $restriction->save();
+            $restriction->getDao()->save();
         }
 
         $this->checkRestrictionContext($obj, $cType);
@@ -61,8 +61,8 @@ class RestrictionService
     /**
      * Triggered by pre deletion events of all types.
      *
-     * @param $obj
-     * @param $cType
+     * @param Model\Element\ElementInterface $obj
+     * @param string                         $cType
      *
      * @return bool
      */
@@ -77,7 +77,7 @@ class RestrictionService
         }
 
         if ($restriction !== false) {
-            $restriction->delete();
+            $restriction->getDao()->delete();
         }
 
         return true;
@@ -116,8 +116,8 @@ class RestrictionService
     }
 
     /**
-     * @param $obj
-     * @param $cType
+     * @param Model\Element\ElementInterface $obj
+     * @param string                         $cType
      */
     private function updateChildren($obj, $cType)
     {
@@ -146,7 +146,7 @@ class RestrictionService
             return;
         }
 
-        /** @var \Pimcore\Model\AbstractModel $child */
+        /** @var Model\Element\ElementInterface $child */
         foreach ($children as $child) {
 
             $childRestriction = null;
@@ -168,8 +168,8 @@ class RestrictionService
     }
 
     /**
-     * @param      $elementId
-     * @param      $cType
+     * @param int    $elementId
+     * @param string $cType
      *
      * @return array
      */
@@ -240,7 +240,7 @@ class RestrictionService
         }
 
         foreach ($paths as $p) {
-            /** @var \Pimcore\Model\AbstractModel $el */
+            /** @var Model\Element\ElementInterface $el */
             if ($el = $class::getByPath($p)) {
                 $restriction = false;
                 try {
@@ -268,10 +268,10 @@ class RestrictionService
     }
 
     /**
-     * @param                  $obj
-     * @param                  $cType
-     * @param Restriction|null $objectRestriction
-     * @param Restriction|null $parentRestriction
+     * @param Model\Element\ElementInterface $obj
+     * @param string                         $cType
+     * @param Restriction|null               $objectRestriction
+     * @param Restriction|null               $parentRestriction
      */
     private function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
     {
@@ -288,13 +288,13 @@ class RestrictionService
             $restriction->setCtype($cType);
             $restriction->setIsInherited(true);
             $restriction->setRelatedGroups($parentRestriction->getRelatedGroups());
-            $restriction->save();
+            $restriction->getDao()->save();
             return;
         }
 
         if (!$hasParentRestriction && $hasRestriction) {
             if ($objectRestriction->isInherited()) {
-                $objectRestriction->delete();
+                $objectRestriction->getDao()->delete();
                 return;
             }
         }
@@ -302,10 +302,10 @@ class RestrictionService
         if ($hasParentRestriction && $hasRestriction) {
             if ($objectRestriction->isInherited()) {
                 if ($parentRestriction->getInherit() === false && $parentRestriction->isInherited() === false) {
-                    $objectRestriction->delete();
+                    $objectRestriction->getDao()->delete();
                 } else {
                     $objectRestriction->setRelatedGroups($parentRestriction->getRelatedGroups());
-                    $objectRestriction->save();
+                    $objectRestriction->getDao()->save();
                 }
                 return;
             }
@@ -313,7 +313,7 @@ class RestrictionService
     }
 
     /**
-     * @param $obj
+     * @param Model\Element\ElementInterface $obj
      *
      * @return bool
      */

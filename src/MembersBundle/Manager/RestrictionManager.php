@@ -12,6 +12,7 @@ use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RestrictionManager implements RestrictionManagerInterface
@@ -52,6 +53,7 @@ class RestrictionManager implements RestrictionManagerInterface
 
     /**
      * @param AbstractModel $element
+     *
      * @return bool|array
      */
     public function getElementRestrictedGroups(AbstractModel $element)
@@ -81,6 +83,7 @@ class RestrictionManager implements RestrictionManagerInterface
 
     /**
      * @param AbstractModel $element
+     *
      * @return ElementRestriction
      */
     public function getElementRestrictionStatus(AbstractModel $element)
@@ -128,8 +131,9 @@ class RestrictionManager implements RestrictionManagerInterface
     }
 
     /**
-     * @param $userGroups
-     * @param $elementGroups
+     * @param array $userGroups
+     * @param array $elementGroups
+     *
      * @return string
      */
     private function filterAllowedSectionToUser($userGroups, $elementGroups)
@@ -154,8 +158,9 @@ class RestrictionManager implements RestrictionManagerInterface
     }
 
     /**
-     * @param        $element (document|object)
-     * @param string $cType
+     * @param ElementInterface $element
+     * @param string           $cType
+     *
      * @return bool|Restriction
      */
     private function getRestrictionElement($element, $cType = 'page')
