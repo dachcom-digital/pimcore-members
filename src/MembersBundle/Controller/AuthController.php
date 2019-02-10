@@ -25,7 +25,7 @@ class AuthController extends AbstractController
 
         /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.security.login.form.factory');
-        $form = $formFactory->createUnnamedFormWithOption(['last_username' => $lastUsername]);
+        $form = $formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
 
         $form->handleRequest($request);
 
