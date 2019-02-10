@@ -74,7 +74,6 @@ class MembersLogin extends AbstractTemplateAreabrick
             $formParams['_failure_path'] = $params['failure_path'];
         }
 
-        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $form = $this->formFactory->createUnnamedFormWithOptions($formParams);
 
         $view->getParameters()->set('form', $form->createView());

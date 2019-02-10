@@ -23,7 +23,6 @@ class AuthController extends AbstractController
         // last username entered by the user
         $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
 
-        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.security.login.form.factory');
         $form = $formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
 
