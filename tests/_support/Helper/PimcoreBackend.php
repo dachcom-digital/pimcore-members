@@ -355,7 +355,7 @@ class PimcoreBackend extends Module
         $cm = $this->getClassManager();
 
         $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
-        $path = $bundleClass . '/etc/config/bundle/pimcore';
+        $path = $bundleClass . '/_etc/config/bundle/pimcore';
 
         $class = $cm->setupClass($name, sprintf('%s/%s.json', $path, $name));
         $this->assertInstanceOf(ClassDefinition::class, $class);

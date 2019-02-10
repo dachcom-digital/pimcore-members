@@ -6,6 +6,7 @@ Add frontend user authentication and document restriction to pimcore 5.0.
 [![Latest Release](https://img.shields.io/packagist/v/dachcom-digital/members.svg?style=flat-square)](https://packagist.org/packages/dachcom-digital/members)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/dachcom-digital/pimcore-members.svg?style=flat-square)](https://www.scrutinizer-ci.com/g/dachcom-digital/pimcore-members/)
 [![Travis](https://img.shields.io/travis/dachcom-digital/pimcore-members/master.svg?style=flat-square)](https://travis-ci.org/dachcom-digital/pimcore-members)
+[![PhpStan](https://img.shields.io/badge/PHPStan-level%201-brightgreen.svg?style=flat-square)](#)
 
 ## Requirements
 * Pimcore 5.

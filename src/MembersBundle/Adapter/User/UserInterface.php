@@ -9,7 +9,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return mixed
      */
@@ -21,7 +21,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getId();
 
     /**
-     * @param $published
+     * @param bool $published
      *
      * @return mixed
      */
@@ -33,7 +33,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getPublished();
 
     /**
-     * @param $confirmationToken
+     * @param string $confirmationToken
      *
      * @return mixed
      */
@@ -57,7 +57,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getLastLogin();
 
     /**
-     * @param $password
+     * @param string $password
      *
      * @return mixed
      */
@@ -69,7 +69,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getPassword();
 
     /**
-     * @param $email
+     * @param string $email
      *
      * @return mixed
      */
@@ -88,7 +88,7 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getPlainPassword();
 
     /**
-     * @param $groups
+     * @param array $groups
      *
      * @return mixed
      */
