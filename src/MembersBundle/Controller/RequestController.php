@@ -101,7 +101,8 @@ class RequestController extends AbstractController
     }
 
     /**
-     * @param $assets
+     * @param array $assets
+     *
      * @return StreamedResponse
      */
     private function serveZip($assets)

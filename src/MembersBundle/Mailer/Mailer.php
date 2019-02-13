@@ -104,9 +104,9 @@ class Mailer implements MailerInterface
     }
 
     /**
-     * @param $documentPath
-     * @param $mailParams
-     * @param $toEmail
+     * @param string $documentPath
+     * @param array  $mailParams
+     * @param string $toEmail
      *
      * @throws \Exception
      */
@@ -138,9 +138,9 @@ class Mailer implements MailerInterface
      * @param string        $type
      * @param UserInterface $user
      *
-     * @return string
+     * @return null|string
      */
-    private function getMailTemplatePath($type = '', UserInterface $user)
+    private function getMailTemplatePath($type, UserInterface $user)
     {
         $templates = $this->configuration->getConfig('emails');
 
@@ -175,9 +175,10 @@ class Mailer implements MailerInterface
      * @param UserInterface $user
      * @param array         $options
      * @param bool          $addLocale
-     * @return string
+     *
+     * @return null|string
      */
-    private function generateUrl($route = '', UserInterface $user, $options = [], $addLocale = true)
+    private function generateUrl($route, UserInterface $user, $options = [], $addLocale = true)
     {
         if ($addLocale === true) {
             if (!empty($user->getProperty('_user_locale'))) {

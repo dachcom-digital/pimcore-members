@@ -2,6 +2,8 @@
 
 namespace MembersBundle\Pimcore\DataObject\ClassDefinition\Data\Traits;
 
+use Pimcore\Model\DataObject\AbstractObject;
+
 if (interface_exists(\Pimcore\Model\DataObject\ClassDefinition\Data\ResourcePersistenceAwareInterface::class)) {
     trait ResourceDataTrait
     {
@@ -10,9 +12,9 @@ if (interface_exists(\Pimcore\Model\DataObject\ClassDefinition\Data\ResourcePers
     trait ResourceDataTrait
     {
         /**
-         * @param       $data
-         * @param null  $object
-         * @param array $params
+         * @param array               $data
+         * @param null|AbstractObject $object
+         * @param array               $params
          *
          * @return array|null
          */

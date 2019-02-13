@@ -10,6 +10,8 @@ use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,17 +22,18 @@ class RegistrationController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function registerAction(Request $request)
     {
-        /** @var $formFactory FactoryInterface */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->get('members.registration.form.factory');
 
-        /** @var $userManager UserManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         /** @var UserInterface $user */
@@ -86,7 +89,7 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction()
     {
-        $sessionBag = $this->get('session')->getBag('members_session');
+        $sessionBag = $this->getMembersSessionBag();
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -108,7 +111,7 @@ class RegistrationController extends AbstractController
      */
     public function checkAdminAction()
     {
-        $sessionBag = $this->get('session')->getBag('members_session');
+        $sessionBag = $this->getMembersSessionBag();
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -128,12 +131,13 @@ class RegistrationController extends AbstractController
 
     /**
      * @param Request $request
-     * @param         $token
+     * @param string  $token
+     *
      * @return null|RedirectResponse|Response
      */
     public function confirmAction(Request $request, $token)
     {
-        /** @var $userManager UserManager */
+        /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
 
         /** @var UserInterface $user */
@@ -143,7 +147,7 @@ class RegistrationController extends AbstractController
             throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 
-        /** @var $dispatcher EventDispatcherInterface */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         $user->setConfirmationToken(null);
@@ -181,19 +185,28 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
     private function getTargetUrlFromSession()
     {
-        $key = sprintf('_security.%s.target_path', $this->get('security.token_storage')->getToken()->getProviderKey());
+        $token = $this->get('security.token_storage')->getToken();
+
+        if (!$token instanceof UsernamePasswordToken) {
+            return null;
+        }
+
+        $key = sprintf('_security.%s.target_path', $token->getProviderKey());
 
         if ($this->get('session')->has($key)) {
             return $this->get('session')->get($key);
         }
+
+        return null;
     }
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     private function getUserProperties($request)
@@ -209,5 +222,13 @@ class RegistrationController extends AbstractController
         }
 
         return $userProperties;
+    }
+
+    /**
+     * @return NamespacedAttributeBag
+     */
+    private function getMembersSessionBag()
+    {
+        return $this->get('session')->getBag('members_session');
     }
 }

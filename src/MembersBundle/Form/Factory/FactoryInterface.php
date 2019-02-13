@@ -15,4 +15,11 @@ interface FactoryInterface
      * @return FormInterface
      */
     public function createUnnamedForm();
+
+    /**
+     * @param array $option
+     *
+     * @return FormInterface
+     */
+    public function createUnnamedFormWithOptions(array $option);
 }

@@ -5,6 +5,7 @@ namespace MembersBundle\EventListener;
 use MembersBundle\MembersEvents;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -62,7 +63,11 @@ class FlashListener implements EventSubscriberInterface
     public function addSuccessFlash(Event $event, $eventName)
     {
         if (!isset(self::$successMessages[$eventName])) {
-            throw new \InvalidArgumentException('This event does not correspond to a known flash message');
+            throw new \InvalidArgumentException('This event does not correspond to a known flash message.');
+        }
+
+        if (!$this->session instanceof Session) {
+            throw new \InvalidArgumentException('"%s" needs to be an instance of "%s".', get_class($this->session), Session::class);
         }
 
         $this->session->getFlashBag()->add('success', $this->trans(self::$successMessages[$eventName]));

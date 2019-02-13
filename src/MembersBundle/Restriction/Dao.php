@@ -17,7 +17,12 @@ class Dao extends Model\Dao\AbstractDao
     protected $tableRelationName = 'members_group_relations';
 
     /**
-     * @param $id
+     * @var Restriction
+     */
+    protected $model;
+
+    /**
+     * @param int $id
      *
      * @throws \Exception
      */
@@ -59,17 +64,16 @@ class Dao extends Model\Dao\AbstractDao
 
     /**
      * @return bool
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function save()
     {
         $saveData = [
-
-            'targetId' => $this->model->getTargetId(),
-            'ctype' => $this->model->getCtype(),
+            'targetId'    => $this->model->getTargetId(),
+            'ctype'       => $this->model->getCtype(),
             'isInherited' => (int)$this->model->isInherited(),
-            'inherit' => (int)$this->model->getInherit()
-
+            'inherit'     => (int)$this->model->getInherit()
         ];
 
         if ($this->model->getId() !== null) {
@@ -85,7 +89,8 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
-     * @param $data
+     * @param array $data
+     *
      * @return mixed
      */
     private function addRelationData($data)
@@ -103,6 +108,7 @@ class Dao extends Model\Dao\AbstractDao
 
     /**
      * @return bool
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function saveRelations()
@@ -130,6 +136,7 @@ class Dao extends Model\Dao\AbstractDao
     }
 
     /**
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function delete()

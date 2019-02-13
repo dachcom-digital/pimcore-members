@@ -29,8 +29,8 @@ class RestrictionUri
     }
 
     /**
-     * @param string|Model\Asset $asset if string, getByPath will be triggered.
-     * @param bool|int           $objectProxyId Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
+     * @param string|Model\Asset $asset            if string, getByPath will be triggered.
+     * @param bool|int           $objectProxyId    Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
      *                                             the object has restriction but the asset does not.
      *                                             If $objectProxyId is given, this method will check for the object restriction instead of the asset.
      * @param bool               $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
@@ -49,7 +49,7 @@ class RestrictionUri
      * @see generateAssetUrl serves data as zip.
      *
      * @param bool  $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
-     * @param array $assetData array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
+     * @param array $assetData        array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
      *
      * @return string
      * @throws \Exception
@@ -77,6 +77,7 @@ class RestrictionUri
      * Get asset restriction groups and asset object by url fragment (d)
      *
      * @param string $urlFragment
+     *
      * @return array|bool
      */
     public function getAssetUrlInformation($urlFragment)
@@ -124,7 +125,8 @@ class RestrictionUri
     /**
      * Decodes given Url
      *
-     * @param $requestData
+     * @param string $requestData
+     *
      * @return array|bool
      */
     public function decodeAssetUrl($requestData)
@@ -165,9 +167,10 @@ class RestrictionUri
     }
 
     /**
-     * @param string $asset
-     * @param        $objectProxyId
-     * @param        $checkRestriction
+     * @param string   $asset
+     * @param bool|int $objectProxyId
+     * @param bool     $checkRestriction
+     *
      * @return array
      * @throws \Exception
      */
@@ -199,7 +202,8 @@ class RestrictionUri
     }
 
     /**
-     * @param $data
+     * @param array $data
+     *
      * @return string
      */
     private function generateUrl($data)
@@ -213,6 +217,7 @@ class RestrictionUri
 
     /**
      * @param string $urlFragment
+     *
      * @return array|bool
      */
     private function parseUrlFragment($urlFragment)

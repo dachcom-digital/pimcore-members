@@ -54,6 +54,10 @@ class UserManager implements UserManagerInterface
      */
     public function deleteUser(UserInterface $user)
     {
+        if (!$user instanceof DataObject\Concrete) {
+            return false;
+        }
+
         return $user->delete();
     }
 

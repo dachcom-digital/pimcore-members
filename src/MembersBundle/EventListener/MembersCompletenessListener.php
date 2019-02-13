@@ -8,6 +8,7 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\ClassManagerInterface;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
+use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
@@ -64,6 +65,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
 
     /**
      * @param DataObjectEvent $e
+     *
      * @throws \Exception
      */
     public function checkUniqueness(DataObjectEvent $e)
@@ -86,6 +88,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
             $elements = $memberListing->load();
 
             if (count($elements) > 0) {
+                /** @var UserInterface $foundObject */
                 $foundObject = $elements[0];
                 $artifact = 'email address';
                 if ($foundObject->getUsername() === $object->getUsername()) {
@@ -107,17 +110,23 @@ class MembersCompletenessListener implements EventSubscriberInterface
 
     /**
      * @param DataObjectEvent $e
+     *
      * @throws \Exception
      */
     public function checkProperties(DataObjectEvent $e)
     {
+        /** @var Concrete $object */
         $object = $e->getObject();
 
         if (!$this->userResolver->getUser() instanceof User) {
             return;
         }
 
-        if (!$object instanceof UserInterface || $object->isPublished() === false) {
+        if (!$object instanceof UserInterface) {
+            return;
+        }
+
+        if ($object->isPublished() === false) {
             return;
         }
 

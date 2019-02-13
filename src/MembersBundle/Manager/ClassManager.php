@@ -12,9 +12,7 @@ class ClassManager implements ClassManagerInterface
     protected $configuration;
 
     /**
-     * ClassManager constructor.
-     *
-     * @param $configuration
+     * @param Configuration $configuration
      */
     public function __construct(Configuration $configuration)
     {

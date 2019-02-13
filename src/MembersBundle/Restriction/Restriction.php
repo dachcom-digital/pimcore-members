@@ -4,6 +4,9 @@ namespace MembersBundle\Restriction;
 
 use Pimcore\Model\AbstractModel;
 
+/**
+ * @method \MembersBundle\Restriction\Dao getDao()
+ */
 class Restriction extends AbstractModel
 {
     /**
@@ -37,7 +40,7 @@ class Restriction extends AbstractModel
     public $relatedGroups = [];
 
     /**
-     * @param $id
+     * @param int $id
      *
      * @return Restriction
      */
@@ -50,8 +53,9 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * @param $id
-     * @param $cType
+     * @param int    $id
+     * @param string $cType
+     *
      * @return Restriction
      */
     public static function getByTargetId($id, $cType = 'page')
@@ -88,6 +92,7 @@ class Restriction extends AbstractModel
 
     /**
      * @param string $cType
+     *
      * @return static
      */
     public function setCtype($cType)
@@ -106,6 +111,7 @@ class Restriction extends AbstractModel
 
     /**
      * @param integer $targetId
+     *
      * @return static
      */
     public function setTargetId($targetId)
@@ -124,6 +130,7 @@ class Restriction extends AbstractModel
 
     /**
      * @param array $relatedGroups
+     *
      * @return static
      */
     public function setRelatedGroups($relatedGroups)
@@ -154,6 +161,7 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $isInherited
+     *
      * @return static
      */
     public function setIsInherited($isInherited)
@@ -172,6 +180,7 @@ class Restriction extends AbstractModel
 
     /**
      * @param boolean $inherit
+     *
      * @return static
      */
     public function setInherit($inherit)

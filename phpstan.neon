@@ -7,15 +7,18 @@ parameters:
     symfony:
         container_xml_path: var/cache/dev/appDevDebugProjectContainer.xml
     excludes_analyse:
-        # only works if related bundles are available:
+        # only works if optional bundles are available:
         - '**/AbstractCustomerUser.php'
         - '**/LuceneSearchAssetRestriction.php'
         - '**/LuceneSearchRestrictionContext.php'
     ignoreErrors:
         # There is no global constants definition file we could include, ignore it:
         - '#Constant PIMCORE_[A-Z\\_]+ not found\.#'
+        # Ignore optional bundle dependencies:
         - '#Class LuceneSearchBundle[A-Za-z\/\\_]+ not found\.#'
         - '#Service "LuceneSearchBundle[A-Za-z\/\\_]+" is not registered in the container\.#'
+        - '#Call to method isLuceneSearchCrawler\(\) on an unknown class LuceneSearchBundle\\Tool\\CrawlerState\.#'
+        # Nullable user can be null:
         - '#MembersBundle\\Event\\GetResponseNullableUserEvent::__construct\(\) does not call parent constructor(.*)+\.#'
         # Symfony DI (remove this line with symfony 4.2):
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'

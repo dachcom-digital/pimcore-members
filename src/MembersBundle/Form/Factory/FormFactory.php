@@ -54,7 +54,15 @@ class FormFactory implements FactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createUnnamedForm(array $options = [])
+    public function createUnnamedForm()
+    {
+        return $this->formFactory->createNamed('', $this->type, null, ['validation_groups' => $this->validationGroups]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createUnnamedFormWithOptions(array $options = [])
     {
         $options = array_merge(['validation_groups' => $this->validationGroups], $options);
         return $this->formFactory->createNamed('', $this->type, null, $options);

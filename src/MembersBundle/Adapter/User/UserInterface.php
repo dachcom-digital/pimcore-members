@@ -21,6 +21,49 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
     public function getId();
 
     /**
+     * @param int $parentId
+     *
+     * @return $this
+     */
+    public function setParentId($parentId);
+
+    /**
+     * @return int
+     */
+    public function getParentId();
+
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
+    public function setKey($key);
+
+    /**
+     * @return string
+     */
+    public function getKey();
+
+    /**
+     * @param string $name
+     * @param string $type
+     * @param mixed  $data
+     * @param bool   $inherited
+     * @param bool   $inheritable
+     *
+     * @return $this
+     */
+    public function setProperty($name, $type, $data, $inherited = false, $inheritable = false);
+
+    /**
+     * @param string $name
+     * @param bool   $asContainer
+     *
+     * @return mixed
+     */
+    public function getProperty($name, $asContainer = false);
+
+    /**
      * @param bool $published
      *
      * @return mixed
@@ -129,5 +172,12 @@ interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterf
      * @return mixed
      */
     public function isAccountNonLocked();
+
+    /**
+     * @return $this
+     *
+     * @throws \Exception
+     */
+    public function save();
 
 }

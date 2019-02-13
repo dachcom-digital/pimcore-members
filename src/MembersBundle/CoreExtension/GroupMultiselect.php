@@ -110,7 +110,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param       $data
+     * @param array $data
      * @param null  $object
      * @param array $params
      *
@@ -143,8 +143,8 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param       $object
-     * @param array $params
+     * @param DataObject\Concrete $object
+     * @param array               $params
      *
      * @return array|mixed|null
      */
