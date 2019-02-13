@@ -179,11 +179,13 @@ class RestrictionManager implements RestrictionManagerInterface
             } else {
                 $restrictionConfig = $this->configuration->getConfig('restriction');
                 $allowedTypes = $restrictionConfig['allowed_objects'];
-                if ($element instanceof DataObject\AbstractObject && in_array($element->getClass()->getName(), $allowedTypes)) {
+                if ($element instanceof DataObject\Concrete && in_array($element->getClass()->getName(), $allowedTypes)) {
                     $restriction = Restriction::getByTargetId($element->getId(), $cType);
                 }
             }
         } catch (\Exception $e) {
+            // fail silently:
+            // restriction not found exception
         }
 
         return $restriction;
