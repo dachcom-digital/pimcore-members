@@ -35,8 +35,8 @@ interface UserManagerInterface
     public function findUserByEmail($emailAddress, $includeUnpublished = true);
 
     /**
-     * @param  string $username
-     * @param bool    $includeUnpublished
+     * @param string $username
+     * @param bool   $includeUnpublished
      *
      * @return null|UserInterface
      */

@@ -154,7 +154,7 @@ class BrickBuilder
 
     /**
      * @param Document $page
-     * Allowed Types: 'page', 'link', 'hardlink'
+     *                       Allowed Types: 'page', 'link', 'hardlink'
      *
      * @return $this
      */
@@ -220,7 +220,6 @@ class BrickBuilder
             //only show backend note
             $template = $this->getTemplate('area-not-available');
         } elseif (!$this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
-
             $authErrorKey = Security::AUTHENTICATION_ERROR;
             $lastUsernameKey = Security::LAST_USERNAME;
 
@@ -250,9 +249,7 @@ class BrickBuilder
 
             $template = $this->getTemplate('area-login');
         } elseif ($this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
-
             if ($this->hideAfterLogin === false && !is_null($this->successSnippet)) {
-
                 $snippetParams = [
                     'user'         => $this->tokenStorage->getToken()->getUser(),
                     'redirect_uri' => is_null($this->redirectPage) ? $this->request->getRequestUri() : $this->redirectPage->getFullPath(),

@@ -7,7 +7,7 @@ use MembersBundle\Manager\RestrictionManager;
 class ElementRestriction
 {
     /**
-     * @var integer
+     * @var int
      */
     public $state = RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN;
 
@@ -37,6 +37,7 @@ class ElementRestriction
     public function setState($state)
     {
         $this->state = $state;
+
         return $this;
     }
 
@@ -56,6 +57,7 @@ class ElementRestriction
     public function setSection($section)
     {
         $this->section = $section;
+
         return $this;
     }
 
@@ -75,6 +77,7 @@ class ElementRestriction
     public function setRestrictionGroups($groups = [])
     {
         $this->restrictionGroups = $groups;
+
         return $this;
     }
 }

@@ -32,7 +32,6 @@ class DeleteAccountFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->add('current_password', RepeatedType::class, [
             'type'            => PasswordType::class,
             'first_options'   => ['label' => 'members.form.current_password'],

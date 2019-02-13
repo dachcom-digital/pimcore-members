@@ -7,9 +7,7 @@ use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
 /**
- * Class MembersBundle
- *
- * @package MembersBundle
+ * Class MembersBundle.
  */
 class MembersBundle extends AbstractPimcoreBundle
 {
@@ -50,11 +48,10 @@ class MembersBundle extends AbstractPimcoreBundle
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getComposerPackageName(): string
     {
         return self::PACKAGE_NAME;
     }
-
 }

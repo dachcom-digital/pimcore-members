@@ -59,6 +59,7 @@ class NavigationExtension extends \Twig_Extension
      * @param Document|null $navigationRootDocument
      * @param string|null   $htmlMenuPrefix
      * @param bool          $cache
+     *
      * @return Container
      */
     public function buildNavigation(
@@ -67,12 +68,10 @@ class NavigationExtension extends \Twig_Extension
         string $htmlMenuPrefix = null,
         $cache = true
     ): Container {
-
         $cacheKey = $cache;
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
         if (!\Pimcore\Tool::isFrontendRequestByAdmin() && $cacheKey !== false) {
-
             $mergedCacheKey = is_bool($cache) ? '' : $cache;
 
             if ($user instanceof UserInterface) {

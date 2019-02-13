@@ -26,7 +26,7 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
     ];
 
     /**
-     * RoleOptionsProvider constructor
+     * RoleOptionsProvider constructor.
      */
     public function __construct()
     {
@@ -44,11 +44,10 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
     {
         $roles = [];
 
-        /**
+        /*
          * Get all unique roles
          */
         foreach ($this->originalRoles as $originalRole => $inheritedRoles) {
-
             foreach ($inheritedRoles as $inheritedRole) {
                 $roles[] = $inheritedRole;
             }

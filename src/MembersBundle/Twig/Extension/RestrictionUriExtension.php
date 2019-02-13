@@ -34,6 +34,7 @@ class RestrictionUriExtension extends \Twig_Extension
     /**
      * @param null $assetId
      * @param bool $checkRestriction
+     *
      * @return string
      */
     public function buildAssetUrl($assetId = null, $checkRestriction = false)
@@ -44,12 +45,12 @@ class RestrictionUriExtension extends \Twig_Extension
         }
 
         return $this->restrictionUri->generateAssetUrl($download, false, $checkRestriction);
-
     }
 
     /**
      * @param array $assetIds
      * @param bool  $checkRestriction
+     *
      * @return string
      */
     public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = false)
@@ -64,6 +65,7 @@ class RestrictionUriExtension extends \Twig_Extension
         }
 
         $link = $this->restrictionUri->generateAssetPackageUrl($packageData, $checkRestriction);
+
         return $link;
     }
 }

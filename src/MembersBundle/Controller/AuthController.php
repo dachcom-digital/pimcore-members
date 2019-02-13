@@ -10,6 +10,7 @@ class AuthController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return mixed
      */
     public function loginAction(Request $request)

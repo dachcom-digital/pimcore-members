@@ -64,7 +64,6 @@ class ResettingController extends AbstractController
 
         $ttl = $this->getParameter('members.resetting.retry_ttl');
         if ($user !== null && !$user->isPasswordRequestNonExpired($ttl)) {
-
             $event = new GetResponseUserEvent($user, $request);
             $dispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
 

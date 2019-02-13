@@ -20,6 +20,7 @@ class ProfileController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function showAction(Request $request)
@@ -38,6 +39,7 @@ class ProfileController extends AbstractController
 
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function editAction(Request $request)
@@ -91,6 +93,7 @@ class ProfileController extends AbstractController
 
     /**
      * @param Request $request
+     *
      * @return Response
      */
     public function refusedAction(Request $request)

@@ -50,7 +50,6 @@ class Install extends MigrationInstaller
     public function setSerializer(DecoderInterface $serializer)
     {
         $this->serializer = $serializer;
-
     }
 
     /**
@@ -59,11 +58,10 @@ class Install extends MigrationInstaller
     public function setConfiguration(Configuration $configuration)
     {
         $this->configuration = $configuration;
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getMigrationVersion(): string
     {
@@ -109,6 +107,7 @@ class Install extends MigrationInstaller
         $migration = $version->getMigration();
         if ($migration->isDryRun()) {
             $this->outputWriter->write('<fg=cyan>DRY-RUN:</> Skipping installation');
+
             return;
         }
     }
@@ -144,6 +143,7 @@ class Install extends MigrationInstaller
         $migration = $version->getMigration();
         if ($migration->isDryRun()) {
             $this->outputWriter->write('<fg=cyan>DRY-RUN:</> Skipping uninstallation');
+
             return;
         }
 
@@ -203,7 +203,7 @@ class Install extends MigrationInstaller
             $path = '/' . $def['path'] . '/' . $def['key'];
 
             if (!Document\Service::pathExists($path)) {
-                $class = "Pimcore\\Model\\Document\\" . ucfirst($def['type']);
+                $class = 'Pimcore\\Model\\Document\\' . ucfirst($def['type']);
 
                 if (\Pimcore\Tool::classExists($class)) {
                     /** @var Document\Email $document */
@@ -352,5 +352,4 @@ class Install extends MigrationInstaller
     {
         return __DIR__ . '/../Resources/install';
     }
-
 }

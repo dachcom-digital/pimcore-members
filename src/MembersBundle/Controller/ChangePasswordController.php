@@ -19,6 +19,7 @@ class ChangePasswordController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function changePasswordAction(Request $request)
@@ -47,7 +48,6 @@ class ChangePasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             /** @var UserManager $userManager */
             $userManager = $this->get(UserManager::class);
 

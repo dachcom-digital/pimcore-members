@@ -189,7 +189,7 @@ class Configuration implements ConfigurationInterface
                                     ->end()
                                 ->end()
                             ->end()
-						->end()
+                        ->end()
 
                         ->arrayNode('delete_account')
                             ->addDefaultsIfNotSet()
@@ -241,8 +241,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }

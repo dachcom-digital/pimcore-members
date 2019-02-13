@@ -24,6 +24,7 @@ interface RestrictionManagerInterface
 
     /**
      * @todo: bring it into pimcore context.
+     *
      * @return bool
      */
     public function isFrontendRequestByAdmin();

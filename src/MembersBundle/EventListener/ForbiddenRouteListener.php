@@ -84,7 +84,6 @@ class ForbiddenRouteListener implements EventSubscriberInterface
             $document = $event->getRequest()->get(DynamicRouter::CONTENT_KEY, null);
             $restriction = $this->restrictionManager->getElementRestrictionStatus($document);
         } elseif ($event->getRequest()->attributes->get('pimcore_request_source') === 'staticroute') {
-
             $routeEvent = new StaticRouteEvent($event->getRequest(), $event->getRequest()->attributes->get('_route'));
             \Pimcore::getEventDispatcher()->dispatch(
                 MembersEvents::RESTRICTION_CHECK_STATICROUTE,
@@ -114,18 +113,18 @@ class ForbiddenRouteListener implements EventSubscriberInterface
      */
     private function getRouteForRestriction(ElementRestriction $elementRestriction)
     {
-        //section allowed
         if ($elementRestriction->getSection() == RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
+            //section allowed
             return false;
-        } //not allowed
-        elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
+        } elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN
             && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
+            //not allowed
             return 'members_user_security_login';
-        } //logged in but no allowed.
-        elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
+        } elseif ($elementRestriction->getState() === RestrictionManager::RESTRICTION_STATE_LOGGED_IN
             && $elementRestriction->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED
         ) {
+            //logged in but no allowed.
             return 'members_user_restriction_refused';
         }
 

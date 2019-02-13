@@ -5,7 +5,7 @@ namespace MembersBundle;
 final class MembersEvents
 {
     /**
-     * The RESTRICTION_CHECK_STATICROUTE event occurs when a frontend request is in a staticroute context
+     * The RESTRICTION_CHECK_STATICROUTE event occurs when a frontend request is in a staticroute context.
      *
      * @Event("MembersBundle\Event\StaticRouteEvent")
      */
@@ -222,5 +222,4 @@ final class MembersEvents
      * @Event("MembersBundle\Event\FilterUserResponseEvent")
      */
     const DELETE_ACCOUNT_COMPLETED = 'members.delete_account.confirm.completed';
-
 }

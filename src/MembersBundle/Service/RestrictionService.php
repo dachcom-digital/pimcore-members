@@ -16,6 +16,7 @@ class RestrictionService
      * @param array                          $userGroupIds
      *
      * @return Restriction|null
+     *
      * @throws \Exception
      */
     public function createRestriction(Model\Element\ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
@@ -85,7 +86,7 @@ class RestrictionService
 
     /**
      * Triggered by post update events of all types ONLY when element gets moved in tree!
-     * Check if element is in right context
+     * Check if element is in right context.
      *
      * @param Model\Element\ElementInterface $obj
      * @param string                         $cType
@@ -112,7 +113,6 @@ class RestrictionService
         }
 
         $this->updateChildren($obj, $cType);
-
     }
 
     /**
@@ -148,7 +148,6 @@ class RestrictionService
 
         /** @var Model\Element\ElementInterface $child */
         foreach ($children as $child) {
-
             $childRestriction = null;
             $parentRestriction = null;
 
@@ -164,7 +163,6 @@ class RestrictionService
 
             $this->updateRestrictionContext($child, $cType, $childRestriction, $parentRestriction);
         }
-
     }
 
     /**
@@ -243,6 +241,7 @@ class RestrictionService
             /** @var Model\Element\ElementInterface $el */
             if ($el = $class::getByPath($p)) {
                 $restriction = false;
+
                 try {
                     $restriction = Restriction::getByTargetId($el->getId(), $cType);
                 } catch (\Exception $e) {
@@ -254,6 +253,7 @@ class RestrictionService
                         $parentKey = $el->getKey();
                         $parentId = $el->getId();
                     }
+
                     break;
                 }
             }
@@ -289,12 +289,14 @@ class RestrictionService
             $restriction->setIsInherited(true);
             $restriction->setRelatedGroups($parentRestriction->getRelatedGroups());
             $restriction->getDao()->save();
+
             return;
         }
 
         if (!$hasParentRestriction && $hasRestriction) {
             if ($objectRestriction->isInherited()) {
                 $objectRestriction->getDao()->delete();
+
                 return;
             }
         }
@@ -307,6 +309,7 @@ class RestrictionService
                     $objectRestriction->setRelatedGroups($parentRestriction->getRelatedGroups());
                     $objectRestriction->getDao()->save();
                 }
+
                 return;
             }
         }
