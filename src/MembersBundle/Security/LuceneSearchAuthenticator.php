@@ -122,8 +122,6 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $request->attributes->set('user', $token->getUser());
-
-        return null;
     }
 
     /**

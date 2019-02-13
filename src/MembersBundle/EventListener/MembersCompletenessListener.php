@@ -152,7 +152,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         $userSite = $object->getProperty('_site_domain');
 
         if (($needLocale && empty($userLocale)) || ($needSite && empty($userSite))) {
-            $message = "\n######################\n";
+            $message = "\n" . '######################' . "\n";
             $message .= 'This member object needs some additional properties!' . "\n";
             $message .= 'Since you have enabled localized mail templates you need to add some additional properties' . "\n";
             $message .= '(If you want to disable this message, remove the localized parameters from your members mail configuration).' . "\n";

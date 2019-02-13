@@ -153,8 +153,9 @@ class BrickBuilder
     }
 
     /**
+     * Allowed Types: 'page', 'link', 'hardlink'.
+     *
      * @param Document $page
-     *                       Allowed Types: 'page', 'link', 'hardlink'
      *
      * @return $this
      */

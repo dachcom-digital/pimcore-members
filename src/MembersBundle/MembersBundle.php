@@ -6,9 +6,6 @@ use MembersBundle\Tool\Install;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
-/**
- * Class MembersBundle.
- */
 class MembersBundle extends AbstractPimcoreBundle
 {
     use PackageVersionTrait;
