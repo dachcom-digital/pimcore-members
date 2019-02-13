@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Adds Meta Data entries of document to HeadMeta view helper
+ * Adds Meta Data entries of document to HeadMeta view helper.
  */
 class HeadMetaListener implements EventSubscriberInterface
 {

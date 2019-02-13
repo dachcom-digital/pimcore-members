@@ -47,5 +47,4 @@ class PimcoreUniqueEntity extends Constraint
     {
         return 'fields';
     }
-
 }

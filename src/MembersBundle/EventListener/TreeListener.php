@@ -55,7 +55,6 @@ class TreeListener implements EventSubscriberInterface
         $allowedTypes = $restrictionConfig['allowed_objects'];
 
         foreach ($objects as &$object) {
-
             if (!isset($object['className'])) {
                 continue;
             }
@@ -86,7 +85,6 @@ class TreeListener implements EventSubscriberInterface
         $assets = $event->getArgument('assets');
 
         foreach ($assets as &$asset) {
-
             if (!isset($asset['basePath'])) {
                 continue;
             }
@@ -116,7 +114,6 @@ class TreeListener implements EventSubscriberInterface
         $documents = $event->getArgument('documents');
 
         foreach ($documents as &$document) {
-
             $restriction = $this->getRestriction($document['id'], 'page');
             if ($restriction === false) {
                 continue;
@@ -139,6 +136,7 @@ class TreeListener implements EventSubscriberInterface
     private function getRestriction($id, $type)
     {
         $restriction = false;
+
         try {
             $restriction = Restriction::getByTargetId($id, $type);
         } catch (\Exception $e) {

@@ -10,7 +10,7 @@ use Pimcore\Model\AbstractModel;
 class Restriction extends AbstractModel
 {
     /**
-     * @var integer
+     * @var int
      */
     public $id = null;
 
@@ -25,12 +25,12 @@ class Restriction extends AbstractModel
     public $targetId = 0;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $isInherited = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $inherit = false;
 
@@ -46,7 +46,7 @@ class Restriction extends AbstractModel
      */
     public static function getById($id)
     {
-        $obj = new self;
+        $obj = new self();
         $obj->getDao()->getById($id);
 
         return $obj;
@@ -60,14 +60,14 @@ class Restriction extends AbstractModel
      */
     public static function getByTargetId($id, $cType = 'page')
     {
-        $obj = new self;
-        $obj->getDao()->getByField('targetId', (int)$id, $cType);
+        $obj = new self();
+        $obj->getDao()->getByField('targetId', (int) $id, $cType);
 
         return $obj;
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -75,11 +75,11 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function setId($id)
     {
-        return $this->id = (int)$id;
+        return $this->id = (int) $id;
     }
 
     /**
@@ -97,7 +97,8 @@ class Restriction extends AbstractModel
      */
     public function setCtype($cType)
     {
-        $this->ctype = (string)$cType;
+        $this->ctype = (string) $cType;
+
         return $this;
     }
 
@@ -110,13 +111,14 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * @param integer $targetId
+     * @param int $targetId
      *
      * @return static
      */
     public function setTargetId($targetId)
     {
-        $this->targetId = (int)$targetId;
+        $this->targetId = (int) $targetId;
+
         return $this;
     }
 
@@ -135,14 +137,14 @@ class Restriction extends AbstractModel
      */
     public function setRelatedGroups($relatedGroups)
     {
-        $relatedGroups = (array)$relatedGroups;
+        $relatedGroups = (array) $relatedGroups;
         $this->relatedGroups = array_map('intval', $relatedGroups);
 
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsInherited()
     {
@@ -150,9 +152,9 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * Alias for getIsInherited()
+     * Alias for getIsInherited().
      *
-     * @return boolean
+     * @return bool
      */
     public function isInherited()
     {
@@ -160,18 +162,19 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * @param boolean $isInherited
+     * @param bool $isInherited
      *
      * @return static
      */
     public function setIsInherited($isInherited)
     {
-        $this->isInherited = (bool)$isInherited;
+        $this->isInherited = (bool) $isInherited;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getInherit()
     {
@@ -179,14 +182,14 @@ class Restriction extends AbstractModel
     }
 
     /**
-     * @param boolean $inherit
+     * @param bool $inherit
      *
      * @return static
      */
     public function setInherit($inherit)
     {
-        $this->inherit = (bool)$inherit;
+        $this->inherit = (bool) $inherit;
+
         return $this;
     }
-
 }

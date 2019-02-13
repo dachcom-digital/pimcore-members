@@ -33,12 +33,16 @@ class LoginFormType extends AbstractType
         ]);
 
         if ($options['_target_path'] !== null) {
-            $builder->add('_target_path', HiddenType::class,
+            $builder->add(
+                '_target_path',
+                HiddenType::class,
                 ['data' => $options['_target_path']]
             );
         }
         if ($options['_failure_path'] !== null) {
-            $builder->add('_failure_path', HiddenType::class,
+            $builder->add(
+                '_failure_path',
+                HiddenType::class,
                 ['data' => $options['_failure_path']]
             );
         }

@@ -126,6 +126,7 @@ class RestrictionManager implements RestrictionManagerInterface
             return $elementRestriction;
         } else {
             $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
+
             return $elementRestriction;
         }
     }
@@ -193,6 +194,7 @@ class RestrictionManager implements RestrictionManagerInterface
 
     /**
      * @todo: bring it into pimcore context.
+     *
      * @return bool
      */
     public function isFrontendRequestByAdmin()

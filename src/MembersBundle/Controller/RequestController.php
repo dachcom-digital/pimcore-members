@@ -16,6 +16,7 @@ class RequestController extends AbstractController
 
     /**
      * @param null $hash
+     *
      * @return StreamedResponse
      */
     public function serveAction($hash = null)
@@ -47,6 +48,7 @@ class RequestController extends AbstractController
 
     /**
      * @param Model\Asset $asset
+     *
      * @return StreamedResponse
      */
     private function serveFile(Model\Asset $asset)
@@ -90,14 +92,13 @@ class RequestController extends AbstractController
             ob_flush();
             $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
             while (!feof($handle)) {
-                print(fread($handle, self::BUFFER_SIZE));
+                echo fread($handle, self::BUFFER_SIZE);
                 flush();
                 ob_flush();
             }
         });
 
         return $response;
-
     }
 
     /**
@@ -136,7 +137,7 @@ class RequestController extends AbstractController
             ob_flush();
             $handle = popen('zip -r -j - ' . $files, 'r');
             while (!feof($handle)) {
-                print(fread($handle, self::BUFFER_SIZE));
+                echo fread($handle, self::BUFFER_SIZE);
                 flush();
                 ob_flush();
             }
@@ -144,6 +145,5 @@ class RequestController extends AbstractController
         });
 
         return $response;
-
     }
 }

@@ -52,9 +52,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             if ($form->isValid()) {
-
                 $userManager->updateUser($user, $this->getUserProperties($request));
 
                 $event = new FormEvent($form, $request);
@@ -126,7 +124,6 @@ class RegistrationController extends AbstractController
         }
 
         return $this->renderTemplate('@Members/Registration/check_admin.html.twig', ['user' => $user]);
-
     }
 
     /**

@@ -29,29 +29,32 @@ class RestrictionUri
     }
 
     /**
-     * @param string|Model\Asset $asset            if string, getByPath will be triggered.
+     * @param string|Model\Asset $asset            if string, getByPath will be triggered
      * @param bool|int           $objectProxyId    Sometimes, objects will be used for asset handling. eg. a download object with a asset href element.
      *                                             the object has restriction but the asset does not.
      *                                             If $objectProxyId is given, this method will check for the object restriction instead of the asset.
-     * @param bool               $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
+     * @param bool               $checkRestriction if true, this method will only return a valid string if current user is allowed to open the file
      *
      * @return string
+     *
      * @throws \Exception
      */
     public function generateAssetUrl($asset = '', $objectProxyId = false, $checkRestriction = false)
     {
         $urlData = $this->getAssetData($asset, $objectProxyId, $checkRestriction);
         $url = empty($urlData) ? '' : $this->generateUrl([$urlData]);
+
         return $url;
     }
 
     /**
      * @see generateAssetUrl serves data as zip.
      *
-     * @param bool  $checkRestriction If true, this method will only return a valid string if current user is allowed to open the file.
+     * @param bool  $checkRestriction if true, this method will only return a valid string if current user is allowed to open the file
      * @param array $assetData        array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
      *
      * @return string
+     *
      * @throws \Exception
      */
     public function generateAssetPackageUrl($assetData = [], $checkRestriction = false)
@@ -74,7 +77,7 @@ class RestrictionUri
 
     /**
      * Only for single asset url.
-     * Get asset restriction groups and asset object by url fragment (d)
+     * Get asset restriction groups and asset object by url fragment (d).
      *
      * @param string $urlFragment
      *
@@ -123,7 +126,7 @@ class RestrictionUri
     }
 
     /**
-     * Decodes given Url
+     * Decodes given Url.
      *
      * @param string $requestData
      *
@@ -172,6 +175,7 @@ class RestrictionUri
      * @param bool     $checkRestriction
      *
      * @return array
+     *
      * @throws \Exception
      */
     private function getAssetData($asset = '', $objectProxyId = false, $checkRestriction = false)
@@ -197,7 +201,7 @@ class RestrictionUri
 
         return [
             'f' => $asset->getId(),
-            'p' => $objectProxyId !== false ? (int)$objectProxyId : false
+            'p' => $objectProxyId !== false ? (int) $objectProxyId : false
         ];
     }
 

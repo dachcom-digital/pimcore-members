@@ -82,7 +82,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
             $memberListing->setCondition('(email = ? OR userName = ?) AND oo_id != ?', [
                 $object->getEmail(),
                 $object->getUsername(),
-                (int)$object->getId()
+                (int) $object->getId()
             ]);
 
             $elements = $memberListing->load();
@@ -94,12 +94,12 @@ class MembersCompletenessListener implements EventSubscriberInterface
                 if ($foundObject->getUsername() === $object->getUsername()) {
                     $artifact = 'username';
                 }
+
                 throw new \Exception(sprintf('The %s is already used.', $artifact));
             }
-
         } elseif ($object instanceof GroupInterface) {
             $groupListing = $this->classManager->getGroupListing();
-            $groupListing->setCondition('name = ? AND oo_id != ?', [$object->getName(), (int)$object->getId()]);
+            $groupListing->setCondition('name = ? AND oo_id != ?', [$object->getName(), (int) $object->getId()]);
             $groupListing->setUnpublished(true);
             $elements = $groupListing->load();
             if (count($elements) > 0) {
@@ -137,6 +137,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         foreach ($emailTemplates['default'] as $template) {
             if (strpos($template, '{_locale}') !== false) {
                 $needLocale = true;
+
                 break;
             }
         }
@@ -151,8 +152,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         $userSite = $object->getProperty('_site_domain');
 
         if (($needLocale && empty($userLocale)) || ($needSite && empty($userSite))) {
-
-            $message = "\n######################\n";
+            $message = "\n" . '######################' . "\n";
             $message .= 'This member object needs some additional properties!' . "\n";
             $message .= 'Since you have enabled localized mail templates you need to add some additional properties' . "\n";
             $message .= '(If you want to disable this message, remove the localized parameters from your members mail configuration).' . "\n";
@@ -165,7 +165,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
                 $message .= '- Define a "_site_domain" (text) property with a valid main domain (like "your-page.com") before publishing the user object.' . "\n";
             }
 
-            $message .= "######################";
+            $message .= '######################';
 
             throw new \Exception($message);
         }

@@ -41,12 +41,12 @@ class ClassInstallerCommand extends ContainerAwareCommand
         }
 
         foreach ($this->getClasses() as $className => $path) {
-
             $class = new ClassDefinition();
             $id = $class->getDao()->getIdByName($className);
 
             if ($id !== false) {
                 $output->writeln(sprintf('<comment>Class "%s" already exists.</comment>', $className));
+
                 continue;
             }
 
@@ -78,7 +78,8 @@ class ClassInstallerCommand extends ContainerAwareCommand
             if (false === $path || !is_file($path)) {
                 throw new \RuntimeException(sprintf(
                     'Class export for class "%s" was expected in "%s" but file does not exist',
-                    $className, $path
+                    $className,
+                    $path
                 ));
             }
 
@@ -87,5 +88,4 @@ class ClassInstallerCommand extends ContainerAwareCommand
 
         return $result;
     }
-
 }

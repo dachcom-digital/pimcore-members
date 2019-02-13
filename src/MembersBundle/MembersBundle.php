@@ -6,11 +6,6 @@ use MembersBundle\Tool\Install;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 
-/**
- * Class MembersBundle
- *
- * @package MembersBundle
- */
 class MembersBundle extends AbstractPimcoreBundle
 {
     use PackageVersionTrait;
@@ -50,11 +45,10 @@ class MembersBundle extends AbstractPimcoreBundle
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function getComposerPackageName(): string
     {
         return self::PACKAGE_NAME;
     }
-
 }

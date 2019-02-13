@@ -47,7 +47,6 @@ class LuceneSearchAssetRestriction implements EventSubscriberInterface
                     $event->setAsset($restrictedAssetInfo['asset']);
                     $event->setRestrictions($restrictedAssetInfo['restrictionGroups']);
                 }
-
             } catch (\ReflectionException $e) {
                 \Pimcore\Logger::err($e->getMessage());
             }

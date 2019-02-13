@@ -20,7 +20,7 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getGroupListing()
     {
@@ -33,7 +33,7 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getUserListing()
     {
@@ -46,7 +46,7 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getGroupClass()
     {
@@ -61,7 +61,7 @@ class ClassManager implements ClassManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getUserClass()
     {

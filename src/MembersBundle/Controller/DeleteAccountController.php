@@ -18,6 +18,7 @@ class DeleteAccountController extends AbstractController
 {
     /**
      * @param Request $request
+     *
      * @return null|RedirectResponse|Response
      */
     public function deleteAccountAction(Request $request)
@@ -46,7 +47,6 @@ class DeleteAccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             /** @var UserManager $userManager */
             $userManager = $this->get(UserManager::class);
 

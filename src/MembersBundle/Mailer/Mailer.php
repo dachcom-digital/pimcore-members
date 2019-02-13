@@ -44,7 +44,7 @@ class Mailer implements MailerInterface
             'confirmationUrl' => $url
         ];
 
-        $this->sendMessage($template, $mailParams, (string)$user->getEmail());
+        $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
     /**
@@ -64,7 +64,7 @@ class Mailer implements MailerInterface
             'loginpage' => $url
         ];
 
-        $this->sendMessage($template, $mailParams, (string)$user->getEmail());
+        $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
     /**
@@ -80,7 +80,7 @@ class Mailer implements MailerInterface
             'confirmationUrl' => $url
         ];
 
-        $this->sendMessage($template, $mailParams, (string)$user->getEmail());
+        $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
     /**

@@ -38,7 +38,7 @@ trait UserTrait
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSalt()
     {
@@ -51,7 +51,7 @@ trait UserTrait
      * Trigger the hash calculation to remove the plain text password from the instance. This
      * is necessary to make sure no plain text passwords are serialized.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function eraseCredentials()
     {
@@ -148,6 +148,6 @@ trait UserTrait
      */
     public function __toString()
     {
-        return (string)$this->getUsername();
+        return (string) $this->getUsername();
     }
 }

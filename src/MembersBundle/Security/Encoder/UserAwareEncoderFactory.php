@@ -6,5 +6,4 @@ use Pimcore\Security\Encoder\Factory\UserAwareEncoderFactory as PimcoreUserAware
 
 class UserAwareEncoderFactory extends PimcoreUserAwareEncoderFactory
 {
-
 }

@@ -43,6 +43,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
 
     /**
      * @param Request $request
+     *
      * @return array|bool|string
      */
     public function supports(Request $request)
@@ -109,6 +110,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     public function checkCredentials($credentials, UserInterface $user)
     {
         $encoder = $this->userAwareEncoderFactory->getEncoder($user);
+
         return $encoder->isPasswordValid($credentials['password'], $credentials['password'], '');
     }
 
@@ -116,13 +118,10 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
      * @param Request        $request
      * @param TokenInterface $token
      * @param string         $providerKey
-     *
-     * @return null
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $request->attributes->set('user', $token->getUser());
-        return null;
     }
 
     /**
@@ -142,7 +141,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
 
     /**
      * @param Request                      $request
-     * @param AuthenticationException|NULL $authException
+     * @param AuthenticationException|null $authException
      *
      * @return JsonResponse
      */

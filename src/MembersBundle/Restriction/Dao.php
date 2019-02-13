@@ -64,6 +64,7 @@ class Dao extends Model\Dao\AbstractDao
 
     /**
      * @return bool
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
@@ -72,8 +73,8 @@ class Dao extends Model\Dao\AbstractDao
         $saveData = [
             'targetId'    => $this->model->getTargetId(),
             'ctype'       => $this->model->getCtype(),
-            'isInherited' => (int)$this->model->isInherited(),
-            'inherit'     => (int)$this->model->getInherit()
+            'isInherited' => (int) $this->model->isInherited(),
+            'inherit'     => (int) $this->model->getInherit()
         ];
 
         if ($this->model->getId() !== null) {
@@ -108,6 +109,7 @@ class Dao extends Model\Dao\AbstractDao
 
     /**
      * @return bool
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
@@ -126,7 +128,7 @@ class Dao extends Model\Dao\AbstractDao
         foreach ($groups as $groupId) {
             $saveData = [
                 'restrictionId' => $this->model->getId(),
-                'groupId'       => (int)$groupId,
+                'groupId'       => (int) $groupId,
             ];
 
             $this->db->insert($this->tableRelationName, $saveData);
@@ -144,5 +146,4 @@ class Dao extends Model\Dao\AbstractDao
         $this->db->delete($this->tableName, ['id' => $this->model->getId()]);
         $this->db->delete($this->tableRelationName, ['restrictionId' => $this->model->getId()]);
     }
-
 }

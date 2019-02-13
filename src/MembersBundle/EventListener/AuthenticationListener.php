@@ -1,6 +1,5 @@
 <?php
 
-
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Event\FilterUserResponseEvent;

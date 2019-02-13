@@ -89,7 +89,7 @@ class RestrictionController extends AdminController
 
         return $this->json([
             'success'     => true,
-            'docId'       => (int)$documentId,
+            'docId'       => (int) $documentId,
             'cType'       => $cType,
             'isActive'    => $isActive,
             'isInherited' => $isInherited,
@@ -102,6 +102,7 @@ class RestrictionController extends AdminController
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @throws \Exception
      */
     public function setDocumentRestrictionConfigAction(Request $request)
@@ -111,7 +112,7 @@ class RestrictionController extends AdminController
 
         $data = json_decode($request->query->get('data'));
 
-        $docId = (int)$data->docId;
+        $docId = (int) $data->docId;
         $settings = $data->settings;
         $cType = $data->cType; //object|page|asset
 
@@ -140,7 +141,7 @@ class RestrictionController extends AdminController
         return $this->json([
             'success'    => true,
             'isActive'   => !empty($groups),
-            'docId'      => (int)$settings->docId,
+            'docId'      => (int) $settings->docId,
             'userGroups' => !empty($groups) ? $restriction->getRelatedGroups() : []
         ]);
     }
@@ -154,7 +155,7 @@ class RestrictionController extends AdminController
     {
         $data = json_decode($request->query->get('data'));
 
-        $docId = (int)$data->docId;
+        $docId = (int) $data->docId;
         $cType = $data->cType; //object|page|asset
 
         $restriction = false;
@@ -192,5 +193,4 @@ class RestrictionController extends AdminController
             'path'    => $closestInheritanceParent['path']
         ]);
     }
-
 }

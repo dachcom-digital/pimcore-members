@@ -20,14 +20,14 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     public $fieldtype = 'membersGroupMultiselect';
 
     /**
-     * Type for the column to query
+     * Type for the column to query.
      *
      * @var string
      */
     public $queryColumnType = 'text';
 
     /**
-     * Type for the generated phpdoc
+     * Type for the generated phpdoc.
      *
      * @var string
      */
@@ -115,6 +115,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      * @param array $params
      *
      * @return null|string
+     *
      * @throws \Exception
      */
     public function getDataForQueryResource($data, $object = null, $params = [])
@@ -208,7 +209,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * BC Layer for pimcore < 5.6
+     * BC Layer for pimcore < 5.6.
      *
      * @param array $data
      * @param null  $object
@@ -233,5 +234,4 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
 
         return $elements;
     }
-
 }
