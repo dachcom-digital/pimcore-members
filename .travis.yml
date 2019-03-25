@@ -19,11 +19,11 @@ env:
         - DACHCOM_TEST_SECTION=codeception
 matrix:
     include:
-        -   name: "PHPStan Static Analysis (Pimcore 5.6.x, PHP 7.2)"
+        -   name: "PHPStan Static Analysis (Pimcore 5.7.x, PHP 7.2)"
             sudo: required
             php: 7.2
             env:
-                - PIMCORE_SKELETON_BRANCH="tags/v1.1.0"
+                - PIMCORE_SKELETON_BRANCH="tags/v1.2.0"
                 - DACHCOM_TEST_SECTION=phpstan
         -   name: "PHP ECS (Pimcore 5.6.x, PHP 7.2)"
             sudo: required
@@ -61,6 +61,16 @@ matrix:
             php: 7.2
             env:
                 - PIMCORE_SKELETON_BRANCH="tags/v1.1.0"
+        -   name: "Codeception Tests ( Pimcore 5.7.x, PHP 7.1)"
+            sudo: required
+            php: 7.1
+            env:
+                - PIMCORE_SKELETON_BRANCH="tags/v1.2.0"
+        -   name: "Codeception Tests ( Pimcore 5.7.x, PHP 7.2)"
+            sudo: required
+            php: 7.2
+            env:
+                - PIMCORE_SKELETON_BRANCH="tags/v1.2.0"
     allow_failures:
         -   env:
                 - PIMCORE_SKELETON_BRANCH="tags/v1.1.0"
