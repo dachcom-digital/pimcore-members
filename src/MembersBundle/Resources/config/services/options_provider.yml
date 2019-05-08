@@ -1,0 +1,11 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    MembersBundle\CoreExtension\Provider\RoleOptionsProvider:
+        arguments:
+            $systemRoles: '%security.role_hierarchy.roles%'
+
