@@ -16,7 +16,6 @@ abstract class DachcomBundleTestCase extends TestCase
 {
     protected function _after()
     {
-        TestHelper::cleanUp();
         MembersHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
         FileGeneratorHelper::cleanUp();
