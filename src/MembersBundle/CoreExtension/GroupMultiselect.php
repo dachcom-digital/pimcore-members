@@ -87,8 +87,8 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      * @param mixed                          $params
      *
      * @return array
-     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
      *
+     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
     {
@@ -251,6 +251,5 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
         }
 
         return $legacyElements;
-
     }
 }

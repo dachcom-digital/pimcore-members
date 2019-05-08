@@ -28,7 +28,6 @@ class Version20190508092938 extends AbstractPimcoreMigration
         $list = $list->load();
 
         foreach ($list as $class) {
-
             if ($groupFound === true) {
                 break;
             }
@@ -42,12 +41,14 @@ class Version20190508092938 extends AbstractPimcoreMigration
                                     // already a service. skip....
                                     $this->writeMessage('RoleOptionsProvider already defined as service. skipping...');
                                     $groupFound = true;
+
                                     break;
                                 } elseif ($fieldDefinition->getOptionsProviderClass() === 'MembersBundle\CoreExtension\Provider\RoleOptionsProvider') {
                                     $groupFound = true;
                                     $fieldDefinition->setOptionsProviderClass('@MembersBundle\CoreExtension\Provider\RoleOptionsProvider');
                                     $this->writeMessage('Convert RoleOptionsProvider to symfony service...');
                                     $class->save();
+
                                     break;
                                 }
                             }
@@ -73,6 +74,5 @@ class Version20190508092938 extends AbstractPimcoreMigration
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-
     }
 }
