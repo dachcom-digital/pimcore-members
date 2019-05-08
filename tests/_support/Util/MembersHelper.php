@@ -3,6 +3,9 @@
 namespace DachcomBundle\Test\Util;
 
 use MembersBundle\Tool\Install;
+use MembersBundle\Tool\VersionHelper;
+use Pimcore\Model\DataObject;
+use Pimcore\Tests\Util\TestHelper;
 
 class MembersHelper
 {
@@ -11,8 +14,20 @@ class MembersHelper
     const DEFAULT_FEU_EMAIL = 'test@universe.org';
     const DEFAULT_FEU_PASSWORD = 'default-password';
 
+    const DEFAULT_FEG_NAME = 'Default Group';
+
     public static function cleanUp()
     {
+        TestHelper::cleanUp();
+
+        $objectList = new DataObject\Listing();
+        $objectList->setCondition('o_id != 1');
+        $objectList->setUnpublished(true);
+
+        foreach ($objectList->getObjects() as $object) {
+            $object->delete();
+        }
+
         $db = \Pimcore\Db::get();
         $db->exec('TRUNCATE TABLE members_restrictions');
         $db->exec('TRUNCATE TABLE members_group_relations');

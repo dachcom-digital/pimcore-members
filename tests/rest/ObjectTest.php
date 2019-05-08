@@ -15,7 +15,6 @@ class UserTest extends RestTestCase
 {
     protected function _after()
     {
-        TestHelper::cleanUp();
         MembersHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
 

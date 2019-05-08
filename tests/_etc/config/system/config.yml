@@ -8,6 +8,10 @@ imports:
 swiftmailer:
     disable_delivery: true
 
+security:
+    role_hierarchy:
+        ROLE_MEMBERS_MODERATOR: [ROLE_USER]
+
 framework:
     profiler:
         enabled: true

@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\Util;
+namespace MembersBundle\Tool;
 
 class VersionHelper
 {

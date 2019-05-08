@@ -2,6 +2,7 @@
 
 namespace MembersBundle\CoreExtension;
 
+use MembersBundle\Tool\VersionHelper;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
@@ -81,18 +82,18 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
-     *
      * @param array                          $data
      * @param null|DataObject\AbstractObject $object
      * @param mixed                          $params
      *
      * @return array
+     *
+     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
     {
         //if not set, return null
-        if ($data === null or $data === false) {
+        if ($data === null || $data === false) {
             return null;
         }
 
@@ -219,7 +220,11 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      */
     public function getDataFromResource($data = [], $object = null, $params = [])
     {
-        $elements = [];
+        $elements = [
+            'dirty' => false,
+            'data'  => []
+        ];
+
         if (is_array($data) && count($data) > 0) {
             foreach ($data as $element) {
                 $e = null;
@@ -227,11 +232,24 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
                     $e = DataObject::getById($element['dest_id']);
                 }
                 if ($e instanceof Element\ElementInterface) {
-                    $elements[] = $e;
+                    $elements['data'][] = $e;
+                } else {
+                    $elements['dirty'] = true;
                 }
             }
         }
 
-        return $elements;
+        // only return, if pimcore is equal or greater than 5.8.0
+        // since they changed return value structure significant and without any warnings.
+        if (VersionHelper::pimcoreVersionIsGreaterOrEqualThan('5.8.0')) {
+            return $elements;
+        }
+
+        $legacyElements = [];
+        foreach ($elements['data'] as $element) {
+            $legacyElements[] = $element;
+        }
+
+        return $legacyElements;
     }
 }

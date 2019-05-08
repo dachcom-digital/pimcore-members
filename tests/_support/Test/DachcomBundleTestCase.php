@@ -16,7 +16,6 @@ abstract class DachcomBundleTestCase extends TestCase
 {
     protected function _after()
     {
-        TestHelper::cleanUp();
         MembersHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
         FileGeneratorHelper::cleanUp();
@@ -55,17 +54,31 @@ abstract class DachcomBundleTestCase extends TestCase
         return $user;
     }
 
-    protected function createUserGroup()
+    /**
+     * @param string $key
+     * @param array  $roles
+     *
+     * @return DataObject\MembersGroup
+     * @throws \Exception
+     */
+    protected function createUserGroup($key = 'group-1', $roles = [])
     {
         $group = new DataObject\MembersGroup();
-        $group->setKey('group-1');
+        $group->setKey($key);
+        $group->setName(MembersHelper::DEFAULT_FEG_NAME);
         $group->setPublished(true);
         $group->setParent(DataObject::getByPath('/'));
+        $group->setRoles($roles);
         $group->save();
 
         return $group;
     }
 
+    /**
+     * @param array $groups
+     *
+     * @return \Pimcore\Model\Document\Page
+     */
     protected function createRestrictedDocument($groups = [])
     {
         $document = TestHelper::createEmptyDocumentPage('restricted-document');

@@ -37,9 +37,8 @@ class PimcoreBackend extends Module
      */
     public function _after(TestInterface $test)
     {
-        TestHelper::cleanUp();
-        FileGeneratorHelper::cleanUp();
         MembersHelper::cleanUp();
+        FileGeneratorHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
 
         parent::_after($test);
