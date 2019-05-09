@@ -76,7 +76,7 @@ class RequestController extends AbstractController
         $response->headers->set('Provider', 'Pimcore-Members');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->headers->set('Pragma', 'public');
-        $response->headers->set('Content-Length', $asset->getFileSize('noformatting'));
+        $response->headers->set('Content-Length', $asset->getFileSize(false));
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
             $forceDownload ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE,
             \Pimcore\File::getValidFilename(basename($asset->getFileName()))
