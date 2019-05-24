@@ -6,6 +6,10 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 2.3.x to Version 2.4.0
+- **[BUGFIX]**: [Restricted Assets Download](https://github.com/dachcom-digital/pimcore-members/issues/94) wrong size header in pimcore > 5.6
+- **[BUGFIX]**: [MembersUser groups field does not load/save in admin backend](https://github.com/dachcom-digital/pimcore-members/issues/95) in pimcore > 5.8
+
 #### Update from Version 2.2.x to Version 2.3.0
 - **[ATTENTION]**: Installer has moved to the [MigrationBundle](https://github.com/dachcom-digital/pimcore-members/issues/74). After updating to this version you need to enable this extension again!
 - **[ATTENTION]**: The user class validation is now mapped via UserInterface (see [#76](https://github.com/dachcom-digital/pimcore-members/issues/76)).
