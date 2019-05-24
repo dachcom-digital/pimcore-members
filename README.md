@@ -9,7 +9,7 @@ Add frontend user authentication and document restriction to pimcore 5.0.
 [![PhpStan](https://img.shields.io/badge/PHPStan-level%202-brightgreen.svg?style=flat-square)](#)
 
 ## Requirements
-* Pimcore 5.
+* Pimcore >= 5.4
 
 ## Pimcore 4 
 Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-members/tree/pimcore4).
@@ -29,7 +29,7 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~2.3.0"
+    "dachcom-digital/members" : "~2.4.0"
 }
 ```
 
