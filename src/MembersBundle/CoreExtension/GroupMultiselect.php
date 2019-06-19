@@ -163,6 +163,8 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
+     * must return array - otherwise this means data is not loaded
+     *
      * @param array $data
      * @param null  $object
      * @param array $params
@@ -171,7 +173,21 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      */
     public function loadData($data, $object = null, $params = [])
     {
-        return $this->getDataFromResource($data, $object, $params);
+        $objects = ['dirty' => false, 'data' => []];
+
+        if (is_array($data) && count($data) > 0) {
+            foreach ($data as $item) {
+                $o = DataObject::getById($item['dest_id']);
+
+                if ($o instanceof DataObject\Concrete) {
+                    $objects['data'][] = $o;
+                } else {
+                    $objects['dirty'] = true;
+                }
+            }
+        }
+
+        return $objects;
     }
 
     /**
