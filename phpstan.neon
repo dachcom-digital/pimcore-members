@@ -2,10 +2,8 @@ includes:
 	- ../../vendor/phpstan/phpstan-symfony/extension.neon
 parameters:
     reportUnmatchedIgnoredErrors: false
-    autoload_files:
-        - %currentWorkingDirectory%/vendor/pimcore/pimcore/stubs/compatibility-v4.php
     symfony:
-        container_xml_path: var/cache/dev/appDevDebugProjectContainer.xml
+        container_xml_path: var/cache/dev/appAppKernelDevDebugContainer.xml
     excludes_analyse:
         # only works if optional bundles are available:
         - '**/AbstractCustomerUser.php'
