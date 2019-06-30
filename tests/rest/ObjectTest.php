@@ -2,72 +2,15 @@
 
 namespace DachcomBundle\Test\rest;
 
-use DachcomBundle\Test\Helper\Rest\BrowserKitRestClient;
-use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\MembersGroup;
 use Pimcore\Model\DataObject\MembersUser;
-use Pimcore\Tests\RestTester;
-use Pimcore\Tests\Test\TestCase;
 use Pimcore\Tests\Util\TestHelper;
-use Pimcore\Tool\RestClient;
 
-class ObjectTest extends TestCase
+class ObjectTest extends AbstractRestTestCase
 {
-    /**
-     * @var RestTester
-     */
-    protected $tester;
-
-    /**
-     * @var RestClient
-     */
-    protected $restClient;
-
-    /**
-     * @var string
-     */
-    protected $authenticateUser = 'rest';
-
-    public function setUp()
-    {
-        /** @var $this TestCase */
-        parent::setUp();
-
-        // setup test rest client
-        $this->restClient = new BrowserKitRestClient($this->tester->getHttpClient());
-
-        // authenticate as rest user
-        if ($this->authenticateUser) {
-            $this->restClient->setApiKey($this->tester->getRestApiKey($this->authenticateUser));
-        }
-    }
-
-    /**
-     * Params which will be added to each request
-     *
-     * @return array
-     */
-    public function getGlobalRequestParams()
-    {
-        return [];
-    }
-
-    protected function needsDb()
-    {
-        return true;
-    }
-
-    protected function _after()
-    {
-        MembersHelper::cleanUp();
-        MembersHelper::reCreateMembersStructure();
-
-        parent::_after();
-    }
-
     public function testUserCreate()
     {
         $unsavedObject = new MembersUser();
