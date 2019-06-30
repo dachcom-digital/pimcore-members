@@ -4,47 +4,11 @@ namespace DachcomBundle\Test\Helper\Rest;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Pimcore\Tool\RestClient\AbstractRestClient;
-use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\BrowserKit\Request as BrowserKitRequest;
 use Symfony\Component\BrowserKit\Response as BrowserKitResponse;
 
-class BrowserKitRestClient extends AbstractRestClient
+class BrowserKitRestClient extends \Pimcore\Tests\Rest\BrowserKitRestClient
 {
-    /**
-     * @var Client
-     */
-    protected $client;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(Client $client, array $parameters = [], array $headers = [], array $options = [])
-    {
-        $this->client = $client;
-
-        parent::__construct($parameters, $headers, $options);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getJsonResponse($method, $uri, array $parameters = [], array $files = [], array $server = [], $content = null, $expectedStatus = 200)
-    {
-        try {
-            return parent::getJsonResponse($method, $uri, $parameters, $files, $server, $content, $expectedStatus);
-        } catch (\Exception $e) {
-            codecept_debug(sprintf(
-                '[BrowserKitRestClient] Failed response with message "%s" and status code %d. Body: %s',
-                $e->getMessage(),
-                $this->lastResponse ? $this->lastResponse->getStatusCode() : 'unkown',
-                $this->lastResponse ? (string) $this->lastResponse->getBody() : 'unkown'
-            ));
-
-            throw $e;
-        }
-    }
-
     /**
      * @inheritDoc
      */
@@ -74,10 +38,15 @@ class BrowserKitRestClient extends AbstractRestClient
         /** @var BrowserKitResponse $response */
         $browserKitResponse = $this->client->getInternalResponse();
 
+        $headers = $browserKitRequest->getServer();
+        if (isset($headers['HTTPS'])) {
+            $headers['HTTPS'] = (string) $headers['HTTPS'];
+        }
+
         $request = new Request(
             $browserKitRequest->getMethod(),
             $browserKitRequest->getUri(),
-            $browserKitRequest->getServer(),
+            $headers,
             $browserKitRequest->getContent()
         );
 
@@ -91,19 +60,5 @@ class BrowserKitRestClient extends AbstractRestClient
         $this->lastResponse = $response;
 
         return $response;
-    }
-
-    /**
-     * @param string $uri
-     *
-     * @return string
-     */
-    protected function prepareUri($uri)
-    {
-        if ($this->basePath) {
-            $uri = $this->basePath . $uri;
-        }
-
-        return $uri;
     }
 }
