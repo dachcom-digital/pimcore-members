@@ -1,26 +1,16 @@
 <?php
 
-namespace Pimcore\Tests\Rest;
+namespace DachcomBundle\Test\rest;
 
-use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\MembersGroup;
 use Pimcore\Model\DataObject\MembersUser;
-use Pimcore\Tests\Test\RestTestCase;
 use Pimcore\Tests\Util\TestHelper;
 
-class UserTest extends RestTestCase
+class ObjectTest extends AbstractRestTestCase
 {
-    protected function _after()
-    {
-        MembersHelper::cleanUp();
-        MembersHelper::reCreateMembersStructure();
-
-        parent::_after();
-    }
-
     public function testUserCreate()
     {
         $unsavedObject = new MembersUser();
