@@ -7,6 +7,7 @@ use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Event\GetResponseNullableUserEvent;
 use MembersBundle\Event\GetResponseUserEvent;
+use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Mailer\Mailer;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
@@ -28,7 +29,7 @@ class ResettingController extends AbstractController
      */
     public function requestAction(Request $request)
     {
-        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->get('members.resetting_request.form.factory');
 
         $form = $formFactory->createUnnamedForm();
@@ -42,7 +43,8 @@ class ResettingController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return null|RedirectResponse|Response
+     * @return RedirectResponse|Response|null
+     * @throws \Exception
      */
     public function sendEmailAction(Request $request)
     {
@@ -116,7 +118,7 @@ class ResettingController extends AbstractController
         }
 
         return $this->renderTemplate('@Members/Resetting/check_email.html.twig', [
-            'tokenLifetime' => ceil($this->container->getParameter('members.resetting.retry_ttl') / 3600),
+            'tokenLifetime' => ceil($this->getParameter('members.resetting.retry_ttl') / 3600),
         ]);
     }
 
@@ -132,11 +134,11 @@ class ResettingController extends AbstractController
             return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
         }
 
-        /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
+        /** @var FactoryInterface $formFactory */
         $formFactory = $this->get('members.resetting.form.factory');
         /** @var UserManager $userManager */
         $userManager = $this->get(UserManager::class);
-        /** @var \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher */
+        /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
         $user = $userManager->findUserByConfirmationToken($token);
