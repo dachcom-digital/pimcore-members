@@ -4,6 +4,7 @@ namespace DachcomBundle\Test\Helper;
 
 use Codeception\Lib\ModuleContainer;
 use Codeception\Lib\Connector\Symfony as SymfonyConnector;
+use Codeception\Util\Debug;
 use Pimcore\Cache;
 use Pimcore\Config;
 use Pimcore\Event\TestEvents;
@@ -50,8 +51,8 @@ class PimcoreCore extends PimcoreCoreModule
      */
     public function _afterSuite()
     {
-       \Pimcore::collectGarbage();
-        //$this->clearCache();
+        \Pimcore::collectGarbage();
+        $this->clearCache();
         parent::_afterSuite();
     }
 
@@ -115,20 +116,25 @@ class PimcoreCore extends PimcoreCoreModule
      */
     protected function clearCache($force = true)
     {
-        \Codeception\Util\Debug::debug('[PIMCORE] Clear Cache!');
+        Debug::debug('[PIMCORE] Clear Cache!');
 
         $fileSystem = new Filesystem();
+        $cacheDir = PIMCORE_SYMFONY_CACHE_DIRECTORY;
 
-        try {
-            $fileSystem->remove(PIMCORE_PROJECT_ROOT . '/var/cache');
-            $fileSystem->mkdir(PIMCORE_PROJECT_ROOT . '/var/cache');
-        } catch (\Exception $e) {
-            //try again later if "directory not empty" error occurs.
-            if ($force === true) {
-                sleep(1);
-                $this->clearCache(false);
-            }
+        if (!$fileSystem->exists($cacheDir)) {
+            return;
         }
+
+        // see Symfony's cache:clear command
+        $oldCacheDir = substr($cacheDir, 0, -1) . ('~' === substr($cacheDir, -1) ? '+' : '~');
+
+        if ($fileSystem->exists($oldCacheDir)) {
+            $fileSystem->remove($oldCacheDir);
+        }
+
+        $fileSystem->rename($cacheDir, $oldCacheDir);
+        $fileSystem->mkdir($cacheDir);
+        $fileSystem->remove($oldCacheDir);
     }
 
     /**

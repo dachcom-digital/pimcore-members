@@ -44,6 +44,7 @@ class ResettingController extends AbstractController
      * @param Request $request
      *
      * @return RedirectResponse|Response|null
+     *
      * @throws \Exception
      */
     public function sendEmailAction(Request $request)
