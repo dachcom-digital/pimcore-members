@@ -51,7 +51,7 @@ class PimcoreCore extends PimcoreCoreModule
     public function _afterSuite()
     {
        \Pimcore::collectGarbage();
-        $this->clearCache();
+        //$this->clearCache();
         parent::_afterSuite();
     }
 

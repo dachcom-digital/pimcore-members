@@ -3,12 +3,12 @@
 namespace MembersBundle\Command;
 
 use Pimcore\Model\DataObject\ClassDefinition;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class ClassInstallerCommand extends ContainerAwareCommand
+class ClassInstallerCommand extends Command
 {
     private $classes = [
         'MembersUser',

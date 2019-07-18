@@ -1,0 +1,5 @@
+services:
+
+    MembersBundle\Command\ClassInstallerCommand:
+        autowire: true
+        autoconfigure: true
