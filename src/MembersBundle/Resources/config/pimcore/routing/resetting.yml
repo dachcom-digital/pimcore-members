@@ -1,17 +1,17 @@
 # frontend resetting
 members_user_resetting_request:
     path: /request
-    defaults: { _controller: MembersBundle:Resetting:request }
+    defaults: { _controller: MembersBundle\Controller\ResettingController::requestAction }
     methods:  [GET]
 members_user_resetting_send_email:
     path: /send-email
-    defaults: { _controller: MembersBundle:Resetting:sendEmail }
+    defaults: { _controller: MembersBundle\Controller\ResettingController::sendEmailAction }
     methods:  [POST]
 members_user_resetting_check_email:
     path: /check-email
-    defaults: { _controller: MembersBundle:Resetting:checkEmail }
+    defaults: { _controller: MembersBundle\Controller\ResettingController::checkEmailAction }
     methods:  [GET]
 members_user_resetting_reset:
     path: /reset/{token}
-    defaults: { _controller: MembersBundle:Resetting:reset }
+    defaults: { _controller: MembersBundle\Controller\ResettingController::resetAction }
     methods:  [GET, POST]

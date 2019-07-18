@@ -1,12 +1,12 @@
 # frontend profile
 members_user_profile_show:
     path: /
-    defaults: { _controller: MembersBundle:Profile:show }
+    defaults: { _controller: MembersBundle\Controller\ProfileController::showAction }
     methods:  [GET]
 members_user_profile_edit:
     path: /edit
-    defaults: { _controller: MembersBundle:Profile:edit }
+    defaults: { _controller: MembersBundle\Controller\ProfileController::editAction }
     methods:  [GET, POST]
 members_user_restriction_refused:
     path: /refused
-    defaults: { _controller: MembersBundle:Profile:refused }
+    defaults: { _controller: MembersBundle\Controller\ProfileController::refusedAction }
