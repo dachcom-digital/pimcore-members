@@ -87,7 +87,7 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
         $headers = $response->getHeaders();
 
         $symfonyVersion = Kernel::MAJOR_VERSION;
-        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $element->getKey() : sprintf("%s", $element->getKey())));
+        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $element->getKey() : sprintf('"%s"', $element->getKey())));
 
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals($contentDisposition, $headers['content-disposition'][0]);
@@ -107,7 +107,7 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
         $headers = $response->getHeaders();
 
         $symfonyVersion = Kernel::MAJOR_VERSION;
-        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $fileName : sprintf("%s", $fileName)));
+        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $fileName : sprintf('"%s"', $fileName)));
 
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals($contentDisposition, $headers['content-disposition'][0]);
