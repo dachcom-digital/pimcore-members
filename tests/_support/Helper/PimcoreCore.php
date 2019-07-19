@@ -49,8 +49,10 @@ class PimcoreCore extends PimcoreCoreModule
     /**
      * @inheritdoc
      */
-    public function _beforeSuite()
+    public function _beforeSuite($settings = [])
     {
+        parent::_beforeSuite($settings);
+
         Debug::debug('[PIMCORE] Warmup Cache!');
         $this->getContainer()->get(Cache\Symfony\CacheClearer::class)->warmup($this->getKernel()->getEnvironment());
 
