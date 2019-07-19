@@ -1,15 +1,15 @@
 services:
     members.change_password.form.type:
-        alias: '@MembersBundle\Form\Type\ChangePasswordFormType'
+        alias: MembersBundle\Form\Type\ChangePasswordFormType
     members.profile.form.type:
-        alias: '@MembersBundle\Form\Type\ProfileFormType'
+        alias: MembersBundle\Form\Type\ProfileFormType
     members.registration.form.type:
-        alias: '@MembersBundle\Form\Type\RegistrationFormType'
+        alias: MembersBundle\Form\Type\RegistrationFormType
     members.resetting_request.form.type:
-        alias: '@MembersBundle\Form\Type\ResettingRequestFormType'
+        alias: MembersBundle\Form\Type\ResettingRequestFormType
     members.resetting.form.type:
-        alias: '@MembersBundle\Form\Type\ResettingFormType'
+        alias: MembersBundle\Form\Type\ResettingFormType
     members.security.login.form.login:
-        alias: '@MembersBundle\Form\Type\LoginFormType'
+        alias: MembersBundle\Form\Type\LoginFormType
     members.delete_account.form.type:
-        alias: '@MembersBundle\Form\Type\DeleteAccountFormType'
+        alias: MembersBundle\Form\Type\DeleteAccountFormType
