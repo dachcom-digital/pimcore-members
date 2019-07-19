@@ -51,8 +51,11 @@ class PimcoreCore extends PimcoreCoreModule
      */
     public function _afterSuite()
     {
-        $this->clearCache();
         parent::_afterSuite();
+
+        \Pimcore::collectGarbage();
+
+        $this->clearCache();
     }
 
     /**
@@ -163,6 +166,8 @@ class PimcoreCore extends PimcoreCoreModule
      */
     public function haveABootedSymfonyConfiguration(string $configuration)
     {
+        \Pimcore::collectGarbage();
+
         $this->kernelHasCustomConfig = true;
         $this->clearCache();
         $this->bootKernelWithConfiguration($configuration);
