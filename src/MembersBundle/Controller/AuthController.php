@@ -2,12 +2,27 @@
 
 namespace MembersBundle\Controller;
 
+use MembersBundle\Form\Factory\FactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 
 class AuthController extends AbstractController
 {
+    /**
+     * @var FactoryInterface
+     */
+    protected $formFactory;
+
+    /**
+     * @param FactoryInterface $formFactory
+     */
+    public function __construct(FactoryInterface $formFactory)
+    {
+        $this->formFactory = $formFactory;
+    }
+
     /**
      * @param Request $request
      *
@@ -18,14 +33,13 @@ class AuthController extends AbstractController
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;
 
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        /** @var Session $session */
         $session = $request->getSession();
 
         // last username entered by the user
         $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
 
-        $formFactory = $this->get('members.security.login.form.factory');
-        $form = $formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
+        $form = $this->formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
 
         $form->handleRequest($request);
 

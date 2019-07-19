@@ -15,13 +15,34 @@ class RequestController extends AbstractController
     const BUFFER_SIZE = 8192;
 
     /**
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @var RestrictionUri
+     */
+    protected $restrictionUri;
+
+    /**
+     * @param Configuration  $configuration
+     * @param RestrictionUri $restrictionUri
+     */
+    public function __construct(Configuration $configuration, RestrictionUri $restrictionUri)
+    {
+        $this->configuration = $configuration;
+        $this->restrictionUri = $restrictionUri;
+    }
+
+    /**
      * @param null $hash
      *
      * @return StreamedResponse
+     * @throws \Exception
      */
     public function serveAction($hash = null)
     {
-        if ($this->container->get(Configuration::class)->getConfig('restriction')['enabled'] === false) {
+        if ($this->configuration->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
@@ -29,9 +50,7 @@ class RequestController extends AbstractController
             throw $this->createNotFoundException('invalid hash for asset request.');
         }
 
-        /** @var RestrictionUri $restrictionUri */
-        $restrictionUri = $this->container->get(RestrictionUri::class);
-        $dataToProcess = $restrictionUri->decodeAssetUrl($hash);
+        $dataToProcess = $this->restrictionUri->decodeAssetUrl($hash);
 
         if ($dataToProcess === false) {
             throw $this->createNotFoundException('invalid hash for asset request.');
@@ -57,9 +76,7 @@ class RequestController extends AbstractController
         $contentType = $asset->getMimetype();
         $fileSize = filesize($asset->getFileSystemPath());
 
-        /** @var Configuration $configuration */
-        $configuration = $this->container->get(Configuration::class);
-        $hasLuceneSearch = $configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
+        $hasLuceneSearch = $this->configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
 
         if ($hasLuceneSearch === true) {
             /** @var \LuceneSearchBundle\Tool\CrawlerState $crawlerState */
@@ -103,9 +120,10 @@ class RequestController extends AbstractController
     }
 
     /**
-     * @param array $assets
+     * @param $assets
      *
      * @return StreamedResponse
+     * @throws \Exception
      */
     private function serveZip($assets)
     {

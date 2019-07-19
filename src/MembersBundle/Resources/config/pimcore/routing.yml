@@ -1,21 +1,21 @@
 members.controller.admin.get_restriction_config:
     path: /admin/members/restriction/get-document-restriction-config
-    defaults: { _controller: MembersBundle:Admin\Restriction:getDocumentRestrictionConfig }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::getDocumentRestrictionConfigAction }
 members.controller.admin.set_document_restriction:
     path: /admin/members/restriction/set-document-restriction-config
-    defaults: { _controller: MembersBundle:Admin\Restriction:setDocumentRestrictionConfig }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::setDocumentRestrictionConfigAction }
 members.controller.admin.get_global_settings:
     path: /admin/members/restriction/get-global-settings
-    defaults: { _controller: MembersBundle:Admin\Restriction:getGlobalSettings }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::getGlobalSettingsAction }
 members.controller.admin.get_groups:
     path: /admin/members/restriction/get-groups
-    defaults: { _controller: MembersBundle:Admin\Restriction:getGroups }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::getGroupsAction }
 members.controller.admin.get_next_parent_restriction:
     path: /admin/members/restriction/get-next-parent-restriction
-    defaults: { _controller: MembersBundle:Admin\Restriction:getNextParentRestriction }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::getNextParentRestrictionAction }
 members.controller.admin.delete_document_restriction_config:
     path: /admin/members/restriction/delete-document-restriction-config
-    defaults: { _controller: MembersBundle:Admin\Restriction:deleteDocumentRestrictionConfig }
+    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::deleteDocumentRestrictionConfigAction }
 members.asset_request:
     path: /members/request-data/{hash}
-    defaults: { _controller: MembersBundle:Request:serve }
+    defaults: { _controller: MembersBundle\Controller\RequestController::serveAction }

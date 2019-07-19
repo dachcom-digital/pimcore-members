@@ -5,7 +5,6 @@ services:
         autoconfigure: true
         public: true
 
-    # tool: installer
     MembersBundle\Tool\Install:
         arguments:
             $bundle: "@=service('kernel').getBundle('MembersBundle')"
@@ -13,14 +12,3 @@ services:
             - [setTokenStorageUserResolver, ['@Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver']]
             - [setSerializer, ['@serializer']]
             - [setConfiguration, ['@MembersBundle\Configuration\Configuration']]
-
-    # tool: installer
-    MembersBundle\Tool\TokenGenerator: ~
-
-    # configuration
-    MembersBundle\Configuration\Configuration: ~
-
-    # session: configurator
-    MembersBundle\Session\SessionConfigurator:
-        tags:
-            - { name: pimcore.session.configurator }

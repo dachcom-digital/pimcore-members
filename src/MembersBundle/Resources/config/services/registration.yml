@@ -1,19 +1,22 @@
 services:
 
-    #form registration factory
     members.registration.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
-        public: true
         arguments:
             - '@form.factory'
             - '%members_user.registration.form.name%'
             - '%members_user.registration.form.type%'
             - '%members_user.registration.form.validation_groups%'
 
-    #form registration type
-    members.registration.form.type:
-        class: MembersBundle\Form\Type\RegistrationFormType
+    MembersBundle\Form\Type\RegistrationFormType:
         arguments:
             - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_registration }
+
+    MembersBundle\Controller\RegistrationController:
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $formFactory: '@members.registration.form.factory'

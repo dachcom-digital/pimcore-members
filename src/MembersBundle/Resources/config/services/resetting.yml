@@ -1,35 +1,35 @@
 services:
 
-    #form resetting request factory
     members.resetting_request.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
-        public: true
         arguments:
             - '@form.factory'
             - '%members_user.resetting_request.form.name%'
             - '%members_user.resetting_request.form.type%'
             - '%members_user.resetting_request.form.validation_groups%'
 
-    #form resetting request type
-    members.resetting_request.form.type:
-        class: MembersBundle\Form\Type\ResettingRequestFormType
-        tags:
-            - { name: form.type, alias: members_user_resetting_request }
-
-    #form resetting factory
     members.resetting.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
-        public: true
         arguments:
             - '@form.factory'
             - '%members_user.resetting.form.name%'
             - '%members_user.resetting.form.type%'
             - '%members_user.resetting.form.validation_groups%'
 
-    #form resetting type
-    members.resetting.form.type:
-        class: MembersBundle\Form\Type\ResettingFormType
+    MembersBundle\Form\Type\ResettingRequestFormType:
+        tags:
+            - { name: form.type, alias: members_user_resetting_request }
+
+    MembersBundle\Form\Type\ResettingFormType:
         arguments:
             - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_resetting }
+
+    MembersBundle\Controller\ResettingController:
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $requestResettingFormFactory: '@members.resetting_request.form.factory'
+            $resettingFormFactory: '@members.resetting.form.factory'

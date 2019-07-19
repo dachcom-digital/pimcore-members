@@ -3,12 +3,17 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
 
-     # security: restriction uri parser
+    members.security.login.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - '%members_user.login.form.name%'
+            - '%members_user.login.form.type%'
+            - '%members_user.login.form.validation_groups%'
+
     MembersBundle\Security\RestrictionUri: ~
 
-     # security: restriction query parser
     MembersBundle\Security\RestrictionQuery: ~
 
     MembersBundle\Security\UserChecker: ~
@@ -24,17 +29,11 @@ services:
 
     MembersBundle\Security\LuceneSearchAuthenticator: ~
 
-    #form login request factory
-    members.security.login.form.factory:
-        class: MembersBundle\Form\Factory\FormFactory
-        arguments:
-            - '@form.factory'
-            - '%members_user.login.form.name%'
-            - '%members_user.login.form.type%'
-            - '%members_user.login.form.validation_groups%'
-
-    #form login type
-    members.security.login.form.login:
-        class: MembersBundle\Form\Type\LoginFormType
+    MembersBundle\Form\Type\LoginFormType:
         tags:
             - { name: form.type, alias: members_user_resetting }
+
+    MembersBundle\Controller\AuthController:
+        public: true
+        arguments:
+            $formFactory: '@members.security.login.form.factory'

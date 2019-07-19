@@ -3,7 +3,11 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+
+    MembersBundle\Restriction\RestrictionService: ~
+
+    MembersBundle\Controller\RequestController:
         public: true
 
-    # service: restriction
-    MembersBundle\Restriction\RestrictionService: ~
+    MembersBundle\Controller\Admin\RestrictionController:
+        public: true
