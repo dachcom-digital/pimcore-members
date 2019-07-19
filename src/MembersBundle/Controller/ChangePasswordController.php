@@ -72,7 +72,6 @@ class ChangePasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $event = new FormEvent($form, $request);
             $this->eventDispatcher->dispatch(MembersEvents::CHANGE_PASSWORD_SUCCESS, $event);
 

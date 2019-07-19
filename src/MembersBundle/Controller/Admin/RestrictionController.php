@@ -176,6 +176,7 @@ class RestrictionController extends AdminController
      * @param Request $request
      *
      * @return JsonResponse
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */

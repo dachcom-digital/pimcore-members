@@ -100,7 +100,6 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $event = new FormEvent($form, $request);
             $this->eventDispatcher->dispatch(MembersEvents::PROFILE_EDIT_SUCCESS, $event);
 

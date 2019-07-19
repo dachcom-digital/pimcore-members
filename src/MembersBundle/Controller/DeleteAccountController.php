@@ -71,7 +71,6 @@ class DeleteAccountController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $event = new GetResponseUserEvent($user, $request);
             $this->eventDispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_SUCCESS, $event);
 

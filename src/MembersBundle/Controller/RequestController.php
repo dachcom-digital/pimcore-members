@@ -38,6 +38,7 @@ class RequestController extends AbstractController
      * @param null $hash
      *
      * @return StreamedResponse
+     *
      * @throws \Exception
      */
     public function serveAction($hash = null)
@@ -123,6 +124,7 @@ class RequestController extends AbstractController
      * @param array $assets
      *
      * @return StreamedResponse
+     *
      * @throws \Exception
      */
     private function serveZip($assets)
