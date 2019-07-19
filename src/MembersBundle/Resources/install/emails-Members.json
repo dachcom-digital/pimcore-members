@@ -9,7 +9,7 @@
         "path": "email",
         "key": "register-confirm",
         "module": "MembersBundle",
-        "controller": "Email",
+        "controller": "@MembersBundle\\Controller\\EmailController",
         "action": "email",
         "template": "MembersBundle:Email:email.html.twig",
         "data": {
@@ -44,7 +44,7 @@
         "path": "email",
         "key": "register-confirmed",
         "module": "MembersBundle",
-        "controller": "Email",
+        "controller": "@MembersBundle\\Controller\\EmailController",
         "action": "email",
         "template": "MembersBundle:Email:email.html.twig",
         "data": {
@@ -79,7 +79,7 @@
         "path": "email",
         "key": "password-reset",
         "module": "MembersBundle",
-        "controller": "Email",
+        "controller": "@MembersBundle\\Controller\\EmailController",
         "action": "email",
         "template": "MembersBundle:Email:email.html.twig",
         "data": {
@@ -114,7 +114,7 @@
         "path": "email",
         "key": "admin-register-notification",
         "module": "MembersBundle",
-        "controller": "Email",
+        "controller": "@MembersBundle\\Controller\\EmailController",
         "action": "email",
         "template": "MembersBundle:Email:email.html.twig",
         "data": {

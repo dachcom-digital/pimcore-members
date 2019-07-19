@@ -120,7 +120,7 @@ class RequestController extends AbstractController
     }
 
     /**
-     * @param $assets
+     * @param array $assets
      *
      * @return StreamedResponse
      * @throws \Exception
