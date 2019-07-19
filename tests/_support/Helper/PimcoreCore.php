@@ -49,6 +49,16 @@ class PimcoreCore extends PimcoreCoreModule
     /**
      * @inheritdoc
      */
+    public function _beforeSuite()
+    {
+        Debug::debug('[PIMCORE] Warmup Cache!');
+        $this->getContainer()->get(Cache\Symfony\CacheClearer::class)->warmup($this->getKernel()->getEnvironment());
+
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function _afterSuite()
     {
         \Pimcore::collectGarbage();
@@ -114,7 +124,7 @@ class PimcoreCore extends PimcoreCoreModule
     /**
      * @param bool $force
      */
-    protected function clearCache($force = true)
+    protected function clearCache()
     {
         Debug::debug('[PIMCORE] Clear Cache!');
 
