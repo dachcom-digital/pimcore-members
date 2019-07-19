@@ -1,7 +1,3 @@
-.members_icon_update_restriction {
-    background: url(/bundles/members/img/lock.svg) center center no-repeat !important;
-}
-
 .pimcore_icon_data_group_members {
     background: url(/bundles/members/img/members.svg) center center no-repeat !important;
 }
@@ -12,7 +8,7 @@
 }
 
 .members_icon_document_restriction {
-    background: url(/bundles/members/img/lock.png) no-repeat scroll left center transparent !important;
+    background: url(/bundles/members/img/lock.svg) no-repeat scroll left center transparent !important;
 }
 
 .members-locked .x-grid-cell-inner .x-tree-node-text {

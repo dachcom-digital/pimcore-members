@@ -227,7 +227,7 @@ pimcore.plugin.members.document.restriction = Class.create({
 
         this.layout = new Ext.FormPanel({
             title: t('members_restriction'),
-            iconCls: 'members_icon_document_restriction',
+            iconCls: 'pimcore_material_icon members_icon_document_restriction',
             border: false,
             autoScroll: true,
             bodyStyle:'padding:0 10px 0 10px;',
