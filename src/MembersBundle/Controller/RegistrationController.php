@@ -130,7 +130,7 @@ class RegistrationController extends AbstractController
     public function checkEmailAction(Request $request)
     {
         $sessionBag = $this->getMembersSessionBag($request);
-        $sessionBag = $sessionBag->get('members_user_send_confirmation_email/email');
+        $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
             return new RedirectResponse($this->container->get('router')->generate('members_user_registration_register'));

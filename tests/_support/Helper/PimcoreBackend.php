@@ -413,7 +413,7 @@ class PimcoreBackend extends Module
     protected function generateSnippetDocument($snippetKey, $elements = [], $locale = 'en')
     {
         $document = new Snippet();
-        $document->setController('default');
+        $document->setController('@AppBundle\Controller\DefaultController');
         $document->setAction('snippet');
         $document->setType('snippet');
         $document->setElements($elements);
@@ -472,7 +472,7 @@ class PimcoreBackend extends Module
         $document->setUserModification(1);
         $document->setCreationDate(time());
         $document->setModule('MembersBundle');
-        $document->setController('Email');
+        $document->setController('@MembersBundle\Controller\EmailController');
         $document->setAction('email');
         $document->setKey($documentKey);
 

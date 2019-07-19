@@ -1,3 +1,6 @@
+imports:
+    - { resource: base_config.yml }
+
 members:
     post_register_type: 'confirm_by_admin'
     send_admin_mail_after_register: true

@@ -1,7 +1,6 @@
 services:
 
     members.delete_account.form.factory:
-        public: true
         class: MembersBundle\Form\Factory\FormFactory
         arguments:
             - '@form.factory'

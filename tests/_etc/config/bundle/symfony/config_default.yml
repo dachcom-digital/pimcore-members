@@ -1,10 +1,13 @@
-members:
-    restriction:
-        enabled: true
-        allowed_objects:
-            - 'TestClass'
+imports:
+    - { resource: base_config.yml }
 
 services:
     DachcomBundle\Test\App\Services\TestRestrictedStaticRouteListener:
         tags:
             - { name: kernel.event_subscriber }
+
+members:
+    restriction:
+        enabled: true
+        allowed_objects:
+            - 'TestClass'

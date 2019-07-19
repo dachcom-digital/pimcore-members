@@ -7,9 +7,10 @@ After every update you should check the pimcore extension manager.
 Just click the "update" button or execute the migration command to finish the bundle update.
 
 #### Update from Version 2.x to Version 3.0.0
+- **[NEW FEATURE]**: Pimcore 6 Compatibility
+- **[BC BREAK]**: All Services are marked as private now (Except `RoleOptionsProvider`).
 - **[BC BREAK]**: All Controllers are registered as services now! If you're using you'r own controller logic, be sure the're adjusted properly!
-- **[BUGFIX]**: [MembersUser groups field does not load/save in admin backend](https://github.com/dachcom-digital/pimcore-members/issues/95) in pimcore > 5.8
-
+- **[ATTENTION]**: All Forms are registered in FQCN now. Aliases for the old service IDs are available.
 
 #### Update from Version 2.3.x to Version 2.4.0
 - **[BUGFIX]**: [Restricted Assets Download](https://github.com/dachcom-digital/pimcore-members/issues/94) wrong size header in pimcore > 5.6

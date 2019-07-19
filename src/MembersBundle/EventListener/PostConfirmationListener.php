@@ -10,6 +10,7 @@ use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -46,8 +47,6 @@ class PostConfirmationListener implements EventSubscriberInterface
     protected $postEventType;
 
     /**
-     * EmailConfirmationListener constructor.
-     *
      * @param UserManagerInterface  $userManager
      * @param Mailer                $pimcoreMailer
      * @param UrlGeneratorInterface $router
@@ -110,7 +109,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
         $this->mailer->sendConfirmationEmailMessage($user);
 
-        /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $this->session->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
@@ -134,7 +133,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
-        /** @var \Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag $sessionBag */
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $this->session->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
