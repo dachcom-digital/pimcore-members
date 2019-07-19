@@ -30,6 +30,8 @@ services:
         public: true
         autowire: true
         autoconfigure: true
+        calls:
+            - [setContainer, ['@service_container']]
         arguments:
             $requestResettingFormFactory: '@members.resetting_request.form.factory'
             $resettingFormFactory: '@members.resetting.form.factory'
