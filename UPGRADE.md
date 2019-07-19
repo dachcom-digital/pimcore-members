@@ -7,10 +7,16 @@ After every update you should check the pimcore extension manager.
 Just click the "update" button or execute the migration command to finish the bundle update.
 
 #### Update from Version 2.x to Version 3.0.0
-- **[NEW FEATURE]**: Pimcore 6 Compatibility
+- **[NEW FEATURE]**: Pimcore 6.0.0 ready
 - **[BC BREAK]**: All Services are marked as private now (Except `RoleOptionsProvider`).
 - **[BC BREAK]**: All Controllers are registered as services now! If you're using you'r own controller logic, be sure the're adjusted properly!
 - **[ATTENTION]**: All Forms are registered in FQCN now. Aliases for the old service IDs are available.
+
+***
+
+#### Update from Version 2.4.x to Version 2.5.0
+- **[ATTENTION]**: This release will be the last minor release which supports Pimcore 5!
+- ([Milestone for 2.5.0](https://github.com/dachcom-digital/pimcore-members/milestone/7?closed=1)
 
 #### Update from Version 2.3.x to Version 2.4.0
 - **[BUGFIX]**: [Restricted Assets Download](https://github.com/dachcom-digital/pimcore-members/issues/94) wrong size header in pimcore > 5.6
@@ -34,6 +40,8 @@ Just click the "update" button or execute the migration command to finish the bu
 - **[BC BREAK]**: Validation messages removed from `messages` domain. Read more about it [here](https://github.com/dachcom-digital/pimcore-members/issues/45).
 - **[BC BREAK]**: Render Forms via Symfony Form Theme (Bootstrap4 by default). See [#41](https://github.com/dachcom-digital/pimcore-members/issues/41)
 - **[NEW FEATURE]**: User deletion. See [#48](https://github.com/dachcom-digital/pimcore-members/issues/48)
+
+***
 
 #### Update from Version 1.x to Version 2.0.0
 - TBD

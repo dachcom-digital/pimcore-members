@@ -53,9 +53,8 @@ class PimcoreCore extends PimcoreCoreModule
     {
         parent::_afterSuite();
 
-        \Pimcore::collectGarbage();
-
         $this->clearCache();
+        $this->bootKernelWithConfiguration(null);
     }
 
     /**
