@@ -229,8 +229,9 @@ class UserManager implements UserManagerInterface
                 $userGroups[] = $objects[0];
             }
         }
-
-        $user->setGroups($userGroups);
+        if(count($userGroups)) {
+            $user->setGroups($userGroups);
+        }
 
         return $user;
     }
