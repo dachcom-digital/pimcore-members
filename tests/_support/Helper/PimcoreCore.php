@@ -23,6 +23,11 @@ class PimcoreCore extends PimcoreCoreModule
     protected $kernelHasCustomConfig = false;
 
     /**
+     * @var bool
+     */
+    protected $kernelHasCustomSuiteConfig = false;
+
+    /**
      * @inheritDoc
      */
     public function __construct(ModuleContainer $moduleContainer, $config = null)
@@ -62,7 +67,8 @@ class PimcoreCore extends PimcoreCoreModule
         }
 
         $configuration = $this->config['configuration_file'];
-        $this->kernelHasCustomConfig = true;
+
+        $this->kernelHasCustomSuiteConfig = true;
         $this->bootKernelWithConfiguration($configuration);
 
     }
@@ -74,14 +80,14 @@ class PimcoreCore extends PimcoreCoreModule
     {
         parent::_afterSuite();
 
-        if ($this->kernelHasCustomConfig !== true) {
+        if ($this->kernelHasCustomSuiteConfig !== true) {
             return;
         }
 
         // config has changed!
         // we need to restore default config before starting a new test!
         $this->bootKernelWithConfiguration(null);
-        $this->kernelHasCustomConfig = false;
+        $this->kernelHasCustomSuiteConfig = false;
     }
 
     /**
