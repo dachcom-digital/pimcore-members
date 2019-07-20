@@ -3,7 +3,6 @@
 namespace DachcomBundle\Test\App;
 
 use Pimcore\Kernel;
-use AppBundle\AppBundle;
 use DachcomBundle\Test\DependencyInjection\MakeServicesPublicPass;
 use DachcomBundle\Test\DependencyInjection\MonologChannelLoggerPass;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
@@ -21,7 +20,7 @@ class TestAppKernel extends Kernel
     public function registerBundlesToCollection(BundleCollection $collection)
     {
         if (class_exists('\\AppBundle\\AppBundle')) {
-            $collection->addBundle(new AppBundle());
+            $collection->addBundle(new \AppBundle\AppBundle());
         }
 
         $collection->addBundle(new WebProfilerBundle());

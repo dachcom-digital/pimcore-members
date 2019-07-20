@@ -38,6 +38,7 @@ class RestrictionUriExtension extends AbstractExtension
      * @param bool $checkRestriction
      *
      * @return string
+     *
      * @throws \Exception
      */
     public function buildAssetUrl($assetId = null, $checkRestriction = false)
@@ -55,6 +56,7 @@ class RestrictionUriExtension extends AbstractExtension
      * @param bool  $checkRestriction
      *
      * @return string
+     *
      * @throws \Exception
      */
     public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = false)
