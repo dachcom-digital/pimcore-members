@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\functional\Restriction;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\FunctionalTester;
 
 class ObjectRestrictionCest
@@ -9,7 +10,7 @@ class ObjectRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testObjectRestrictionWithoutAuthorization(FunctionalTester $I)
@@ -29,7 +30,7 @@ class ObjectRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testObjectRestrictionWithoutAccessRights(FunctionalTester $I)
@@ -50,7 +51,7 @@ class ObjectRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testObjectRestrictionWithAuthorization(FunctionalTester $I)

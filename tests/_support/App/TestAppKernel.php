@@ -2,42 +2,26 @@
 
 namespace DachcomBundle\Test\App;
 
-use Codeception\Util\Debug;
+use Pimcore\Kernel;
+use AppBundle\AppBundle;
 use DachcomBundle\Test\DependencyInjection\MakeServicesPublicPass;
 use DachcomBundle\Test\DependencyInjection\MonologChannelLoggerPass;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
-use Pimcore\Kernel;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
-use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class TestAppKernel extends Kernel
 {
     /**
      * {@inheritdoc}
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        parent::registerContainerConfiguration($loader);
-
-        $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
-        $bundleName = getenv('DACHCOM_BUNDLE_NAME');
-        $configName = getenv('DACHCOM_BUNDLE_CONFIG_FILE');
-
-        if ($configName !== false) {
-            Debug::debug(sprintf('[%s] add custom config file %s', strtoupper($bundleName), $configName));
-            $loader->load($bundleClass . '/_etc/config/bundle/symfony/' . $configName);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function registerBundlesToCollection(BundleCollection $collection)
     {
         if (class_exists('\\AppBundle\\AppBundle')) {
-            $collection->addBundle(new \AppBundle\AppBundle());
+            $collection->addBundle(new AppBundle());
         }
 
         $collection->addBundle(new WebProfilerBundle());
@@ -48,6 +32,8 @@ class TestAppKernel extends Kernel
 
     /**
      * @param ContainerBuilder $container
+     *
+     * @throws \Exception
      */
     protected function build(ContainerBuilder $container)
     {
@@ -55,6 +41,10 @@ class TestAppKernel extends Kernel
             PassConfig::TYPE_BEFORE_OPTIMIZATION, -100000);
         $container->addCompilerPass(new MonologChannelLoggerPass(),
             PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
+
+        $runtimeConfigDir = codecept_data_dir() . 'config' . DIRECTORY_SEPARATOR;
+        $loader = new YamlFileLoader($container, new FileLocator([$runtimeConfigDir]));
+        $loader->load('config.yml');
     }
 
     /**
