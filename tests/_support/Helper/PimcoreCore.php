@@ -135,17 +135,21 @@ class PimcoreCore extends PimcoreCoreModule
 
         $fileSystem = new Filesystem();
         $runtimeConfigDir = codecept_data_dir() . 'config' . DIRECTORY_SEPARATOR;
-        $runtimeConfigDirConfig = $runtimeConfigDir . DIRECTORY_SEPARATOR . 'config.yml';
+        $runtimeConfigConfig = $runtimeConfigDir . DIRECTORY_SEPARATOR . 'config.yml';
 
         if (!$fileSystem->exists($runtimeConfigDir)) {
             $fileSystem->mkdir($runtimeConfigDir);
         }
 
-        if (!$fileSystem->exists($runtimeConfigDirConfig)) {
-            $fileSystem->touch($runtimeConfigDirConfig);
+        $clearCache = false;
+        if (!$fileSystem->exists($runtimeConfigConfig)) {
+            $clearCache = true;
+            $fileSystem->touch($runtimeConfigConfig);
         }
 
-        //$this->clearCache();
+        if ($clearCache === true) {
+            $this->clearCache();
+        }
 
         $this->setConfiguration($configFile);
         $this->setupPimcoreDirectories();
@@ -235,7 +239,6 @@ class PimcoreCore extends PimcoreCoreModule
             return;
         }
 
-        // see Symfony's cache:clear command
         $oldCacheDir = substr($cacheDir, 0, -1) . ('~' === substr($cacheDir, -1) ? '+' : '~');
 
         if ($fileSystem->exists($oldCacheDir)) {
