@@ -12,7 +12,7 @@ Add frontend user authentication and document restriction to pimcore.
 
 | Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained     | Branch     |
 |---------|-----------------------------------|----------------------------|--------------|----------------|------------|
-| **3.0** | `6.0`                             | `3.4`, `^4.0`              | 20.07.2019   | Feature Branch | dev-master |
+| **3.0** | `6.0`                             | `3.4`, `^4.0`              | 21.07.2019   | Feature Branch | dev-master |
 | **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Bugfix only    | 2.5        |
 | **1.5** | `4.0`                             | --                         | 07.07.2017   | Unsupported    | pimcore4   |
 
