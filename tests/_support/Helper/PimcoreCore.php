@@ -2,7 +2,6 @@
 
 namespace DachcomBundle\Test\Helper;
 
-use Codeception\Lib\Connector\Symfony as SymfonyConnector;
 use Codeception\Lib\ModuleContainer;
 use Codeception\TestInterface;
 use Codeception\Util\Debug;
@@ -11,7 +10,6 @@ use Pimcore\Config;
 use Pimcore\Event\TestEvents;
 use Pimcore\Tests\Helper\Pimcore as PimcoreCoreModule;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Kernel;
 
 class PimcoreCore extends PimcoreCoreModule
 {
@@ -69,7 +67,7 @@ class PimcoreCore extends PimcoreCoreModule
         $configuration = $this->config['configuration_file'];
 
         $this->kernelHasCustomSuiteConfig = true;
-        $this->bootKernelWithConfiguration($configuration);
+        $this->rebootKernelWithConfiguration($configuration);
 
     }
 
@@ -86,7 +84,7 @@ class PimcoreCore extends PimcoreCoreModule
 
         // config has changed!
         // we need to restore default config before starting a new test!
-        $this->bootKernelWithConfiguration(null);
+        $this->rebootKernelWithConfiguration(null);
         $this->kernelHasCustomSuiteConfig = false;
     }
 
@@ -103,7 +101,7 @@ class PimcoreCore extends PimcoreCoreModule
 
         // config has changed!
         // we need to restore default config before starting a new test!
-        $this->bootKernelWithConfiguration(null);
+        $this->rebootKernelWithConfiguration(null);
         $this->kernelHasCustomConfig = false;
 
     }
@@ -116,7 +114,7 @@ class PimcoreCore extends PimcoreCoreModule
     public function haveABootedSymfonyConfiguration(string $configuration)
     {
         $this->kernelHasCustomConfig = true;
-        $this->bootKernelWithConfiguration($configuration);
+        $this->rebootKernelWithConfiguration($configuration);
     }
 
     /**
@@ -147,22 +145,12 @@ class PimcoreCore extends PimcoreCoreModule
             $fileSystem->touch($runtimeConfigDirConfig);
         }
 
-        $this->bootKernelWithConfiguration($configFile);
-        $this->setupPimcoreDirectories();
-    }
-
-    /**
-     * @param string|null $configFile
-     */
-    protected function bootKernelWithConfiguration($configFile = null)
-    {
-        $this->kernel = require __DIR__ . '/../_boot/kernelBuilder.php';
+        //$this->clearCache();
 
         $this->setConfiguration($configFile);
+        $this->setupPimcoreDirectories();
 
-        $this->getKernel()->boot();
-
-        $this->client = new SymfonyConnector($this->kernel, $this->persistentServices, $this->config['rebootable_client']);
+        $this->kernel = \Pimcore\Bootstrap::kernel();
 
         if ($this->config['cache_router'] === true) {
             $this->persistService('router', true);
@@ -170,6 +158,16 @@ class PimcoreCore extends PimcoreCoreModule
 
         // dispatch kernel booted event - will be used from services which need to reset state between tests
         $this->kernel->getContainer()->get('event_dispatcher')->dispatch(TestEvents::KERNEL_BOOTED);
+
+    }
+
+    /**
+     * @param string|null $configFile
+     */
+    protected function rebootKernelWithConfiguration($configFile = null)
+    {
+        $this->setConfiguration($configFile);
+        $this->getKernel()->reboot($this->getKernel()->getCacheDir());
     }
 
     /**
@@ -177,6 +175,16 @@ class PimcoreCore extends PimcoreCoreModule
      */
     protected function setConfiguration($configuration = null)
     {
+        if ($this->kernel !== null && $this->getContainer() !== null) {
+            $class = $this->getContainer()->getParameter('kernel.container_class');
+            $cacheDir = $this->kernel->getCacheDir();
+
+            touch($cacheDir . '/' . $class . '.php');
+        }
+
+        // otherwise cache invalidator is not detecting config changes!
+        sleep(1);
+
         $bundleName = getenv('DACHCOM_BUNDLE_NAME');
         $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
 
@@ -194,13 +202,6 @@ class PimcoreCore extends PimcoreCoreModule
 
         $fileSystem->dumpFile($runtimeConfigDirConfig, file_get_contents($resource));
 
-        if ($this->kernel === null) {
-            return;
-        }
-
-        if (Kernel::MAJOR_VERSION === 3) {
-            $this->clearCache();
-        }
     }
 
     /**
