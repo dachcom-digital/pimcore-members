@@ -6,3 +6,4 @@ services:
         public: true
 
     MembersBundle\Mailer\Mailer: ~
+    MembersBundle\Mailer\MailerInterface: '@MembersBundle\Mailer\Mailer'

@@ -19,4 +19,18 @@ interface MailerInterface
      * @param UserInterface $user
      */
     public function sendResettingEmailMessage(UserInterface $user);
+
+    /**
+     * Send email to admin to confirm the registration
+     *
+     * @param UserInterface $user
+     */
+    public function sendAdminNotificationEmailMessage(UserInterface $user);
+
+       /**
+        * Notify user after an admin confirmed the registration
+        *
+     * @param UserInterface $user
+     */
+    public function sendConfirmedEmailMessage(UserInterface $user);
 }

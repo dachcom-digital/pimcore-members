@@ -7,7 +7,7 @@ use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Event\GetResponseNullableUserEvent;
 use MembersBundle\Event\GetResponseUserEvent;
-use MembersBundle\Mailer\Mailer;
+use MembersBundle\Mailer\MailerInterface;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
@@ -28,6 +28,7 @@ class ResettingController extends AbstractController
      */
     public function requestAction(Request $request)
     {
+
         /** @var \MembersBundle\Form\Factory\FactoryInterface $formFactory */
         $formFactory = $this->get('members.resetting_request.form.factory');
 
@@ -46,6 +47,7 @@ class ResettingController extends AbstractController
      */
     public function sendEmailAction(Request $request)
     {
+
         $username = $request->request->get('username');
 
         /** @var UserInterface $user */
@@ -59,13 +61,14 @@ class ResettingController extends AbstractController
         $dispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
 
         if (null !== $event->getResponse()) {
-            return $event->getResponse();
+          return $event->getResponse();
         }
+
 
         $ttl = $this->getParameter('members.resetting.retry_ttl');
         if ($user !== null && !$user->isPasswordRequestNonExpired($ttl)) {
-            $event = new GetResponseUserEvent($user, $request);
-            $dispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
+          $event = new GetResponseUserEvent($user, $request);
+          $dispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
 
             if (null !== $event->getResponse()) {
                 return $event->getResponse();
@@ -85,7 +88,7 @@ class ResettingController extends AbstractController
                 return $event->getResponse();
             }
 
-            $this->get(Mailer::class)->sendResettingEmailMessage($user);
+            $this->get(MailerInterface::class)->sendResettingEmailMessage($user);
             $user->setPasswordRequestedAt(new \Carbon\Carbon());
             $this->get(UserManager::class)->updateUser($user);
 
@@ -176,7 +179,7 @@ class ResettingController extends AbstractController
 
         return $this->renderTemplate('@Members/Resetting/reset.html.twig', [
             'token' => $token,
-            'form'  => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 }

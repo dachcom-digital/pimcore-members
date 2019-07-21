@@ -3,7 +3,7 @@
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Mailer\Mailer;
+use MembersBundle\Mailer\MailerInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
@@ -17,7 +17,7 @@ class UserChangeListener implements EventSubscriberInterface
     protected $userManager;
 
     /**
-     * @var Mailer
+     * @var MailerInterface
      */
     protected $mailer;
 
@@ -30,12 +30,12 @@ class UserChangeListener implements EventSubscriberInterface
      * UserChangeListener constructor.
      *
      * @param UserManagerInterface $userManager
-     * @param Mailer               $pimcoreMailer
+     * @param MailerInterface               $pimcoreMailer
      * @param string               $postEventType
      */
     public function __construct(
         UserManagerInterface $userManager,
-        Mailer $pimcoreMailer,
+        MailerInterface $pimcoreMailer,
         string $postEventType
     ) {
         $this->userManager = $userManager;

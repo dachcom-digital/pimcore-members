@@ -40,7 +40,7 @@ class Mailer implements MailerInterface
         $url = $this->router->generate('members_user_registration_confirm', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
-            'user'            => $user,
+            'user' => $user,
             'confirmationUrl' => $url
         ];
 
@@ -60,7 +60,7 @@ class Mailer implements MailerInterface
         $url = $this->generateUrl('members_user_security_login', $user);
 
         $mailParams = [
-            'user'      => $user,
+            'user' => $user,
             'loginpage' => $url
         ];
 
@@ -76,7 +76,7 @@ class Mailer implements MailerInterface
         $url = $this->generateUrl('members_user_resetting_reset', $user, ['token' => $user->getConfirmationToken()]);
 
         $mailParams = [
-            'user'            => $user,
+            'user' => $user,
             'confirmationUrl' => $url
         ];
 
@@ -96,7 +96,7 @@ class Mailer implements MailerInterface
         $url = $this->generateUrl('pimcore_admin_login_deeplink', $user, [], false);
 
         $mailParams = [
-            'user'     => $user,
+            'user' => $user,
             'deeplink' => $url . '?' . 'object_' . $user->getId() . '_object' //thanks pimcore.
         ];
 

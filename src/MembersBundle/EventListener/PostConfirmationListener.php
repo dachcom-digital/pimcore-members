@@ -4,7 +4,7 @@ namespace MembersBundle\EventListener;
 
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FormEvent;
-use MembersBundle\Mailer\Mailer;
+use MembersBundle\Mailer\MailerInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGenerator;
@@ -21,7 +21,7 @@ class PostConfirmationListener implements EventSubscriberInterface
     protected $userManager;
 
     /**
-     * @var Mailer
+     * @var MailerInterface
      */
     protected $mailer;
 
@@ -49,7 +49,7 @@ class PostConfirmationListener implements EventSubscriberInterface
      * EmailConfirmationListener constructor.
      *
      * @param UserManagerInterface  $userManager
-     * @param Mailer                $pimcoreMailer
+     * @param MailerInterface                $mailer
      * @param UrlGeneratorInterface $router
      * @param SessionInterface      $session
      * @param TokenGenerator        $tokenGenerator
@@ -57,14 +57,14 @@ class PostConfirmationListener implements EventSubscriberInterface
      */
     public function __construct(
         UserManagerInterface $userManager,
-        Mailer $pimcoreMailer,
+        MailerInterface $mailer,
         UrlGeneratorInterface $router,
         SessionInterface $session,
         TokenGenerator $tokenGenerator,
         string $postEventType
     ) {
         $this->userManager = $userManager;
-        $this->mailer = $pimcoreMailer;
+        $this->mailer = $mailer;
         $this->tokenGenerator = $tokenGenerator;
         $this->router = $router;
         $this->session = $session;
