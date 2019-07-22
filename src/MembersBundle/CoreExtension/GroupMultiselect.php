@@ -2,17 +2,12 @@
 
 namespace MembersBundle\CoreExtension;
 
-use MembersBundle\Tool\VersionHelper;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
-use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\Traits\ResourceDataTrait;
-use MembersBundle\Pimcore\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 
-class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
+class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface
 {
-    use ResourceDataTrait;
-
     /**
      * Static type of this element.
      *
@@ -210,8 +205,6 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * BC Layer for pimcore < 5.6.
-     *
      * @param array $data
      * @param null  $object
      * @param array $params
@@ -239,17 +232,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
             }
         }
 
-        // only return, if pimcore is equal or greater than 5.8.0
-        // since they changed return value structure significant and without any warnings.
-        if (VersionHelper::pimcoreVersionIsGreaterOrEqualThan('5.8.0')) {
-            return $elements;
-        }
+        return $elements;
 
-        $legacyElements = [];
-        foreach ($elements['data'] as $element) {
-            $legacyElements[] = $element;
-        }
-
-        return $legacyElements;
     }
 }
