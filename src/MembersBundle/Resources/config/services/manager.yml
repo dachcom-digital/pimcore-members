@@ -3,7 +3,6 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
 
     # manager: class
     MembersBundle\Manager\ClassManagerInterface: '@MembersBundle\Manager\ClassManager'

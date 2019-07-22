@@ -14,7 +14,7 @@ use Pimcore\Model\Document\Tag\Checkbox;
 use Pimcore\Model\Staticroute;
 use Pimcore\Model\Tool\Email\Log;
 use Pimcore\Model\Document\Tag\Areablock;
-use Pimcore\Model\Document\Tag\Href;
+use Pimcore\Model\Document\Tag\Relation;
 use Pimcore\Tests\Helper\ClassManager;
 use Pimcore\Tests\Util\TestHelper;
 use Pimcore\Translation\Translator;
@@ -413,7 +413,7 @@ class PimcoreBackend extends Module
     protected function generateSnippetDocument($snippetKey, $elements = [], $locale = 'en')
     {
         $document = new Snippet();
-        $document->setController('default');
+        $document->setController('@AppBundle\Controller\DefaultController');
         $document->setAction('snippet');
         $document->setType('snippet');
         $document->setElements($elements);
@@ -472,7 +472,7 @@ class PimcoreBackend extends Module
         $document->setUserModification(1);
         $document->setCreationDate(time());
         $document->setModule('MembersBundle');
-        $document->setController('Email');
+        $document->setController('@MembersBundle\Controller\EmailController');
         $document->setAction('email');
         $document->setKey($documentKey);
 
@@ -535,7 +535,7 @@ class PimcoreBackend extends Module
 
         $redirectAfterSuccess = null;
         if ($redirectAfterSuccessDocument instanceof Page) {
-            $redirectAfterSuccess = new Href();
+            $redirectAfterSuccess = new Relation();
             $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', MembersHelper::AREA_TEST_NAMESPACE));
             $data = [
                 'id'      => $redirectAfterSuccessDocument->getId(),
@@ -551,7 +551,7 @@ class PimcoreBackend extends Module
 
         $showSnippedWhenLoggedIn = null;
         if ($loginSnippet instanceof Snippet) {
-            $showSnippedWhenLoggedIn = new Href();
+            $showSnippedWhenLoggedIn = new Relation();
             $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', MembersHelper::AREA_TEST_NAMESPACE));
 
             $data2 = [

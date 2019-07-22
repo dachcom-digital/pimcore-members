@@ -40,12 +40,12 @@ class MembersLogin extends AbstractTemplateAreabrick
     {
         $view = $info->getView();
 
-        /** @var \Pimcore\Model\Document\Tag\Href $redirectAfterSuccessElement */
-        $redirectAfterSuccessElement = $this->getDocumentTag($info->getDocument(), 'href', 'redirectAfterSuccess');
+        /** @var \Pimcore\Model\Document\Tag\Relation $redirectAfterSuccessElement */
+        $redirectAfterSuccessElement = $this->getDocumentTag($info->getDocument(), 'relation', 'redirectAfterSuccess');
         $redirectAfterSuccess = $redirectAfterSuccessElement->getElement();
 
-        /** @var \Pimcore\Model\Document\Tag\Href $showSnippedWhenLoggedInElement */
-        $showSnippedWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'href', 'showSnippedWhenLoggedIn');
+        /** @var \Pimcore\Model\Document\Tag\Relation $showSnippedWhenLoggedInElement */
+        $showSnippedWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'relation', 'showSnippedWhenLoggedIn');
         $showSnippedWhenLoggedIn = $showSnippedWhenLoggedInElement->getElement();
 
         /** @var \Pimcore\Model\Document\Tag\Checkbox $hideWhenLoggedInElement */

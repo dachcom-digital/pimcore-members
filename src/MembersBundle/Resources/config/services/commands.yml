@@ -1,0 +1,7 @@
+services:
+
+    MembersBundle\Command\ClassInstallerCommand:
+        autowire: true
+        autoconfigure: true
+        tags:
+            - {name: console.command, command: 'members:install:class' }

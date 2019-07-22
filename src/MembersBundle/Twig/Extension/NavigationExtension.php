@@ -11,23 +11,25 @@ use Pimcore\Model\Document;
 use Pimcore\Navigation\Container;
 use Pimcore\Templating\Helper\Navigation;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class NavigationExtension extends \Twig_Extension
+class NavigationExtension extends AbstractExtension
 {
     /**
      * @var Navigation
      */
-    private $navigationHelper;
+    protected $navigationHelper;
 
     /**
      * @var RestrictionManagerInterface
      */
-    private $restrictionManager;
+    protected $restrictionManager;
 
     /**
      * @var TokenStorageInterface
      */
-    private $tokenStorage;
+    protected $tokenStorage;
 
     /**
      * @param Navigation                  $navigationHelper
@@ -50,7 +52,7 @@ class NavigationExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_Function('members_build_nav', [$this, 'buildNavigation']),
+            new TwigFunction('members_build_nav', [$this, 'buildNavigation']),
         ];
     }
 

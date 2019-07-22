@@ -19,8 +19,6 @@ class Configuration
     protected $bundleManager;
 
     /**
-     * Configuration constructor.
-     *
      * @param PimcoreBundleManager $bundleManager
      */
     public function __construct(PimcoreBundleManager $bundleManager)

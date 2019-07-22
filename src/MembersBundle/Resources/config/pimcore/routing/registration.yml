@@ -1,21 +1,21 @@
 # frontend registration
 members_user_registration_register:
     path: /
-    defaults: { _controller: MembersBundle:Registration:register }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::registerAction }
     methods:  [GET, POST]
 members_user_registration_check_email:
     path: /check-email
-    defaults: { _controller: MembersBundle:Registration:checkEmail }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::checkEmailAction }
     methods:  [GET]
 members_user_registration_check_admin:
     path: /check-admin
-    defaults: { _controller: MembersBundle:Registration:checkAdmin }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::checkAdminAction }
     methods:  [GET]
 members_user_registration_confirm:
     path: /confirm/{token}
-    defaults: { _controller: MembersBundle:Registration:confirm }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::confirmAction }
     methods:  [GET]
 members_user_registration_confirmed:
     path: /confirmed
-    defaults: { _controller: MembersBundle:Registration:confirmed }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::confirmedAction }
     methods:  [GET]

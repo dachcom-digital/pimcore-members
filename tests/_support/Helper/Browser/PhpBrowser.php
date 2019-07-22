@@ -16,6 +16,7 @@ use Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\DataCollector\RequestDataCollector;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -85,7 +86,8 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
         $response = $this->pimcoreCore->client->getInternalResponse();
         $headers = $response->getHeaders();
 
-        $contentDisposition = sprintf('attachment; filename="%s"', $element->getKey());
+        $symfonyVersion = Kernel::MAJOR_VERSION;
+        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $element->getKey() : sprintf('"%s"', $element->getKey())));
 
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals($contentDisposition, $headers['content-disposition'][0]);
@@ -104,7 +106,8 @@ class PhpBrowser extends Module implements Lib\Interfaces\DependsOnModule
         $response = $this->pimcoreCore->client->getInternalResponse();
         $headers = $response->getHeaders();
 
-        $contentDisposition = sprintf('attachment; filename="%s"', $fileName);
+        $symfonyVersion = Kernel::MAJOR_VERSION;
+        $contentDisposition = sprintf('attachment; filename=%s', ($symfonyVersion >= 4 ? $fileName : sprintf('"%s"', $fileName)));
 
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals($contentDisposition, $headers['content-disposition'][0]);

@@ -2,10 +2,8 @@ includes:
 	- ../../vendor/phpstan/phpstan-symfony/extension.neon
 parameters:
     reportUnmatchedIgnoredErrors: false
-    autoload_files:
-        - %currentWorkingDirectory%/vendor/pimcore/pimcore/stubs/compatibility-v4.php
     symfony:
-        container_xml_path: var/cache/dev/appDevDebugProjectContainer.xml
+        container_xml_path: var/cache/dev/appAppKernelDevDebugContainer.xml
     excludes_analyse:
         # only works if optional bundles are available:
         - '**/AbstractCustomerUser.php'
@@ -14,6 +12,8 @@ parameters:
     ignoreErrors:
         # There is no global constants definition file we could include, ignore it:
         - '#Constant PIMCORE_[A-Z\\_]+ not found\.#'
+        # Symfony DI (remove this line after symfony 4 support only):
+        - '#Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.#'
         # Ignore optional bundle dependencies:
         - '#Class LuceneSearchBundle[A-Za-z\/\\_]+ not found\.#'
         - '#Service "LuceneSearchBundle[A-Za-z\/\\_]+" is not registered in the container\.#'

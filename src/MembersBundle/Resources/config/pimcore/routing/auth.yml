@@ -1,13 +1,13 @@
 # frontend login / logout
 members_user_security_login:
     path: /login
-    defaults: { _controller: MembersBundle:Auth:login }
+    defaults: { _controller: MembersBundle\Controller\AuthController::loginAction }
     methods:  [GET, POST]
 members_user_security_check:
     path: /login_check
-    defaults: { _controller: MembersBundle:Auth:check }
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::checkAdminAction }
     methods:  [POST]
 members_user_security_logout:
     path: /logout
-    defaults: { _controller: MembersBundle:Auth:logout }
+    defaults: { _controller: MembersBundle\Controller\AuthController::logoutAction }
     methods:  [GET, POST]

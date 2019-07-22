@@ -1,5 +1,5 @@
 # Pimcore Members
-Add frontend user authentication and document restriction to pimcore 5.0.
+Add frontend user authentication and document restriction to pimcore.
 
 [![Join the chat at https://gitter.im/pimcore/pimcore](https://img.shields.io/gitter/room/pimcore/pimcore.svg?style=flat-square)](https://gitter.im/pimcore/pimcore)
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
@@ -8,11 +8,13 @@ Add frontend user authentication and document restriction to pimcore 5.0.
 [![Travis](https://img.shields.io/travis/com/dachcom-digital/pimcore-members/master.svg?style=flat-square)](https://travis-ci.com/dachcom-digital/pimcore-members)
 [![PhpStan](https://img.shields.io/badge/PHPStan-level%202-brightgreen.svg?style=flat-square)](#)
 
-## Requirements
-* Pimcore >= 5.4
+### Release Plan
 
-## Pimcore 4 
-Get the Pimcore4 Version [here](https://github.com/dachcom-digital/pimcore-members/tree/pimcore4).
+| Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained     | Branch     |
+|---------|-----------------------------------|----------------------------|--------------|----------------|------------|
+| **3.0** | `6.0`                             | `3.4`, `^4.0`              | 21.07.2019   | Feature Branch | dev-master |
+| **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Bugfix only    | 2.5        |
+| **1.5** | `4.0`                             | --                         | 07.07.2017   | Unsupported    | pimcore4   |
 
 ## Features
 * Create Members in Backend
@@ -29,7 +31,7 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~2.4.0"
+    "dachcom-digital/members" : "~3.0.0"
 }
 ```
 

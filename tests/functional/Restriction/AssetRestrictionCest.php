@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\functional\Restriction;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\FunctionalTester;
 
 class AssetRestrictionCest
@@ -28,7 +29,7 @@ class AssetRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testAssetDownloadWithoutAccessRights(FunctionalTester $I)
@@ -50,7 +51,7 @@ class AssetRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testAssetDownloadWithAuthorisation(FunctionalTester $I)
@@ -70,7 +71,7 @@ class AssetRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testMultipleAssetDownloadWithAuthorisation(FunctionalTester $I)

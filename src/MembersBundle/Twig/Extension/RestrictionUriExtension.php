@@ -4,13 +4,15 @@ namespace MembersBundle\Twig\Extension;
 
 use Pimcore\Model\Asset;
 use MembersBundle\Security\RestrictionUri;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class RestrictionUriExtension extends \Twig_Extension
+class RestrictionUriExtension extends AbstractExtension
 {
     /**
      * @var RestrictionUri
      */
-    private $restrictionUri;
+    protected $restrictionUri;
 
     /**
      * @param RestrictionUri $restrictionUri
@@ -26,8 +28,8 @@ class RestrictionUriExtension extends \Twig_Extension
     public function getFunctions(): array
     {
         return [
-            new \Twig_Function('members_generate_asset_url', [$this, 'buildAssetUrl']),
-            new \Twig_Function('members_generate_asset_package_url', [$this, 'buildAssetPackageUrl']),
+            new TwigFunction('members_generate_asset_url', [$this, 'buildAssetUrl']),
+            new TwigFunction('members_generate_asset_package_url', [$this, 'buildAssetPackageUrl']),
         ];
     }
 
@@ -36,6 +38,8 @@ class RestrictionUriExtension extends \Twig_Extension
      * @param bool $checkRestriction
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function buildAssetUrl($assetId = null, $checkRestriction = false)
     {
@@ -52,6 +56,8 @@ class RestrictionUriExtension extends \Twig_Extension
      * @param bool  $checkRestriction
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = false)
     {

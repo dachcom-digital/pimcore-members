@@ -7,10 +7,13 @@ use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\FormEvent;
 use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
-use MembersBundle\Manager\UserManager;
+use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
+use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,42 +24,79 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class RegistrationController extends AbstractController
 {
     /**
+     * @var FactoryInterface
+     */
+    protected $formFactory;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
+
+    /**
+     * @var SiteResolver
+     */
+    protected $siteResolver;
+
+    /**
+     * @param FactoryInterface         $formFactory
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param UserManagerInterface     $userManager
+     * @param TokenStorageInterface    $tokenStorage
+     * @param SiteResolver             $siteResolver
+     */
+    public function __construct(
+        FactoryInterface $formFactory,
+        EventDispatcherInterface $eventDispatcher,
+        UserManagerInterface $userManager,
+        TokenStorageInterface $tokenStorage,
+        SiteResolver $siteResolver
+    ) {
+        $this->formFactory = $formFactory;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->userManager = $userManager;
+        $this->tokenStorage = $tokenStorage;
+        $this->siteResolver = $siteResolver;
+    }
+
+    /**
      * @param Request $request
      *
      * @return null|RedirectResponse|Response
      */
     public function registerAction(Request $request)
     {
-        /** @var FactoryInterface $formFactory */
-        $formFactory = $this->get('members.registration.form.factory');
-
-        /** @var UserManager $userManager */
-        $userManager = $this->get(UserManager::class);
-
-        /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = $this->get('event_dispatcher');
-
         /** @var UserInterface $user */
-        $user = $userManager->createUser();
+        $user = $this->userManager->createUser();
 
         $event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(MembersEvents::REGISTRATION_INITIALIZE, $event);
+        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_INITIALIZE, $event);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
         }
 
-        $form = $formFactory->createForm();
+        $form = $this->formFactory->createForm();
         $form->setData($user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $userManager->updateUser($user, $this->getUserProperties($request));
+                $this->userManager->updateUser($user, $this->getUserProperties($request));
 
                 $event = new FormEvent($form, $request);
-                $dispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
+                $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
 
                 if (null === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
@@ -64,13 +104,13 @@ class RegistrationController extends AbstractController
                 }
 
                 $event = new FilterUserResponseEvent($user, $request, $response);
-                $dispatcher->dispatch(MembersEvents::REGISTRATION_COMPLETED, $event);
+                $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_COMPLETED, $event);
 
                 return $response;
             }
 
             $event = new FormEvent($form, $request);
-            $dispatcher->dispatch(MembersEvents::REGISTRATION_FAILURE, $event);
+            $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_FAILURE, $event);
 
             if (null !== $response = $event->getResponse()) {
                 return $response;
@@ -83,19 +123,21 @@ class RegistrationController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     *
      * @return RedirectResponse|Response
      */
-    public function checkEmailAction()
+    public function checkEmailAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag();
+        $sessionBag = $this->getMembersSessionBag($request);
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
-            return new RedirectResponse($this->get('router')->generate('members_user_registration_register'));
+            return new RedirectResponse($this->container->get('router')->generate('members_user_registration_register'));
         }
 
         $sessionBag->remove('members_user_send_confirmation_email/email');
-        $user = $this->get(UserManager::class)->findUserByEmail($email);
+        $user = $this->userManager->findUserByEmail($email);
 
         if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
@@ -105,19 +147,21 @@ class RegistrationController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     *
      * @return RedirectResponse|Response
      */
-    public function checkAdminAction()
+    public function checkAdminAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag();
+        $sessionBag = $this->getMembersSessionBag($request);
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
-            return new RedirectResponse($this->get('router')->generate('members_user_registration_register'));
+            return new RedirectResponse($this->container->get('router')->generate('members_user_registration_register'));
         }
 
         $sessionBag->remove('members_user_send_confirmation_email/email');
-        $user = $this->get(UserManager::class)->findUserByEmail($email);
+        $user = $this->userManager->findUserByEmail($email);
 
         if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with email "%s" does not exist', $email));
@@ -134,41 +178,37 @@ class RegistrationController extends AbstractController
      */
     public function confirmAction(Request $request, $token)
     {
-        /** @var UserManager $userManager */
-        $userManager = $this->get(UserManager::class);
-
         /** @var UserInterface $user */
-        $user = $userManager->findUserByConfirmationToken($token);
+        $user = $this->userManager->findUserByConfirmationToken($token);
 
         if (null === $user) {
             throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 
-        /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = $this->get('event_dispatcher');
-
         $user->setConfirmationToken(null);
         $user->setPublished(true);
 
         $event = new GetResponseUserEvent($user, $request);
-        $dispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRM, $event);
+        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRM, $event);
 
-        $userManager->updateUser($user);
+        $this->userManager->updateUser($user);
 
         if (null === $response = $event->getResponse()) {
             $url = $this->generateUrl('members_user_registration_confirmed');
             $response = new RedirectResponse($url);
         }
 
-        $dispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRMED, new FilterUserResponseEvent($user, $request, $response));
+        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRMED, new FilterUserResponseEvent($user, $request, $response));
 
         return $response;
     }
 
     /**
+     * @param Request $request
+     *
      * @return Response
      */
-    public function confirmedAction()
+    public function confirmedAction(Request $request)
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
@@ -177,16 +217,18 @@ class RegistrationController extends AbstractController
 
         return $this->renderTemplate('@Members/Registration/confirmed.html.twig', [
             'user'      => $user,
-            'targetUrl' => $this->getTargetUrlFromSession()
+            'targetUrl' => $this->getTargetUrlFromSession($request->getSession())
         ]);
     }
 
     /**
+     * @param SessionInterface $session
+     *
      * @return null|string
      */
-    private function getTargetUrlFromSession()
+    private function getTargetUrlFromSession(SessionInterface $session)
     {
-        $token = $this->get('security.token_storage')->getToken();
+        $token = $this->tokenStorage->getToken();
 
         if (!$token instanceof UsernamePasswordToken) {
             return null;
@@ -194,8 +236,8 @@ class RegistrationController extends AbstractController
 
         $key = sprintf('_security.%s.target_path', $token->getProviderKey());
 
-        if ($this->get('session')->has($key)) {
-            return $this->get('session')->get($key);
+        if ($session->has($key)) {
+            return $session->get($key);
         }
 
         return null;
@@ -208,24 +250,27 @@ class RegistrationController extends AbstractController
      */
     private function getUserProperties($request)
     {
-        $siteResolver = $this->get('pimcore.service.request.site_resolver');
-
         $userProperties = [
             '_user_locale' => $request->getLocale()
         ];
 
-        if ($siteResolver->isSiteRequest()) {
-            $userProperties['_site_domain'] = $siteResolver->getSite($request)->getMainDomain();
+        if ($this->siteResolver->isSiteRequest()) {
+            $userProperties['_site_domain'] = $this->siteResolver->getSite($request)->getMainDomain();
         }
 
         return $userProperties;
     }
 
     /**
+     * @param Request $request
+     *
      * @return NamespacedAttributeBag
      */
-    private function getMembersSessionBag()
+    private function getMembersSessionBag(Request $request)
     {
-        return $this->get('session')->getBag('members_session');
+        /** @var NamespacedAttributeBag $bag */
+        $bag = $request->getSession()->getBag('members_session');
+
+        return $bag;
     }
 }

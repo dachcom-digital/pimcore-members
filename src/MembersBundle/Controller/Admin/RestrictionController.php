@@ -3,24 +3,53 @@
 namespace MembersBundle\Controller\Admin;
 
 use MembersBundle\Adapter\Group\GroupInterface;
-use MembersBundle\Manager\ClassManager;
+use MembersBundle\Manager\ClassManagerInterface;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Restriction\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use MembersBundle\Configuration\Configuration;
+use Pimcore\Model\Element\Service;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class RestrictionController extends AdminController
 {
     /**
+     * @var Configuration
+     */
+    protected $configuration;
+
+    /**
+     * @var ClassManagerInterface
+     */
+    protected $classManager;
+
+    /**
+     * @var RestrictionService
+     */
+    protected $restrictionService;
+
+    /**
+     * @param Configuration         $configuration
+     * @param ClassManagerInterface $classManager
+     * @param RestrictionService    $restrictionService
+     */
+    public function __construct(
+        Configuration $configuration,
+        ClassManagerInterface $classManager,
+        RestrictionService $restrictionService
+    ) {
+        $this->configuration = $configuration;
+        $this->classManager = $classManager;
+        $this->restrictionService = $restrictionService;
+    }
+
+    /**
      * @return string
      */
     public function getGlobalSettingsAction()
     {
-        /** @var Configuration $configuration */
-        $configuration = $this->get(Configuration::class);
-
-        return $this->json(['settings' => $configuration->getConfigArray()]);
+        return $this->json(['settings' => $this->configuration->getConfigArray()]);
     }
 
     /**
@@ -28,7 +57,7 @@ class RestrictionController extends AdminController
      */
     public function getGroupsAction()
     {
-        $list = $this->get(ClassManager::class)->getGroupListing();
+        $list = $this->classManager->getGroupListing();
 
         if ($list === false) {
             return $this->json([]);
@@ -59,7 +88,7 @@ class RestrictionController extends AdminController
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function getDocumentRestrictionConfigAction(Request $request)
     {
@@ -101,15 +130,12 @@ class RestrictionController extends AdminController
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      *
      * @throws \Exception
      */
     public function setDocumentRestrictionConfigAction(Request $request)
     {
-        /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->get(RestrictionService::class);
-
         $data = json_decode($request->query->get('data'));
 
         $docId = (int) $data->docId;
@@ -123,7 +149,7 @@ class RestrictionController extends AdminController
             $pimcoreType = 'asset';
         }
 
-        $obj = \Pimcore\Model\Element\Service::getElementById($pimcoreType, $docId);
+        $obj = Service::getElementById($pimcoreType, $docId);
 
         $inheritableState = $settings->membersDocumentInheritable;
 
@@ -136,7 +162,7 @@ class RestrictionController extends AdminController
         }
 
         $groups = array_filter(explode(',', $settings->membersDocumentUserGroups));
-        $restriction = $restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
+        $restriction = $this->restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
 
         return $this->json([
             'success'    => true,
@@ -149,7 +175,10 @@ class RestrictionController extends AdminController
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function deleteDocumentRestrictionConfigAction(Request $request)
     {
@@ -176,16 +205,13 @@ class RestrictionController extends AdminController
     /**
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
     public function getNextParentRestrictionAction(Request $request)
     {
-        /** @var RestrictionService $restrictionService */
-        $restrictionService = $this->get(RestrictionService::class);
-
         $elementId = $request->query->get('docId');
         $cType = $request->query->get('cType');
-        $closestInheritanceParent = $restrictionService->findClosestInheritanceParent($elementId, $cType);
+        $closestInheritanceParent = $this->restrictionService->findClosestInheritanceParent($elementId, $cType);
 
         return $this->json([
             'success' => true,

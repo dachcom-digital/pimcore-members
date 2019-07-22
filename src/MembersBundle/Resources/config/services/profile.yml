@@ -1,19 +1,24 @@
 services:
 
-    #form profile factory
     members.profile.form.factory:
         class: MembersBundle\Form\Factory\FormFactory
-        public: true
         arguments:
             - '@form.factory'
             - '%members_user.profile.form.name%'
             - '%members_user.profile.form.type%'
             - '%members_user.profile.form.validation_groups%'
 
-    #form profile type
-    members.profile.form.type:
-        class: MembersBundle\Form\Type\ProfileFormType
+    MembersBundle\Form\Type\ProfileFormType:
         arguments:
             - '\MembersBundle\Adapter\User\UserInterface'
         tags:
             - { name: form.type, alias: members_user_profile }
+
+    MembersBundle\Controller\ProfileController:
+        public: true
+        autowire: true
+        autoconfigure: true
+        calls:
+            - [setContainer, ['@service_container']]
+        arguments:
+            $formFactory: '@members.profile.form.factory'
