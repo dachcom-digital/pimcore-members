@@ -233,6 +233,5 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
         }
 
         return $elements;
-
     }
 }
