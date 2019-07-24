@@ -171,7 +171,7 @@ trait UserTrait
             return $group->getId();
         }, $groups);
 
-        if ($key = array_search($userGroup->getId(), $groupIds, true)) {
+        if (($key = array_search($userGroup->getId(), $groupIds, true)) !== false) {
             unset($groups[$key]);
         }
 
