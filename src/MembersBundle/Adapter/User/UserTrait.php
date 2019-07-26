@@ -82,7 +82,7 @@ trait UserTrait
     /**
      * {@inheritdoc}
      */
-    public function getGroupNames()
+    public function getGroupNames(): array
     {
         $names = [];
         /** @var GroupInterface $group */
@@ -95,10 +95,87 @@ trait UserTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @deprecated UserTrait::hasGroup is deprecated and will be removed with 4.0,
+     * please use either UserTrait::hasGroupId or UserTrait::hasGroupName instead.
      */
     public function hasGroup($name)
     {
+        trigger_error(
+            sprintf(
+                '%s::%s is deprecated and will be removed with 4.0, please use either %s::hasGroupId or %s::hasGroupName instead.',
+                static::class,
+                __METHOD__,
+                static::class,
+                static::class
+            ),
+            E_USER_DEPRECATED
+        );
+
         return in_array($name, $this->getGroupNames());
+    }
+
+    /**
+     * Checks if a certain group is assigned to the user by comparing ID's.
+     *
+     * @param GroupInterface $userGroup
+     *
+     * @return bool
+     */
+    public function hasGroupId(GroupInterface $userGroup): bool
+    {
+        $groups = $this->getGroups() ?? [];
+        $groupIds = array_map(static function ($group) {
+            /** @var GroupInterface $group */
+            return $group->getId();
+        }, $groups);
+
+        return in_array($userGroup->getId(), $groupIds, true);
+    }
+
+    /**
+     * Checks if a certain group is assigned to the user by comparing group names.
+     *
+     * @param GroupInterface $userGroup
+     *
+     * @return bool
+     */
+    public function hasGroupName(GroupInterface $userGroup): bool
+    {
+        return in_array($userGroup->getName(), $this->getGroupNames(), true);
+    }
+
+    /**
+     * Adds a group to the user.
+     *
+     * @param GroupInterface $userGroup
+     */
+    public function addGroup(GroupInterface $userGroup): void
+    {
+        $groups = $this->getGroups() ?? [];
+        $groups[] = $userGroup;
+
+        $this->setGroups($groups);
+    }
+
+    /**
+     * Removes a group from the user.
+     *
+     * @param GroupInterface $userGroup
+     */
+    public function removeGroup(GroupInterface $userGroup): void
+    {
+        $groups = $this->getGroups() ?? [];
+        $groupIds = array_map(static function ($group) {
+            /** @var GroupInterface $group */
+            return $group->getId();
+        }, $groups);
+
+        if (($key = array_search($userGroup->getId(), $groupIds, true)) !== false) {
+            unset($groups[$key]);
+        }
+
+        $this->setGroups($groups);
     }
 
     /**
