@@ -31,7 +31,7 @@ matrix:
             sudo: required
             php: 7.3
             env:
-                - PIMCORE_SKELETON_BRANCH="tags/v2.1.0"
+                - PIMCORE_SKELETON_BRANCH="tags/v2.2.0"
                 - DACHCOM_TEST_SECTION=ecs
         -   name: "Codeception Tests (Pimcore 6.0.x, Symfony ^4.0, PHP 7.3)"
             sudo: required
