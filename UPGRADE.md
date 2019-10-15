@@ -6,6 +6,13 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 2.5.0 to Version 2.5.1
+- **[BUGFIX]**: [Fix UserAwareEncoderFactory auto loading issue](https://github.com/dachcom-digital/pimcore-members/issues/114)
+
+#### Update from Version 2.4.x to Version 2.5.0
+- **[ATTENTION]**: This release will be the last minor release which supports Pimcore 5!
+- ([Milestone for 2.5.0](https://github.com/dachcom-digital/pimcore-members/milestone/7?closed=1)
+
 #### Update from Version 2.3.x to Version 2.4.0
 - **[BUGFIX]**: [Restricted Assets Download](https://github.com/dachcom-digital/pimcore-members/issues/94) wrong size header in pimcore > 5.6
 - **[BUGFIX]**: [MembersUser groups field does not load/save in admin backend](https://github.com/dachcom-digital/pimcore-members/issues/95) in pimcore > 5.8
