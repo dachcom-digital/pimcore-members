@@ -27,6 +27,18 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('confirm_by_mail')
                 ->end()
                 ->scalarNode('storage_path')->cannotBeEmpty()->defaultValue('/members')->end()
+
+                ->arrayNode('oauth')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->enumNode('activation_type')
+                            ->values(['complete_profile', 'instant'])
+                            ->defaultValue('complete_profile')
+                        ->end()
+                    ->end()
+                ->end()
+
                 ->arrayNode('user')
                     ->addDefaultsIfNotSet()
                     ->children()

@@ -222,4 +222,6 @@ final class MembersEvents
      * @Event("MembersBundle\Event\FilterUserResponseEvent")
      */
     const DELETE_ACCOUNT_COMPLETED = 'members.delete_account.confirm.completed';
+
+    const OAUTH_PROFILE_CONNECTION_SUCCESS = 'members.oauth.connection.success';
 }

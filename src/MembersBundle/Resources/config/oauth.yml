@@ -1,0 +1,37 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Security\OAuth\AccountConnectorInterface: '@MembersBundle\Security\OAuth\AccountConnector'
+    MembersBundle\Security\OAuth\AccountConnector: ~
+
+    MembersBundle\Security\OAuth\TokenStorageInterface: '@MembersBundle\Security\OAuth\SessionTokenStorage'
+    MembersBundle\Security\OAuth\SessionTokenStorage: ~
+
+    MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface: '@MembersBundle\Security\OAuth\SsoIdentity\DefaultSsoIdentityService'
+    MembersBundle\Security\OAuth\SsoIdentity\DefaultSsoIdentityService: ~
+
+    MembersBundle\Security\OAuthIdentityAuthenticator: ~
+
+    MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher: ~
+    MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher: ~
+
+    MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\CompleteProfileProcessor:
+        tags:
+            - {name: members.oauth.login_processor, identifier: complete_profile }
+
+    MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\InstantProcessor:
+        tags:
+            - {name: members.oauth.login_processor, identifier: instant }
+
+    MembersBundle\Security\OAuth\OAuthRegistrationHandler:
+        arguments:
+            $oauthRegistry: '@knpu.oauth2.registry'
+
+    MembersBundle\Twig\Extension\OAuthExtension:
+        arguments:
+            $oauthEnabled: '%members.oauth.enabled%'
+            $oauthRegistry: '@knpu.oauth2.registry'
+        tags:
+            - { name: twig.extension }

@@ -43,6 +43,14 @@ interface UserManagerInterface
     public function findUserByUsername($username, $includeUnpublished = true);
 
     /**
+     * @param int  $userId
+     * @param bool $includeUnpublished
+     *
+     * @return null|UserInterface
+     */
+    public function findUserById($userId, $includeUnpublished = true);
+
+    /**
      * @param string $condition
      * @param array  $conditionVariables
      * @param bool   $includeUnpublished

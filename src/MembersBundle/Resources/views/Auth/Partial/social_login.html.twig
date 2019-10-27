@@ -1,0 +1,20 @@
+{% set additional_link_params = {} %}
+{% if link_params is defined %}
+    {% set additional_link_params = link_params|merge(link_params) %}
+{% endif %}
+
+{% set social_route_name = 'members_user_security_oauth_login' %}
+{% if social_route is defined %}
+    {% set social_route_name = social_route %}
+{% endif %}
+
+<ul>
+    {% for link in members_oauth_social_links(social_route_name) %}
+        {% set additional_link_params = additional_link_params|merge({provider: link.identifier}) %}
+        <li>
+            <a class="btn btn-info btn-sm" href="{{ path(link.route_name, additional_link_params) }}">
+                <i class="fa fa-{{ link.identifier }}" aria-hidden="true"></i> {{ link.process_type == 'login' ? 'members.oauth.sso.sign_in_with'|trans : 'members.oauth.sso.connect_to'|trans }} {{ link.identifier }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

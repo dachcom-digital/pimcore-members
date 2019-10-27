@@ -25,8 +25,6 @@ class UserManager implements UserManagerInterface
     protected $memberStorageId;
 
     /**
-     * UserManager constructor.
-     *
      * @param Configuration         $configuration
      * @param ClassManagerInterface $classManager
      */
@@ -104,6 +102,24 @@ class UserManager implements UserManagerInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('userName = ?', [$username]);
+        $memberListing->setUnpublished($includeUnpublished);
+
+        $elements = $memberListing->load();
+
+        if (count($elements) === 1) {
+            return $elements[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findUserById($userId, $includeUnpublished = true)
+    {
+        $memberListing = $this->classManager->getUserListing();
+        $memberListing->setCondition('oo_id = ?', [$userId]);
         $memberListing->setUnpublished($includeUnpublished);
 
         $elements = $memberListing->load();

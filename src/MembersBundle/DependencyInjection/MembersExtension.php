@@ -18,6 +18,8 @@ class MembersExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        //$container->loadFromExtension('hwi_oauth', ['firewall_names' => ['members_fe']]);
+
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -30,6 +32,7 @@ class MembersExtension extends Extension
         $container->setParameter('members.registration.event.type', $config['post_register_type']);
         $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
         $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
+        $container->setParameter('members.oauth.enabled', $config['oauth']['enabled']);
 
         foreach ($config['relations']['login']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.login.form.' . $confName, $confValue);
@@ -57,6 +60,10 @@ class MembersExtension extends Extension
 
         foreach ($config['relations']['delete_account']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.delete_account.form.' . $confName, $confValue);
+        }
+
+        if ($config['oauth']['enabled']) {
+            $loader->load('oauth.yml');
         }
     }
 }

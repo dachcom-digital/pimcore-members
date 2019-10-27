@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Registry\OAuthLoginProcessorRegistryInterface: '@MembersBundle\Registry\OAuthLoginProcessorRegistry'
+    MembersBundle\Registry\OAuthLoginProcessorRegistry: ~
