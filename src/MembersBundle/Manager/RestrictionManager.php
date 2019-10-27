@@ -63,7 +63,7 @@ class RestrictionManager implements RestrictionManagerInterface
 
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } elseif ($element instanceof DataObject) {
+        } elseif ($element instanceof DataObject\Concrete) {
             $restriction = $this->getRestrictionElement($element, 'object');
         } elseif ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
@@ -94,7 +94,7 @@ class RestrictionManager implements RestrictionManagerInterface
         $restriction = false;
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
-        } elseif ($element instanceof DataObject) {
+        } elseif ($element instanceof DataObject\Concrete) {
             $restriction = $this->getRestrictionElement($element, 'object');
         } elseif ($element instanceof Asset) {
             $restriction = $this->getRestrictionElement($element, 'asset');
