@@ -2,10 +2,15 @@
 
 namespace MembersBundle\DependencyInjection;
 
+use MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher;
+use MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher;
+use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
 use MembersBundle\Security\OAuthIdentityAuthenticator;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use MembersBundle\Configuration\Configuration as BundleConfiguration;
@@ -93,6 +98,25 @@ class MembersExtension extends Extension implements PrependExtensionInterface
 
         if ($config['oauth']['enabled']) {
             $loader->load('oauth.yml');
+            $this->enableOauth($container);
         }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function enableOauth(ContainerBuilder $container)
+    {
+        $dispatcherDefinition = new Definition();
+        $dispatcherDefinition->setClass(DispatchRouter::class);
+        $dispatcherDefinition->setPublic(false);
+        $dispatcherDefinition->setAutowired(true);
+        $dispatcherDefinition->setAutoconfigured(true);
+
+        foreach ([['connect', ConnectDispatcher::class], ['login', LoginDispatcher::class]] as $service) {
+            $dispatcherDefinition->addMethodCall('register', [$service[0], new Reference($service[1])]);
+        }
+
+        $container->setDefinition(DispatchRouter::class, $dispatcherDefinition);
     }
 }

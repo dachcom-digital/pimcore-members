@@ -14,6 +14,10 @@ final class OAuthLoginStrategyPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        if (!$container->hasDefinition(OAuthLoginProcessorRegistry::class)) {
+            return;
+        }
+
         $definition = $container->getDefinition(OAuthLoginProcessorRegistry::class);
         foreach ($container->findTaggedServiceIds('members.oauth.login_processor', true) as $id => $tags) {
             foreach ($tags as $attributes) {

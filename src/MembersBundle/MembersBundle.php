@@ -2,16 +2,11 @@
 
 namespace MembersBundle;
 
-use MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher;
-use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
-use MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher;
 use MembersBundle\Tool\Install;
 use MembersBundle\DependencyInjection\CompilerPass\OAuthLoginStrategyPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 
 class MembersBundle extends AbstractPimcoreBundle
 {
@@ -35,18 +30,6 @@ class MembersBundle extends AbstractPimcoreBundle
         parent::build($container);
 
         $container->addCompilerPass(new OAuthLoginStrategyPass());
-
-        $dispatcherDefinition = new Definition();
-        $dispatcherDefinition->setClass(DispatchRouter::class);
-        $dispatcherDefinition->setPublic(false);
-        $dispatcherDefinition->setAutowired(true);
-        $dispatcherDefinition->setAutoconfigured(true);
-
-        foreach ([['connect', ConnectDispatcher::class], ['login', LoginDispatcher::class]] as $service) {
-            $dispatcherDefinition->addMethodCall('register', [$service[0], new Reference($service[1])]);
-        }
-
-        $container->setDefinition(DispatchRouter::class, $dispatcherDefinition);
     }
 
     /**
