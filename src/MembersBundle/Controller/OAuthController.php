@@ -64,7 +64,7 @@ class OAuthController extends AbstractController
 
         $session->set('oauth_state_data', $params);
 
-        return $this->clientRegistry->getClient($provider)->redirect(['email']);
+        return $this->clientRegistry->getClient($provider)->redirect(['email'], []);
     }
 
     public function oAuthConnectCheckAction()

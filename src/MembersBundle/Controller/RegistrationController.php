@@ -92,7 +92,7 @@ class RegistrationController extends AbstractController
             $formOptions['validation_groups'] = 'SSO';
         }
 
-        $form = $this->formFactory->createUnnamedFormWithOptions($formOptions);
+        $form = $this->formFactory->createForm($formOptions);
 
         $form->setData($user);
         $form->handleRequest($request);

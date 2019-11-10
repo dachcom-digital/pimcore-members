@@ -7,9 +7,11 @@ use Symfony\Component\Form\FormInterface;
 interface FactoryInterface
 {
     /**
+     * @param array $options
+     *
      * @return FormInterface
      */
-    public function createForm();
+    public function createForm(array $options = []);
 
     /**
      * @return FormInterface
@@ -17,9 +19,9 @@ interface FactoryInterface
     public function createUnnamedForm();
 
     /**
-     * @param array $option
+     * @param array $options
      *
      * @return FormInterface
      */
-    public function createUnnamedFormWithOptions(array $option);
+    public function createUnnamedFormWithOptions(array $options);
 }

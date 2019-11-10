@@ -27,8 +27,6 @@ class FormFactory implements FactoryInterface
     private $validationGroups;
 
     /**
-     * FormFactory constructor.
-     *
      * @param FormFactoryInterface $formFactory
      * @param string               $name
      * @param string               $type
