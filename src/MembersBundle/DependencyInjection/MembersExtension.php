@@ -2,14 +2,45 @@
 
 namespace MembersBundle\DependencyInjection;
 
+use MembersBundle\Security\OAuthIdentityAuthenticator;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use MembersBundle\Configuration\Configuration as BundleConfiguration;
 
-class MembersExtension extends Extension
+class MembersExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
+
+        if ($container->hasExtension('security') === false) {
+            return;
+        }
+
+        if ($config['oauth']['enabled'] === false) {
+            return;
+        }
+
+        $container->loadFromExtension('security', [
+            'firewalls' => [
+                'members_fe' => [
+                    'guard' => [
+                        'authenticators' => [
+                            OAuthIdentityAuthenticator::class
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
     /**
      * @param array            $configs
      * @param ContainerBuilder $container

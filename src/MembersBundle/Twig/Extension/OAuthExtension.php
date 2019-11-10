@@ -13,11 +13,6 @@ use Twig\TwigFunction;
 class OAuthExtension extends AbstractExtension
 {
     /**
-     * @var bool
-     */
-    protected $oauthEnabled;
-
-    /**
      * @var ClientRegistry
      */
     protected $oauthRegistry;
@@ -33,18 +28,15 @@ class OAuthExtension extends AbstractExtension
     protected $tokenStorage;
 
     /**
-     * @param bool                        $oauthEnabled
      * @param ClientRegistry              $oauthRegistry
      * @param SsoIdentityServiceInterface $identityService
      * @param TokenStorageInterface       $tokenStorage
      */
     public function __construct(
-        bool $oauthEnabled,
         ClientRegistry $oauthRegistry,
         SsoIdentityServiceInterface $identityService,
         TokenStorageInterface $tokenStorage
     ) {
-        $this->oauthEnabled = $oauthEnabled;
         $this->oauthRegistry = $oauthRegistry;
         $this->identityService = $identityService;
         $this->tokenStorage = $tokenStorage;
@@ -56,17 +48,8 @@ class OAuthExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('members_oauth_enabled', [$this, 'oauthIsEnabled']),
             new TwigFunction('members_oauth_social_links', [$this, 'getSocialLinks'])
         ];
-    }
-
-    /**
-     * @return bool
-     */
-    public function oauthIsEnabled()
-    {
-        return $this->oauthEnabled;
     }
 
     /**
@@ -77,10 +60,6 @@ class OAuthExtension extends AbstractExtension
      */
     public function getSocialLinks(string $route = 'members_user_security_oauth_login', $skipConnectedIdentities = false)
     {
-        if ($this->oauthIsEnabled() === false) {
-            return [];
-        }
-
         $processType = $route === 'members_user_security_oauth_connect' ? 'connect' : 'login';
 
         $ssoIdentities = $this->getSsoIdentities();

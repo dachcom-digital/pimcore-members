@@ -2,7 +2,7 @@
     <p>{{ 'members.profile.show.username'|trans }}: {{ user.username }}</p>
     <p>{{ 'members.profile.show.email'|trans }}: {{ user.email }}</p>
 
-    {% if members_oauth_enabled() == true %}
+    {% if members_system_oauth_enabled() == true %}
         {% set link_params = {_target_path: app.request.pathInfo} %}
         {% include '@Members/Auth/Partial/social_login.html.twig' with { social_route: 'members_user_security_oauth_connect', link_params: link_params } only %}
     {% endif %}

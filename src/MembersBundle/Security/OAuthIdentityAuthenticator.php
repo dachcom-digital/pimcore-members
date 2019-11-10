@@ -163,7 +163,6 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         $request->attributes->set('user', $token->getUser());
 
         return new RedirectResponse($targetUrl);
-
     }
 
     /**
@@ -213,5 +212,4 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
     {
         return $this->clientRegistry->getClient($service);
     }
-
 }

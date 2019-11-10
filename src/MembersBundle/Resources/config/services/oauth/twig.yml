@@ -5,7 +5,6 @@ services:
 
     MembersBundle\Twig\Extension\OAuthExtension:
         arguments:
-            $oauthEnabled: '%members.oauth.enabled%'
             $oauthRegistry: '@knpu.oauth2.registry'
         tags:
             - { name: twig.extension }

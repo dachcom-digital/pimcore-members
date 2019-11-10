@@ -12,3 +12,9 @@ services:
     MembersBundle\Twig\Extension\RestrictionUriExtension:
         tags:
             - { name: twig.extension }
+
+    MembersBundle\Twig\Extension\SystemExtension:
+        arguments:
+            $oauthEnabled: '%members.oauth.enabled%'
+        tags:
+            - { name: twig.extension }

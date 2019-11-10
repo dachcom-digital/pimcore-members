@@ -10,7 +10,7 @@
     {{ form_widget(form) }}
     {{ form_end(form) }}
 
-    {% if members_oauth_enabled() == true %}
+    {% if members_system_oauth_enabled() == true %}
         {% set link_params = {} %}
         {% if form._target_path is defined %}
             {% set link_params = {_target_path: form._target_path.vars.value} %}
