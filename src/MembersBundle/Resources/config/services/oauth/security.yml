@@ -1,0 +1,20 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Security\OAuth\AccountConnectorInterface: '@MembersBundle\Security\OAuth\AccountConnector'
+    MembersBundle\Security\OAuth\AccountConnector: ~
+
+    MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface: '@MembersBundle\Security\OAuth\SsoIdentity\DefaultSsoIdentityService'
+    MembersBundle\Security\OAuth\SsoIdentity\DefaultSsoIdentityService: ~
+
+    MembersBundle\Security\OAuthIdentityAuthenticator: ~
+
+    MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher: ~
+    MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher: ~
+
+    MembersBundle\Security\OAuth\OAuthRegistrationHandler:
+        arguments:
+            $oauthRegistry: '@knpu.oauth2.registry'
+

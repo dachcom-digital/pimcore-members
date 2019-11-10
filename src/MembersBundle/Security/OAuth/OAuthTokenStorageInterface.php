@@ -2,13 +2,18 @@
 
 namespace MembersBundle\Security\OAuth;
 
-interface TokenStorageInterface
+interface OAuthTokenStorageInterface
 {
     /**
      * @param string                 $key
      * @param OAuthResponseInterface $OAuthResponse
      */
     public function saveToken(string $key, OAuthResponseInterface $OAuthResponse);
+
+    /**
+     * @param string $key
+     */
+    public function destroyToken(string $key);
 
     /**
      * @param string $key

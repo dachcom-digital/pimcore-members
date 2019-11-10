@@ -2,8 +2,6 @@
 
 namespace MembersBundle\Controller;
 
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use League\OAuth2\Client\Token\AccessToken;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\FormEvent;
@@ -11,13 +9,10 @@ use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
-use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
-use MembersBundle\Security\OAuth\OAuthResponseInterface;
 use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -54,32 +49,24 @@ class RegistrationController extends AbstractController
     protected $siteResolver;
 
     /**
-     * @var OAuthRegistrationHandler
-     */
-    protected $oAuthHandler;
-
-    /**
      * @param FactoryInterface         $formFactory
      * @param EventDispatcherInterface $eventDispatcher
      * @param UserManagerInterface     $userManager
      * @param TokenStorageInterface    $tokenStorage
      * @param SiteResolver             $siteResolver
-     * @param OAuthRegistrationHandler $oAuthHandler
      */
     public function __construct(
         FactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         UserManagerInterface $userManager,
         TokenStorageInterface $tokenStorage,
-        SiteResolver $siteResolver,
-        OAuthRegistrationHandler $oAuthHandler
+        SiteResolver $siteResolver
     ) {
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->userManager = $userManager;
         $this->tokenStorage = $tokenStorage;
         $this->siteResolver = $siteResolver;
-        $this->oAuthHandler = $oAuthHandler;
     }
 
     /**
@@ -100,46 +87,20 @@ class RegistrationController extends AbstractController
             return $event->getResponse();
         }
 
-        $registrationKey = $request->get('registrationKey', null);
-
-        $oAuthResponse = null;
-
-        // load previously stored token from the session and try to load user profile
-        // from provider
-        if ($registrationKey !== null) {
-            $oAuthResponse = $this->oAuthHandler->loadToken($registrationKey);
-        }
-
-        if ($oAuthResponse instanceof OAuthResponseInterface) {
-            if ($this->oAuthHandler->getCustomerFromUserResponse($oAuthResponse)) {
-                throw new \RuntimeException('Customer is already registered');
-            }
-
-            $user = $this->mergeOAuthFormData($user, $oAuthResponse);
-        }
-
         $formOptions = [];
-
-        if ($oAuthResponse instanceof OAuthResponseInterface) {
-            $formOptions['hide_password'] = $oAuthResponse instanceof OAuthResponseInterface;
+        if ($request->attributes->get('_members_sso_aware', null) === true) {
             $formOptions['validation_groups'] = 'SSO';
         }
 
         $form = $this->formFactory->createUnnamedFormWithOptions($formOptions);
 
         $form->setData($user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
 
             if ($form->isValid()) {
                 $this->userManager->updateUser($user, $this->getUserProperties($request));
-
-                // add SSO identity from OAuth data
-                if ($oAuthResponse instanceof OAuthResponseInterface) {
-                    $this->oAuthHandler->connectSsoIdentity($user, $oAuthResponse);
-                }
 
                 $event = new FormEvent($form, $request);
                 $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
@@ -155,20 +116,12 @@ class RegistrationController extends AbstractController
                 return $response;
             }
 
-            if ($registrationKey !== null) {
-                $this->oAuthHandler->saveToken($registrationKey, $oAuthResponse);
-            }
-
             $event = new FormEvent($form, $request);
             $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_FAILURE, $event);
 
             if (null !== $response = $event->getResponse()) {
                 return $response;
             }
-        }
-
-        if ($registrationKey !== null) {
-            $this->oAuthHandler->saveToken($registrationKey, $oAuthResponse);
         }
 
         return $this->renderTemplate('@Members/Registration/register.html.twig', [
@@ -183,7 +136,9 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag($request);
+        /** @var NamespacedAttributeBag $bag */
+        $sessionBag = $request->getSession()->getBag('members_session');
+
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -207,7 +162,9 @@ class RegistrationController extends AbstractController
      */
     public function checkAdminAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag($request);
+        /** @var NamespacedAttributeBag $bag */
+        $sessionBag = $request->getSession()->getBag('members_session');
+
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -315,38 +272,5 @@ class RegistrationController extends AbstractController
         }
 
         return $userProperties;
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return NamespacedAttributeBag
-     */
-    private function getMembersSessionBag(Request $request)
-    {
-        /** @var NamespacedAttributeBag $bag */
-        $bag = $request->getSession()->getBag('members_session');
-
-        return $bag;
-    }
-
-    /**
-     * @param UserInterface          $user
-     * @param OAuthResponseInterface $OAuthResponse
-     *
-     * @return UserInterface
-     */
-    private function mergeOAuthFormData(UserInterface $user, OAuthResponseInterface $OAuthResponse)
-    {
-        $userData = $OAuthResponse->getResourceOwner()->toArray();
-
-        foreach (['firstname', 'lastname', 'userName', 'email'] as $field) {
-            $setter = sprintf('set%s', ucfirst($field));
-            if (isset($userData[$field])) {
-                $user->$setter($userData[$field]);
-            }
-        }
-
-        return $user;
     }
 }

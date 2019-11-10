@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Form\Extension\RegistrationTypeExtension:
+        tags:
+            - { name: form.type_extension, extended_type: MembersBundle\Form\Type\RegistrationFormType }
+

@@ -1,14 +1,14 @@
 members_user_security_oauth_login:
     path: /{_locale}/members/oauth/login/{provider}
     defaults:
-        _controller: MembersBundle:Auth:oAuthConnect
+        _controller: MembersBundle:OAuth:oAuthConnect
 
 members_user_security_oauth_connect:
     path: /{_locale}/members/oauth/connect/{provider}
     defaults:
-        _controller: MembersBundle:Auth:oAuthProfileConnect
+        _controller: MembersBundle:OAuth:oAuthProfileConnect
 
 members_user_security_oauth_check:
     path: /members/oauth/check
     defaults:
-        _controller: MembersBundle:Auth:oAuthConnectCheck
+        _controller: MembersBundle:OAuth:oAuthConnectCheck

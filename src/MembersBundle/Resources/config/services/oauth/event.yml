@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\EventListener\OAuthRegistrationListener:
+        tags:
+            - { name: kernel.event_subscriber }

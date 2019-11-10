@@ -2,7 +2,6 @@
 
 namespace MembersBundle\Security\OAuth;
 
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface as MembersUserInterface;
 use MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface;
@@ -22,16 +21,6 @@ class AccountConnector implements AccountConnectorInterface
     public function __construct(SsoIdentityServiceInterface $ssoIdentityService)
     {
         $this->ssoIdentityService = $ssoIdentityService;
-    }
-
-    /**
-     * @param UserInterface          $user
-     * @param string                 $provider
-     * @param ResourceOwnerInterface $resourceOwner
-     */
-    public function connect(UserInterface $user, string $provider, ResourceOwnerInterface $resourceOwner)
-    {
-        $this->connectToSsoIdentity($user, $provider, $resourceOwner);
     }
 
     /**
@@ -101,11 +90,11 @@ class AccountConnector implements AccountConnectorInterface
     /**
      * @param MembersUserInterface   $user
      * @param OAuthResponseInterface $oAuthResponse
+     *
+     * @todo: move to resource mapping service
      */
     protected function applyProfileToCustomer(MembersUserInterface $user, OAuthResponseInterface $oAuthResponse)
     {
-        //@fixme: add dynamic mapping
-
         $ownerDetails = $oAuthResponse->getResourceOwner()->toArray();
         foreach ($ownerDetails as $property => $value) {
             $this->setIfEmpty($user, $property, $value);

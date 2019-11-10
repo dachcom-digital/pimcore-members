@@ -18,8 +18,6 @@ class MembersExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        //$container->loadFromExtension('hwi_oauth', ['firewall_names' => ['members_fe']]);
-
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 

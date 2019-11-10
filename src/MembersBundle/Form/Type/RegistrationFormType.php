@@ -37,14 +37,12 @@ class RegistrationFormType extends AbstractType
 
         $builder->add('username', null, ['label' => 'members.form.username']);
 
-        if ($options['hide_password'] !== true) {
-            $builder->add('plainPassword', RepeatedType::class, [
-                'type'            => PasswordType::class,
-                'first_options'   => ['label' => 'members.form.password'],
-                'second_options'  => ['label' => 'members.form.password_confirmation'],
-                'invalid_message' => 'members.validation.password.mismatch',
-            ]);
-        }
+        $builder->add('plainPassword', RepeatedType::class, [
+            'type'            => PasswordType::class,
+            'first_options'   => ['label' => 'members.form.password'],
+            'second_options'  => ['label' => 'members.form.password_confirmation'],
+            'invalid_message' => 'members.validation.password.mismatch',
+        ]);
 
         $builder->add('submit', SubmitType::class, [
             'label' => 'members.registration.submit',
@@ -58,8 +56,7 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class'    => $this->class,
-            'csrf_token_id' => 'registration',
-            'hide_password' => false
+            'csrf_token_id' => 'registration'
         ]);
     }
 

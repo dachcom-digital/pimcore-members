@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\CompleteProfileProcessor:
+        tags:
+            - {name: members.oauth.login_processor, identifier: complete_profile }
+
+    MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\InstantProcessor:
+        tags:
+            - {name: members.oauth.login_processor, identifier: instant }

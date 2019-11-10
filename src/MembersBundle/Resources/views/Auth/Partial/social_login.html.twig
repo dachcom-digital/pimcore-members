@@ -8,8 +8,10 @@
     {% set social_route_name = social_route %}
 {% endif %}
 
+{% set skip_connected_identities = social_route_name != 'members_user_security_oauth_login' %}
+
 <ul>
-    {% for link in members_oauth_social_links(social_route_name) %}
+    {% for link in members_oauth_social_links(social_route_name, skip_connected_identities) %}
         {% set additional_link_params = additional_link_params|merge({provider: link.identifier}) %}
         <li>
             <a class="btn btn-info btn-sm" href="{{ path(link.route_name, additional_link_params) }}">
