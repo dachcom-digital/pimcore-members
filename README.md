@@ -142,6 +142,12 @@ Learn more about the Members Restriction feature:
 - [Restricted Listing](docs/230_RestrictListing.md)
 - [Protected Asset Downloader](docs/240_AssetProtection.md)
 
+***
+
+## Single Sign On (SSO) with OAuth2
+- [Overview](./docs/SSO/10_Overview.md)
+- [Installation](./docs/SSO/20_Installation.md)
+
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)
 

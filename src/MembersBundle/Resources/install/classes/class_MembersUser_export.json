@@ -187,25 +187,15 @@
                         "visibleSearch": false
                     },
                     {
-                        "fieldtype": "manyToManyObjectRelation",
-                        "width": "",
-                        "height": "",
-                        "maxItems": "",
+                        "fieldtype": "membersGroupMultiselect",
                         "queryColumnType": "text",
                         "phpdocType": "array",
                         "relationType": true,
-                        "visibleFields": "",
-                        "optimizedAdminLoading": false,
-                        "visibleFieldDefinitions": [],
-                        "lazyLoading": true,
-                        "classes": [
-                            {
-                                "classes": "SsoIdentity"
-                            }
-                        ],
-                        "pathFormatterClass": "",
-                        "name": "ssoIdentities",
-                        "title": "SSO Identities",
+                        "lazyLoading": null,
+                        "classes": [],
+                        "pathFormatterClass": null,
+                        "name": "groups",
+                        "title": "groups",
                         "tooltip": "",
                         "mandatory": false,
                         "noteditable": false,
@@ -219,15 +209,25 @@
                         "visibleSearch": false
                     },
                     {
-                        "fieldtype": "membersGroupMultiselect",
+                        "fieldtype": "manyToManyObjectRelation",
+                        "width": "",
+                        "height": "",
+                        "maxItems": "",
                         "queryColumnType": "text",
                         "phpdocType": "array",
                         "relationType": true,
-                        "lazyLoading": null,
-                        "classes": [],
-                        "pathFormatterClass": null,
-                        "name": "groups",
-                        "title": "groups",
+                        "visibleFields": "key",
+                        "optimizedAdminLoading": false,
+                        "visibleFieldDefinitions": [],
+                        "lazyLoading": true,
+                        "classes": [
+                            {
+                                "classes": "SsoIdentity"
+                            }
+                        ],
+                        "pathFormatterClass": "",
+                        "name": "ssoIdentities",
+                        "title": "SSO Identities",
                         "tooltip": "",
                         "mandatory": false,
                         "noteditable": false,

@@ -2,18 +2,27 @@
 
 namespace MembersBundle\Command;
 
-use Pimcore\Model\DataObject\ClassDefinition;
+use MembersBundle\Tool\ClassInstaller;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ClassInstallerCommand extends Command
 {
-    private $classes = [
-        'MembersUser',
-        'MembersGroup',
-    ];
+    /**
+     * @var ClassInstaller
+     */
+    protected $classInstaller;
+
+    /**
+     * @param ClassInstaller $classInstaller
+     */
+    public function setClassInstaller(ClassInstaller $classInstaller)
+    {
+        $this->classInstaller = $classInstaller;
+    }
 
     /**
      * {@inheritdoc}
@@ -25,7 +34,13 @@ class ClassInstallerCommand extends Command
         $this
             ->setName('members:install:class')
             ->setDescription('Install Members Default Classes')
-            ->setHelp('This command will install a "MembersUser" and "MembersGroup" Class with all the required fields.');
+            ->setHelp('This command will install a "MembersUser" and "MembersGroup" Class with all the required fields.')
+            ->addOption(
+                'oauth',
+                'o',
+                InputOption::VALUE_NONE,
+                'Install Optional SSO Identity Class (Required if you are using the oauth2 feature)'
+            );
     }
 
     /**
@@ -33,6 +48,8 @@ class ClassInstallerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $classes = ['MembersUser', 'MembersGroup'];
+
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', false);
 
@@ -40,52 +57,14 @@ class ClassInstallerCommand extends Command
             return;
         }
 
-        foreach ($this->getClasses() as $className => $path) {
-            $class = new ClassDefinition();
-            $id = $class->getDao()->getIdByName($className);
+        $oauthInstall = $input->getOption('oauth') === true;
 
-            if ($id !== false) {
-                $output->writeln(sprintf('<comment>Class "%s" already exists.</comment>', $className));
-
-                continue;
-            }
-
-            $class->setName($className);
-
-            $data = file_get_contents($path);
-            $success = ClassDefinition\Service::importClassDefinitionFromJson($class, $data);
-
-            if (!$success) {
-                $output->writeln(sprintf('Could not import Class "%s".', $className));
-            } else {
-                $output->writeln(sprintf('Class "%s" <info>successfully</info> installed.', $className));
-            }
-        }
-    }
-
-    /**
-     * @return array
-     */
-    private function getClasses(): array
-    {
-        $result = [];
-
-        foreach ($this->classes as $className) {
-            $filename = sprintf('class_%s_export.json', $className);
-            $path = realpath(dirname(__FILE__) . '/../Resources/install/classes') . '/' . $filename;
-            $path = realpath($path);
-
-            if (false === $path || !is_file($path)) {
-                throw new \RuntimeException(sprintf(
-                    'Class export for class "%s" was expected in "%s" but file does not exist',
-                    $className,
-                    $path
-                ));
-            }
-
-            $result[$className] = $path;
+        if ($oauthInstall === true) {
+            $classes = array_merge($classes, ['SsoIdentity']);
         }
 
-        return $result;
+        $this->classInstaller->setLogger($output);
+        $this->classInstaller->installClasses($classes);
+
     }
 }

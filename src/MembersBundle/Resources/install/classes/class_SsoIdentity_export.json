@@ -1,5 +1,4 @@
 {
-    "id": "4",
     "description": null,
     "parentClass": "\\MembersBundle\\Adapter\\Sso\\AbstractSSoIdentity",
     "listingParentClass": null,
@@ -108,7 +107,7 @@
                         "title": "Profile Data",
                         "tooltip": "",
                         "mandatory": false,
-                        "noteditable": false,
+                        "noteditable": true,
                         "index": false,
                         "locked": false,
                         "style": "",
