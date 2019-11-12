@@ -14,6 +14,12 @@ members:
     group:
         adapter:
             class_name: 'group' # default was 'MembersGroup'
+
+    # for the sso identity class
+    # only available if you're using the SSO feature
+    sso:
+        adapter:
+            class_name: 'identity' # default was 'SsoIdentity'
 ```
 
 > **Tip:** Add this to a separate config file.
