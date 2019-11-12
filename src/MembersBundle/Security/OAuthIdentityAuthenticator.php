@@ -8,13 +8,14 @@ use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
 use MembersBundle\Security\OAuth\Exception\AccountNotLinkedException;
 use MembersBundle\Security\OAuth\OAuthResponse;
-use MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -35,9 +36,9 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
     protected $clientRegistry;
 
     /**
-     * @var SsoIdentityServiceInterface
+     * @var SsoIdentityManagerInterface
      */
-    protected $ssoIdentityService;
+    protected $ssoIdentityManager;
 
     /**
      * @var DispatchRouter
@@ -47,18 +48,18 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
     /**
      * @param UrlGeneratorInterface       $router
      * @param ClientRegistry              $clientRegistry
-     * @param SsoIdentityServiceInterface $ssoIdentityService
+     * @param SsoIdentityManagerInterface $ssoIdentityManager
      * @param DispatchRouter              $dispatchRouter
      */
     public function __construct(
         UrlGeneratorInterface $router,
         ClientRegistry $clientRegistry,
-        SsoIdentityServiceInterface $ssoIdentityService,
+        SsoIdentityManagerInterface $ssoIdentityManager,
         DispatchRouter $dispatchRouter
     ) {
         $this->router = $router;
         $this->clientRegistry = $clientRegistry;
-        $this->ssoIdentityService = $ssoIdentityService;
+        $this->ssoIdentityManager = $ssoIdentityManager;
         $this->dispatchRouter = $dispatchRouter;
     }
 
@@ -79,6 +80,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
      */
     public function getCredentials(Request $request)
     {
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
 
         if (!$sessionBag->has('oauth_state_data')) {
@@ -135,7 +137,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
 
         $oAuthResponse = new OAuthResponse($provider, $accessToken, $user);
 
-        $memberUser = $this->ssoIdentityService->getCustomerBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
+        $memberUser = $this->ssoIdentityManager->getUserBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
 
         if ($memberUser instanceof UserInterface) {
             return $memberUser;
@@ -153,6 +155,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
 
         $data = $sessionBag->get('oauth_state_data');
@@ -173,6 +176,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
         $sessionBag->remove('oauth_state_data');
 

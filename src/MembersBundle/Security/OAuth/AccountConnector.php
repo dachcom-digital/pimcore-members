@@ -4,30 +4,29 @@ namespace MembersBundle\Security\OAuth;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface as MembersUserInterface;
-use MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface;
-use Pimcore\Model\DataObject\SsoIdentity;
+use MembersBundle\Manager\SsoIdentityManagerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface
 {
     /**
-     * @var SsoIdentityServiceInterface
+     * @var SsoIdentityManagerInterface
      */
-    protected $ssoIdentityService;
+    protected $ssoIdentityManager;
 
     /**
-     * @param SsoIdentityServiceInterface $ssoIdentityService
+     * @param SsoIdentityManagerInterface $ssoIdentityManager
      */
-    public function __construct(SsoIdentityServiceInterface $ssoIdentityService)
+    public function __construct(SsoIdentityManagerInterface $ssoIdentityManager)
     {
-        $this->ssoIdentityService = $ssoIdentityService;
+        $this->ssoIdentityManager = $ssoIdentityManager;
     }
 
     /**
      * @param UserInterface          $user
      * @param OAuthResponseInterface $oAuthResponse
      *
-     * @return SsoIdentityInterface|SsoIdentity|null
+     * @return SsoIdentityInterface
      */
     public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse)
     {
@@ -36,19 +35,19 @@ class AccountConnector implements AccountConnectorInterface
         }
 
         $identifier = $oAuthResponse->getResourceOwner()->getId();
-        $ssoIdentity = $this->ssoIdentityService->getSsoIdentity($user, $oAuthResponse->getProvider(), $identifier);
+        $ssoIdentity = $this->ssoIdentityManager->getSsoIdentity($user, $oAuthResponse->getProvider(), $identifier);
 
         if ($ssoIdentity !== null) {
             throw new \RuntimeException(
                 sprintf(
-                    'Customer has already an SSO identity for provider %s and identifier %s',
+                    'User has already an SSO identity for provider %s and identifier %s',
                     $oAuthResponse->getProvider(),
                     $identifier
                 )
             );
         }
 
-        $ssoIdentity = $this->ssoIdentityService->createSsoIdentity(
+        $ssoIdentity = $this->ssoIdentityManager->createSsoIdentity(
             $user,
             $oAuthResponse->getProvider(),
             $identifier,
@@ -56,16 +55,16 @@ class AccountConnector implements AccountConnectorInterface
         );
 
         $this->applyCredentialsToSsoIdentity($ssoIdentity, $oAuthResponse);
-        $this->applyProfileToCustomer($user, $oAuthResponse);
+        $this->applyProfileToUser($user, $oAuthResponse);
 
-        $this->ssoIdentityService->addSsoIdentity($user, $ssoIdentity);
+        $this->ssoIdentityManager->addSsoIdentity($user, $ssoIdentity);
 
         return $ssoIdentity;
     }
 
     /**
-     * @param SsoIdentityInterface|SsoIdentity $ssoIdentity
-     * @param OAuthResponseInterface           $oAuthResponse
+     * @param SsoIdentityInterface   $ssoIdentity
+     * @param OAuthResponseInterface $oAuthResponse
      */
     protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity, OAuthResponseInterface $oAuthResponse)
     {
@@ -93,7 +92,7 @@ class AccountConnector implements AccountConnectorInterface
      *
      * @todo: move to resource mapping service
      */
-    protected function applyProfileToCustomer(MembersUserInterface $user, OAuthResponseInterface $oAuthResponse)
+    protected function applyProfileToUser(MembersUserInterface $user, OAuthResponseInterface $oAuthResponse)
     {
         $ownerDetails = $oAuthResponse->getResourceOwner()->toArray();
         foreach ($ownerDetails as $property => $value) {

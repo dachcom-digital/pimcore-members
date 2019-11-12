@@ -5,6 +5,7 @@ namespace MembersBundle\Controller;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 
 class OAuthController extends AbstractController
 {
@@ -60,8 +61,8 @@ class OAuthController extends AbstractController
             'provider'     => $provider
         ]);
 
+        /** @var NamespacedAttributeBag $session */
         $session = $request->getSession()->getBag('members_session');
-
         $session->set('oauth_state_data', $params);
 
         return $this->clientRegistry->getClient($provider)->redirect(['email'], []);

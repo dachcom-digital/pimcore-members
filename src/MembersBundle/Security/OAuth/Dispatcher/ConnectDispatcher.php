@@ -5,12 +5,9 @@ namespace MembersBundle\Security\OAuth\Dispatcher;
 use MembersBundle\MembersEvents;
 use MembersBundle\Event\OAuthEvent;
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Configuration\Configuration;
-use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
@@ -27,38 +24,23 @@ class ConnectDispatcher implements DispatcherInterface
     protected $eventDispatcher;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
      * @var OAuthRegistrationHandler
      */
-    protected $oAuthHandler;
+    protected $oAuthRegistrationHandler;
 
     /**
      * @param TokenStorageInterface       $tokenStorage
      * @param EventDispatcherInterface    $eventDispatcher
-     * @param OAuthRegistrationHandler    $oAuthHandler
+     * @param OAuthRegistrationHandler    $oAuthRegistrationHandler
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
-        OAuthRegistrationHandler $oAuthHandler
+        OAuthRegistrationHandler $oAuthRegistrationHandler
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->eventDispatcher = $eventDispatcher;
-        $this->oAuthHandler = $oAuthHandler;
+        $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
     }
 
     /**
@@ -75,7 +57,7 @@ class ConnectDispatcher implements DispatcherInterface
         /** @var UserInterface $user */
         $user = $token->getUser();
 
-        $this->oAuthHandler->connectSsoIdentity($user, $oAuthResponse);
+        $this->oAuthRegistrationHandler->connectSsoIdentity($user, $oAuthResponse);
 
         $this->eventDispatcher->dispatch(MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS, new OAuthEvent($oAuthResponse));
 

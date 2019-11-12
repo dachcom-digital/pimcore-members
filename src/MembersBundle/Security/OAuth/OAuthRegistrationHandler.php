@@ -2,22 +2,17 @@
 
 namespace MembersBundle\Security\OAuth;
 
-use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
-use MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Manager\SsoIdentityManagerInterface;
+use MembersBundle\Manager\UserManagerInterface;
 
 class OAuthRegistrationHandler
 {
     /**
-     * @var ClientRegistry
+     * @var SsoIdentityManagerInterface
      */
-    protected $oauthRegistry;
-
-    /**
-     * @var SsoIdentityServiceInterface
-     */
-    protected $ssoIdentityService;
+    protected $ssoIdentityManager;
 
     /**
      * @var AccountConnectorInterface
@@ -25,18 +20,23 @@ class OAuthRegistrationHandler
     protected $accountConnector;
 
     /**
-     * @param ClientRegistry              $oauthRegistry
-     * @param SsoIdentityServiceInterface $ssoIdentityService
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
+    /**
+     * @param SsoIdentityManagerInterface $ssoIdentityManager
      * @param AccountConnectorInterface   $accountConnector
+     * @param UserManagerInterface        $userManager
      */
     public function __construct(
-        ClientRegistry $oauthRegistry,
-        SsoIdentityServiceInterface $ssoIdentityService,
-        AccountConnectorInterface $accountConnector
+        SsoIdentityManagerInterface $ssoIdentityManager,
+        AccountConnectorInterface $accountConnector,
+        UserManagerInterface $userManager
     ) {
-        $this->oauthRegistry = $oauthRegistry;
-        $this->ssoIdentityService = $ssoIdentityService;
+        $this->ssoIdentityManager = $ssoIdentityManager;
         $this->accountConnector = $accountConnector;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -44,9 +44,31 @@ class OAuthRegistrationHandler
      *
      * @return UserInterface|null
      */
-    public function getCustomerFromUserResponse(OAuthResponseInterface $OAuthResponse)
+    public function getUserFromUserResponse(OAuthResponseInterface $OAuthResponse)
     {
-        return $this->ssoIdentityService->getCustomerBySsoIdentity($OAuthResponse->getProvider(), $OAuthResponse->getResourceOwner()->getId());
+        return $this->ssoIdentityManager->getUserBySsoIdentity($OAuthResponse->getProvider(), $OAuthResponse->getResourceOwner()->getId());
+    }
+
+    /**
+     * @param OAuthResponseInterface $oAuthResponse
+     *
+     * @return UserInterface
+     * @throws \Exception
+     */
+    public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
+    {
+        /** @var UserInterface $user */
+        $user = $this->userManager->createUser();
+
+        $user->setEmail($oAuthResponse->getResourceOwner()->getId());
+        $user->setPublished(true);
+
+        // persist user first before creating sso identity
+        $this->userManager->updateUser($user);
+
+        $this->connectSsoIdentity($user, $oAuthResponse);
+
+        return $user;
     }
 
     /**
@@ -59,15 +81,15 @@ class OAuthRegistrationHandler
     public function connectSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse)
     {
         if (!$user->getId()) {
-            throw new \LogicException('Can\'t add a SSO identity to a customer which is not saved. Please save user first');
+            throw new \LogicException('Can\'t add a SSO identity to a user which is not saved. Please save user first');
         }
 
         $ssoIdentity = $this->accountConnector->connectToSsoIdentity($user, $oAuthResponse);
 
-        // the connector does not save the customer and the identity
-        $ssoIdentity->save();
-        $user->save();
+        $this->ssoIdentityManager->saveIdentity($ssoIdentity);
+        $this->userManager->updateUser($user);
 
         return $ssoIdentity;
     }
+
 }

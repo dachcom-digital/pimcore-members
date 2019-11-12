@@ -4,7 +4,7 @@ namespace MembersBundle\Adapter\User;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 
-interface SsoAwareCustomerInterface
+interface SsoAwareUserInterface
 {
     /**
      * @return SsoIdentityInterface[]

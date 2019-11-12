@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Security\OAuth\Dispatcher;
 
+use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Security\OAuth\OAuthResponse;
 
 interface DispatcherInterface
@@ -10,7 +11,7 @@ interface DispatcherInterface
      * @param string        $provider
      * @param OAuthResponse $oAuthResponse
      *
-     * @return mixed
+     * @return UserInterface|null
      */
     public function dispatch(string $provider, OAuthResponse $oAuthResponse);
 }

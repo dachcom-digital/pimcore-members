@@ -41,7 +41,7 @@ class CompleteProfileProcessor implements LoginProcessorInterface
         $this->oAuthTokenStorage->saveToken($registrationKey, $oAuthResponse);
 
         $exception = new AccountNotLinkedException(sprintf(
-            'No customer was found for user "%s" on provider "%s"',
+            'No user was found for user "%s" on provider "%s"',
             $user->getId(), $provider
         ));
 

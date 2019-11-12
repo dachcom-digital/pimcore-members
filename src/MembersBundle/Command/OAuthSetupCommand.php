@@ -3,6 +3,9 @@
 namespace MembersBundle\Command;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
+use MembersBundle\Adapter\User\AbstractSsoAwareUser;
+use MembersBundle\Adapter\User\AbstractUser;
+use MembersBundle\Adapter\User\SsoAwareUserInterface;
 use MembersBundle\Manager\ClassManagerInterface;
 use MembersBundle\Tool\ClassInstaller;
 use Pimcore\Model\DataObject\ClassDefinition;
@@ -73,10 +76,6 @@ class OAuthSetupCommand extends Command
     {
         $output->writeln('');
 
-        if ($this->checkInstalledStep($input, $output) === false) {
-            return;
-        }
-
         if ($this->checkSsoIdentityClassStep($input, $output) === false) {
             return;
         }
@@ -85,7 +84,15 @@ class OAuthSetupCommand extends Command
             return;
         }
 
+        if ($this->checkSsoIdentityAwareUserClass($input, $output) === false) {
+            return;
+        }
+
         if ($this->checkInstalledBundlesStep($input, $output) === false) {
+            return;
+        }
+
+        if ($this->checkInstalledStep($input, $output) === false) {
             return;
         }
 
@@ -118,7 +125,35 @@ class OAuthSetupCommand extends Command
 
         $command = '$ composer require knpuniversity/oauth2-client-bundle:^1.0';
 
-        $output->writeln(sprintf('<error>x</error>  <question>knpuniversity/oauth2-client-bundle is not installed.</question> Please add it via composer: %s', $command));
+        $output->writeln(sprintf('<error>x</error> <question>knpuniversity/oauth2-client-bundle is not installed.</question> Please add it via composer: %s', $command));
+
+        return false;
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return bool
+     */
+    protected function checkSsoIdentityAwareUserClass(InputInterface $input, OutputInterface $output)
+    {
+        $userReflectionClass = $this->getUserClass($output);
+        if (!$userReflectionClass instanceof \ReflectionClass) {
+            return false;
+        }
+
+        $hasSsoAwareInterface = $userReflectionClass->implementsInterface(SsoAwareUserInterface::class);
+
+        if ($hasSsoAwareInterface === true) {
+            $output->writeln(sprintf('<info>√ "%s" extends from "%s"</info>', $userReflectionClass->getName(), SsoAwareUserInterface::class));
+            return true;
+        }
+
+        $output->writeln(sprintf(
+                '<error>x</error> <question>SsoAwareUserInterface missing.</question> "%s" needs to implement "%s". Add it in your class definition (Use "%s" instead of "%s").',
+                $userReflectionClass->getShortName(), SsoAwareUserInterface::class, AbstractSsoAwareUser::class, AbstractUser::class)
+        );
 
         return false;
     }
@@ -131,19 +166,15 @@ class OAuthSetupCommand extends Command
      */
     protected function checkSsoIdentityRelationStep(InputInterface $input, OutputInterface $output)
     {
-        $userClass = $this->classManager->getUserClass();
-
-        try {
-            $reflectionClass = new \ReflectionClass($userClass);
-        } catch (\Throwable $e) {
-            $output->writeln(sprintf('<error>x</error> Error while checking user class (%s). Error was: <error>%s</error>', $userClass, $e->getMessage()));
+        $userReflectionClass = $this->getUserClass($output);
+        if (!$userReflectionClass instanceof \ReflectionClass) {
             return false;
         }
 
-        $hasRelation = $reflectionClass->hasMethod('getSsoIdentities');
+        $hasRelation = $userReflectionClass->hasMethod('getSsoIdentities');
 
         if ($hasRelation === true) {
-            $output->writeln(sprintf('<info>√ SsoIdentity relation is installed in class (%s)</info>', $userClass));
+            $output->writeln(sprintf('<info>√ SsoIdentity relation is installed in class (%s)</info>', $userReflectionClass->getName()));
             return true;
         }
 
@@ -183,7 +214,7 @@ class OAuthSetupCommand extends Command
 
         $output->writeln(sprintf(
                 '<error>x</error> <question>SsoIdentity relation is missing.</question> Please add this field to your class definition, after "groups" (var/classes/definition_%s.php): %s. You need to re-save your class afterwards',
-                $reflectionClass->getShortName(), $arg)
+                $userReflectionClass->getShortName(), $arg)
         );
 
         return false;
@@ -255,5 +286,24 @@ members:
         $output->writeln(sprintf('<error>x</error> <question>Oauth is disabled.</question> Please enable add in your config.yml: %s', $arg));
 
         return false;
+    }
+
+    /**
+     * @param OutputInterface $output
+     *
+     * @return \ReflectionClass|null
+     */
+    protected function getUserClass(OutputInterface $output)
+    {
+        $userClass = $this->classManager->getUserClass();
+
+        try {
+            $reflectionClass = new \ReflectionClass($userClass);
+        } catch (\Throwable $e) {
+            $output->writeln(sprintf('<error>x</error> Error while checking user class (%s). Error was: <error>%s</error>', $userClass, $e->getMessage()));
+            return null;
+        }
+
+        return $reflectionClass;
     }
 }

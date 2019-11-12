@@ -75,7 +75,8 @@ interface UserManagerInterface
     /**
      * @param UserInterface $user
      *
-     * @return mixed
+     * @return void
+     * @throws \Exception
      */
     public function reloadUser(UserInterface $user);
 
@@ -88,7 +89,7 @@ interface UserManagerInterface
      * @param UserInterface $user
      * @param array         $properties
      *
-     * @return mixed
+     * @return UserInterface
      */
     public function updateUser(UserInterface $user, $properties = []);
 }

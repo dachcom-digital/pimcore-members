@@ -136,7 +136,7 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction(Request $request)
     {
-        /** @var NamespacedAttributeBag $bag */
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
 
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
@@ -162,7 +162,7 @@ class RegistrationController extends AbstractController
      */
     public function checkAdminAction(Request $request)
     {
-        /** @var NamespacedAttributeBag $bag */
+        /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
 
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
@@ -235,11 +235,11 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @param SessionBagInterface $session
+     * @param NamespacedAttributeBag $session
      *
      * @return null|string
      */
-    private function getTargetUrlFromSession(SessionBagInterface $session)
+    private function getTargetUrlFromSession(NamespacedAttributeBag $session)
     {
         $token = $this->tokenStorage->getToken();
 

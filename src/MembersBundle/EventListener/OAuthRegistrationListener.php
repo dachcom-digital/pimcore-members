@@ -17,7 +17,7 @@ class OAuthRegistrationListener implements EventSubscriberInterface
     /**
      * @var OAuthRegistrationHandler
      */
-    protected $oAuthHandler;
+    protected $oAuthRegistrationHandler;
 
     /**
      * @var OAuthTokenStorageInterface
@@ -25,15 +25,14 @@ class OAuthRegistrationListener implements EventSubscriberInterface
     protected $oAuthTokenStorage;
 
     /**
-     *
-     * @param OAuthRegistrationHandler   $oAuthHandler
+     * @param OAuthRegistrationHandler   $oAuthRegistrationHandler
      * @param OAuthTokenStorageInterface $oAuthTokenStorage
      */
     public function __construct(
-        OAuthRegistrationHandler $oAuthHandler,
+        OAuthRegistrationHandler $oAuthRegistrationHandler,
         OAuthTokenStorageInterface $oAuthTokenStorage
     ) {
-        $this->oAuthHandler = $oAuthHandler;
+        $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
         $this->oAuthTokenStorage = $oAuthTokenStorage;
     }
 
@@ -58,14 +57,14 @@ class OAuthRegistrationListener implements EventSubscriberInterface
 
         // load previously stored token from the session
         // and try to load user profile from provider
-        $oAuthResponse = $this->getOAUthResponse($request);
+        $oAuthResponse = $this->getOAuthResponse($request);
 
         if (!$oAuthResponse instanceof OAuthResponseInterface) {
             return;
         }
 
-        if ($this->oAuthHandler->getCustomerFromUserResponse($oAuthResponse)) {
-            throw new \RuntimeException('Customer is already registered');
+        if ($this->oAuthRegistrationHandler->getUserFromUserResponse($oAuthResponse)) {
+            throw new \RuntimeException('User is already registered');
         }
 
         $request->attributes->set('_members_sso_aware', true);
@@ -86,13 +85,13 @@ class OAuthRegistrationListener implements EventSubscriberInterface
 
         // load previously stored token from the session
         // and try to load user profile from provider
-        $oAuthResponse = $this->getOAUthResponse($request, true);
+        $oAuthResponse = $this->getOAuthResponse($request, true);
 
         if (!$oAuthResponse instanceof OAuthResponseInterface) {
             return;
         }
 
-        $this->oAuthHandler->connectSsoIdentity($user, $oAuthResponse);
+        $this->oAuthRegistrationHandler->connectSsoIdentity($user, $oAuthResponse);
     }
 
     /**
@@ -101,7 +100,7 @@ class OAuthRegistrationListener implements EventSubscriberInterface
      *
      * @return OAuthResponseInterface|null
      */
-    protected function getOAUthResponse(Request $request, bool $destroyToken = false)
+    protected function getOAuthResponse(Request $request, bool $destroyToken = false)
     {
         $registrationKey = $request->get('registrationKey', null);
 

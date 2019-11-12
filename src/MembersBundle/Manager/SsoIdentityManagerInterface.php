@@ -1,11 +1,11 @@
 <?php
 
-namespace MembersBundle\Security\OAuth\SsoIdentity;
+namespace MembersBundle\Manager;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface;
 
-interface SsoIdentityServiceInterface
+interface SsoIdentityManagerInterface
 {
     /**
      * @param UserInterface $user
@@ -20,7 +20,7 @@ interface SsoIdentityServiceInterface
      *
      * @return UserInterface|null
      */
-    public function getCustomerBySsoIdentity(string $provider, $identifier);
+    public function getUserBySsoIdentity(string $provider, $identifier);
 
     /**
      * @param UserInterface $user
@@ -34,8 +34,6 @@ interface SsoIdentityServiceInterface
     /**
      * @param UserInterface        $user
      * @param SsoIdentityInterface $ssoIdentity
-     *
-     * @return $this
      */
     public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity);
 
@@ -48,4 +46,11 @@ interface SsoIdentityServiceInterface
      * @return SsoIdentityInterface
      */
     public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData);
+
+    /**
+     * @param SsoIdentityInterface $ssoIdentity
+     *
+     * @throws \Exception
+     */
+    public function saveIdentity(SsoIdentityInterface $ssoIdentity);
 }

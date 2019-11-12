@@ -1,0 +1,214 @@
+<?php
+
+namespace MembersBundle\Manager;
+
+use Pimcore\File;
+use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\DataObject\SsoIdentity;
+use MembersBundle\Adapter\Sso\SsoIdentityInterface;
+use MembersBundle\Adapter\User\SsoAwareUserInterface;
+use MembersBundle\Adapter\User\UserInterface;
+use Doctrine\DBAL\Connection;
+
+class SsoIdentityManager implements SsoIdentityManagerInterface
+{
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
+    /**
+     * @var ClassManagerInterface
+     */
+    protected $classManager;
+
+    /**
+     * @param Connection            $connection
+     * @param UserManagerInterface  $userManager
+     * @param ClassManagerInterface $classManager
+     */
+    public function __construct(
+        Connection $connection,
+        UserManagerInterface $userManager,
+        ClassManagerInterface $classManager
+    ) {
+        $this->connection = $connection;
+        $this->userManager = $userManager;
+        $this->classManager = $classManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUserBySsoIdentity(string $provider, $identifier)
+    {
+        $ssoIdentity = $this->findSsoIdentity($provider, $identifier);
+
+        if ($ssoIdentity instanceof SsoIdentityInterface) {
+            return $this->findUserBySsoIdentity($ssoIdentity);
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSsoIdentities(UserInterface $user)
+    {
+        $this->assertSsoAwareUser($user);
+
+        if (!$user instanceof SsoAwareUserInterface) {
+            return [];
+        }
+
+        if (empty($user->getSsoIdentities())) {
+            return [];
+        }
+
+        return $user->getSsoIdentities();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSsoIdentity(UserInterface $user, $provider, $identifier)
+    {
+        foreach ($this->getSsoIdentities($user) as $ssoIdentity) {
+            if ($ssoIdentity->getProvider() === $provider && $ssoIdentity->getIdentifier() === $identifier) {
+                return $ssoIdentity;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity)
+    {
+        $this->assertSsoAwareUser($user);
+
+        if (!$user instanceof SsoAwareUserInterface) {
+            return;
+        }
+
+        $ssoIdentities = $this->getSsoIdentities($user);
+        $ssoIdentities[] = $ssoIdentity;
+
+        $user->setSsoIdentities(array_unique($ssoIdentities));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData)
+    {
+        if (!$user instanceof Concrete) {
+            throw new \RuntimeException('User needs to be an instance of concrete');
+        }
+
+        $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
+        $path = sprintf('%s/%s', $user->getRealFullPath(), $key);
+
+        $ssoIdentity = SsoIdentity::getByPath($path);
+
+        if (!$ssoIdentity) {
+            $ssoIdentity = new SsoIdentity();
+        }
+
+        $ssoIdentity->setPublished(true);
+        $ssoIdentity->setKey($key);
+        $ssoIdentity->setParent($user);
+        $ssoIdentity->setProvider($provider);
+        $ssoIdentity->setIdentifier($identifier);
+        $ssoIdentity->setProfileData($profileData);
+
+        return $ssoIdentity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function saveIdentity(SsoIdentityInterface $ssoIdentity)
+    {
+        if (!$ssoIdentity instanceof Concrete) {
+            throw new \RuntimeException(sprintf('Identity needs to be instance of %s', Concrete::class));
+        }
+
+        $ssoIdentity->save();
+    }
+
+    /**
+     * @param string $provider
+     * @param string $identifier
+     *
+     * @return SsoIdentityInterface
+     * @throws \Exception
+     */
+    protected function findSsoIdentity(string $provider, $identifier)
+    {
+        $list = new SsoIdentity\Listing();
+        $list->addConditionParam('provider = ?', $provider);
+        $list->addConditionParam('identifier = ?', $identifier);
+
+        if ($list->count() === 1) {
+            return $list->current();
+        }
+
+        if ($list->count() > 1) {
+            throw new \RuntimeException(
+                sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier)
+            );
+        }
+    }
+
+    /**
+     * @param SsoIdentityInterface $ssoIdentity
+     *
+     * @return UserInterface|null
+     */
+    protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity)
+    {
+        /** @var Concrete $userClass */
+        $userClass = $this->classManager->getUserClass();
+
+        $qb = $this->connection->createQueryBuilder();
+
+        $qb
+            ->select('src_id')
+            ->from('object_relations_' . $userClass::classId())
+            ->where('fieldname = :ssoIdentitiesName')
+            ->where('dest_id = :ssoIdentitiesId');
+
+        $qb->setParameters([
+            'ssoIdentitiesName' => 'ssoIdentities',
+            'ssoIdentitiesId'   => $ssoIdentity->getId()
+        ]);
+
+        $stmt = $qb->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) === 1) {
+            return $this->userManager->findUserById((int) $result[0]['src_id']);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param UserInterface $user
+     */
+    protected function assertSsoAwareUser(UserInterface $user)
+    {
+        if (!$user instanceof SsoAwareUserInterface) {
+            throw new \RuntimeException('User needs to implement SsoAwareUserInterface');
+        }
+    }
+}

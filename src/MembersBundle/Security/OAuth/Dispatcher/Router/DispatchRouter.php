@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Security\OAuth\Dispatcher\Router;
 
+use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Security\OAuth\Dispatcher\DispatcherInterface;
 use MembersBundle\Security\OAuth\OAuthResponse;
 
@@ -26,7 +27,7 @@ class DispatchRouter
      * @param string        $provider
      * @param OAuthResponse $oAuthResponse
      *
-     * @return mixed
+     * @return UserInterface|null
      */
     public function dispatch(string $dispatcherName, string $provider, OAuthResponse $oAuthResponse)
     {

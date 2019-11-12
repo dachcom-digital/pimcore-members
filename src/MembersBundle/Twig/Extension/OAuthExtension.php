@@ -5,7 +5,7 @@ namespace MembersBundle\Twig\Extension;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Security\OAuth\SsoIdentity\SsoIdentityServiceInterface;
+use MembersBundle\Manager\SsoIdentityManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -18,9 +18,9 @@ class OAuthExtension extends AbstractExtension
     protected $oauthRegistry;
 
     /**
-     * @var SsoIdentityServiceInterface
+     * @var SsoIdentityManagerInterface
      */
-    protected $identityService;
+    protected $ssoIdentityManager;
 
     /**
      * @var TokenStorageInterface
@@ -29,16 +29,16 @@ class OAuthExtension extends AbstractExtension
 
     /**
      * @param ClientRegistry              $oauthRegistry
-     * @param SsoIdentityServiceInterface $identityService
+     * @param SsoIdentityManagerInterface $ssoIdentityManager
      * @param TokenStorageInterface       $tokenStorage
      */
     public function __construct(
         ClientRegistry $oauthRegistry,
-        SsoIdentityServiceInterface $identityService,
+        SsoIdentityManagerInterface $ssoIdentityManager,
         TokenStorageInterface $tokenStorage
     ) {
         $this->oauthRegistry = $oauthRegistry;
-        $this->identityService = $identityService;
+        $this->ssoIdentityManager = $ssoIdentityManager;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -101,7 +101,6 @@ class OAuthExtension extends AbstractExtension
 
         return array_map(function (SsoIdentityInterface $identity) {
             return $identity->getProvider();
-        }, $this->identityService->getSsoIdentities($user));
+        }, $this->ssoIdentityManager->getSsoIdentities($user));
     }
-
 }
