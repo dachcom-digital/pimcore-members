@@ -146,6 +146,7 @@ Learn more about the Members Restriction feature:
 
 ## Single Sign On (SSO) with OAuth2
 - [Overview](./docs/SSO/10_Overview.md)
+- [Integration Types](./docs/SSO/11_IntegrationTypes.md)
 - [Installation](./docs/SSO/20_Installation.md)
 
 ## Upgrade Info

@@ -15,17 +15,32 @@ interface SsoIdentityInterface
     public function getProvider();
 
     /**
+     * @param string $provider
+     */
+    public function setProvider($provider);
+
+    /**
      * @return string
      */
     public function getIdentifier();
 
     /**
-     * @return mixed
+     * @param string $identifier
+     */
+    public function setIdentifier($identifier);
+
+    /**
+     * @return string
      */
     public function getProfileData();
 
     /**
-     * @return mixed
+     * @param string $profileData
+     */
+    public function setProfileData($profileData);
+
+    /**
+     * @return string
      */
     public function getAccessToken();
 
@@ -35,7 +50,7 @@ interface SsoIdentityInterface
     public function setAccessToken($accessToken);
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTokenType();
 
@@ -45,7 +60,7 @@ interface SsoIdentityInterface
     public function setTokenType($tokenType);
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getExpiresAt();
 
@@ -55,7 +70,7 @@ interface SsoIdentityInterface
     public function setExpiresAt($expiresAt);
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getRefreshToken();
 
@@ -65,7 +80,7 @@ interface SsoIdentityInterface
     public function setRefreshToken($refreshToken);
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getScope();
 

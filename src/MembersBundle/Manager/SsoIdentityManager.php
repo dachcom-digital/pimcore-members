@@ -3,12 +3,11 @@
 namespace MembersBundle\Manager;
 
 use Pimcore\File;
-use Pimcore\Model\DataObject\Concrete;
-use Pimcore\Model\DataObject\SsoIdentity;
+use Pimcore\Model\DataObject;
+use Doctrine\DBAL\Connection;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\SsoAwareUserInterface;
 use MembersBundle\Adapter\User\UserInterface;
-use Doctrine\DBAL\Connection;
 
 class SsoIdentityManager implements SsoIdentityManagerInterface
 {
@@ -40,6 +39,14 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $this->connection = $connection;
         $this->userManager = $userManager;
         $this->classManager = $classManager;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getClass()
+    {
+        return $this->classManager->getSsoIdentityClass();
     }
 
     /**
@@ -110,25 +117,31 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      */
     public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData)
     {
-        if (!$user instanceof Concrete) {
-            throw new \RuntimeException('User needs to be an instance of concrete');
+        if (!$user instanceof DataObject\Concrete) {
+            throw new \RuntimeException('User needs to be an instance of Concrete');
         }
 
         $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
         $path = sprintf('%s/%s', $user->getRealFullPath(), $key);
 
-        $ssoIdentity = SsoIdentity::getByPath($path);
+        /** @var SsoIdentityInterface $ssoIdentity */
+        $ssoIdentity = DataObject::getByPath($path);
 
-        if (!$ssoIdentity) {
-            $ssoIdentity = new SsoIdentity();
+        if (!$ssoIdentity instanceof SsoIdentityInterface) {
+            $ssoIdentityClass = $this->classManager->getSsoIdentityClass();
+            $ssoIdentity = new $ssoIdentityClass();
         }
 
-        $ssoIdentity->setPublished(true);
-        $ssoIdentity->setKey($key);
-        $ssoIdentity->setParent($user);
+        if (!$ssoIdentity instanceof DataObject\Concrete) {
+            throw new \RuntimeException('Sso Identity needs to be an instance of Concrete');
+        }
+
         $ssoIdentity->setProvider($provider);
         $ssoIdentity->setIdentifier($identifier);
         $ssoIdentity->setProfileData($profileData);
+        $ssoIdentity->setPublished(true);
+        $ssoIdentity->setKey($key);
+        $ssoIdentity->setParent($user);
 
         return $ssoIdentity;
     }
@@ -138,8 +151,8 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      */
     public function saveIdentity(SsoIdentityInterface $ssoIdentity)
     {
-        if (!$ssoIdentity instanceof Concrete) {
-            throw new \RuntimeException(sprintf('Identity needs to be instance of %s', Concrete::class));
+        if (!$ssoIdentity instanceof DataObject\Concrete) {
+            throw new \RuntimeException(sprintf('Identity needs to be instance of %s', DataObject\Concrete::class));
         }
 
         $ssoIdentity->save();
@@ -154,15 +167,16 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      */
     protected function findSsoIdentity(string $provider, $identifier)
     {
-        $list = new SsoIdentity\Listing();
-        $list->addConditionParam('provider = ?', $provider);
-        $list->addConditionParam('identifier = ?', $identifier);
+        $ssoIdentityListing = $this->classManager->getSsoIdentityListing();
 
-        if ($list->count() === 1) {
-            return $list->current();
+        $ssoIdentityListing->addConditionParam('provider = ?', $provider);
+        $ssoIdentityListing->addConditionParam('identifier = ?', $identifier);
+
+        if ($ssoIdentityListing->count() === 1) {
+            return $ssoIdentityListing->current();
         }
 
-        if ($list->count() > 1) {
+        if ($ssoIdentityListing->count() > 1) {
             throw new \RuntimeException(
                 sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier)
             );
@@ -176,7 +190,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      */
     protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity)
     {
-        /** @var Concrete $userClass */
+        /** @var DataObject\Concrete $userClass */
         $userClass = $this->classManager->getUserClass();
 
         $qb = $this->connection->createQueryBuilder();

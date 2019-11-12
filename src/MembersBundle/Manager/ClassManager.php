@@ -48,6 +48,19 @@ class ClassManager implements ClassManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function getSsoIdentityListing()
+    {
+        $listing = $this->getSsoIdentityClass();
+        if (!\Pimcore\Tool::classExists($listing)) {
+            return false;
+        }
+
+        return $listing::getList();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getGroupClass()
     {
         $className = $this->configuration->getConfig('group');
@@ -66,6 +79,22 @@ class ClassManager implements ClassManagerInterface
     public function getUserClass()
     {
         $className = $this->configuration->getConfig('user');
+
+        if (empty($className['adapter']['class_name'])) {
+            return '';
+        }
+
+        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
+
+        return $class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSsoIdentityClass()
+    {
+        $className = $this->configuration->getConfig('sso');
 
         if (empty($className['adapter']['class_name'])) {
             return '';
