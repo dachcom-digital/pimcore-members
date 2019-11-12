@@ -2,13 +2,13 @@
 
 namespace MembersBundle\EventListener;
 
-use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\MembersEvents;
 use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
 use MembersBundle\Security\OAuth\OAuthResponseInterface;
 use MembersBundle\Security\OAuth\OAuthTokenStorageInterface;
+use MembersBundle\Service\ResourceMappingService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -25,15 +25,23 @@ class OAuthRegistrationListener implements EventSubscriberInterface
     protected $oAuthTokenStorage;
 
     /**
+     * @var ResourceMappingService
+     */
+    protected $resourceMappingService;
+
+    /**
      * @param OAuthRegistrationHandler   $oAuthRegistrationHandler
      * @param OAuthTokenStorageInterface $oAuthTokenStorage
+     * @param ResourceMappingService     $resourceMappingService
      */
     public function __construct(
         OAuthRegistrationHandler $oAuthRegistrationHandler,
-        OAuthTokenStorageInterface $oAuthTokenStorage
+        OAuthTokenStorageInterface $oAuthTokenStorage,
+        ResourceMappingService $resourceMappingService
     ) {
         $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
         $this->oAuthTokenStorage = $oAuthTokenStorage;
+        $this->resourceMappingService = $resourceMappingService;
     }
 
     /**
@@ -69,8 +77,11 @@ class OAuthRegistrationListener implements EventSubscriberInterface
 
         $request->attributes->set('_members_sso_aware', true);
 
-        $this->mergeOAuthFormData($user, $oAuthResponse);
-
+        try {
+            $this->resourceMappingService->mapResourceData($user, $oAuthResponse->getResourceOwner(), ResourceMappingService::MAP_FOR_REGISTRATION);
+        } catch (\Throwable $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
     }
 
     /**
@@ -119,24 +130,4 @@ class OAuthRegistrationListener implements EventSubscriberInterface
         return $token;
     }
 
-    /**
-     * @param UserInterface          $user
-     * @param OAuthResponseInterface $OAuthResponse
-     *
-     * @return UserInterface
-     * @todo: move to resource mapping service
-     */
-    protected function mergeOAuthFormData(UserInterface $user, OAuthResponseInterface $OAuthResponse)
-    {
-        $userData = $OAuthResponse->getResourceOwner()->toArray();
-
-        foreach (['firstname', 'lastname', 'userName', 'email'] as $field) {
-            $setter = sprintf('set%s', ucfirst($field));
-            if (isset($userData[$field])) {
-                $user->$setter($userData[$field]);
-            }
-        }
-
-        return $user;
-    }
 }

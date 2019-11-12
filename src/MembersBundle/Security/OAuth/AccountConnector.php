@@ -5,6 +5,7 @@ namespace MembersBundle\Security\OAuth;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface as MembersUserInterface;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
+use MembersBundle\Service\ResourceMappingService;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface
@@ -15,11 +16,20 @@ class AccountConnector implements AccountConnectorInterface
     protected $ssoIdentityManager;
 
     /**
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
+     * @var ResourceMappingService
      */
-    public function __construct(SsoIdentityManagerInterface $ssoIdentityManager)
-    {
+    protected $resourceMappingService;
+
+    /**
+     * @param SsoIdentityManagerInterface $ssoIdentityManager
+     * @param ResourceMappingService      $resourceMappingService
+     */
+    public function __construct(
+        SsoIdentityManagerInterface $ssoIdentityManager,
+        ResourceMappingService $resourceMappingService
+    ) {
         $this->ssoIdentityManager = $ssoIdentityManager;
+        $this->resourceMappingService = $resourceMappingService;
     }
 
     /**
@@ -55,7 +65,12 @@ class AccountConnector implements AccountConnectorInterface
         );
 
         $this->applyCredentialsToSsoIdentity($ssoIdentity, $oAuthResponse);
-        $this->applyProfileToUser($user, $oAuthResponse);
+
+        try {
+            $this->resourceMappingService->mapResourceData($user, $oAuthResponse->getResourceOwner(), ResourceMappingService::MAP_FOR_PROFILE);
+        } catch (\Throwable $e) {
+            throw new \InvalidArgumentException($e->getMessage());
+        }
 
         $this->ssoIdentityManager->addSsoIdentity($user, $ssoIdentity);
 
@@ -83,43 +98,6 @@ class AccountConnector implements AccountConnectorInterface
         if (empty($ssoIdentity->getTokenType())) {
             $scope = isset($tokenValues['token_type']) ? $tokenValues['token_type'] : null;
             $ssoIdentity->setTokenType($scope);
-        }
-    }
-
-    /**
-     * @param MembersUserInterface   $user
-     * @param OAuthResponseInterface $oAuthResponse
-     *
-     * @todo: move to resource mapping service
-     */
-    protected function applyProfileToUser(MembersUserInterface $user, OAuthResponseInterface $oAuthResponse)
-    {
-        $ownerDetails = $oAuthResponse->getResourceOwner()->toArray();
-        foreach ($ownerDetails as $property => $value) {
-            $this->setIfEmpty($user, $property, $value);
-        }
-    }
-
-    /**
-     * @param MembersUserInterface $user
-     * @param string               $property
-     * @param mixed                $value
-     */
-    protected function setIfEmpty(MembersUserInterface $user, $property, $value = null)
-    {
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
-
-        if (!method_exists($user, $getter)) {
-            return;
-        }
-
-        if (!method_exists($user, $setter)) {
-            return;
-        }
-
-        if (!empty($value) && empty($user->$getter())) {
-            $user->$setter($value);
         }
     }
 }

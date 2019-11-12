@@ -3,7 +3,7 @@ The sso connector is disabled by default for flexibility reasons.
 But it's quite easy to enable it. Use our helper command, which guides you through the installation process:
 
 ## Helper Command
-![oauth2 helper command](https://user-images.githubusercontent.com/700119/68656716-a00e0b00-0532-11ea-863f-664ef3c55ea7.png)
+![oauth2 helper command](https://user-images.githubusercontent.com/700119/68659412-858a6080-0537-11ea-9b13-872e134939b1.png)
 
 ```bash
 $ bin/console members:oauth:setup

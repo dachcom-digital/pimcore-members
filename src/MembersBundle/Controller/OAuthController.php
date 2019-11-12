@@ -65,6 +65,7 @@ class OAuthController extends AbstractController
         $session = $request->getSession()->getBag('members_session');
         $session->set('oauth_state_data', $params);
 
+        // @todo: make scopes configurable!
         return $this->clientRegistry->getClient($provider)->redirect(['email'], []);
     }
 

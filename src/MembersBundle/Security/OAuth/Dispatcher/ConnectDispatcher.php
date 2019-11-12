@@ -3,7 +3,7 @@
 namespace MembersBundle\Security\OAuth\Dispatcher;
 
 use MembersBundle\MembersEvents;
-use MembersBundle\Event\OAuthEvent;
+use MembersBundle\Event\OAuth\OAuthResponseEvent;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
@@ -59,7 +59,7 @@ class ConnectDispatcher implements DispatcherInterface
 
         $this->oAuthRegistrationHandler->connectSsoIdentity($user, $oAuthResponse);
 
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS, new OAuthEvent($oAuthResponse));
+        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS, new OAuthResponseEvent($oAuthResponse));
 
         return $user;
     }

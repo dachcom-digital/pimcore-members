@@ -1,11 +1,11 @@
 <?php
 
-namespace MembersBundle\Event;
+namespace MembersBundle\Event\OAuth;
 
 use MembersBundle\Security\OAuth\OAuthResponseInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class OAuthEvent extends Event
+class OAuthResponseEvent extends Event
 {
     /**
      * @var OAuthResponseInterface

@@ -1,6 +1,6 @@
 # Events
 
-## members.restriction.staticroute
+### members.restriction.staticroute
 
 | Type | Reference |
 |:--- |:--- |
@@ -9,7 +9,9 @@
 | **class** | `\MembersBundle\Event\StaticRouteEvent` |
 | **description** | The RESTRICTION_CHECK_STATICROUTE event occurs when a frontend request is in a staticroute context |
 
-## members.change_password.edit.initialize
+***
+
+### members.change_password.edit.initialize
 
 | Type | Reference |
 |:--- |:--- |
@@ -18,7 +20,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The CHANGE_PASSWORD_INITIALIZE event occurs when the change password process is initialized. This event allows you to modify the default values of the user before binding the form. |
 
-## members.change_password.edit.success
+### members.change_password.edit.success
 
 | Type | Reference |
 |:--- |:--- |
@@ -27,7 +29,7 @@
 | **class** | `\MembersBundle\Event\FormEvent` |
 | **description** | The CHANGE_PASSWORD_SUCCESS event occurs when the change password form is submitted successfully. This event allows you to set the response instead of using the default one. |
 
-## members.change_password.edit.completed
+### members.change_password.edit.completed
 
 | Type | Reference |
 |:--- |:--- |
@@ -36,7 +38,9 @@
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
 | **description** | The CHANGE_PASSWORD_COMPLETED event occurs after saving the user in the change password process. This event allows you to access the response which will be sent. |
 
-## members.profile.edit.initialize
+***
+
+### members.profile.edit.initialize
 
 | Type | Reference |
 |:--- |:--- |
@@ -45,7 +49,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The PROFILE_EDIT_INITIALIZE event occurs when the profile editing process is initialized. This event allows you to modify the default values of the user before binding the form. |
 
-## members.profile.edit.success
+### members.profile.edit.success
 
 | Type | Reference |
 |:--- |:--- |
@@ -54,16 +58,18 @@
 | **class** | `\MembersBundle\Event\FormEvent` |
 | **description** | The PROFILE_EDIT_SUCCESS event occurs when the profile edit form is submitted successfully. This event allows you to set the response instead of using the default one. |
 
-## members.change_password.edit.completed
+### members.profile.edit.completed
 
 | Type | Reference |
 |:--- |:--- |
 | **const** | `\MembersEvent:PROFILE_EDIT_COMPLETED` |
-| **name** | `members.change_password.edit.completed` |
+| **name** | `members.profile.edit.completed` |
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
 | **description** | The PROFILE_EDIT_COMPLETED event occurs after saving the user in the profile edit process. This event allows you to access the response which will be sent. |
 
-## members.registration.initialize
+***
+
+### members.registration.initialize
 
 | Type | Reference |
 |:--- |:--- |
@@ -72,7 +78,7 @@
 | **class** | `\MembersBundle\Event\UserEvent` |
 | **description** | The REGISTRATION_INITIALIZE event occurs when the registration process is initialized. This event allows you to modify the default values of the user before binding the form. |
 
-## members.registration.success
+### members.registration.success
 
 | Type | Reference |
 |:--- |:--- |
@@ -81,7 +87,7 @@
 | **class** | `\MembersBundle\Event\FormEvent` |
 | **description** | The REGISTRATION_SUCCESS event occurs when the registration form is submitted successfully. This event allows you to set the response instead of using the default one. |
 
-## members.registration.failure
+### members.registration.failure
 
 | Type | Reference |
 |:--- |:--- |
@@ -90,7 +96,7 @@
 | **class** | `\MembersBundle\Event\FormEvent` |
 | **description** | The REGISTRATION_FAILURE event occurs when the registration form is not valid. This event allows you to set the response instead of using the default one. The event listener method receives a MembersBundle\Event\FormEvent instance. |
 
-## members.registration.completed
+### members.registration.completed
 
 | Type | Reference |
 |:--- |:--- |
@@ -99,7 +105,7 @@
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
 | **description** | The REGISTRATION_COMPLETED event occurs after saving the user in the registration process. This event allows you to access the response which will be sent. |
 
-## members.registration.confirm
+### members.registration.confirm
 
 | Type | Reference |
 |:--- |:--- |
@@ -108,7 +114,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The REGISTRATION_CONFIRM event occurs just before confirming the account. This event allows you to access the user which will be confirmed. |
 
-## members.registration.confirmed
+### members.registration.confirmed
 
 | Type | Reference |
 |:--- |:--- |
@@ -117,8 +123,9 @@
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
 | **description** | The REGISTRATION_CONFIRMED event occurs after confirming the account. This event allows you to access the response which will be sent. |
  
- 
-## members.resetting.reset.request
+***
+
+### members.resetting.reset.request
 
 | Type | Reference |
 |:--- |:--- |
@@ -127,7 +134,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The RESETTING_RESET_REQUEST event occurs when a user requests a password reset of the account. This event allows you to check if a user is locked out before requesting a password. The event listener method receives a MembersBundle\Event\GetResponseUserEvent instance. |
 
-## members.resetting.reset.initialize
+### members.resetting.reset.initialize
 
 | Type | Reference |
 |:--- |:--- |
@@ -136,7 +143,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The RESETTING_RESET_INITIALIZE event occurs when the resetting process is initialized. This event allows you to set the response to bypass the processing. |
 
-## members.resetting.reset.success
+### members.resetting.reset.success
 
 | Type | Reference |
 |:--- |:--- |
@@ -145,7 +152,7 @@
 | **class** | `\MembersBundle\Event\FormEvent` |
 | **description** | The RESETTING_RESET_SUCCESS event occurs when the resetting form is submitted successfully. This event allows you to set the response instead of using the default one. |
 
-## members.resetting.reset.completed
+### members.resetting.reset.completed
 
 | Type | Reference |
 |:--- |:--- |
@@ -154,16 +161,7 @@
 | **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
 | **description** | The RESETTING_RESET_COMPLETED event occurs after saving the user in the resetting process. This event allows you to access the response which will be sent. |
 
-## members.security.implicit_login
-
-| Type | Reference |
-|:--- |:--- |
-| **const** | `\MembersEvent:SECURITY_IMPLICIT_LOGIN` |
-| **name** | `members.security.implicit_login` |
-| **class** | `\MembersBundle\Event\UserEvent` |
-| **description** | The SECURITY_IMPLICIT_LOGIN event occurs when the user is logged in programmatically. This event allows you to access the response which will be sent. |
-
-## members.resetting.send_email.initialize
+### members.resetting.send_email.initialize
 
 | Type | Reference |
 |:--- |:--- |
@@ -172,7 +170,7 @@
 | **class** | `\MembersBundle\Event\GetResponseNullableUserEvent` |
 | **description** | The RESETTING_SEND_EMAIL_INITIALIZE event occurs when the send email process is initialized. This event allows you to set the response to bypass the email confirmation processing. The event listener method receives a MembersBundle\Event\GetResponseNullableUserEvent instance. |
 
-## members.resetting.send_email.confirm
+### members.resetting.send_email.confirm
 
 | Type | Reference |
 |:--- |:--- |
@@ -181,7 +179,7 @@
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The RESETTING_SEND_EMAIL_CONFIRM event occurs when all prerequisites to send email are confirmed and before the mail is sent. This event allows you to set the response to bypass the email sending. The event listener method receives a MembersBundle\Event\GetResponseUserEvent instance. |
 
-## members.resetting.send_email.completed
+### members.resetting.send_email.completed
 
 | Type | Reference |
 |:--- |:--- |
@@ -189,3 +187,73 @@
 | **name** | `members.resetting.send_email.completed` |
 | **class** | `\MembersBundle\Event\GetResponseUserEvent` |
 | **description** | The RESETTING_SEND_EMAIL_COMPLETED event occurs after the email is sent. This event allows you to set the response to bypass the the redirection after the email is sent. The event listener method receives a MembersBundle\Event\GetResponseUserEvent instance. |
+
+***
+
+### members.security.implicit_login
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:SECURITY_IMPLICIT_LOGIN` |
+| **name** | `members.security.implicit_login` |
+| **class** | `\MembersBundle\Event\UserEvent` |
+| **description** | The SECURITY_IMPLICIT_LOGIN event occurs when the user is logged in programmatically. This event allows you to access the response which will be sent. |
+
+***
+
+### members.delete_account.confirm.initialize
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:DELETE_ACCOUNT_INITIALIZE` |
+| **name** | `members.delete_account.confirm.initialize` |
+| **class** | `\MembersBundle\Event\GetResponseUserEvent` |
+| **description** | The DELETE_ACCOUNT_INITIALIZE event occurs when the delete account process is initialized. This event allows you to set the response to bypass the processing. |
+
+### members.delete_account.confirm.success
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:DELETE_ACCOUNT_SUCCESS` |
+| **name** | `members.delete_account.confirm.success` |
+| **class** | `\MembersBundle\Event\FormEvent` |
+| **description** | The DELETE_ACCOUNT_SUCCESS event occurs when the delete account form is submitted successfully. This event allows you to delete additional data objects from the system. |
+
+### members.delete_account.confirm.completed
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:DELETE_ACCOUNT_COMPLETED` |
+| **name** | `members.delete_account.confirm.completed` |
+| **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
+| **description** | The DELETE_ACCOUNT_COMPLETED event occurs after deleting the user object in the delete account process. This event allows you to access the response which will be sent. |
+
+***
+
+### members.oauth.connection.success
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_PROFILE_CONNECTION_SUCCESS` |
+| **name** | `members.oauth.connection.success` |
+| **class** | `\MembersBundle\Event\OAuth\OAuthResponseEvent` |
+| **description** | The OAUTH_PROFILE_CONNECTION_SUCCESS event occurs after a existing user has been successfully connected to a provider. This event allows you to access the oauth response. |
+
+### members.oauth.resource_mapping.profile
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_RESOURCE_MAPPING_PROFILE` |
+| **name** | `members.oauth.connection.success` |
+| **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
+| **description** | The OAUTH_RESOURCE_MAPPING_PROFILE event occurs before a sso identity gets assigned to given user profile. This event allows you to map resource data (e.g. google) to your user identity. |
+
+
+### members.oauth.resource_mapping.registration
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_RESOURCE_MAPPING_REGISTRATION` |
+| **name** | `members.oauth.connection.success` |
+| **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
+| **description** | The OAUTH_RESOURCE_MAPPING_REGISTRATION event occurs before the registration form gets rendered. This event allows you to map resource data (e.g. google) to your registration form. |

@@ -4,7 +4,7 @@ services:
         autowire: true
         autoconfigure: true
 
-    MembersBundle\Restriction\RestrictionService: ~
+    MembersBundle\Service\RestrictionService: ~
 
     MembersBundle\Controller\RequestController:
         public: true

@@ -1,15 +1,17 @@
 <?php
 
-namespace MembersBundle\Restriction;
+namespace MembersBundle\Service;
 
 use Pimcore\Model;
+use Pimcore\Model\Element\ElementInterface;
+use MembersBundle\Restriction\Restriction;
 
 class RestrictionService
 {
     const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
 
     /**
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      * @param string                         $cType
      * @param bool                           $inheritable
      * @param bool                           $isInherited
@@ -19,7 +21,7 @@ class RestrictionService
      *
      * @throws \Exception
      */
-    public function createRestriction(Model\Element\ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
+    public function createRestriction(ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
     {
         if (!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
             throw new \Exception(sprintf('restriction cType needs to be one of these: %s', implode(', ', self::ALLOWED_RESTRICTION_CTYPES)));
@@ -53,7 +55,6 @@ class RestrictionService
 
         $this->checkRestrictionContext($obj, $cType);
 
-        //clear cache!
         \Pimcore\Cache::clearTag('members');
 
         return $restriction;
@@ -62,10 +63,12 @@ class RestrictionService
     /**
      * Triggered by pre deletion events of all types.
      *
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      * @param string                         $cType
      *
      * @return bool
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function deleteRestriction($obj, $cType)
     {
@@ -88,8 +91,11 @@ class RestrictionService
      * Triggered by post update events of all types ONLY when element gets moved in tree!
      * Check if element is in right context.
      *
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      * @param string                         $cType
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     public function checkRestrictionContext($obj, $cType)
     {
@@ -116,8 +122,11 @@ class RestrictionService
     }
 
     /**
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      * @param string                         $cType
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     private function updateChildren($obj, $cType)
     {
@@ -146,7 +155,7 @@ class RestrictionService
             return;
         }
 
-        /** @var Model\Element\ElementInterface $child */
+        /** @var ElementInterface $child */
         foreach ($children as $child) {
             $childRestriction = null;
             $parentRestriction = null;
@@ -238,7 +247,7 @@ class RestrictionService
         }
 
         foreach ($paths as $p) {
-            /** @var Model\Element\ElementInterface $el */
+            /** @var ElementInterface $el */
             if ($el = $class::getByPath($p)) {
                 $restriction = false;
 
@@ -268,10 +277,13 @@ class RestrictionService
     }
 
     /**
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      * @param string                         $cType
      * @param Restriction|null               $objectRestriction
      * @param Restriction|null               $parentRestriction
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
     private function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
     {
@@ -316,7 +328,7 @@ class RestrictionService
     }
 
     /**
-     * @param Model\Element\ElementInterface $obj
+     * @param ElementInterface $obj
      *
      * @return bool
      */
