@@ -50,7 +50,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getUserBySsoIdentity(string $provider, $identifier)
     {
@@ -64,7 +64,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSsoIdentities(UserInterface $user)
     {
@@ -82,7 +82,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSsoIdentity(UserInterface $user, $provider, $identifier)
     {
@@ -96,7 +96,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity)
     {
@@ -113,7 +113,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData)
     {
@@ -147,7 +147,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function saveIdentity(SsoIdentityInterface $ssoIdentity)
     {
@@ -163,6 +163,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      * @param string $identifier
      *
      * @return SsoIdentityInterface
+     *
      * @throws \Exception
      */
     protected function findSsoIdentity(string $provider, $identifier)

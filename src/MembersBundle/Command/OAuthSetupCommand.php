@@ -120,6 +120,7 @@ class OAuthSetupCommand extends Command
 
         if ($oauthInstalled === true) {
             $output->writeln(sprintf('<info>√ knpuniversity/oauth2-client-bundle is installed</info>'));
+
             return true;
         }
 
@@ -147,13 +148,17 @@ class OAuthSetupCommand extends Command
 
         if ($hasSsoAwareInterface === true) {
             $output->writeln(sprintf('<info>√ "%s" extends from "%s"</info>', $userReflectionClass->getName(), SsoAwareUserInterface::class));
+
             return true;
         }
 
         $output->writeln(sprintf(
-                '<error>x</error> <question>SsoAwareUserInterface missing.</question> "%s" needs to implement "%s". Add it in your class definition (Use "%s" instead of "%s").',
-                $userReflectionClass->getShortName(), SsoAwareUserInterface::class, AbstractSsoAwareUser::class, AbstractUser::class)
-        );
+            '<error>x</error> <question>SsoAwareUserInterface missing.</question> "%s" needs to implement "%s". Add it in your class definition (Use "%s" instead of "%s").',
+            $userReflectionClass->getShortName(),
+            SsoAwareUserInterface::class,
+            AbstractSsoAwareUser::class,
+            AbstractUser::class
+        ));
 
         return false;
     }
@@ -175,6 +180,7 @@ class OAuthSetupCommand extends Command
 
         if ($hasRelation === true) {
             $output->writeln(sprintf('<info>√ SsoIdentity relation is installed in class (%s)</info>', $userReflectionClass->getName()));
+
             return true;
         }
 
@@ -213,9 +219,10 @@ class OAuthSetupCommand extends Command
 }';
 
         $output->writeln(sprintf(
-                '<error>x</error> <question>SsoIdentity relation is missing.</question> Please add this field to your class definition, after "groups" (var/classes/definition_%s.php): %s. You need to re-save your class afterwards',
-                $userReflectionClass->getShortName(), $arg)
-        );
+            '<error>x</error> <question>SsoIdentity relation is missing.</question> Please add this field to your class definition, after "groups" (var/classes/definition_%s.php): %s. You need to re-save your class afterwards',
+            $userReflectionClass->getShortName(),
+            $arg
+        ));
 
         return false;
     }
@@ -301,6 +308,7 @@ members:
             $reflectionClass = new \ReflectionClass($userClass);
         } catch (\Throwable $e) {
             $output->writeln(sprintf('<error>x</error> Error while checking user class (%s). Error was: <error>%s</error>', $userClass, $e->getMessage()));
+
             return null;
         }
 

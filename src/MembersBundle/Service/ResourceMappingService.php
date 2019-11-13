@@ -46,6 +46,7 @@ class ResourceMappingService
         $eventName = constant($eventPath);
         if ($this->eventDispatcher->hasListeners($eventName) === false) {
             $this->addDefaults($user, $resourceOwner, $type);
+
             return;
         }
 
@@ -68,7 +69,6 @@ class ResourceMappingService
         }
 
         foreach ($ownerDetails as $property => $value) {
-
             if (in_array(strtolower($property), $disallowedProperties)) {
                 continue;
             }

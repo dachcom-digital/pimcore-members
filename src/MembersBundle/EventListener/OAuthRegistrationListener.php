@@ -129,5 +129,4 @@ class OAuthRegistrationListener implements EventSubscriberInterface
 
         return $token;
     }
-
 }

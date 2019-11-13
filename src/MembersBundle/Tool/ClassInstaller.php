@@ -87,5 +87,4 @@ class ClassInstaller
 
         $this->logger->writeln($msg);
     }
-
 }

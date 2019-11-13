@@ -29,9 +29,9 @@ class ConnectDispatcher implements DispatcherInterface
     protected $oAuthRegistrationHandler;
 
     /**
-     * @param TokenStorageInterface       $tokenStorage
-     * @param EventDispatcherInterface    $eventDispatcher
-     * @param OAuthRegistrationHandler    $oAuthRegistrationHandler
+     * @param TokenStorageInterface    $tokenStorage
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param OAuthRegistrationHandler $oAuthRegistrationHandler
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -44,7 +44,7 @@ class ConnectDispatcher implements DispatcherInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function dispatch(string $provider, OAuthResponse $oAuthResponse)
     {

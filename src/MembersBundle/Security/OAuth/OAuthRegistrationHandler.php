@@ -53,6 +53,7 @@ class OAuthRegistrationHandler
      * @param OAuthResponseInterface $oAuthResponse
      *
      * @return UserInterface
+     *
      * @throws \Exception
      */
     public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
@@ -76,6 +77,7 @@ class OAuthRegistrationHandler
      * @param OAuthResponseInterface $oAuthResponse
      *
      * @return SsoIdentityInterface
+     *
      * @throws \Exception
      */
     public function connectSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse)
@@ -91,5 +93,4 @@ class OAuthRegistrationHandler
 
         return $ssoIdentity;
     }
-
 }

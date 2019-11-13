@@ -17,8 +17,8 @@ interface OAuthLoginProcessorRegistryInterface
      * @param string $identifier
      *
      * @return LoginProcessorInterface
+     *
      * @throws \Exception
      */
     public function get($identifier);
-
 }

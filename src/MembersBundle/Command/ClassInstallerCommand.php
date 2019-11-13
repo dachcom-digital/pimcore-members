@@ -65,6 +65,5 @@ class ClassInstallerCommand extends Command
 
         $this->classInstaller->setLogger($output);
         $this->classInstaller->installClasses($classes);
-
     }
 }

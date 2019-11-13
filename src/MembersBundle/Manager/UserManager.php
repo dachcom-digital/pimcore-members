@@ -255,6 +255,7 @@ class UserManager implements UserManagerInterface
      * @param UserInterface $user
      *
      * @return UserInterface
+     *
      * @throws \Exception
      */
     private function saveWithVersion($user)
@@ -266,6 +267,7 @@ class UserManager implements UserManagerInterface
      * @param UserInterface $user
      *
      * @return UserInterface
+     *
      * @throws \Exception
      */
     private function saveWithoutVersion($user)

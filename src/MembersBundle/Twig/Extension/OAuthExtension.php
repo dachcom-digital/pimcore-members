@@ -53,7 +53,7 @@ class OAuthExtension extends AbstractExtension
     }
 
     /**
-     * @param string $route members_user_security_oauth_login|members_user_security_oauth_connect
+     * @param string $route                   members_user_security_oauth_login|members_user_security_oauth_connect
      * @param bool   $skipConnectedIdentities
      *
      * @return array
@@ -72,7 +72,6 @@ class OAuthExtension extends AbstractExtension
         $data = [];
 
         foreach ($resourceOwners as $resourceOwner) {
-
             if ($skipConnectedIdentities === true && in_array($resourceOwner, $ssoIdentities)) {
                 continue;
             }

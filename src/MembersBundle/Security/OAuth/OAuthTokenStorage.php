@@ -21,7 +21,7 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function saveToken(string $key, OAuthResponseInterface $OAuthResponse)
     {
@@ -30,7 +30,7 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function loadToken(string $key, int $maxLifetime = 300)
     {
@@ -43,7 +43,7 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function destroyToken(string $key)
     {

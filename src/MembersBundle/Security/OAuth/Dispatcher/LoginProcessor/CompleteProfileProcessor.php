@@ -24,7 +24,7 @@ class CompleteProfileProcessor implements LoginProcessorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(string $provider, OAuthResponse $oAuthResponse)
     {
@@ -42,7 +42,8 @@ class CompleteProfileProcessor implements LoginProcessorInterface
 
         $exception = new AccountNotLinkedException(sprintf(
             'No user was found for user "%s" on provider "%s"',
-            $user->getId(), $provider
+            $user->getId(),
+            $provider
         ));
 
         $exception->setRegistrationKey($registrationKey->toString());

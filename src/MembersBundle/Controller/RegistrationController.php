@@ -12,7 +12,6 @@ use MembersBundle\MembersEvents;
 use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
-use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -73,6 +72,7 @@ class RegistrationController extends AbstractController
      * @param Request $request
      *
      * @return RedirectResponse|Response|null
+     *
      * @throws \Exception
      */
     public function registerAction(Request $request)
@@ -98,7 +98,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             if ($form->isValid()) {
                 $this->userManager->updateUser($user, $this->getUserProperties($request));
 

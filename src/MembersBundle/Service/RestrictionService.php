@@ -12,10 +12,10 @@ class RestrictionService
 
     /**
      * @param ElementInterface $obj
-     * @param string                         $cType
-     * @param bool                           $inheritable
-     * @param bool                           $isInherited
-     * @param array                          $userGroupIds
+     * @param string           $cType
+     * @param bool             $inheritable
+     * @param bool             $isInherited
+     * @param array            $userGroupIds
      *
      * @return Restriction|null
      *
@@ -64,9 +64,10 @@ class RestrictionService
      * Triggered by pre deletion events of all types.
      *
      * @param ElementInterface $obj
-     * @param string                         $cType
+     * @param string           $cType
      *
      * @return bool
+     *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
@@ -92,7 +93,7 @@ class RestrictionService
      * Check if element is in right context.
      *
      * @param ElementInterface $obj
-     * @param string                         $cType
+     * @param string           $cType
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
@@ -123,7 +124,7 @@ class RestrictionService
 
     /**
      * @param ElementInterface $obj
-     * @param string                         $cType
+     * @param string           $cType
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
@@ -278,9 +279,9 @@ class RestrictionService
 
     /**
      * @param ElementInterface $obj
-     * @param string                         $cType
-     * @param Restriction|null               $objectRestriction
-     * @param Restriction|null               $parentRestriction
+     * @param string           $cType
+     * @param Restriction|null $objectRestriction
+     * @param Restriction|null $parentRestriction
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException

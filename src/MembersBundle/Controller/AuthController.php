@@ -29,6 +29,7 @@ class AuthController extends AbstractController
      * @param Request $request
      *
      * @return RedirectResponse|Response
+     *
      * @throws \Exception
      */
     public function loginAction(Request $request)

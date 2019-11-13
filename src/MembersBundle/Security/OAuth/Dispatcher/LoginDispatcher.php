@@ -31,7 +31,7 @@ class LoginDispatcher implements DispatcherInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function dispatch(string $provider, OAuthResponse $oAuthResponse)
     {

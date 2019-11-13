@@ -35,7 +35,7 @@ class OAuthResponse implements OAuthResponseInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getProvider()
     {
@@ -43,7 +43,7 @@ class OAuthResponse implements OAuthResponseInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAccessToken()
     {
@@ -51,7 +51,7 @@ class OAuthResponse implements OAuthResponseInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getResourceOwner()
     {

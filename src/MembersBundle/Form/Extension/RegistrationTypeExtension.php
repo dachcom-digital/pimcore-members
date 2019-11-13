@@ -34,7 +34,6 @@ class RegistrationTypeExtension extends AbstractTypeExtension
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-
             $form = $event->getForm();
 
             if ($form->has('plainPassword') === false) {
@@ -42,7 +41,6 @@ class RegistrationTypeExtension extends AbstractTypeExtension
             }
 
             $form->remove('plainPassword');
-
         });
     }
 
@@ -52,6 +50,7 @@ class RegistrationTypeExtension extends AbstractTypeExtension
     protected function isSSOAwareForm()
     {
         $masterRequest = $this->requestStack->getMasterRequest();
+
         return $masterRequest->attributes->get('_members_sso_aware', null) === true;
     }
 

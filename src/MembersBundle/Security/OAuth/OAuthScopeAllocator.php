@@ -18,7 +18,7 @@ class OAuthScopeAllocator implements OAuthScopeAllocatorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function allocate(string $client): array
     {

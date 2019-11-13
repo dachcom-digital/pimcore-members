@@ -75,7 +75,6 @@ interface UserManagerInterface
     /**
      * @param UserInterface $user
      *
-     * @return void
      * @throws \Exception
      */
     public function reloadUser(UserInterface $user);

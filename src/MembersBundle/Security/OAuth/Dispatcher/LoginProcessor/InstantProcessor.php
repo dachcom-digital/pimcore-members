@@ -21,7 +21,7 @@ class InstantProcessor implements LoginProcessorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(string $provider, OAuthResponse $oAuthResponse)
     {
