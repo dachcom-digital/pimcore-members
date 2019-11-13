@@ -3,6 +3,7 @@
 namespace MembersBundle\Controller;
 
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
@@ -15,11 +16,20 @@ class OAuthController extends AbstractController
     protected $clientRegistry;
 
     /**
-     * @param ClientRegistry $clientRegistry
+     * @var OAuthScopeAllocatorInterface
      */
-    public function __construct(ClientRegistry $clientRegistry)
-    {
+    protected $scopeAllocator;
+
+    /**
+     * @param ClientRegistry               $clientRegistry
+     * @param OAuthScopeAllocatorInterface $scopeAllocator
+     */
+    public function __construct(
+        ClientRegistry $clientRegistry,
+        OAuthScopeAllocatorInterface $scopeAllocator
+    ) {
         $this->clientRegistry = $clientRegistry;
+        $this->scopeAllocator = $scopeAllocator;
     }
 
     /**
@@ -65,8 +75,9 @@ class OAuthController extends AbstractController
         $session = $request->getSession()->getBag('members_session');
         $session->set('oauth_state_data', $params);
 
-        // @todo: make scopes configurable!
-        return $this->clientRegistry->getClient($provider)->redirect(['email'], []);
+        $scopes = $this->scopeAllocator->allocate($provider);
+
+        return $this->clientRegistry->getClient($provider)->redirect($scopes, []);
     }
 
     public function oAuthConnectCheckAction()

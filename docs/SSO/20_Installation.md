@@ -112,3 +112,17 @@ knpu_oauth2_client:
             redirect_route: members_user_security_oauth_check
             redirect_params: {}
 ```
+
+## Configure Client Scope
+If you need a special scope definition, you can add them in the Members configuration.
+Just add your client (`google`in your example) to the `scopes` node. Value needs to be an `array`.
+
+> If there is no configured scope, the oauth2 client will trigger `getDefaultScopes()` (see [documentation](https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/implementing.md#implementing-a-provider). 
+> Default scope values vary from client to client.
+
+```yaml
+members:
+    oauth:
+        scopes:
+            google: ['email']
+```

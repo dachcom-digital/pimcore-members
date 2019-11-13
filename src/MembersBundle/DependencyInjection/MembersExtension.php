@@ -97,6 +97,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         }
 
         if ($config['oauth']['enabled']) {
+            $container->setParameter('members.oauth.scopes', $config['oauth']['scopes']);
             $loader->load('oauth.yml');
             $this->enableOauth($container);
         }

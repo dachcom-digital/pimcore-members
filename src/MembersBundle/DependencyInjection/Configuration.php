@@ -27,7 +27,6 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue('confirm_by_mail')
                 ->end()
                 ->scalarNode('storage_path')->cannotBeEmpty()->defaultValue('/members')->end()
-
                 ->arrayNode('oauth')
                     ->addDefaultsIfNotSet()
                     ->children()
@@ -36,9 +35,14 @@ class Configuration implements ConfigurationInterface
                             ->values(['complete_profile', 'instant'])
                             ->defaultValue('complete_profile')
                         ->end()
+                        ->arrayNode('scopes')
+                            ->useAttributeAsKey('client')
+                            ->prototype('array')
+                                ->prototype('scalar')->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
-
                 ->arrayNode('user')
                     ->addDefaultsIfNotSet()
                     ->children()

@@ -6,6 +6,11 @@ services:
     MembersBundle\Security\OAuth\AccountConnectorInterface: '@MembersBundle\Security\OAuth\AccountConnector'
     MembersBundle\Security\OAuth\AccountConnector: ~
 
+    MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface: '@MembersBundle\Security\OAuth\OAuthScopeAllocator'
+    MembersBundle\Security\OAuth\OAuthScopeAllocator:
+        arguments:
+            $scopes: '%members.oauth.scopes%'
+
     MembersBundle\Security\OAuthIdentityAuthenticator: ~
 
     MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher: ~
