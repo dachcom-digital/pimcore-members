@@ -64,14 +64,14 @@ class RestrictionQuery
 
         $assetQuery = '';
         if ($listing instanceof \Pimcore\Model\Asset\Listing) {
-            $assetQuery = sprintf('assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
+            $assetQuery = sprintf('AND assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
         }
 
         if (count($allowedGroups) > 0) {
-            $subQuery = sprintf('(members_restrictions.targetId IS NULL AND %s)', $assetQuery);
+            $subQuery = sprintf('(members_restrictions.targetId IS NULL %s)', $assetQuery);
             $queryStr = sprintf('%s OR (members_restrictions.ctype = "%s" AND members_group_relations.groupId IN (%s))', $subQuery, $cType, implode(',', $allowedGroups));
         } else {
-            $queryStr = $assetQuery;
+            $queryStr = sprintf('members_restrictions.targetId IS NULL %s', $assetQuery);
         }
 
         $query->where($queryStr);
