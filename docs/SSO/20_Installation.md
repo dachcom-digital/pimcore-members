@@ -126,3 +126,6 @@ members:
         scopes:
             google: ['email']
 ```
+
+## Registration Types
+Finally, checkout the registration type for SSO [here](../60_RegistrationTypes.md#registration-types-with-sso).

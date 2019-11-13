@@ -41,6 +41,7 @@ services:
     MembersBundle\EventListener\PostConfirmationListener:
         arguments:
             $postEventType: '%members.registration.event.type%'
+            $postEventOauthType: '%members.registration.event.oauth_type%'
         tags:
             - { name: kernel.event_subscriber }
 

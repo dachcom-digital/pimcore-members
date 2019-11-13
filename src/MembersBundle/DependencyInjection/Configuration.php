@@ -16,6 +16,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
+        $validPostRegisterTypes = ['confirm_by_mail', 'confirm_by_admin', 'confirm_instant'];
+
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('members');
         $rootNode
@@ -23,8 +25,12 @@ class Configuration implements ConfigurationInterface
                 ->booleanNode('send_admin_mail_after_register')->defaultFalse()->end()
                 ->booleanNode('send_user_mail_after_confirmed')->defaultFalse()->end()
                 ->enumNode('post_register_type')
-                    ->values(['confirm_by_mail', 'confirm_by_admin', 'confirm_instant'])
+                    ->values($validPostRegisterTypes)
                     ->defaultValue('confirm_by_mail')
+                ->end()
+                ->enumNode('post_register_type_oauth')
+                    ->values($validPostRegisterTypes)
+                    ->defaultValue('confirm_instant')
                 ->end()
                 ->scalarNode('storage_path')->cannotBeEmpty()->defaultValue('/members')->end()
                 ->arrayNode('oauth')

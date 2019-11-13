@@ -47,12 +47,18 @@ class PostConfirmationListener implements EventSubscriberInterface
     protected $postEventType;
 
     /**
+     * @var string
+     */
+    protected $postEventOauthType;
+
+    /**
      * @param UserManagerInterface  $userManager
      * @param Mailer                $pimcoreMailer
      * @param UrlGeneratorInterface $router
      * @param SessionInterface      $session
      * @param TokenGenerator        $tokenGenerator
      * @param string                $postEventType
+     * @param string                $postEventOauthType
      */
     public function __construct(
         UserManagerInterface $userManager,
@@ -60,7 +66,8 @@ class PostConfirmationListener implements EventSubscriberInterface
         UrlGeneratorInterface $router,
         SessionInterface $session,
         TokenGenerator $tokenGenerator,
-        string $postEventType
+        string $postEventType,
+        string $postEventOauthType
     ) {
         $this->userManager = $userManager;
         $this->mailer = $pimcoreMailer;
@@ -68,6 +75,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->router = $router;
         $this->session = $session;
         $this->postEventType = $postEventType;
+        $this->postEventOauthType = $postEventOauthType;
     }
 
     /**
@@ -81,15 +89,23 @@ class PostConfirmationListener implements EventSubscriberInterface
     }
 
     /**
-     * @see confirmByMail
+     * @param FormEvent $event
+     *
      * @see confirmByAdmin
      * @see confirmInstant
-     *
-     * @param FormEvent $event
+     * @see confirmByMail
      */
     public function onRegistrationSuccess(FormEvent $event)
     {
-        $methodName = str_replace('_', '', lcfirst(ucwords($this->postEventType, '_')));
+        $request = $event->getRequest();
+
+        if ($request->attributes->get('_members_sso_aware', null) === true) {
+            $type = $this->postEventOauthType;
+        } else {
+            $type = $this->postEventType;
+        }
+
+        $methodName = str_replace('_', '', lcfirst(ucwords($type, '_')));
         call_user_func_array([$this, $methodName], [$event]);
     }
 
