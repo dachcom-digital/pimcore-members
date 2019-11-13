@@ -62,14 +62,19 @@ class RestrictionQuery
             ''
         );
 
-        $additionalQuery = '';
-        if (count($allowedGroups) > 0) {
-            $additionalQuery = sprintf('OR (members_restrictions.ctype = "%s" AND members_group_relations.groupId IN (%s))', $cType, implode(',', $allowedGroups));
-        } elseif ($listing instanceof \Pimcore\Model\Asset\Listing) {
-            $additionalQuery = sprintf('AND (assets.path NOT LIKE "/%s%%")', RestrictionUri::PROTECTED_ASSET_FOLDER);
+        $assetQuery = '';
+        if ($listing instanceof \Pimcore\Model\Asset\Listing) {
+            $assetQuery = sprintf('assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
         }
 
-        $query->where('members_restrictions.targetId IS NULL ' . $additionalQuery);
+        if (count($allowedGroups) > 0) {
+            $subQuery = sprintf('(members_restrictions.targetId IS NULL AND %s)', $assetQuery);
+            $queryStr = sprintf('%s OR (members_restrictions.ctype = "%s" AND members_group_relations.groupId IN (%s))', $subQuery, $cType, implode(',', $allowedGroups));
+        } else {
+            $queryStr = $assetQuery;
+        }
+
+        $query->where($queryStr);
         $query->group($queryIdentifier);
     }
 }
