@@ -8,6 +8,7 @@ Just click the "update" button or execute the migration command to finish the bu
 
 #### Update from Version 2.5.0 to Version 2.5.1
 - **[BUGFIX]**: [Fix UserAwareEncoderFactory auto loading issue](https://github.com/dachcom-digital/pimcore-members/issues/114)
+- **[BUGFIX]**: [Fix wrong wrong conditions in restriction manager](https://github.com/dachcom-digital/pimcore-members/issues/115)
 
 #### Update from Version 2.4.x to Version 2.5.0
 - **[ATTENTION]**: This release will be the last minor release which supports Pimcore 5!
