@@ -6,7 +6,7 @@ use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Listing;
+use Pimcore\Model\Listing\AbstractListing;
 
 class RestrictionQuery
 {
@@ -16,8 +16,6 @@ class RestrictionQuery
     protected $restrictionManager;
 
     /**
-     * RestrictionUri constructor.
-     *
      * @param RestrictionManagerInterface $restrictionManager
      */
     public function __construct(RestrictionManagerInterface $restrictionManager)
@@ -26,13 +24,12 @@ class RestrictionQuery
     }
 
     /**
-     * @param QueryBuilder                           $query
-     * @param \Pimcore\Model\Listing\AbstractListing $listing
-     * @param string                                 $queryIdentifier
+     * @param QueryBuilder    $query
+     * @param AbstractListing $listing
+     * @param string          $queryIdentifier
      */
-    public function addRestrictionInjection(QueryBuilder $query, Listing\AbstractListing $listing, $queryIdentifier = 'o_id')
+    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, $queryIdentifier = 'o_id')
     {
-        //always show data in backend.
         if ($this->restrictionManager->isFrontendRequestByAdmin()) {
             return;
         }
@@ -53,15 +50,26 @@ class RestrictionQuery
             $cType = 'page';
         }
 
-        $query->joinLeft(['members_restrictions' => 'members_restrictions'], 'members_restrictions.targetId = ' . $queryIdentifier . ' AND members_restrictions.ctype = "' . $cType . '"', '');
-        $query->joinLeft(['members_group_relations' => 'members_group_relations'], 'members_group_relations.restrictionId = members_restrictions.id', '');
+        $query->joinLeft(
+            ['members_restrictions' => 'members_restrictions'],
+            sprintf('members_restrictions.targetId = %s AND members_restrictions.ctype = "%s"', $queryIdentifier, $cType),
+            ''
+        );
 
-        $orQuery = '';
+        $query->joinLeft(
+            ['members_group_relations' => 'members_group_relations'],
+            'members_group_relations.restrictionId = members_restrictions.id',
+            ''
+        );
+
+        $additionalQuery = '';
         if (count($allowedGroups) > 0) {
-            $orQuery = 'OR (members_restrictions.ctype = "' . $cType . '" AND members_group_relations.groupId IN (' . implode(',', $allowedGroups) . ') )';
+            $additionalQuery = sprintf('OR (members_restrictions.ctype = "%s" AND members_group_relations.groupId IN (%s))', $cType, implode(',', $allowedGroups));
+        } elseif ($listing instanceof \Pimcore\Model\Asset\Listing) {
+            $additionalQuery = sprintf('AND (assets.path NOT LIKE "/%s%%")', RestrictionUri::PROTECTED_ASSET_FOLDER);
         }
 
-        $query->where('members_restrictions.targetId IS NULL ' . $orQuery);
+        $query->where('members_restrictions.targetId IS NULL ' . $additionalQuery);
         $query->group($queryIdentifier);
     }
 }
