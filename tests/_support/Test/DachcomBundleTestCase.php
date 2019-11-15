@@ -5,7 +5,9 @@ namespace DachcomBundle\Test\Test;
 use DachcomBundle\Test\Helper\PimcoreCore;
 use DachcomBundle\Test\Util\FileGeneratorHelper;
 use DachcomBundle\Test\Util\MembersHelper;
+use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Configuration\Configuration;
+use MembersBundle\Manager\SsoIdentityManager;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model\DataObject;
@@ -52,6 +54,31 @@ abstract class DachcomBundleTestCase extends TestCase
         }
 
         return $user;
+    }
+
+    /**
+     * @param bool   $published
+     * @param string $provider
+     * @param string $identifier
+     *
+     * @return SsoIdentityInterface
+     * @throws \Codeception\Exception\ModuleException
+     */
+    protected function createSsoIdentity($published, $provider, $identifier)
+    {
+        $user = $this->createUser($published);
+
+        $userManager = $this->getContainer()->get(UserManager::class);
+        $ssoIdentityManager = $this->getContainer()->get(SsoIdentityManager::class);
+
+        $ssoIdentity = $ssoIdentityManager->createSsoIdentity($user, $provider, $identifier, '');
+        $ssoIdentityManager->saveIdentity($ssoIdentity);
+
+        $ssoIdentityManager->addSsoIdentity($user, $ssoIdentity);
+
+        $userManager->updateUser($user);
+
+        return $ssoIdentity;
     }
 
     /**
