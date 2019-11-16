@@ -27,10 +27,8 @@ class UserChangeListener implements EventSubscriberInterface
     protected $postEventType;
 
     /**
-     * UserChangeListener constructor.
-     *
      * @param UserManagerInterface $userManager
-     * @param MailerInterface               $mailer
+     * @param MailerInterface      $mailer
      * @param string               $postEventType
      */
     public function __construct(
