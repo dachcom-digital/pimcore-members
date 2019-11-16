@@ -5,7 +5,7 @@ namespace MembersBundle\Controller\Admin;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Manager\ClassManagerInterface;
 use MembersBundle\Restriction\Restriction;
-use MembersBundle\Restriction\RestrictionService;
+use MembersBundle\Service\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Model\Element\Service;

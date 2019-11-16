@@ -2,14 +2,50 @@
 
 namespace MembersBundle\DependencyInjection;
 
+use MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher;
+use MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher;
+use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
+use MembersBundle\Security\OAuthIdentityAuthenticator;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use MembersBundle\Configuration\Configuration as BundleConfiguration;
 
-class MembersExtension extends Extension
+class MembersExtension extends Extension implements PrependExtensionInterface
 {
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function prepend(ContainerBuilder $container)
+    {
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
+
+        if ($container->hasExtension('security') === false) {
+            return;
+        }
+
+        if ($config['oauth']['enabled'] === false) {
+            return;
+        }
+
+        $container->loadFromExtension('security', [
+            'firewalls' => [
+                'members_fe' => [
+                    'guard' => [
+                        'authenticators' => [
+                            OAuthIdentityAuthenticator::class
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
     /**
      * @param array            $configs
      * @param ContainerBuilder $container
@@ -28,8 +64,10 @@ class MembersExtension extends Extension
         $configManagerDefinition->addMethodCall('setConfig', [$config]);
 
         $container->setParameter('members.registration.event.type', $config['post_register_type']);
+        $container->setParameter('members.registration.event.oauth_type', $config['post_register_type_oauth']);
         $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
         $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
+        $container->setParameter('members.oauth.enabled', $config['oauth']['enabled']);
 
         foreach ($config['relations']['login']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.login.form.' . $confName, $confValue);
@@ -58,5 +96,29 @@ class MembersExtension extends Extension
         foreach ($config['relations']['delete_account']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.delete_account.form.' . $confName, $confValue);
         }
+
+        if ($config['oauth']['enabled']) {
+            $container->setParameter('members.oauth.scopes', $config['oauth']['scopes']);
+            $loader->load('oauth.yml');
+            $this->enableOauth($container);
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function enableOauth(ContainerBuilder $container)
+    {
+        $dispatcherDefinition = new Definition();
+        $dispatcherDefinition->setClass(DispatchRouter::class);
+        $dispatcherDefinition->setPublic(false);
+        $dispatcherDefinition->setAutowired(true);
+        $dispatcherDefinition->setAutoconfigured(true);
+
+        foreach ([['connect', ConnectDispatcher::class], ['login', LoginDispatcher::class]] as $service) {
+            $dispatcherDefinition->addMethodCall('register', [$service[0], new Reference($service[1])]);
+        }
+
+        $container->setDefinition(DispatchRouter::class, $dispatcherDefinition);
     }
 }

@@ -43,6 +43,14 @@ interface UserManagerInterface
     public function findUserByUsername($username, $includeUnpublished = true);
 
     /**
+     * @param int  $userId
+     * @param bool $includeUnpublished
+     *
+     * @return null|UserInterface
+     */
+    public function findUserById($userId, $includeUnpublished = true);
+
+    /**
      * @param string $condition
      * @param array  $conditionVariables
      * @param bool   $includeUnpublished
@@ -67,7 +75,7 @@ interface UserManagerInterface
     /**
      * @param UserInterface $user
      *
-     * @return mixed
+     * @throws \Exception
      */
     public function reloadUser(UserInterface $user);
 
@@ -80,7 +88,7 @@ interface UserManagerInterface
      * @param UserInterface $user
      * @param array         $properties
      *
-     * @return mixed
+     * @return UserInterface
      */
     public function updateUser(UserInterface $user, $properties = []);
 }

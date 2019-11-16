@@ -33,16 +33,20 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'members.form.email'
-            ])
-            ->add('username', null, ['label' => 'members.form.username'])
-            ->add('plainPassword', RepeatedType::class, [
-                'type'            => PasswordType::class,
-                'first_options'   => ['label' => 'members.form.password'],
-                'second_options'  => ['label' => 'members.form.password_confirmation'],
-                'invalid_message' => 'members.validation.password.mismatch',
-            ])->add('submit', SubmitType::class, [
-                'label' => 'members.registration.submit',
             ]);
+
+        $builder->add('username', null, ['label' => 'members.form.username']);
+
+        $builder->add('plainPassword', RepeatedType::class, [
+            'type'            => PasswordType::class,
+            'first_options'   => ['label' => 'members.form.password'],
+            'second_options'  => ['label' => 'members.form.password_confirmation'],
+            'invalid_message' => 'members.validation.password.mismatch',
+        ]);
+
+        $builder->add('submit', SubmitType::class, [
+            'label' => 'members.registration.submit',
+        ]);
     }
 
     /**

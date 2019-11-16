@@ -12,7 +12,6 @@ use MembersBundle\MembersEvents;
 use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -72,7 +71,9 @@ class RegistrationController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return null|RedirectResponse|Response
+     * @return RedirectResponse|Response|null
+     *
+     * @throws \Exception
      */
     public function registerAction(Request $request)
     {
@@ -86,9 +87,14 @@ class RegistrationController extends AbstractController
             return $event->getResponse();
         }
 
-        $form = $this->formFactory->createForm();
-        $form->setData($user);
+        $formOptions = [];
+        if ($request->attributes->get('_members_sso_aware', null) === true) {
+            $formOptions['validation_groups'] = 'SSO';
+        }
 
+        $form = $this->formFactory->createForm($formOptions);
+
+        $form->setData($user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -129,7 +135,9 @@ class RegistrationController extends AbstractController
      */
     public function checkEmailAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag($request);
+        /** @var NamespacedAttributeBag $sessionBag */
+        $sessionBag = $request->getSession()->getBag('members_session');
+
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -153,7 +161,9 @@ class RegistrationController extends AbstractController
      */
     public function checkAdminAction(Request $request)
     {
-        $sessionBag = $this->getMembersSessionBag($request);
+        /** @var NamespacedAttributeBag $sessionBag */
+        $sessionBag = $request->getSession()->getBag('members_session');
+
         $email = $sessionBag->get('members_user_send_confirmation_email/email');
 
         if (empty($email)) {
@@ -215,18 +225,20 @@ class RegistrationController extends AbstractController
             throw new AccessDeniedException('This user does not have access to this section.');
         }
 
+        $session = $request->getSession()->getBag('members_session');
+
         return $this->renderTemplate('@Members/Registration/confirmed.html.twig', [
             'user'      => $user,
-            'targetUrl' => $this->getTargetUrlFromSession($request->getSession())
+            'targetUrl' => $this->getTargetUrlFromSession($session)
         ]);
     }
 
     /**
-     * @param SessionInterface $session
+     * @param NamespacedAttributeBag $session
      *
      * @return null|string
      */
-    private function getTargetUrlFromSession(SessionInterface $session)
+    private function getTargetUrlFromSession(NamespacedAttributeBag $session)
     {
         $token = $this->tokenStorage->getToken();
 
@@ -259,18 +271,5 @@ class RegistrationController extends AbstractController
         }
 
         return $userProperties;
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return NamespacedAttributeBag
-     */
-    private function getMembersSessionBag(Request $request)
-    {
-        /** @var NamespacedAttributeBag $bag */
-        $bag = $request->getSession()->getBag('members_session');
-
-        return $bag;
     }
 }

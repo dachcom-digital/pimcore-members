@@ -36,3 +36,6 @@
 "members.form.new_password","Neues Passwort","New password"
 "members.form.new_password_confirmation","Neues Passwort bestätigen","Repeat new password"
 "members.form.delete_account.confirm","Ja, ich möchte meinen Benutzeraccount löschen","Yes, I want to delete my account"
+"members.oauth.sso.sign_in_with","sign in with","Anmelden mit"
+"members.oauth.sso.connect_to","Benutzerkonto verbinden mit","connect to"
+"members.oauth.connection.success","Das Benutzerkonto wurde erfolgreich verbunden.","The Profile has been connected successfully."

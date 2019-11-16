@@ -17,6 +17,11 @@ interface ClassManagerInterface
     public function getUserListing();
 
     /**
+     * @return Listing
+     */
+    public function getSsoIdentityListing();
+
+    /**
      * @return string
      */
     public function getGroupClass();
@@ -25,4 +30,9 @@ interface ClassManagerInterface
      * @return string
      */
     public function getUserClass();
+
+    /**
+     * @return string
+     */
+    public function getSsoIdentityClass();
 }

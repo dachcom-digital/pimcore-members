@@ -6,3 +6,5 @@ services:
 
     MembersBundle\Tool\TokenGeneratorInterface: '@MembersBundle\Tool\TokenGenerator'
     MembersBundle\Tool\TokenGenerator: ~
+
+    MembersBundle\Tool\ClassInstaller: ~

@@ -3,5 +3,18 @@ services:
     MembersBundle\Command\ClassInstallerCommand:
         autowire: true
         autoconfigure: true
+        calls:
+            - [setClassInstaller, ['@MembersBundle\Tool\ClassInstaller']]
         tags:
             - {name: console.command, command: 'members:install:class' }
+
+    MembersBundle\Command\OAuthSetupCommand:
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $oauthEnabled: '%members.oauth.enabled%'
+        calls:
+            - [setClassInstaller, ['@MembersBundle\Tool\ClassInstaller']]
+            - [setClassManager, ['@MembersBundle\Manager\ClassManager']]
+        tags:
+            - {name: console.command, command: 'members:oauth:setup' }

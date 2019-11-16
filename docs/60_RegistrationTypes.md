@@ -1,5 +1,4 @@
 # Registration Types
-
 You can choose between three types of registration completion:
 
 ### Confirm by Mail
@@ -24,7 +23,6 @@ Name: `confirm_instant`
 After registration the user gets automatically logged in without any further actions.
 
 ## Configuration
-
 Add those lines to your `AppBundle/Resources/config/pimcore/config.yml`:
     
 ```yaml
@@ -37,4 +35,18 @@ members:
     
     #optional: see "Confirm By Admin"
     send_user_mail_after_confirmed: false
+```
+
+## Registration Types with SSO
+If you're using the [SSO feature](./SSO/10_Overview.md), you may want to define some independent mail workflows.
+If Members detects an SSO registration process, you're able to define the registration type via the `post_register_type_oauth` flag.
+
+> **Attention*: SSO registration types only works if `activation_type` has been set to `complete_profile`.
+
+They work the same as above, however `confirm_instant` is the default value:
+
+```yaml
+members:
+    # choose between 'confirm_by_mail', 'confirm_by_admin', 'confirm_instant'
+    post_register_type_oauth: 'confirm_instant' 
 ```

@@ -77,6 +77,7 @@ Since Members should be the one and only frontend authentication Bundle, we need
 But no worries, it's still simple to integrate.
 
 > There is also a class installer command. If your not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
+> Use the `-o` argument to also install the SsoIdentity Class 
 
 You need two classes: User and Group. So let's create it:
 
@@ -100,6 +101,9 @@ You need two classes: User and Group. So let's create it:
 #### Customer Data Framework
 If you want to use the [Customer Data Framework](https://github.com/pimcore/customer-data-framework) you need to do some further work. Read more about it [here](docs/300_CustomerDataFw.md).
 
+#### SSO Login
+You want to enable the SSO Feature in Members? Read more about it [here](./docs/SSO/20_Installation.md).
+
 *Group*  
 1. Create a class and call it `MembersGroup`
 2. Add parent class: `\MembersBundle\Adapter\Group\AbstractGroup`
@@ -117,7 +121,7 @@ Feel free to add additional fields since those are just the required ones. That'
 ### Email Configuration
 You're almost there, just check the [email configuration](docs/70_EmailConfiguration.md) and you're good to go.
 
-* * *
+***
 
 ### User Management: Further Information
 - [Custom Class Names](docs/20_CustomClassName.md)
@@ -131,7 +135,7 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Use LuceneSearch with Members](docs/100_LuceneSearch.md)
 - [Use the Pimcore Customer Framework with Members](docs/300_CustomerDataFw.md)
 
-* * *
+***
 
 ## Restrictions
 Learn more about the Members Restriction feature:
@@ -141,6 +145,15 @@ Learn more about the Members Restriction feature:
 - [Restricted Routing](docs/220_RestrictedRouting.md)
 - [Restricted Listing](docs/230_RestrictListing.md)
 - [Protected Asset Downloader](docs/240_AssetProtection.md)
+
+***
+
+## Single Sign On (SSO) with OAuth2
+- [Overview](./docs/SSO/10_Overview.md)
+- [Integration Types](./docs/SSO/11_IntegrationTypes.md)
+- [Resource Mapping](./docs/SSO/12_ResourceMapping.md)
+- [Installation](./docs/SSO/20_Installation.md)
+- [Twig Extensions](./docs/SSO/30_TwigExtensions.md)
 
 ## Upgrade Info
 Before updating, please [check our upgrade notes!](UPGRADE.md)

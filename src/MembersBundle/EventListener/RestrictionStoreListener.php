@@ -2,7 +2,6 @@
 
 namespace MembersBundle\EventListener;
 
-use MembersBundle\Restriction\RestrictionService;
 use Pimcore\Event\AssetEvents;
 use Pimcore\Event\DocumentEvents;
 use Pimcore\Event\Model\AssetEvent;
@@ -12,6 +11,7 @@ use Pimcore\Event\Model\DataObjectEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use MembersBundle\Service\RestrictionService;
 
 class RestrictionStoreListener implements EventSubscriberInterface
 {
@@ -26,8 +26,6 @@ class RestrictionStoreListener implements EventSubscriberInterface
     protected $serviceRestriction;
 
     /**
-     * RestrictionServiceListener constructor.
-     *
      * @param RequestStack       $requestStack
      * @param RestrictionService $serviceRestriction
      */

@@ -16,10 +16,10 @@ security:
         members_fe:
             pattern: ^/(?!(admin)).*$
             logout_on_user_change: true
+            provider: members
             form_login:
                 login_path: members_user_security_login
                 check_path: members_user_security_check
-                provider: members
                 csrf_token_generator: security.csrf.token_manager
             logout:
                 path: members_user_security_logout
@@ -31,4 +31,3 @@ security:
         - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_locale/members/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-

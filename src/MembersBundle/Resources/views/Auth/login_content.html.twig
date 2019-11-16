@@ -10,4 +10,12 @@
     {{ form_widget(form) }}
     {{ form_end(form) }}
 
+    {% if members_system_oauth_enabled() == true %}
+        {% set link_params = {} %}
+        {% if form._target_path is defined %}
+            {% set link_params = {_target_path: form._target_path.vars.value} %}
+        {% endif %}
+        {% include '@Members/Auth/Partial/social_login.html.twig' with { link_params: link_params } only %}
+    {% endif %}
+
 {% endblock form %}

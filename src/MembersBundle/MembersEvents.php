@@ -110,6 +110,7 @@ final class MembersEvents
      * @Event("MembersBundle\Event\GetResponseUserEvent")
      */
     const REGISTRATION_CONFIRM = 'members.registration.confirm';
+
     /**
      * The REGISTRATION_CONFIRMED event occurs after confirming the account.
      *
@@ -222,4 +223,31 @@ final class MembersEvents
      * @Event("MembersBundle\Event\FilterUserResponseEvent")
      */
     const DELETE_ACCOUNT_COMPLETED = 'members.delete_account.confirm.completed';
+
+    /**
+     * The OAUTH_PROFILE_CONNECTION_SUCCESS event occurs after a existing user has been successfully connected to a provider.
+     *
+     * This event allows you to access the oauth response.
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthResponseEvent")
+     */
+    const OAUTH_PROFILE_CONNECTION_SUCCESS = 'members.oauth.connection.success';
+
+    /**
+     * The OAUTH_RESOURCE_MAPPING_PROFILE event occurs before a sso identity gets assigned to given user profile.
+     *
+     * This event allows you to map resource data (e.g. google) to your user identity.
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthResourceEvent")
+     */
+    const OAUTH_RESOURCE_MAPPING_PROFILE = 'members.oauth.resource_mapping.profile';
+
+    /**
+     * The OAUTH_RESOURCE_MAPPING_REGISTRATION event occurs before the registration form gets rendered.
+     *
+     * This event allows you to map resource data (e.g. google) to your registration form.
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthResourceEvent")
+     */
+    const OAUTH_RESOURCE_MAPPING_REGISTRATION = 'members.oauth.resource_mapping.registration';
 }

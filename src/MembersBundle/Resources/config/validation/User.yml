@@ -3,17 +3,17 @@ MembersBundle\Adapter\User\UserInterface:
         -  MembersBundle\Validator\Constraints\PimcoreUniqueEntity:
             fields: [userName]
             message: members.validation.username.already_used
-            groups: [Registration, Profile]
+            groups: [Registration, Profile, SSO]
         -  MembersBundle\Validator\Constraints\PimcoreUniqueEntity:
             fields: [email]
             message: members.validation.email.already_used
-            groups: [Registration, Profile]
+            groups: [Registration, Profile, SSO]
     getters:
         userName:
-            - NotBlank: { message: members.validation.username.blank, groups: [Registration, Profile] }
+            - NotBlank: { message: members.validation.username.blank, groups: [Registration, Profile, SSO] }
             - Length: { min: 3, max: 180, minMessage: members.validation.username.short, maxMessage: members.validation.username.long, groups: [Registration, Profile] }
         email:
-            - NotBlank: { message: members.validation.email.blank, groups: [Registration, Profile] }
+            - NotBlank: { message: members.validation.email.blank, groups: [Registration, Profile, SSO] }
             - Length: { min: 3, max: 180, minMessage: members.validation.email.short, maxMessage: members.validation.email.long, groups: [Registration, Profile] }
             - Email: { message: members.validation.email.invalid }
         plainPassword:

@@ -3,7 +3,9 @@
 namespace MembersBundle\Controller;
 
 use MembersBundle\Form\Factory\FactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
@@ -26,7 +28,9 @@ class AuthController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return mixed
+     * @return RedirectResponse|Response
+     *
+     * @throws \Exception
      */
     public function loginAction(Request $request)
     {

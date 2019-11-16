@@ -33,5 +33,8 @@
         "phpstan/phpstan": "^0.11.1",
         "phpstan/phpstan-symfony": "^0.11.0",
         "symplify/easy-coding-standard": "^5.4"
+    },
+    "suggest": {
+        "knpuniversity/oauth2-client-bundle": "^1.0"
     }
 }

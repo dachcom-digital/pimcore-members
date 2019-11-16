@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Controller\OAuthController:
+        public: true
+        calls:
+            - [setContainer, ['@service_container']]

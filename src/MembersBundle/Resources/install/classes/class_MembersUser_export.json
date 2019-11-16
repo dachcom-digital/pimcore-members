@@ -11,6 +11,8 @@
         "fieldtype": "panel",
         "labelWidth": 100,
         "layout": null,
+        "border": false,
+        "icon": null,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -27,6 +29,8 @@
                 "fieldtype": "panel",
                 "labelWidth": 100,
                 "layout": null,
+                "border": false,
+                "icon": null,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -184,6 +188,8 @@
                     },
                     {
                         "fieldtype": "membersGroupMultiselect",
+                        "queryColumnType": "text",
+                        "phpdocType": "array",
                         "relationType": true,
                         "lazyLoading": null,
                         "classes": [],
@@ -200,9 +206,39 @@
                         "datatype": "data",
                         "invisible": false,
                         "visibleGridView": false,
-                        "visibleSearch": false,
+                        "visibleSearch": false
+                    },
+                    {
+                        "fieldtype": "manyToManyObjectRelation",
+                        "width": "",
+                        "height": "",
+                        "maxItems": "",
                         "queryColumnType": "text",
-                        "phpdocType": "array"
+                        "phpdocType": "array",
+                        "relationType": true,
+                        "visibleFields": "key",
+                        "optimizedAdminLoading": false,
+                        "visibleFieldDefinitions": [],
+                        "lazyLoading": true,
+                        "classes": [
+                            {
+                                "classes": "SsoIdentity"
+                            }
+                        ],
+                        "pathFormatterClass": "",
+                        "name": "ssoIdentities",
+                        "title": "SSO Identities",
+                        "tooltip": "",
+                        "mandatory": false,
+                        "noteditable": false,
+                        "index": false,
+                        "locked": false,
+                        "style": "",
+                        "permissions": null,
+                        "datatype": "data",
+                        "invisible": false,
+                        "visibleGridView": false,
+                        "visibleSearch": false
                     }
                 ],
                 "locked": false

@@ -126,7 +126,7 @@ trait UserTrait
     {
         $groups = $this->getGroups() ?? [];
         $groupIds = array_map(static function ($group) {
-            /** @var GroupInterface $group */
+            /* @var GroupInterface $group */
             return $group->getId();
         }, $groups);
 
@@ -167,7 +167,7 @@ trait UserTrait
     {
         $groups = $this->getGroups() ?? [];
         $groupIds = array_map(static function ($group) {
-            /** @var GroupInterface $group */
+            /* @var GroupInterface $group */
             return $group->getId();
         }, $groups);
 

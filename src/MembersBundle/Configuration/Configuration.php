@@ -53,6 +53,16 @@ class Configuration
     }
 
     /**
+     * @param string $slot
+     *
+     * @return mixed
+     */
+    public function getOAuthConfig($slot)
+    {
+        return $this->config['oauth'][$slot];
+    }
+
+    /**
      * @param string $bundleName
      *
      * @return bool

@@ -3,12 +3,17 @@
 namespace MembersBundle;
 
 use MembersBundle\Tool\Install;
+use MembersBundle\DependencyInjection\CompilerPass\OAuthLoginStrategyPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
+use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
+use Pimcore\HttpKernel\BundleCollection\BundleCollection;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class MembersBundle extends AbstractPimcoreBundle
+class MembersBundle extends AbstractPimcoreBundle implements DependentBundleInterface
 {
     use PackageVersionTrait;
+
     const PACKAGE_NAME = 'dachcom-digital/members';
 
     /**
@@ -17,6 +22,26 @@ class MembersBundle extends AbstractPimcoreBundle
     public function getInstaller()
     {
         return $this->container->get(Install::class);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new OAuthLoginStrategyPass());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function registerDependentBundles(BundleCollection $collection)
+    {
+        if (class_exists('\\KnpU\\OAuth2ClientBundle\\KnpUOAuth2ClientBundle')) {
+            $collection->addBundle(new \KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle());
+        }
     }
 
     /**

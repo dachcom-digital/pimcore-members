@@ -4,6 +4,9 @@ services:
             - { name: kernel.event_subscriber }
 
 members:
+    oauth:
+        enabled: true
+        activation_type: 'instant'
     restriction:
         enabled: true
         allowed_objects:

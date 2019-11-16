@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\Twig\Extension\OAuthExtension:
+        arguments:
+            $oauthRegistry: '@knpu.oauth2.registry'
+        tags:
+            - { name: twig.extension }

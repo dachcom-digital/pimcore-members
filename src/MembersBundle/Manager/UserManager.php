@@ -25,8 +25,6 @@ class UserManager implements UserManagerInterface
     protected $memberStorageId;
 
     /**
-     * UserManager constructor.
-     *
      * @param Configuration         $configuration
      * @param ClassManagerInterface $classManager
      */
@@ -118,6 +116,24 @@ class UserManager implements UserManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function findUserById($userId, $includeUnpublished = true)
+    {
+        $memberListing = $this->classManager->getUserListing();
+        $memberListing->setCondition('oo_id = ?', [$userId]);
+        $memberListing->setUnpublished($includeUnpublished);
+
+        $elements = $memberListing->load();
+
+        if (count($elements) === 1) {
+            return $elements[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true)
     {
         $memberListing = $this->classManager->getUserListing();
@@ -164,7 +180,7 @@ class UserManager implements UserManagerInterface
     }
 
     /**
-     * @return UserInterface
+     * {@inheritdoc}
      */
     public function createUser()
     {
@@ -238,7 +254,9 @@ class UserManager implements UserManagerInterface
     /**
      * @param UserInterface $user
      *
-     * @return mixed
+     * @return UserInterface
+     *
+     * @throws \Exception
      */
     private function saveWithVersion($user)
     {
@@ -248,7 +266,9 @@ class UserManager implements UserManagerInterface
     /**
      * @param UserInterface $user
      *
-     * @return mixed
+     * @return UserInterface
+     *
+     * @throws \Exception
      */
     private function saveWithoutVersion($user)
     {

@@ -3,7 +3,9 @@
 {% block form %}
 
 <div class="members register">
-    {{ form_start(form, {'method': 'post', 'action': path('members_user_registration_register'), 'attr': {'novalidate': 'novalidate', 'class': 'members_user_registration_register'}}) }}
+    {% set params = app.request.query.has('registrationKey') ? {'registrationKey' : app.request.query.get('registrationKey')} : [] %}
+    {% set action = path('members_user_registration_register', params) %}
+    {{ form_start(form, {'method': 'post', 'action': action, 'attr': {'novalidate': 'novalidate', 'class': 'members_user_registration_register'}}) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
 </div>

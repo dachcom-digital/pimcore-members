@@ -15,16 +15,17 @@ class FlashListener implements EventSubscriberInterface
      * @var string[]
      */
     private static $successMessages = [
-        MembersEvents::CHANGE_PASSWORD_COMPLETED => 'members.change_password.flash.success',
-        MembersEvents::PROFILE_EDIT_COMPLETED    => 'members.profile.flash.updated',
-        MembersEvents::REGISTRATION_COMPLETED    => 'members.registration.flash.user_created',
-        MembersEvents::RESETTING_RESET_COMPLETED => 'members.resetting.flash.success',
+        MembersEvents::CHANGE_PASSWORD_COMPLETED        => 'members.change_password.flash.success',
+        MembersEvents::PROFILE_EDIT_COMPLETED           => 'members.profile.flash.updated',
+        MembersEvents::REGISTRATION_COMPLETED           => 'members.registration.flash.user_created',
+        MembersEvents::RESETTING_RESET_COMPLETED        => 'members.resetting.flash.success',
+        MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS => 'members.oauth.connection.success',
     ];
 
     /**
      * @var SessionInterface
      */
-    private $session;
+    protected $session;
 
     /**
      * @var TranslatorInterface
@@ -49,10 +50,13 @@ class FlashListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            MembersEvents::CHANGE_PASSWORD_COMPLETED => 'addSuccessFlash',
-            MembersEvents::PROFILE_EDIT_COMPLETED    => 'addSuccessFlash',
-            MembersEvents::REGISTRATION_COMPLETED    => 'addSuccessFlash',
-            MembersEvents::RESETTING_RESET_COMPLETED => 'addSuccessFlash',
+            MembersEvents::CHANGE_PASSWORD_COMPLETED        => 'addSuccessFlash',
+            MembersEvents::PROFILE_EDIT_COMPLETED           => 'addSuccessFlash',
+            MembersEvents::REGISTRATION_COMPLETED           => 'addSuccessFlash',
+            MembersEvents::RESETTING_RESET_COMPLETED        => 'addSuccessFlash',
+
+            // oauth events
+            MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS => 'addSuccessFlash',
         ];
     }
 
