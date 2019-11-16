@@ -53,7 +53,7 @@ class PostConfirmationListener implements EventSubscriberInterface
 
     /**
      * @param UserManagerInterface  $userManager
-     * @param MailerInterface                $mailer
+     * @param MailerInterface       $mailer
      * @param UrlGeneratorInterface $router
      * @param SessionInterface      $session
      * @param TokenGenerator        $tokenGenerator
