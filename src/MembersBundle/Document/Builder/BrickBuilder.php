@@ -8,7 +8,7 @@ use Pimcore\Placeholder;
 use Pimcore\Templating\Renderer\IncludeRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 
@@ -25,7 +25,7 @@ class BrickBuilder
     protected $includeRenderer;
 
     /**
-     * @var TokenStorage
+     * @var TokenStorageInterface
      */
     protected $tokenStorage;
 
@@ -82,12 +82,12 @@ class BrickBuilder
     /**
      * AreaBuilder constructor.
      *
-     * @param TokenStorage          $tokenStorage
+     * @param TokenStorageInterface $tokenStorage
      * @param IncludeRenderer       $includeRenderer
      * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(
-        TokenStorage $tokenStorage,
+        TokenStorageInterface $tokenStorage,
         IncludeRenderer $includeRenderer,
         UrlGeneratorInterface $urlGenerator
     ) {
