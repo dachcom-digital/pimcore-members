@@ -184,11 +184,13 @@ class PimcoreCore extends PimcoreCoreModule
             $class = $this->getContainer()->getParameter('kernel.container_class');
             $cacheDir = $this->kernel->getCacheDir();
 
+            Debug::debug(sprintf('touch [%s]', $cacheDir . '/' . $class . '.php'));
+
             touch($cacheDir . '/' . $class . '.php');
         }
 
         // otherwise cache invalidator is not detecting config changes!
-        sleep(1);
+        sleep(2);
 
         $bundleName = getenv('DACHCOM_BUNDLE_NAME');
         $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
