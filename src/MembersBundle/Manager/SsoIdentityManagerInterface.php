@@ -53,4 +53,11 @@ interface SsoIdentityManagerInterface
      * @throws \Exception
      */
     public function saveIdentity(SsoIdentityInterface $ssoIdentity);
+
+    /**
+     * @param int $ttl (seconds)
+     *
+     * @return SsoIdentityInterface[]
+     */
+    public function findExpiredSsoIdentities(int $ttl = 0);
 }

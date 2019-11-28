@@ -58,9 +58,12 @@ class OAuthRegistrationHandler
      */
     public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
     {
+        // @todo: check if user exists? (#122)
+
         /** @var UserInterface $user */
         $user = $this->userManager->createUser();
 
+        // @todo: improve with #121
         $user->setEmail($oAuthResponse->getResourceOwner()->getId());
         $user->setPublished(true);
 

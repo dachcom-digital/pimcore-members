@@ -159,6 +159,17 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function findExpiredSsoIdentities(int $ttl = 0)
+    {
+        $ssoIdentityListing = $this->classManager->getSsoIdentityListing();
+        $ssoIdentityListing->addConditionParam('expiresAt IS NOT NULL AND expiresAt < ?', (time() - $ttl));
+
+        return $ssoIdentityListing->getObjects();
+    }
+
+    /**
      * @param string $provider
      * @param string $identifier
      *
