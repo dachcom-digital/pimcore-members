@@ -187,10 +187,11 @@ class PimcoreCore extends PimcoreCoreModule
             Debug::debug(sprintf('touch [%s]', $cacheDir . '/' . $class . '.php'));
 
             touch($cacheDir . '/' . $class . '.php');
+            touch($cacheDir . '/' . $class . '.xml');
         }
 
         // otherwise cache invalidator is not detecting config changes!
-        sleep(2);
+        sleep(1);
 
         $bundleName = getenv('DACHCOM_BUNDLE_NAME');
         $bundleClass = getenv('DACHCOM_BUNDLE_HOME');
