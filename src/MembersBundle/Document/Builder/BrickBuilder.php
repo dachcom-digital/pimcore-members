@@ -80,8 +80,6 @@ class BrickBuilder
     ];
 
     /**
-     * AreaBuilder constructor.
-     *
      * @param TokenStorageInterface $tokenStorage
      * @param IncludeRenderer       $includeRenderer
      * @param UrlGeneratorInterface $urlGenerator
