@@ -5,13 +5,14 @@ use DachcomBundle\Test\Util\Autoloader;
 
 include __DIR__ . '/../../../vendor/autoload.php';
 
+Bootstrap::setProjectRoot();
+
 define('PIMCORE_KERNEL_CLASS', '\DachcomBundle\Test\App\TestAppKernel');
 # we need the real asset directory to test asset protection via acceptance tests!
 define('PIMCORE_ASSET_DIRECTORY', PIMCORE_PROJECT_ROOT . '/web/var/assets');
 
 define('PIMCORE_TEST', true);
 
-Bootstrap::setProjectRoot();
 Bootstrap::bootstrap();
 
 /**
