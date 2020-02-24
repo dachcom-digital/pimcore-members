@@ -45,8 +45,6 @@ class AuthController extends AbstractController
 
         $form = $this->formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
 
-        $form->handleRequest($request);
-
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
