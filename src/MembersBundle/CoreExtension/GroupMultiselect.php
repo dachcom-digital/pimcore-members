@@ -9,22 +9,16 @@ use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
 class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface
 {
     /**
-     * Static type of this element.
-     *
      * @var string
      */
     public $fieldtype = 'membersGroupMultiselect';
 
     /**
-     * Type for the column to query.
-     *
      * @var string
      */
     public $queryColumnType = 'text';
 
     /**
-     * Type for the generated phpdoc.
-     *
      * @var string
      */
     public $phpdocType = 'array';
@@ -39,23 +33,13 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
      */
     public function getQueryColumnType()
     {
-        return 'text';
+        return $this->queryColumnType;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function setQueryColumnType($queryColumnType)
-    {
-        $this->queryColumnType = $queryColumnType;
-
-        return $this;
-    }
-
-    /**
-     * @param string $data
-     * @param null   $object
-     * @param array  $params
+     * @param array $data
+     * @param null  $object
+     * @param array $params
      *
      * @return string
      */
@@ -101,6 +85,7 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
                 }
             }
         }
+
         //must return array if data shall be set
         return $elements;
     }
@@ -143,15 +128,18 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
      * @param DataObject\Concrete $object
      * @param array               $params
      *
-     * @return array|mixed|null
+     * @return array
+     *
+     * @throws \Exception
      */
     public function preGetData($object, $params = [])
     {
-        // Pimcore 5.5: Properties are protected now.
-        if (method_exists($object, 'getObjectVar')) {
-            $data = $object->getObjectVar($this->getName());
-        } else {
-            $data = $object->{$this->getName()};
+        $data = $object->getObjectVar($this->getName());
+        if (!$object->isLazyKeyLoaded($this->getName())) {
+            $data = $this->load($object, ['force' => true]);
+
+            $object->setObjectVar($this->getName(), $data);
+            $this->markLazyloadedFieldAsLoaded($object);
         }
 
         return is_array($data) ? $data : [];
@@ -166,7 +154,26 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
      */
     public function loadData($data, $object = null, $params = [])
     {
-        return $this->getDataFromResource($data, $object, $params);
+        $elements = [
+            'dirty' => false,
+            'data'  => []
+        ];
+
+        if (is_array($data) && count($data) > 0) {
+            foreach ($data as $element) {
+                $e = null;
+                if ($element['type'] == 'object') {
+                    $e = DataObject::getById($element['dest_id']);
+                }
+                if ($e instanceof Element\ElementInterface) {
+                    $elements['data'][] = $e;
+                } else {
+                    $elements['dirty'] = true;
+                }
+            }
+        }
+
+        return $elements;
     }
 
     /**
@@ -199,39 +206,58 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
             //give empty array if data was not null
             return [];
         } else {
-            //return null if data was null  - this indicates data was not loaded
+            //return null if data was null - this indicates data was not loaded
             return null;
         }
     }
 
     /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
+     * @param array           $data
+     * @param null|DataObject $object
+     * @param mixed           $params
      *
      * @return array
+     *
      */
-    public function getDataFromResource($data = [], $object = null, $params = [])
+    public function getDataFromGridEditor($data, $object = null, $params = [])
     {
-        $elements = [
-            'dirty' => false,
-            'data'  => []
-        ];
+        return $this->getDataFromEditmode($data, $object, $params);
+    }
 
+    /**
+     * @param array|null      $data
+     * @param null|DataObject $object
+     * @param array           $params
+     *
+     * @return string
+     */
+    public function getDataForGrid($data, $object = null, $params = [])
+    {
+        return $this->getDataForEditmode($data, $object, $params);
+    }
+
+    /**
+     * @param array|null      $data
+     * @param null|DataObject $object
+     * @param array           $params
+     *
+     * @return string|null
+     * @see Data::getVersionPreview
+     *
+     */
+    public function getVersionPreview($data, $object = null, $params = [])
+    {
         if (is_array($data) && count($data) > 0) {
-            foreach ($data as $element) {
-                $e = null;
-                if ($element['type'] == 'object') {
-                    $e = DataObject::getById($element['dest_id']);
-                }
-                if ($e instanceof Element\ElementInterface) {
-                    $elements['data'][] = $e;
-                } else {
-                    $elements['dirty'] = true;
+            $paths = [];
+            foreach ($data as $o) {
+                if ($o instanceof Element\ElementInterface) {
+                    $paths[] = $o->getRealFullPath();
                 }
             }
+
+            return implode('<br />', $paths);
         }
 
-        return $elements;
+        return null;
     }
 }

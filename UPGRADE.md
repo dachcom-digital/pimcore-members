@@ -7,6 +7,7 @@ After every update you should check the pimcore extension manager.
 Just click the "update" button or execute the migration command to finish the bundle update.
 
 #### Update from Version 3.0.1 to Version 3.1.0
+- **[ENHANCEMENT]**: Pimcore 6.4.0 and 6.5.0 ready
 - **[NEW FEATURE]**: [SSO via OAuth2](https://github.com/dachcom-digital/pimcore-members/issues/21)
 - **[IMPROVEMENTS]**: [Make Mailer-Implementation switchable](https://github.com/dachcom-digital/pimcore-members/issues/107)
 - **[IMPROVEMENTS, SECURITY BC BREAK]**: [Harmonize Asset Restriction Query](https://github.com/dachcom-digital/pimcore-members/issues/118): Every asset living in `restricted-assets` will be rejected in listing if you're using the `addRestrictionInjection()` method by default
