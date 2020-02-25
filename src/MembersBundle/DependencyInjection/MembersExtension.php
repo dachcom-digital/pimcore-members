@@ -67,7 +67,10 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('members.registration.event.oauth_type', $config['post_register_type_oauth']);
         $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
         $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
+
         $container->setParameter('members.oauth.enabled', $config['oauth']['enabled']);
+        $container->setParameter('members.oauth.clean_up_expired_tokens', $config['oauth']['clean_up_expired_tokens']);
+        $container->setParameter('members.oauth.expired_tokens_ttl', $config['oauth']['expired_tokens_ttl']);
 
         foreach ($config['relations']['login']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.login.form.' . $confName, $confValue);

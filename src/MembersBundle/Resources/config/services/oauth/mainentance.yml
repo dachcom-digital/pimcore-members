@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    MembersBundle\EventListener\Maintenance\SsoCleanUpExpiredTokenListener:
+        arguments:
+            $oauthEnabled: '%members.oauth.enabled%'
+            $cleanUpExpiredTokens: '%members.oauth.clean_up_expired_tokens%'
+            $expiredTokensTtl: '%members.oauth.expired_tokens_ttl%'
+        tags:
+            - {name: pimcore.maintenance.task, type: members_sso_clean_up_expired_tokens }

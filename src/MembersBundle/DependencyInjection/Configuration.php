@@ -41,6 +41,8 @@ class Configuration implements ConfigurationInterface
                             ->values(['complete_profile', 'instant'])
                             ->defaultValue('complete_profile')
                         ->end()
+                        ->booleanNode('clean_up_expired_tokens')->defaultFalse()->end()
+                        ->integerNode('expired_tokens_ttl')->defaultValue(0)->min(0)->end()
                         ->arrayNode('scopes')
                             ->useAttributeAsKey('client')
                             ->prototype('array')
