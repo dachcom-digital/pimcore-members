@@ -4,3 +4,7 @@ services:
         autoconfigure: true
 
     MembersBundle\Service\ResourceMappingService: ~
+
+    MembersBundle\Service\SsoIdentityStatusServiceInterface: '@MembersBundle\Service\SsoIdentityStatusService'
+    MembersBundle\Service\SsoIdentityStatusService: ~
+

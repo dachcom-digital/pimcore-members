@@ -58,13 +58,10 @@ class OAuthRegistrationHandler
      */
     public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
     {
-        // @todo: check if user exists? (#122)
+        $newUserIdentityKey = sprintf('sso-%s', \Ramsey\Uuid\Uuid::uuid4()->toString());
 
-        /** @var UserInterface $user */
-        $user = $this->userManager->createUser();
+        $user = $this->userManager->createAnonymousUser($newUserIdentityKey);
 
-        // @todo: improve with #121
-        $user->setEmail($oAuthResponse->getResourceOwner()->getId());
         $user->setPublished(true);
 
         // persist user first before creating sso identity

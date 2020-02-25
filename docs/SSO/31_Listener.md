@@ -6,9 +6,11 @@ There two ways to clean up expired identities.
 > **Note:** This feature is not enabled by default!
 
 ### Important Notes
-This Clean-Up task also removes the related user within some exceptions:
+This Clean-Up task also removes the related user within some default exceptions:
 - The user will **not be deleted** if the given user has other SSO identities 
 - The user will **not be deleted** if a password has been defined (not empty rule)
+
+You're able to change the default exceptions by alter the `OAUTH_IDENTITY_STATUS_DELETION` event. Read more about it [here](./32_IdentityStatusListener.md).
 
 ### I. Expired Date
 Use the `clean_up_expired_tokens` configuration flag to enable the clean-up.

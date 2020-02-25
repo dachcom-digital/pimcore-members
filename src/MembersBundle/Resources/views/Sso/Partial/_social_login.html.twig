@@ -1,0 +1,34 @@
+{% set additional_link_params = {} %}
+{% if link_params is defined %}
+    {% set additional_link_params = link_params|merge(link_params) %}
+{% endif %}
+
+{% set social_route_name = 'members_user_security_oauth_login' %}
+{% if social_route is defined %}
+    {% set social_route_name = social_route %}
+{% endif %}
+
+{% set skip_connected_identities = social_route_name != 'members_user_security_oauth_login' %}
+{% set headline = social_route_name == 'members_user_security_oauth_login' ? 'members.oauth.sso.social_login_headline_login'|trans : 'members.oauth.sso.social_login_headline_connect'|trans %}
+
+<hr>
+
+<fieldset>
+    <legend>{{ headline }}</legend>
+    <ul class="list-unstyled">
+        {% for link in members_oauth_social_links(social_route_name, false) %}
+            {% set additional_link_params = additional_link_params|merge({provider: link.identifier}) %}
+            <li>
+                {% if skip_connected_identities == true and link.connected == true %}
+                    <button class="btn btn-info btn-sm" disabled><i class="fa fa-{{ link.identifier }}" aria-hidden="true"></i> {{ link.identifier|capitalize }}
+                        ({{ 'members.oauth.sso.already_connected'|trans }})
+                    </button>
+                {% else %}
+                    <a class="btn btn-info btn-sm" href="{{ path(link.route_name, additional_link_params) }}">
+                        <i class="fa fa-{{ link.identifier }}" aria-hidden="true"></i> {{ link.process_type == 'login' ? 'members.oauth.sso.sign_in_with'|trans : 'members.oauth.sso.connect_to'|trans }} {{ link.identifier|capitalize }}
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</fieldset>

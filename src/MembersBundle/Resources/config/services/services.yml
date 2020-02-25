@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface: '@MembersBundle\Service\RequestPropertiesForUserExtractorService'
+    MembersBundle\Service\RequestPropertiesForUserExtractorService: ~

@@ -225,6 +225,33 @@ final class MembersEvents
     const DELETE_ACCOUNT_COMPLETED = 'members.delete_account.confirm.completed';
 
     /**
+     * The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS event occurs when the complete-profile form is submitted successfully.
+     *
+     * This event allows you to set the response instead of using the default one.
+     *
+     * @Event("MembersBundle\Event\FormEvent")
+     */
+    const OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS = 'members.oauth.sso_instance.complete_profile.success';
+
+    /**
+     * The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED event occurs after saving the user in the complete-profile process.
+     *
+     * This event allows you to access the response which will be sent.
+     *
+     * @Event("MembersBundle\Event\FilterUserResponseEvent")
+     */
+    const OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED = 'members.oauth.sso_instance.complete_profile.completed';
+
+    /**
+     * The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE event occurs when the complete-profile form is not valid.
+     *
+     * This event allows you to set the response instead of using the default one.
+     *
+     * @Event("MembersBundle\Event\FormEvent")
+     */
+    const OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE = 'members.oauth.sso_instance.complete_profile.failure';
+
+    /**
      * The OAUTH_PROFILE_CONNECTION_SUCCESS event occurs after a existing user has been successfully connected to a provider.
      *
      * This event allows you to access the oauth response.
@@ -250,4 +277,23 @@ final class MembersEvents
      * @Event("MembersBundle\Event\OAuth\OAuthResourceEvent")
      */
     const OAUTH_RESOURCE_MAPPING_REGISTRATION = 'members.oauth.resource_mapping.registration';
+
+    /**
+     * The OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION event occurs before a user enters the profile completion step.
+     *
+     * This event allows you to overrule the termination if a user is able to complete is profile or not
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthIdentityEvent")
+     */
+    const OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION = 'members.oauth.identity_status.profile_completion';
+
+    /**
+     * The OAUTH_IDENTITY_STATUS_DELETION event occurs before a identity gets deleted.
+     *
+     * This event allows you to overrule the termination if a identity can be deleted (after sso identity has been deleted).
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthIdentityEvent")
+     */
+    const OAUTH_IDENTITY_STATUS_DELETION = 'members.oauth.identity_status.deletion';
+
 }

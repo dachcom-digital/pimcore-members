@@ -230,6 +230,35 @@
 
 ***
 
+### members.oauth.sso_instance.complete_profile.success
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS` |
+| **name** | `members.oauth.sso_instance.complete_profile.success` |
+| **class** | `\MembersBundle\Event\FormEvent` |
+| **description** | The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS event occurs when the complete-profile form is submitted successfully. This event allows you to set the response instead of using the default one. |
+
+### members.oauth.sso_instance.complete_profile.completed
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED` |
+| **name** | `members.oauth.sso_instance.complete_profile.completed` |
+| **class** | `\MembersBundle\Event\FilterUserResponseEvent` |
+| **description** | The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED event occurs after saving the user in the complete-profile process. This event allows you to access the response which will be sent. |
+
+### members.oauth.sso_instance.complete_profile.failure
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE` |
+| **name** | `members.oauth.sso_instance.complete_profile.failure` |
+| **class** | `\MembersBundle\Event\FormEvent` |
+| **description** | The OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE event occurs when the complete-profile form is not valid. This event allows you to set the response instead of using the default one. |
+
+***
+
 ### members.oauth.connection.success
 
 | Type | Reference |
@@ -248,7 +277,6 @@
 | **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
 | **description** | The OAUTH_RESOURCE_MAPPING_PROFILE event occurs before a sso identity gets assigned to given user profile. This event allows you to map resource data (e.g. google) to your user identity. |
 
-
 ### members.oauth.resource_mapping.registration
 
 | Type | Reference |
@@ -257,3 +285,23 @@
 | **name** | `members.oauth.connection.success` |
 | **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
 | **description** | The OAUTH_RESOURCE_MAPPING_REGISTRATION event occurs before the registration form gets rendered. This event allows you to map resource data (e.g. google) to your registration form. |
+
+***
+
+### members.oauth.identity_status.profile_completion
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION` |
+| **name** | `members.oauth.identity_status.profile_completion` |
+| **class** | `\MembersBundle\Event\OAuth\OAuthIdentityEvent` |
+| **description** | The OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION event occurs before a user enters the profile completion step. This event allows you to overrule the termination if a user is able to complete is profile or not. |
+
+### members.oauth.identity_status.deletion
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:OAUTH_IDENTITY_STATUS_DELETION` |
+| **name** | `members.oauth.identity_status.deletion` |
+| **class** | `\MembersBundle\Event\OAuth\OAuthIdentityEvent` |
+| **description** | The OAUTH_IDENTITY_STATUS_DELETION event occurs before a identity gets deleted. This event allows you to overrule the termination if a identity can be deleted (after sso identity has been deleted). |

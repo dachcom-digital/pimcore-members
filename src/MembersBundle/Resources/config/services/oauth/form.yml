@@ -7,3 +7,16 @@ services:
         tags:
             - { name: form.type_extension, extended_type: MembersBundle\Form\Type\RegistrationFormType }
 
+    MembersBundle\Form\Type\Sso\CompleteProfileFormType:
+        arguments:
+            - '\MembersBundle\Adapter\User\UserInterface'
+        tags:
+            - { name: form.type, alias: members_user_oauth_complete_profile }
+
+    members.oauth.complete_profile.form.factory:
+        class: MembersBundle\Form\Factory\FormFactory
+        arguments:
+            - '@form.factory'
+            - '%members_user.oauth.sso_identity_complete_profile.form.name%'
+            - '%members_user.oauth.sso_identity_complete_profile.form.type%'
+            - '%members_user.oauth.sso_identity_complete_profile.form.validation_groups%'

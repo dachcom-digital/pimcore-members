@@ -19,3 +19,12 @@ List all available social connectors:
 {% dump(members_oauth_social_links(social_route_name, skip_connected_identities)) %}
 
 ```
+
+## members_oauth_can_complete_profile
+Check if a new registered SSO user can enter the profile completion route:
+
+```twig
+{% if members_oauth_can_complete_profile() == true %}
+    {# do something funky #}
+{% endif %}
+```

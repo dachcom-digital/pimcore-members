@@ -2,7 +2,10 @@
 
 namespace MembersBundle\Adapter\User;
 
-interface UserInterface extends \Symfony\Component\Security\Core\User\UserInterface
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
+
+interface UserInterface extends BaseUserInterface, EquatableInterface
 {
     const ROLE_DEFAULT = 'ROLE_USER';
 

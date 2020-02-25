@@ -9,7 +9,7 @@ use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
-use Pimcore\Http\Request\Resolver\SiteResolver;
+use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -43,29 +43,29 @@ class RegistrationController extends AbstractController
     protected $tokenStorage;
 
     /**
-     * @var SiteResolver
+     * @var RequestPropertiesForUserExtractorServiceInterface
      */
-    protected $siteResolver;
+    protected $requestPropertiesForUserExtractorService;
 
     /**
-     * @param FactoryInterface         $formFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param UserManagerInterface     $userManager
-     * @param TokenStorageInterface    $tokenStorage
-     * @param SiteResolver             $siteResolver
+     * @param FactoryInterface                                  $formFactory
+     * @param EventDispatcherInterface                          $eventDispatcher
+     * @param UserManagerInterface                              $userManager
+     * @param TokenStorageInterface                             $tokenStorage
+     * @param RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
      */
     public function __construct(
         FactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
         UserManagerInterface $userManager,
         TokenStorageInterface $tokenStorage,
-        SiteResolver $siteResolver
+        RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
     ) {
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->userManager = $userManager;
         $this->tokenStorage = $tokenStorage;
-        $this->siteResolver = $siteResolver;
+        $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
     /**
@@ -99,7 +99,7 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $this->userManager->updateUser($user, $this->getUserProperties($request));
+                $this->userManager->updateUser($user, $this->requestPropertiesForUserExtractorService->extract($request));
 
                 $event = new FormEvent($form, $request);
                 $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
@@ -253,23 +253,5 @@ class RegistrationController extends AbstractController
         }
 
         return null;
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    private function getUserProperties($request)
-    {
-        $userProperties = [
-            '_user_locale' => $request->getLocale()
-        ];
-
-        if ($this->siteResolver->isSiteRequest()) {
-            $userProperties['_site_domain'] = $this->siteResolver->getSite($request)->getMainDomain();
-        }
-
-        return $userProperties;
     }
 }

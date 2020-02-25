@@ -85,6 +85,13 @@ interface UserManagerInterface
     public function createUser();
 
     /**
+     * @param string $key
+     *
+     * @return UserInterface
+     */
+    public function createAnonymousUser(string $key);
+
+    /**
      * @param UserInterface $user
      * @param array         $properties
      *
