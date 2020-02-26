@@ -10,8 +10,8 @@ use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface;
-use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
 use MembersBundle\Service\SsoIdentityStatusServiceInterface;
+use Pimcore\Http\Request\Resolver\SiteResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,18 +52,12 @@ class OAuthController extends AbstractController
     protected $identityStatusService;
 
     /**
-     * @var RequestPropertiesForUserExtractorServiceInterface
-     */
-    protected $requestPropertiesForUserExtractorService;
-
-    /**
-     * @param FactoryInterface                                  $formFactory
-     * @param EventDispatcherInterface                          $eventDispatcher
-     * @param UserManagerInterface                              $userManager
-     * @param ClientRegistry                                    $clientRegistry
-     * @param OAuthScopeAllocatorInterface                      $scopeAllocator
-     * @param SsoIdentityStatusServiceInterface                 $identityStatusService
-     * @param RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
+     * @param FactoryInterface                  $formFactory
+     * @param EventDispatcherInterface          $eventDispatcher
+     * @param UserManagerInterface              $userManager
+     * @param ClientRegistry                    $clientRegistry
+     * @param OAuthScopeAllocatorInterface      $scopeAllocator
+     * @param SsoIdentityStatusServiceInterface $identityStatusService
      */
     public function __construct(
         FactoryInterface $formFactory,
@@ -71,8 +65,7 @@ class OAuthController extends AbstractController
         UserManagerInterface $userManager,
         ClientRegistry $clientRegistry,
         OAuthScopeAllocatorInterface $scopeAllocator,
-        SsoIdentityStatusServiceInterface $identityStatusService,
-        RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
+        SsoIdentityStatusServiceInterface $identityStatusService
     ) {
         $this->formFactory = $formFactory;
         $this->eventDispatcher = $eventDispatcher;
@@ -80,7 +73,6 @@ class OAuthController extends AbstractController
         $this->clientRegistry = $clientRegistry;
         $this->scopeAllocator = $scopeAllocator;
         $this->identityStatusService = $identityStatusService;
-        $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
     /**
@@ -106,7 +98,7 @@ class OAuthController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
 
-                $this->userManager->updateUser($user, $this->requestPropertiesForUserExtractorService->extract($request));
+                $this->userManager->updateUser($user);
 
                 $event = new FormEvent($form, $request);
                 $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS, $event);
@@ -184,9 +176,12 @@ class OAuthController extends AbstractController
     protected function oAuthConnect(Request $request, string $provider, array $params)
     {
         $params = array_merge($params, [
-            '_target_path' => $request->get('_target_path', null),
-            '_locale'      => $request->getLocale(),
-            'provider'     => $provider
+            'provider'  => $provider,
+            'parameter' => [
+                'locale'      => $request->getLocale(),
+                'target_path' => $request->get('_target_path', null),
+                'site_id'     => $request->attributes->has(SiteResolver::ATTRIBUTE_SITE) ? $request->attributes->get(SiteResolver::ATTRIBUTE_SITE) : null
+            ]
         ]);
 
         /** @var NamespacedAttributeBag $session */

@@ -23,15 +23,22 @@ class OAuthResponse implements OAuthResponseInterface
     protected $resourceOwner;
 
     /**
+     * @var array
+     */
+    protected $parameter;
+
+    /**
      * @param string                 $provider
      * @param AccessToken            $accessToken
      * @param ResourceOwnerInterface $resourceOwner
+     * @param array                  $parameter
      */
-    public function __construct(string $provider, AccessToken $accessToken, ResourceOwnerInterface $resourceOwner)
+    public function __construct(string $provider, AccessToken $accessToken, ResourceOwnerInterface $resourceOwner, array $parameter = [])
     {
         $this->provider = $provider;
         $this->accessToken = $accessToken;
         $this->resourceOwner = $resourceOwner;
+        $this->parameter = $parameter;
     }
 
     /**
@@ -56,5 +63,13 @@ class OAuthResponse implements OAuthResponseInterface
     public function getResourceOwner()
     {
         return $this->resourceOwner;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameter()
+    {
+        return $this->parameter;
     }
 }

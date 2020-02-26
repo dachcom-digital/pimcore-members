@@ -21,4 +21,9 @@ interface OAuthResponseInterface
      * @return ResourceOwnerInterface
      */
     public function getResourceOwner();
+
+    /**
+     * @return array
+     */
+    public function getParameter();
 }

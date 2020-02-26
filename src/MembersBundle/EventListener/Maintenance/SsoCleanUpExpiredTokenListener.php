@@ -5,6 +5,7 @@ namespace MembersBundle\EventListener\Maintenance;
 use Pimcore\Maintenance\TaskInterface;
 use Pimcore\Model\DataObject\Concrete;
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 
@@ -82,13 +83,17 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
     }
 
     /**
-     * @param Concrete $ssoIdentity
+     * @param SsoIdentityInterface $ssoIdentity
      *
      * @throws \Exception
      */
-    protected function handleIdentityRemoval(Concrete $ssoIdentity)
+    protected function handleIdentityRemoval(SsoIdentityInterface $ssoIdentity)
     {
         $user = $this->ssoIdentityManager->getUserBySsoIdentity($ssoIdentity->getProvider(), $ssoIdentity->getIdentifier());
+
+        if (!$ssoIdentity instanceof Concrete) {
+            return;
+        }
 
         $ssoIdentity->delete();
 

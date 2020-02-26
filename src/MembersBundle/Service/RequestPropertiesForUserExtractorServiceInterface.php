@@ -12,4 +12,11 @@ interface RequestPropertiesForUserExtractorServiceInterface
      * @return array
      */
     public function extract(Request $request);
+
+    /**
+     * @param array $parameter
+     *
+     * @return mixed
+     */
+    public function extractFromParameterBag(array $parameter);
 }

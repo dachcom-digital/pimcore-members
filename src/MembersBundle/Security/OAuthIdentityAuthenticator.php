@@ -128,6 +128,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
 
         $provider = $data['provider'];
         $type = $data['type'];
+        $parameter = $data['parameter'] ?? [];
 
         /** @var AccessToken $accessToken */
         $accessToken = $credentials['access_token'];
@@ -135,7 +136,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         /** @var ResourceOwnerInterface $user */
         $user = $this->getClient($provider)->fetchUserFromToken($accessToken);
 
-        $oAuthResponse = new OAuthResponse($provider, $accessToken, $user);
+        $oAuthResponse = new OAuthResponse($provider, $accessToken, $user, $parameter);
 
         $memberUser = $this->ssoIdentityManager->getUserBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
 
@@ -159,7 +160,10 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         $sessionBag = $request->getSession()->getBag('members_session');
 
         $data = $sessionBag->get('oauth_state_data');
-        $targetUrl = isset($data['_target_path']) && !empty($data['_target_path']) ? $data['_target_path'] : '/';
+
+        $parameter = $data['parameter'] ?? [];
+
+        $targetUrl = isset($parameter['target_path']) && !empty($parameter['target_path']) ? $parameter['target_path'] : '/';
 
         $sessionBag->remove('oauth_state_data');
 
@@ -176,21 +180,32 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
+        $session = $request->getSession();
+
         /** @var NamespacedAttributeBag $sessionBag */
-        $sessionBag = $request->getSession()->getBag('members_session');
+        $sessionBag = $session->getBag('members_session');
+
+        $data = $sessionBag->get('oauth_state_data');
+
+        $parameter = $data['parameter'] ?? [];
+        $parameterLocale = $parameter['locale'] ?? null;
+
         $sessionBag->remove('oauth_state_data');
+        $session->set(Security::AUTHENTICATION_ERROR, $exception);
 
-        $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+        if ($request->getLocale() === null && $parameterLocale !== null) {
+            $request->setLocale($parameterLocale);
+        }
 
-        $parameters = [];
+        $parameter = [];
         $routeName = 'members_user_security_login';
 
         if ($exception instanceof AccountNotLinkedException) {
-            $parameters = ['registrationKey' => $exception->getRegistrationKey()];
+            $parameter = ['registrationKey' => $exception->getRegistrationKey()];
             $routeName = 'members_user_registration_register';
         }
 
-        return new RedirectResponse($this->router->generate($routeName, $parameters), Response::HTTP_TEMPORARY_REDIRECT);
+        return new RedirectResponse($this->router->generate($routeName, $parameter), Response::HTTP_TEMPORARY_REDIRECT);
     }
 
     /**
