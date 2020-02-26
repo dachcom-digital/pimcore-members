@@ -3,19 +3,19 @@ MembersBundle\Adapter\User\UserInterface:
         -  MembersBundle\Validator\Constraints\PimcoreUniqueEntity:
             fields: [userName]
             message: members.validation.username.already_used
-            groups: [Registration, Profile, SSO]
+            groups: [Registration, Profile, CompleteProfile, SSO]
         -  MembersBundle\Validator\Constraints\PimcoreUniqueEntity:
             fields: [email]
             message: members.validation.email.already_used
-            groups: [Registration, Profile, SSO]
+            groups: [Registration, Profile, CompleteProfile, SSO]
     getters:
         userName:
-            - NotBlank: { message: members.validation.username.blank, groups: [Registration, Profile, SSO] }
-            - Length: { min: 3, max: 180, minMessage: members.validation.username.short, maxMessage: members.validation.username.long, groups: [Registration, Profile] }
+            - NotBlank: { message: members.validation.username.blank, groups: [Registration, Profile, CompleteProfile, SSO] }
+            - Length: { min: 3, max: 180, minMessage: members.validation.username.short, maxMessage: members.validation.username.long, groups: [Registration, Profile, CompleteProfile] }
         email:
-            - NotBlank: { message: members.validation.email.blank, groups: [Registration, Profile, SSO] }
-            - Length: { min: 3, max: 180, minMessage: members.validation.email.short, maxMessage: members.validation.email.long, groups: [Registration, Profile] }
+            - NotBlank: { message: members.validation.email.blank, groups: [Registration, Profile, CompleteProfile, SSO] }
+            - Length: { min: 3, max: 180, minMessage: members.validation.email.short, maxMessage: members.validation.email.long, groups: [Registration, Profile, CompleteProfile] }
             - Email: { message: members.validation.email.invalid }
         plainPassword:
-            - NotBlank: { message: members.validation.password.blank, groups: [Registration, ResetPassword, ChangePassword] }
-            - Length: { min: 5, max: 4096, minMessage: members.validation.password.short, groups: [Registration, Profile, ResetPassword, ChangePassword] }
+            - NotBlank: { message: members.validation.password.blank, groups: [Registration, CompleteProfile, ResetPassword, ChangePassword] }
+            - Length: { min: 5, max: 4096, minMessage: members.validation.password.short, groups: [Registration, Profile, CompleteProfile, ResetPassword, ChangePassword] }

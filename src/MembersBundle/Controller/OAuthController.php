@@ -3,13 +3,39 @@
 namespace MembersBundle\Controller;
 
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Event\FilterUserResponseEvent;
+use MembersBundle\Event\FormEvent;
+use MembersBundle\Form\Factory\FactoryInterface;
+use MembersBundle\Manager\UserManagerInterface;
+use MembersBundle\MembersEvents;
 use MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface;
+use MembersBundle\Service\SsoIdentityStatusServiceInterface;
+use Pimcore\Http\Request\Resolver\SiteResolver;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OAuthController extends AbstractController
 {
+    /**
+     * @var FactoryInterface
+     */
+    protected $formFactory;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+
     /**
      * @var ClientRegistry
      */
@@ -21,15 +47,99 @@ class OAuthController extends AbstractController
     protected $scopeAllocator;
 
     /**
-     * @param ClientRegistry               $clientRegistry
-     * @param OAuthScopeAllocatorInterface $scopeAllocator
+     * @var SsoIdentityStatusServiceInterface
+     */
+    protected $identityStatusService;
+
+    /**
+     * @param FactoryInterface                  $formFactory
+     * @param EventDispatcherInterface          $eventDispatcher
+     * @param UserManagerInterface              $userManager
+     * @param ClientRegistry                    $clientRegistry
+     * @param OAuthScopeAllocatorInterface      $scopeAllocator
+     * @param SsoIdentityStatusServiceInterface $identityStatusService
      */
     public function __construct(
+        FactoryInterface $formFactory,
+        EventDispatcherInterface $eventDispatcher,
+        UserManagerInterface $userManager,
         ClientRegistry $clientRegistry,
-        OAuthScopeAllocatorInterface $scopeAllocator
+        OAuthScopeAllocatorInterface $scopeAllocator,
+        SsoIdentityStatusServiceInterface $identityStatusService
     ) {
+        $this->formFactory = $formFactory;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->userManager = $userManager;
         $this->clientRegistry = $clientRegistry;
         $this->scopeAllocator = $scopeAllocator;
+        $this->identityStatusService = $identityStatusService;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     */
+    public function completeProfileAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
+        /** @var UserInterface $user */
+        $user = $this->getUser();
+
+        if ($this->identityStatusService->identityCanCompleteProfile($user) === false) {
+            throw $this->createAccessDeniedException('Access Denied! Identity cannot complete profile (anymore).');
+        }
+
+        $form = $this->formFactory->createForm(['data' => $user]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+
+                $this->userManager->updateUser($user);
+
+                $event = new FormEvent($form, $request);
+                $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS, $event);
+
+                if (null === $response = $event->getResponse()) {
+                    $url = $this->generateUrl('members_user_sso_identity_profile_completed');
+                    $response = new RedirectResponse($url);
+                }
+
+                $event = new FilterUserResponseEvent($user, $request, $response);
+                $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED, $event);
+
+                return $response;
+            }
+
+            $event = new FormEvent($form, $request);
+            $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE, $event);
+
+            if (null !== $response = $event->getResponse()) {
+                return $response;
+            }
+        }
+
+        return $this->renderTemplate('@Members/Sso/CompleteProfile/complete_profile.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function profileCompletedAction(Request $request)
+    {
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw new AccessDeniedException('This user does not have access to this section.');
+        }
+
+        return $this->renderTemplate('@Members/Sso/CompleteProfile/completed.html.twig', ['user' => $user]);
     }
 
     /**
@@ -66,9 +176,12 @@ class OAuthController extends AbstractController
     protected function oAuthConnect(Request $request, string $provider, array $params)
     {
         $params = array_merge($params, [
-            '_target_path' => $request->get('_target_path', null),
-            '_locale'      => $request->getLocale(),
-            'provider'     => $provider
+            'provider'  => $provider,
+            'parameter' => [
+                'locale'      => $request->getLocale(),
+                'target_path' => $request->get('_target_path', null),
+                'site_id'     => $request->attributes->has(SiteResolver::ATTRIBUTE_SITE) ? $request->attributes->get(SiteResolver::ATTRIBUTE_SITE) : null
+            ]
         ]);
 
         /** @var NamespacedAttributeBag $session */

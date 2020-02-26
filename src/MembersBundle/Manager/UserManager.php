@@ -193,6 +193,19 @@ class UserManager implements UserManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function createAnonymousUser(string $key)
+    {
+        $userClass = $this->classManager->getUserClass();
+        $user = new $userClass();
+
+        $user = $this->setupNewUser($user, $key);
+
+        return $user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function updateUser(UserInterface $user, $properties = [])
     {
         $new = false;
@@ -200,7 +213,7 @@ class UserManager implements UserManagerInterface
         //It's a new user!
         if (empty($user->getKey())) {
             $new = true;
-            $user = $this->setupNewUser($user);
+            $user = $this->setupNewUser($user, null);
         }
 
         // update user properties.
@@ -220,12 +233,15 @@ class UserManager implements UserManagerInterface
 
     /**
      * @param UserInterface $user
+     * @param string|null   $key
      *
      * @return UserInterface
      */
-    private function setupNewUser(UserInterface $user)
+    private function setupNewUser(UserInterface $user, ?string $key)
     {
-        $user->setKey(\Pimcore\File::getValidFilename($user->getEmail()));
+        $validKey = $key ?? $user->getEmail();
+
+        $user->setKey(\Pimcore\File::getValidFilename($validKey));
         $user->setParentId($this->memberStorageId);
 
         $userGroups = [];

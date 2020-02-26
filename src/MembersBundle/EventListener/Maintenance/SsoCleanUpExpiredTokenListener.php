@@ -2,10 +2,12 @@
 
 namespace MembersBundle\EventListener\Maintenance;
 
-use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Manager\SsoIdentityManagerInterface;
 use Pimcore\Maintenance\TaskInterface;
 use Pimcore\Model\DataObject\Concrete;
+use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Adapter\Sso\SsoIdentityInterface;
+use MembersBundle\Manager\SsoIdentityManagerInterface;
+use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 
 class SsoCleanUpExpiredTokenListener implements TaskInterface
 {
@@ -30,21 +32,29 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
     protected $ssoIdentityManager;
 
     /**
-     * @param bool                        $oauthEnabled
-     * @param bool                        $cleanUpExpiredTokens
-     * @param int                         $expiredTokensTtl
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
+     * @var SsoIdentityStatusServiceInterface
+     */
+    protected $ssoIdentityStatusService;
+
+    /**
+     * @param bool                              $oauthEnabled
+     * @param bool                              $cleanUpExpiredTokens
+     * @param int                               $expiredTokensTtl
+     * @param SsoIdentityManagerInterface       $ssoIdentityManager
+     * @param SsoIdentityStatusServiceInterface $ssoIdentityStatusService
      */
     public function __construct(
         bool $oauthEnabled,
         bool $cleanUpExpiredTokens,
         int $expiredTokensTtl,
-        SsoIdentityManagerInterface $ssoIdentityManager
+        SsoIdentityManagerInterface $ssoIdentityManager,
+        SsoIdentityStatusServiceInterface $ssoIdentityStatusService
     ) {
         $this->oauthEnabled = $oauthEnabled;
         $this->cleanUpExpiredTokens = $cleanUpExpiredTokens;
         $this->expiredTokensTtl = $expiredTokensTtl;
         $this->ssoIdentityManager = $ssoIdentityManager;
+        $this->ssoIdentityStatusService = $ssoIdentityStatusService;
     }
 
     /**
@@ -73,13 +83,17 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
     }
 
     /**
-     * @param Concrete $ssoIdentity
+     * @param SsoIdentityInterface $ssoIdentity
      *
      * @throws \Exception
      */
-    protected function handleIdentityRemoval(Concrete $ssoIdentity)
+    protected function handleIdentityRemoval(SsoIdentityInterface $ssoIdentity)
     {
         $user = $this->ssoIdentityManager->getUserBySsoIdentity($ssoIdentity->getProvider(), $ssoIdentity->getIdentifier());
+
+        if (!$ssoIdentity instanceof Concrete) {
+            return;
+        }
 
         $ssoIdentity->delete();
 
@@ -87,21 +101,12 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
             return;
         }
 
-        // don't touch a user with a stored password
-        if (!empty($user->getPassword())) {
-            return;
-        }
-
-        // don't touch a user if he has other identities
-        $userSsoIdentities = $this->ssoIdentityManager->getSsoIdentities($user);
-        if (is_array($userSsoIdentities) && count($userSsoIdentities) > 0) {
-            return;
-        }
-
         if (!$user instanceof Concrete) {
             return;
         }
 
-        $user->delete();
+        if ($this->ssoIdentityStatusService->identityCanBeDeleted($user) === true) {
+            $user->delete();
+        }
     }
 }

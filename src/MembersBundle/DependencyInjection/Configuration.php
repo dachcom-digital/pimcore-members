@@ -3,6 +3,7 @@
 namespace MembersBundle\DependencyInjection;
 
 use MembersBundle\Form\Type\ChangePasswordFormType;
+use MembersBundle\Form\Type\Sso\CompleteProfileFormType;
 use MembersBundle\Form\Type\DeleteAccountFormType;
 use MembersBundle\Form\Type\ProfileFormType;
 use MembersBundle\Form\Type\RegistrationFormType;
@@ -235,6 +236,23 @@ class Configuration implements ConfigurationInterface
                                         ->arrayNode('validation_groups')
                                             ->prototype('scalar')->end()
                                             ->defaultValue(['DeleteAccount', 'Default'])
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('sso_identity_complete_profile')
+                            ->addDefaultsIfNotSet()
+                            ->canBeUnset()
+                                ->children()
+                                    ->arrayNode('form')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('type')->defaultValue(CompleteProfileFormType::class)->end()
+                                        ->scalarNode('name')->defaultValue('members_user_sso_identity_complete_profile_form')->end()
+                                        ->arrayNode('validation_groups')
+                                            ->prototype('scalar')->end()
+                                            ->defaultValue(['CompleteProfile', 'Default'])
                                         ->end()
                                     ->end()
                                 ->end()

@@ -4,6 +4,7 @@ namespace MembersBundle\Adapter\User;
 
 use MembersBundle\Adapter\Group\GroupInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Password;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 trait UserTrait
 {
@@ -58,6 +59,14 @@ trait UserTrait
         /** @var Password $field */
         $field = $this->getClass()->getFieldDefinition('password');
         $field->getDataForResource($this->getPassword(), $this);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        return $user instanceof self && $user->getId() === $this->getId();
     }
 
     /**

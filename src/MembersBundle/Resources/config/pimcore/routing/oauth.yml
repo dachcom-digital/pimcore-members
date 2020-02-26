@@ -12,3 +12,15 @@ members_user_security_oauth_check:
     path: /members/oauth/check
     defaults:
         _controller: MembersBundle:OAuth:oAuthConnectCheck
+
+members_user_sso_identity_complete_profile:
+    path: /{_locale}/members/oauth/complete-profile
+    methods:  [GET, POST]
+    defaults:
+        _controller: MembersBundle:OAuth:completeProfile
+
+members_user_sso_identity_profile_completed:
+    path: /{_locale}/members/oauth/profile-completed
+    methods: [GET]
+    defaults:
+        _controller: MembersBundle:OAuth:profileCompleted

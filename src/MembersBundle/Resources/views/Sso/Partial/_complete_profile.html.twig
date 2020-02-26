@@ -1,0 +1,10 @@
+{% if members_oauth_can_complete_profile() == true %}
+    <hr>
+    <fieldset>
+        <legend>{{ 'members.oauth.sso.complete_profile.headline'|trans }}</legend>
+        <div class="alert alert-info">
+            <p><i class="fa fa-check-circle mr-1 d-inline-block" aria-hidden="true"></i> {{ 'members.oauth.sso.complete_profile.description'|trans }}</p>
+            <a class="btn btn-primary btn-sm" href="{{ path('members_user_sso_identity_complete_profile') }}"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i> {{ 'members.oauth.sso.complete_profile.button'|trans }}</a>
+        </div>
+    </fieldset>
+{% endif %}

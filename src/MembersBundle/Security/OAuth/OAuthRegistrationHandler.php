@@ -6,6 +6,7 @@ use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Manager\UserManagerInterface;
+use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
 
 class OAuthRegistrationHandler
 {
@@ -25,18 +26,26 @@ class OAuthRegistrationHandler
     protected $userManager;
 
     /**
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
-     * @param AccountConnectorInterface   $accountConnector
-     * @param UserManagerInterface        $userManager
+     * @var RequestPropertiesForUserExtractorServiceInterface
+     */
+    protected $requestPropertiesForUserExtractorService;
+
+    /**
+     * @param SsoIdentityManagerInterface                       $ssoIdentityManager
+     * @param AccountConnectorInterface                         $accountConnector
+     * @param UserManagerInterface                              $userManager
+     * @param RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
      */
     public function __construct(
         SsoIdentityManagerInterface $ssoIdentityManager,
         AccountConnectorInterface $accountConnector,
-        UserManagerInterface $userManager
+        UserManagerInterface $userManager,
+        RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
     ) {
         $this->ssoIdentityManager = $ssoIdentityManager;
         $this->accountConnector = $accountConnector;
         $this->userManager = $userManager;
+        $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
     /**
@@ -58,17 +67,16 @@ class OAuthRegistrationHandler
      */
     public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
     {
-        // @todo: check if user exists? (#122)
+        $newUserIdentityKey = sprintf('sso-%s', \Ramsey\Uuid\Uuid::uuid4()->toString());
 
-        /** @var UserInterface $user */
-        $user = $this->userManager->createUser();
+        $user = $this->userManager->createAnonymousUser($newUserIdentityKey);
 
-        // @todo: improve with #121
-        $user->setEmail($oAuthResponse->getResourceOwner()->getId());
+        $parameters = $oAuthResponse->getParameter();
+
         $user->setPublished(true);
 
         // persist user first before creating sso identity
-        $this->userManager->updateUser($user);
+        $this->userManager->updateUser($user, $this->requestPropertiesForUserExtractorService->extractFromParameterBag($parameters));
 
         $this->connectSsoIdentity($user, $oAuthResponse);
 

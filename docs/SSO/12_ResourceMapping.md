@@ -12,7 +12,7 @@ However, if you're adding your own EventListener, the mapping is totally up to y
 There are two different types of mapping events:
 
 ### OAUTH_RESOURCE_MAPPING_PROFILE
-The `OAUTH_RESOURCE_MAPPING_PROFILE` event occurs before a sso identity gets assigned to given user profile.
+The `OAUTH_RESOURCE_MAPPING_PROFILE` event occurs before a SSO Identity gets assigned to given user profile.
 This Event fires shortly before the SSO Identity gets applied to the user. 
 
 > **Attention**: This event also fires after an existing user gets connected to a client. You may don't want to override existing values! 

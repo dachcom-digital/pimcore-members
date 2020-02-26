@@ -103,14 +103,15 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         if ($config['oauth']['enabled']) {
             $container->setParameter('members.oauth.scopes', $config['oauth']['scopes']);
             $loader->load('oauth.yml');
-            $this->enableOauth($container);
+            $this->enableOauth($container, $config);
         }
     }
 
     /**
      * @param ContainerBuilder $container
+     * @param array            $config
      */
-    protected function enableOauth(ContainerBuilder $container)
+    protected function enableOauth(ContainerBuilder $container, array $config)
     {
         $dispatcherDefinition = new Definition();
         $dispatcherDefinition->setClass(DispatchRouter::class);
@@ -123,5 +124,9 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         }
 
         $container->setDefinition(DispatchRouter::class, $dispatcherDefinition);
+
+        foreach ($config['relations']['sso_identity_complete_profile']['form'] as $confName => $confValue) {
+            $container->setParameter('members_user.oauth.sso_identity_complete_profile.form.' . $confName, $confValue);
+        }
     }
 }
