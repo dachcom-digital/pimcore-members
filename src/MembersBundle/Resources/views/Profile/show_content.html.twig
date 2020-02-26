@@ -5,9 +5,6 @@
     {% if members_system_oauth_enabled() == true %}
         {% set link_params = {_target_path: app.request.pathInfo} %}
         {% include '@Members/Sso/Partial/_social_login.html.twig' with { social_route: 'members_user_security_oauth_connect', link_params: link_params } only %}
-
-        {% if members_oauth_can_complete_profile() == true %}
-            {% include '@Members/Sso/Partial/_complete_profile.html.twig' only %}
-        {% endif %}
+        {% include '@Members/Sso/Partial/_complete_profile.html.twig' only %}
     {% endif %}
 </div>
