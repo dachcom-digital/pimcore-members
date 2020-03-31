@@ -5,7 +5,7 @@ members_user_security_login:
     methods:  [GET, POST]
 members_user_security_check:
     path: /login_check
-    defaults: { _controller: MembersBundle\Controller\RegistrationController::checkAdminAction }
+    defaults: { _controller: MembersBundle\Controller\AuthController::checkAction }
     methods:  [POST]
 members_user_security_logout:
     path: /logout

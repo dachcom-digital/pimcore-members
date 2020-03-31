@@ -43,7 +43,14 @@ class AuthController extends AbstractController
         // last username entered by the user
         $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
 
-        $form = $this->formFactory->createUnnamedFormWithOptions(['last_username' => $lastUsername]);
+        $targetPath = $request->get('_target_path', null);
+        $failurePath = $request->get('_failure_path', null);
+
+        $form = $this->formFactory->createUnnamedFormWithOptions([
+            'last_username' => $lastUsername,
+            '_target_path'  => $targetPath,
+            '_failure_path' => $failurePath
+        ]);
 
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has($authErrorKey)) {
