@@ -24,7 +24,7 @@ class ObjectRestrictionCest
 
         $I->addRestrictionToObject($object, [$group1->getId()]);
         $I->amOnStaticRoute($staticRoute->getName(), ['_locale' => 'en', 'object_id' => $object->getId()]);
-        $I->seeCurrentUrlEquals('/en/members/login');
+        $I->seeCurrentUrlEquals(sprintf('/en/members/login?_target_path=http://localhost/en/members-test-route/%s', $object->getId()));
     }
 
     /**
