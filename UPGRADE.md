@@ -6,6 +6,9 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 3.1.1 to Version 3.1.2
+- **[ENHANCEMENT]**: Pimcore 6.6.0 ready
+
 #### Update from Version 3.1.0 to Version 3.1.1
 - **[ENHANCEMENT]**: Allow to redirect back to requested secure page after login: [#133](https://github.com/dachcom-digital/pimcore-members/issues/133)
 - **[BUGFIX]**: Use right route form login `check_path` 

@@ -20,7 +20,7 @@ class DocumentRestrictionCest
 
         $I->addRestrictionToDocument($document, [$group1->getId()]);
         $I->amOnPage($document->getFullPath());
-        $I->seeCurrentUrlEquals('/en/members/login');
+        $I->seeCurrentUrlMatches(sprintf('~/en/members/login\?_target_path=(.*)localhost/%s~', $document->getKey()));
     }
 
     /**
