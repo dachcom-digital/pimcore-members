@@ -213,8 +213,8 @@ class UserManager implements UserManagerInterface
         //It's a new user!
         if (empty($user->getKey())) {
             $new = true;
-            $user = $this->setupNewUser($user, null);
         }
+        $user = $this->setupNewUser($user, null);
 
         // update user properties.
         if (!empty($properties)) {
