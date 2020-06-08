@@ -163,7 +163,6 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
         return $data;
     }
 
-
     /**
      * @param array $data
      * @param null  $object
@@ -253,6 +252,30 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     public function getDataForGrid($data, $object = null, $params = [])
     {
         return $this->getDataForEditmode($data, $object, $params);
+    }
+
+    /**
+     * @param null|DataObject[] $data
+     *
+     * @return array
+     */
+    public function resolveDependencies($data)
+    {
+        $dependencies = [];
+
+        if (is_array($data) && count($data) > 0) {
+            foreach ($data as $e) {
+                if ($e instanceof Element\ElementInterface) {
+                    $elementType = Element\Service::getElementType($e);
+                    $dependencies[$elementType . '_' . $e->getId()] = [
+                        'id'   => $e->getId(),
+                        'type' => $elementType
+                    ];
+                }
+            }
+        }
+
+        return $dependencies;
     }
 
     /**
