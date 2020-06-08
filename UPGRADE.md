@@ -6,6 +6,11 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 3.1.2 to Version 3.1.3
+- **[ENHANCEMENT]**: Pimcore 6.6.5 ready
+- **[ENHANCEMENT]**: only set Initial Groups if present ([#135](https://github.com/dachcom-digital/pimcore-members/pull/135))
+- **[BUGFIX]**: Implement `preSetData` ([#140](https://github.com/dachcom-digital/pimcore-members/issues/140))
+
 #### Update from Version 3.1.1 to Version 3.1.2
 - **[ENHANCEMENT]**: Pimcore 6.6.0 ready
 

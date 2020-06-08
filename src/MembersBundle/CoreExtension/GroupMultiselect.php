@@ -5,9 +5,13 @@ namespace MembersBundle\CoreExtension;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
+use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Extension;
 
-class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface
+class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
 {
+    use Extension\QueryColumnType;
+
     /**
      * @var string
      */
@@ -27,14 +31,6 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
      * @var bool
      */
     public $relationType = true;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getQueryColumnType()
-    {
-        return $this->queryColumnType;
-    }
 
     /**
      * @param array $data
@@ -140,10 +136,33 @@ class GroupMultiselect extends AbstractRelations implements DataObject\ClassDefi
 
             $object->setObjectVar($this->getName(), $data);
             $this->markLazyloadedFieldAsLoaded($object);
+
+            if ($object instanceof Element\DirtyIndicatorInterface) {
+                $object->markFieldDirty($this->getName(), false);
+            }
         }
 
         return is_array($data) ? $data : [];
     }
+
+    /**
+     * @param DataObject\Concrete $object
+     * @param array|null $data
+     * @param array $params
+     *
+     * @return array|null
+     */
+    public function preSetData($object, $data, $params = [])
+    {
+        if ($data === null) {
+            $data = [];
+        }
+
+        $this->markLazyloadedFieldAsLoaded($object);
+
+        return $data;
+    }
+
 
     /**
      * @param array $data
