@@ -92,7 +92,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>Besuchen Sie bitte folgende Seite, um Ihr Passwort zurückzusetzen: %Text(confirmationUrl); !</p><p>Mit besten Grüßen, das Team.</p>"
+                    "value": "<p>Hallo %DataObject(user,{\"method\" : \"getUsername\"});!</p><p>Besuchen Sie bitte folgende Seite, um Ihr Passwort zurückzusetzen: %Text(confirmationUrl);</p><p>Mit besten Grüßen, das Team.</p>"
                 }
             ],
             "en": [
