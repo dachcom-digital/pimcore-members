@@ -9,6 +9,7 @@ Just click the "update" button or execute the migration command to finish the bu
 #### Update from Version 3.1.2 to Version 3.1.3
 - **[ENHANCEMENT]**: Pimcore 6.6.5 ready
 - **[ENHANCEMENT]**: only set Initial Groups if present ([#135](https://github.com/dachcom-digital/pimcore-members/pull/135))
+- **[ENHANCEMENT]**: change file write mode to `w` only, to allow installation on AWS ([#137](https://github.com/dachcom-digital/pimcore-members/issues/137))
 - **[BUGFIX]**: Implement `preSetData` ([#140](https://github.com/dachcom-digital/pimcore-members/issues/140))
 
 #### Update from Version 3.1.1 to Version 3.1.2
