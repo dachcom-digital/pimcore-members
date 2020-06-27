@@ -77,23 +77,23 @@ class OAuthSetupCommand extends Command
         $output->writeln('');
 
         if ($this->checkSsoIdentityClassStep($input, $output) === false) {
-            return;
+            return 0;
         }
 
         if ($this->checkSsoIdentityRelationStep($input, $output) === false) {
-            return;
+            return 0;
         }
 
         if ($this->checkSsoIdentityAwareUserClass($input, $output) === false) {
-            return;
+            return 0;
         }
 
         if ($this->checkInstalledBundlesStep($input, $output) === false) {
-            return;
+            return 0;
         }
 
         if ($this->checkInstalledStep($input, $output) === false) {
-            return;
+            return 0;
         }
 
         $docLink = 'https://github.com/dachcom-digital/pimcore-members/blob/master/docs/SSO/10_Overview.md';
@@ -106,6 +106,8 @@ class OAuthSetupCommand extends Command
 
         $output->writeln('----------');
         $output->writeln('');
+
+        return 0;
     }
 
     /**

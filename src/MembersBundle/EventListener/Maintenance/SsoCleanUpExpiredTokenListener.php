@@ -73,7 +73,6 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
         $identities = $this->ssoIdentityManager->findExpiredSsoIdentities($this->expiredTokensTtl);
 
         foreach ($identities as $ssoIdentity) {
-
             if (!$ssoIdentity instanceof Concrete) {
                 continue;
             }

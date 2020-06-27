@@ -40,6 +40,8 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
         if (null !== $timestamp && (time() - $timestamp) <= $maxLifetime) {
             return $token;
         }
+
+        return null;
     }
 
     /**

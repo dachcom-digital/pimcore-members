@@ -179,7 +179,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
      * @param string $provider
      * @param string $identifier
      *
-     * @return SsoIdentityInterface
+     * @return SsoIdentityInterface|null
      *
      * @throws \Exception
      */
@@ -191,7 +191,9 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $ssoIdentityListing->addConditionParam('identifier = ?', $identifier);
 
         if ($ssoIdentityListing->count() === 1) {
-            return $ssoIdentityListing->current();
+            $currentElement = $ssoIdentityListing->current();
+
+            return $currentElement instanceof SsoIdentityInterface ? $currentElement : null;
         }
 
         if ($ssoIdentityListing->count() > 1) {
@@ -199,6 +201,8 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
                 sprintf('Ambiguous results: found more than one identity for %s:%s', $provider, $identifier)
             );
         }
+
+        return null;
     }
 
     /**

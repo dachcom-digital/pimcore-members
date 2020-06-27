@@ -22,7 +22,7 @@ class RequestPropertiesForUserExtractorService implements RequestPropertiesForUs
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function extract(Request $request)
     {
@@ -38,7 +38,7 @@ class RequestPropertiesForUserExtractorService implements RequestPropertiesForUs
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function extractFromParameterBag(array $parameter)
     {

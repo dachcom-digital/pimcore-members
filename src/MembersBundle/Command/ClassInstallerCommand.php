@@ -54,7 +54,7 @@ class ClassInstallerCommand extends Command
         $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', false);
 
         if ($input->isInteractive() === true && !$helper->ask($input, $output, $question)) {
-            return;
+            return 0;
         }
 
         $oauthInstall = $input->getOption('oauth') === true;
@@ -65,5 +65,7 @@ class ClassInstallerCommand extends Command
 
         $this->classInstaller->setLogger($output);
         $this->classInstaller->installClasses($classes);
+
+        return 0;
     }
 }

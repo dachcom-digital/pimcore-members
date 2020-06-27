@@ -43,6 +43,7 @@ class OAuthIdentityEvent extends Event
 
     /**
      * @return bool
+     *
      * @internal
      */
     public function identityCanDispatch()

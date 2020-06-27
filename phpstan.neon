@@ -3,7 +3,7 @@ includes:
 parameters:
     reportUnmatchedIgnoredErrors: false
     symfony:
-        container_xml_path: var/cache/dev/appAppKernelDevDebugContainer.xml
+        container_xml_path: %rootDir%/../../../var/cache/test/appAppKernelTestDebugContainer.xml
     excludes_analyse:
         # only works if optional bundles are available:
         - '**/AbstractCustomerUser.php'
@@ -18,7 +18,8 @@ parameters:
         - '#Class LuceneSearchBundle[A-Za-z\/\\_]+ not found\.#'
         - '#Service "LuceneSearchBundle[A-Za-z\/\\_]+" is not registered in the container\.#'
         - '#Call to method isLuceneSearchCrawler\(\) on an unknown class LuceneSearchBundle\\Tool\\CrawlerState\.#'
+        - '#PHPDoc tag @var for variable \$crawlerState contains unknown class LuceneSearchBundle\\Tool\\CrawlerState\.$#'
         # Nullable user can be null:
         - '#MembersBundle\\Event\\GetResponseNullableUserEvent::__construct\(\) does not call parent constructor(.*)+\.#'
-        # Symfony DI (remove this line with symfony 4.2):
+        # Symfony DI (remove this line with symfony 4.2):MembersBundle/Security/OAuth/OAuthResponse.php
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'
