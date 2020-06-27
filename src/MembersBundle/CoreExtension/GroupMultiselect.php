@@ -147,8 +147,8 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
 
     /**
      * @param DataObject\Concrete $object
-     * @param array|null $data
-     * @param array $params
+     * @param array|null          $data
+     * @param array               $params
      *
      * @return array|null
      */
@@ -235,7 +235,6 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      * @param mixed           $params
      *
      * @return array
-     *
      */
     public function getDataFromGridEditor($data, $object = null, $params = [])
     {
@@ -284,8 +283,8 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      * @param array           $params
      *
      * @return string|null
-     * @see Data::getVersionPreview
      *
+     * @see Data::getVersionPreview
      */
     public function getVersionPreview($data, $object = null, $params = [])
     {

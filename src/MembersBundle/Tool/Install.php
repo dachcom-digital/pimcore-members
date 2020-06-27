@@ -8,7 +8,7 @@ use Doctrine\DBAL\Migrations\MigrationException;
 use Doctrine\DBAL\Migrations\Version;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
-use Pimcore\Db\PimcoreExtensionsTrait;
+use Pimcore\Db\Connection;
 use Pimcore\Extension\Bundle\Installer\MigrationInstaller;
 use Pimcore\Migrations\Migration\InstallMigration;
 use Pimcore\Model\Asset;
@@ -328,7 +328,7 @@ class Install extends MigrationInstaller
      */
     public function installDbStructure()
     {
-        /** @var PimcoreExtensionsTrait $db */
+        /** @var Connection $db */
         $db = \Pimcore\Db::get();
         $db->query(file_get_contents($this->getInstallSourcesPath() . '/sql/install.sql'));
     }

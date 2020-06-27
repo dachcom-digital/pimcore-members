@@ -2,6 +2,8 @@
 
 namespace MembersBundle\Service;
 
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Pimcore\Model;
 use Pimcore\Model\Element\ElementInterface;
 use MembersBundle\Restriction\Restriction;
@@ -68,8 +70,8 @@ class RestrictionService
      *
      * @return bool
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function deleteRestriction($obj, $cType)
     {
@@ -95,8 +97,8 @@ class RestrictionService
      * @param ElementInterface $obj
      * @param string           $cType
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     public function checkRestrictionContext($obj, $cType)
     {
@@ -126,8 +128,8 @@ class RestrictionService
      * @param ElementInterface $obj
      * @param string           $cType
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     private function updateChildren($obj, $cType)
     {
@@ -283,8 +285,8 @@ class RestrictionService
      * @param Restriction|null $objectRestriction
      * @param Restriction|null $parentRestriction
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws DBALException
+     * @throws InvalidArgumentException
      */
     private function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
     {
@@ -342,5 +344,7 @@ class RestrictionService
         } elseif ($obj instanceof Model\Asset) {
             return false;
         }
+
+        return true;
     }
 }

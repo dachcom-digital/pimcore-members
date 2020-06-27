@@ -75,7 +75,7 @@ class HeadMetaListener implements EventSubscriberInterface
         }
 
         $groups = ['default'];
-        /** @var ElementRestriction $restrictionElement */
+
         $elementRestriction = $event->getRequest()->attributes->get(RestrictionManager::REQUEST_RESTRICTION_STORAGE);
         if ($elementRestriction instanceof ElementRestriction && !empty($elementRestriction->getRestrictionGroups())) {
             $groups = $elementRestriction->getRestrictionGroups();

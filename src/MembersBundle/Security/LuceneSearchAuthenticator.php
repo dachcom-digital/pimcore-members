@@ -28,8 +28,6 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     protected $userManager;
 
     /**
-     * LuceneSearchAuthenticator constructor.
-     *
      * @param UserAwareEncoderFactory $userAwareEncoderFactory
      * @param UserManagerInterface    $userManager
      */
@@ -60,9 +58,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     }
 
     /**
-     * @param Request $request
-     *
-     * @return array|null
+     * {@inheritdoc}
      */
     public function getCredentials(Request $request)
     {
@@ -83,13 +79,12 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
                 return null;
             }
         }
+
+        return null;
     }
 
     /**
-     * @param mixed                 $credentials
-     * @param UserProviderInterface $userProvider
-     *
-     * @return MembersUserInterface
+     * {@inheritdoc}
      */
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
@@ -102,10 +97,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     }
 
     /**
-     * @param mixed         $credentials
-     * @param UserInterface $user
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
@@ -115,20 +107,17 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     }
 
     /**
-     * @param Request        $request
-     * @param TokenInterface $token
-     * @param string         $providerKey
+     * {@inheritdoc}
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         $request->attributes->set('user', $token->getUser());
+
+        return null;
     }
 
     /**
-     * @param Request                 $request
-     * @param AuthenticationException $exception
-     *
-     * @return JsonResponse
+     * {@inheritdoc}
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
@@ -140,10 +129,7 @@ class LuceneSearchAuthenticator extends AbstractGuardAuthenticator implements Au
     }
 
     /**
-     * @param Request                      $request
-     * @param AuthenticationException|null $authException
-     *
-     * @return JsonResponse
+     * {@inheritdoc}
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {

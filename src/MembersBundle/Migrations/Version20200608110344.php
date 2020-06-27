@@ -44,6 +44,7 @@ class Version20200608110344 extends AbstractPimcoreMigration implements Containe
 
         if (!$membersDefinition instanceof DataObject\ClassDefinition) {
             $this->write('<error>No valid Members User class found. Please update class definition manually in your class manager.</error>');
+
             return;
         }
 

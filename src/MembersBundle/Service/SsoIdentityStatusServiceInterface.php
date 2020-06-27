@@ -19,5 +19,4 @@ interface SsoIdentityStatusServiceInterface
      * @return bool
      */
     public function identityCanBeDeleted(UserInterface $user);
-
 }

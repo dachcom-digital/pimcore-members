@@ -295,5 +295,4 @@ final class MembersEvents
      * @Event("MembersBundle\Event\OAuth\OAuthIdentityEvent")
      */
     const OAUTH_IDENTITY_STATUS_DELETION = 'members.oauth.identity_status.deletion';
-
 }

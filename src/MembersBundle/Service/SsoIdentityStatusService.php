@@ -33,7 +33,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function identityCanCompleteProfile(UserInterface $user)
     {

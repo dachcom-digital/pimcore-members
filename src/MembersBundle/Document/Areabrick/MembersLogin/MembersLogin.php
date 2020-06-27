@@ -20,8 +20,6 @@ class MembersLogin extends AbstractTemplateAreabrick
     protected $formFactory;
 
     /**
-     * MembersLogin constructor.
-     *
      * @param BrickBuilder     $brickBuilder
      * @param FactoryInterface $formFactory
      */
@@ -34,7 +32,7 @@ class MembersLogin extends AbstractTemplateAreabrick
     }
 
     /**
-     * @param Info $info
+     * {@inheritdoc}
      */
     public function action(Info $info)
     {
@@ -80,6 +78,8 @@ class MembersLogin extends AbstractTemplateAreabrick
         foreach ($params as $key => $param) {
             $view->getParameters()->set($key, $param);
         }
+
+        return null;
     }
 
     /**

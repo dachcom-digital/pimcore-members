@@ -97,7 +97,6 @@ class OAuthController extends AbstractController
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-
                 $this->userManager->updateUser($user);
 
                 $event = new FormEvent($form, $request);
