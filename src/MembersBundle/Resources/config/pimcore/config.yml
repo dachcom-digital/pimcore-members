@@ -14,7 +14,7 @@ security:
             id: MembersBundle\Security\UserProvider
     firewalls:
         members_fe:
-            pattern: ^/(?!(admin)).*$
+            pattern: ^/(?!(admin)($|/)).*$
             logout_on_user_change: true
             provider: members
             form_login:
