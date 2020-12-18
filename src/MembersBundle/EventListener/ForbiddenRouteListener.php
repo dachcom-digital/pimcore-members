@@ -80,7 +80,8 @@ class ForbiddenRouteListener implements EventSubscriberInterface
 
         $restriction = false;
 
-        if (strpos($event->getRequest()->attributes->get('_route'), 'document_') !== false) {
+        // TODO: Use `str_starts_with` function once PHP requirement is >= 8.0
+        if (substr($event->getRequest()->attributes->get('_route'), 0, 9) === 'document_') {
             $document = $event->getRequest()->get(DynamicRouter::CONTENT_KEY, null);
             $restriction = $this->restrictionManager->getElementRestrictionStatus($document);
         } elseif ($event->getRequest()->attributes->get('pimcore_request_source') === 'staticroute') {
