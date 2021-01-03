@@ -3,6 +3,7 @@
 namespace DachcomBundle\Test\Test;
 
 use Codeception\Exception\ModuleException;
+use Dachcom\Codeception\Test\BundleTestCase;
 use Dachcom\Codeception\Util\SystemHelper;
 use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
@@ -14,7 +15,7 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\Document\Page;
 use Pimcore\Tests\Util\TestHelper;
 
-abstract class DachcomBundleTestCase extends \Dachcom\Codeception\Test\DachcomBundleTestCase
+abstract class DachcomBundleTestCase extends BundleTestCase
 {
     protected function _after()
     {

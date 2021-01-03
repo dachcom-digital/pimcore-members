@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\unit\Manager;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\Test\DachcomBundleTestCase;
 use MembersBundle\Manager\ClassManager;
 use Pimcore\Model\DataObject\MembersGroup;
@@ -10,7 +11,7 @@ use Pimcore\Model\DataObject\MembersUser;
 class ClassManagerTest extends DachcomBundleTestCase
 {
     /**
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testGroupClass()
     {
@@ -21,7 +22,7 @@ class ClassManagerTest extends DachcomBundleTestCase
     }
 
     /**
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testGroupListing()
     {
@@ -32,7 +33,7 @@ class ClassManagerTest extends DachcomBundleTestCase
     }
 
     /**
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testUserClass()
     {
@@ -43,7 +44,7 @@ class ClassManagerTest extends DachcomBundleTestCase
     }
 
     /**
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testUserListing()
     {
