@@ -70,7 +70,7 @@ class TreeListener implements EventSubscriberInterface
 
             $lockClass = $restriction->isInherited() ? 'members-locked-inherit' : 'members-locked-main';
 
-            $currentClass = isset($asset['cls']) ? $object['cls'] : '';
+            $currentClass = isset($object['cls']) ? $object['cls'] : '';
             $object['cls'] = join(' ', [$currentClass, 'members-locked', $lockClass]);
         }
 
