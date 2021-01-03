@@ -2,7 +2,8 @@
 
 namespace DachcomBundle\Test\rest;
 
-use DachcomBundle\Test\Helper\Rest\BrowserKitRestClient;
+use Dachcom\Codeception\Helper\Rest\BrowserKitRestClient;
+use Dachcom\Codeception\Util\SystemHelper;
 use DachcomBundle\Test\Util\MembersHelper;
 use Pimcore\Tests\Test\RestTestCase;
 
@@ -31,7 +32,7 @@ abstract class AbstractRestTestCase extends RestTestCase
 
     protected function _after()
     {
-        MembersHelper::cleanUp();
+        SystemHelper::cleanUp(['members_restrictions', 'members_group_relations']);
         MembersHelper::reCreateMembersStructure();
 
         parent::_after();

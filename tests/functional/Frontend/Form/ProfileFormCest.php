@@ -13,7 +13,7 @@ class ProfileFormCest
     public function testProfileOverview(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile');
         $I->see(sprintf('Username: %s', MembersHelper::DEFAULT_FEU_USERNAME), '.members_user_show');
@@ -26,7 +26,7 @@ class ProfileFormCest
     public function testProfileEditForm(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/edit');
         $I->see('Username', 'form[name="members_user_profile_form"] label');
@@ -44,7 +44,7 @@ class ProfileFormCest
     public function testProfileEditFormUpdateInvalid(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/edit');
 
@@ -65,7 +65,7 @@ class ProfileFormCest
         $newEmail = 'new-' . MembersHelper::DEFAULT_FEU_EMAIL;
 
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/edit');
 

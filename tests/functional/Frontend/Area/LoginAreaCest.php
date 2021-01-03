@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\functional\Frontend\Area;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\FunctionalTester;
 use DachcomBundle\Test\Util\MembersHelper;
 
@@ -13,7 +14,9 @@ class LoginAreaCest
     public function testLoginAreaElementForm(FunctionalTester $I)
     {
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $editables = $I->haveMembersAreaEditables();
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement('div.members.login.area');
@@ -29,12 +32,14 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithDefaultSettingsAndInvalidCredentials(FunctionalTester $I)
     {
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $editables = $I->haveMembersAreaEditables();
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
 
@@ -50,14 +55,16 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithDefaultSettingsAndValidCredentials(FunctionalTester $I)
     {
         $I->haveARegisteredFrontEndUser(true);
 
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $editables = $I->haveMembersAreaEditables();
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -76,14 +83,16 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithHiddenAreaAfterLogin(FunctionalTester $I)
     {
         $I->haveARegisteredFrontEndUser(true);
 
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, null, null, true);
+
+        $editables = $I->haveMembersAreaEditables(null, null, true);
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -101,7 +110,7 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithRedirectToSpecificDocumentAfterSuccessfullyLogin(FunctionalTester $I)
     {
@@ -109,7 +118,9 @@ class LoginAreaCest
 
         $redirectDocument = $I->haveAPageDocument('success-document');
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, $redirectDocument);
+
+        $editables = $I->haveMembersAreaEditables($redirectDocument);
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $redirectDocument->getFullPath()));
@@ -124,15 +135,22 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I)
     {
         $I->haveARegisteredFrontEndUser(true);
 
-        $successSnippet = $I->haveASnippetDocument('success-snippet');
+        $snippetParams = [
+            'controller' => '@AppBundle\Controller\DefaultController',
+            'action' => 'snippet'
+        ];
+
+        $successSnippet = $I->haveASnippet('success-snippet', $snippetParams);
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, null, $successSnippet, false);
+
+        $editables = $I->haveMembersAreaEditables(null, $successSnippet, false);
+        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
 
         $I->amOnPage('/members-area-test');
 

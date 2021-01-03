@@ -1,5 +1,5 @@
 services:
-    DachcomBundle\Test\App\Services\TestRestrictedStaticRouteListener:
+    DachcomBundle\Test\Services\TestRestrictedStaticRouteListener:
         tags:
             - { name: kernel.event_subscriber }
 

@@ -2,20 +2,31 @@
 
 namespace DachcomBundle\Test\Helper;
 
+use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
+use Dachcom\Codeception\Helper\PimcoreCore;
+use Dachcom\Codeception\Util\SystemHelper;
+use Dachcom\Codeception\Util\VersionHelper;
 use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\UserManager;
+use MembersBundle\Restriction\Restriction;
+use MembersBundle\Security\RestrictionUri;
 use Pimcore\File;
+use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
-use Pimcore\Model\Document\Email;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\MembersUser;
+use Pimcore\Model\Document;
+use Pimcore\Model\Document\Email;
+use Pimcore\Model\Document\Page;
+use Pimcore\Model\Document\Snippet;
 use Symfony\Component\DependencyInjection\Container;
 
-class MembersFrontend extends Module implements DependsOnModule
+class Members extends Module implements DependsOnModule
 {
     /**
      * @var PimcoreBackend
@@ -27,7 +38,9 @@ class MembersFrontend extends Module implements DependsOnModule
      */
     public function _depends()
     {
-        return ['DachcomBundle\Test\Helper\PimcoreBackend' => 'MembersFrontend needs the PimcoreBackend module to work.'];
+        return [
+            'DachcomBundle\Test\Helper\PimcoreBackend' => 'Members needs the PimcoreBackend module to work.'
+        ];
     }
 
     /**
@@ -36,6 +49,89 @@ class MembersFrontend extends Module implements DependsOnModule
     public function _inject(PimcoreBackend $connection)
     {
         $this->pimcoreBackend = $connection;
+    }
+
+    /**
+     * API Function to create area elements for members
+     *
+     * @param null|Page    $redirectAfterSuccessDocument
+     * @param null|Snippet $loginSnippet
+     * @param bool         $hideAreaAfterLogin
+     *
+     * @return array
+     */
+    public function haveMembersAreaEditables($redirectAfterSuccessDocument = null, $loginSnippet = null, $hideAreaAfterLogin = false)
+    {
+        if (VersionHelper::pimcoreVersionIsGreaterOrEqualThan('6.8.0')) {
+            $blockAreaClass = 'Pimcore\Model\Document\Editable\Areablock';
+            $checkboxClass = 'Pimcore\Model\Document\Editable\Checkbox';
+            $relationClass = 'Pimcore\Model\Document\Editable\Relation';
+        } else {
+            $blockAreaClass = 'Pimcore\Model\Document\Tag\Areablock';
+            $checkboxClass = 'Pimcore\Model\Document\Tag\Checkbox';
+            $relationClass = 'Pimcore\Model\Document\Tag\Relation';
+        }
+
+        $blockArea = new $blockAreaClass();
+        $blockArea->setName(SystemHelper::AREA_TEST_NAMESPACE);
+
+        $redirectAfterSuccess = null;
+        if ($redirectAfterSuccessDocument instanceof Page) {
+            $redirectAfterSuccess = new $relationClass();
+            $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE));
+            $data = [
+                'id'      => $redirectAfterSuccessDocument->getId(),
+                'type'    => 'document',
+                'subtype' => $redirectAfterSuccessDocument->getType()
+            ];
+            $redirectAfterSuccess->setDataFromEditmode($data);
+        }
+
+        $hideWhenLoggedIn = new $checkboxClass();
+        $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
+        $hideWhenLoggedIn->setDataFromEditmode($hideAreaAfterLogin);
+
+        $showSnippedWhenLoggedIn = null;
+        if ($loginSnippet instanceof Snippet) {
+            $showSnippedWhenLoggedIn = new $relationClass();
+            $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
+
+            $data2 = [
+                'id'      => $loginSnippet->getId(),
+                'type'    => 'document',
+                'subtype' => $loginSnippet->getType()
+            ];
+
+            $showSnippedWhenLoggedIn->setDataFromEditmode($data2);
+        }
+
+        $blockArea->setDataFromEditmode([
+            [
+                'key'    => '1',
+                'type'   => 'members_login',
+                'hidden' => false
+            ]
+        ]);
+
+        $data = [
+            sprintf('%s', SystemHelper::AREA_TEST_NAMESPACE)                    => $blockArea,
+            sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE) => $hideWhenLoggedIn
+        ];
+
+        if ($redirectAfterSuccess !== null) {
+            $data[sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE)] = $redirectAfterSuccess;
+        }
+
+        if ($showSnippedWhenLoggedIn !== null) {
+            $data[sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE)] = $showSnippedWhenLoggedIn;
+        }
+
+        return $data;
+    }
+
+    public function haveAProtectedAssetFolder()
+    {
+        return Asset::getByPath('/' . RestrictionUri::PROTECTED_ASSET_FOLDER);
     }
 
     /**
@@ -67,7 +163,7 @@ class MembersFrontend extends Module implements DependsOnModule
      * @param array $groups
      *
      * @return mixed
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [])
     {
@@ -104,7 +200,7 @@ class MembersFrontend extends Module implements DependsOnModule
      *
      * @param UserInterface $user
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function publishAndConfirmAFrontendUser(UserInterface $user)
     {
@@ -119,7 +215,7 @@ class MembersFrontend extends Module implements DependsOnModule
     /**
      * Actor function to see a logged in frontend user in session bag.
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function seeALoggedInFrontEndUser()
     {
@@ -132,7 +228,7 @@ class MembersFrontend extends Module implements DependsOnModule
     /**
      * Actor Function to see a not logged in frontend user in session bag.
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function seeANotLoggedInFrontEndUser()
     {
@@ -258,7 +354,7 @@ class MembersFrontend extends Module implements DependsOnModule
     public function grabOneUserAfterRegistration()
     {
         $list = MembersUser::getList(['unpublished' => true]);
-        $users = $list->load();
+        $users = $list->getObjects();
 
         $this->assertCount(1, $users);
         $this->assertInstanceOf(UserInterface::class, $users[0]);
@@ -267,8 +363,117 @@ class MembersFrontend extends Module implements DependsOnModule
     }
 
     /**
+     * Actor function to add restriction to object
+     *
+     * @param AbstractObject $object
+     * @param array          $groups
+     * @param bool           $inherit
+     * @param bool           $inherited
+     */
+    public function addRestrictionToObject(AbstractObject $object, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($object, 'object', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to add restriction to asset
+     *
+     * @param Asset $asset
+     * @param array $groups
+     * @param bool  $inherit
+     * @param bool  $inherited
+     */
+    public function addRestrictionToAsset(Asset $asset, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($asset, 'asset', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to add restriction to document
+     *
+     * @param Document $document
+     * @param array    $groups
+     * @param bool     $inherit
+     * @param bool     $inherited
+     */
+    public function addRestrictionToDocument(Document $document, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($document, 'page', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor Function to generate asset download link with containing a single asset file.
+     *
+     * @param Asset $asset
+     *
+     * @return string
+     * @throws ModuleException
+     * @throws \Exception
+     */
+    public function haveASingleAssetDownloadLink(Asset $asset)
+    {
+        $downloadLink = $this
+            ->getContainer()->get(RestrictionUri::class)
+            ->generateAssetUrl($asset);
+
+        $this->assertInternalType('string', $downloadLink);
+
+        return $downloadLink;
+    }
+
+    /**
+     * Actor Function to generate asset download link with containing multiple assets.
+     *
+     * @param array $assets
+     *
+     * @return string
+     * @throws ModuleException
+     * @throws \Exception
+     */
+    public function haveAMultipleAssetDownloadLink(array $assets)
+    {
+        $downloadLink = $this
+            ->getContainer()->get(RestrictionUri::class)
+            ->generateAssetPackageUrl($assets);
+
+        $this->assertInternalType('string', $downloadLink);
+
+        return $downloadLink;
+    }
+
+    /**
+     * @param        $element
+     * @param string $type
+     * @param array  $groups
+     * @param bool   $inherit
+     * @param bool   $inherited
+     *
+     * @return Restriction
+     */
+    protected function createElementRestriction(
+        $element,
+        string $type = 'page',
+        array $groups = [],
+        bool $inherit = false,
+        bool $inherited = false
+    ) {
+        $restriction = new Restriction();
+        $restriction->setTargetId($element->getId());
+        $restriction->setCtype($type);
+        $restriction->setInherit($inherit);
+        $restriction->setIsInherited($inherited);
+        $restriction->setRelatedGroups($groups);
+        $restriction->save();
+
+        return $restriction;
+    }
+
+    /**
      * @return Container
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     protected function getContainer()
     {

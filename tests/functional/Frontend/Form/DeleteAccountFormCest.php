@@ -13,7 +13,7 @@ class DeleteAccountFormCest
     public function testDeleteAccountForm(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/delete-account');
         $I->see('Current password', 'form[name="members_user_delete_account_form"] label');
@@ -31,7 +31,7 @@ class DeleteAccountFormCest
     public function testDeleteAccountInvalid(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/delete-account');
         $I->fillField('form[name="members_user_delete_account_form"] input[type="password"][id="members_user_delete_account_form_current_password_first"]',
@@ -49,7 +49,7 @@ class DeleteAccountFormCest
     public function testDeleteAccountValid(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/delete-account');
         $I->fillField('form[name="members_user_delete_account_form"] input[type="password"][id="members_user_delete_account_form_current_password_first"]',

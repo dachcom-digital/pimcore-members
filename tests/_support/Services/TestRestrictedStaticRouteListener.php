@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\App\Services;
+namespace DachcomBundle\Test\Services;
 
 use MembersBundle\Event\StaticRouteEvent;
 use MembersBundle\MembersEvents;
