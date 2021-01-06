@@ -6,9 +6,6 @@ use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Dachcom\Codeception\Helper\PimcoreCore;
-use Dachcom\Codeception\Util\EditableHelper;
-use Dachcom\Codeception\Util\SystemHelper;
-use Dachcom\Codeception\Util\VersionHelper;
 use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
@@ -23,8 +20,6 @@ use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\MembersUser;
 use Pimcore\Model\Document;
 use Pimcore\Model\Document\Email;
-use Pimcore\Model\Document\Page;
-use Pimcore\Model\Document\Snippet;
 use Symfony\Component\DependencyInjection\Container;
 
 class Members extends Module implements DependsOnModule
