@@ -74,37 +74,6 @@ class Members extends Module implements DependsOnModule
 
         $blockArea = new $blockAreaClass();
         $blockArea->setName(SystemHelper::AREA_TEST_NAMESPACE);
-
-        $redirectAfterSuccess = null;
-        if ($redirectAfterSuccessDocument instanceof Page) {
-            $redirectAfterSuccess = new $relationClass();
-            $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE));
-            $data = [
-                'id'      => $redirectAfterSuccessDocument->getId(),
-                'type'    => 'document',
-                'subtype' => $redirectAfterSuccessDocument->getType()
-            ];
-            $redirectAfterSuccess->setDataFromEditmode($data);
-        }
-
-        $hideWhenLoggedIn = new $checkboxClass();
-        $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
-        $hideWhenLoggedIn->setDataFromEditmode($hideAreaAfterLogin);
-
-        $showSnippedWhenLoggedIn = null;
-        if ($loginSnippet instanceof Snippet) {
-            $showSnippedWhenLoggedIn = new $relationClass();
-            $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
-
-            $data2 = [
-                'id'      => $loginSnippet->getId(),
-                'type'    => 'document',
-                'subtype' => $loginSnippet->getType()
-            ];
-
-            $showSnippedWhenLoggedIn->setDataFromEditmode($data2);
-        }
-
         $blockArea->setDataFromEditmode([
             [
                 'key'    => '1',
@@ -113,20 +82,38 @@ class Members extends Module implements DependsOnModule
             ]
         ]);
 
-        $data = [
-            sprintf('%s', SystemHelper::AREA_TEST_NAMESPACE)                    => $blockArea,
-            sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE) => $hideWhenLoggedIn
+        $redirectAfterSuccess = new $relationClass();
+        $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE));
+
+        if ($redirectAfterSuccessDocument instanceof Page) {
+            $redirectAfterSuccess->setDataFromEditmode([
+                'id'      => $redirectAfterSuccessDocument->getId(),
+                'type'    => 'document',
+                'subtype' => $redirectAfterSuccessDocument->getType()
+            ]);
+        }
+
+        $hideWhenLoggedIn = new $checkboxClass();
+        $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
+        $hideWhenLoggedIn->setDataFromEditmode($hideAreaAfterLogin);
+
+        $showSnippedWhenLoggedIn = new $relationClass();
+        $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
+
+        if ($loginSnippet instanceof Snippet) {
+            $showSnippedWhenLoggedIn->setDataFromEditmode([
+                'id'      => $loginSnippet->getId(),
+                'type'    => 'document',
+                'subtype' => $loginSnippet->getType()
+            ]);
+        }
+
+        return [
+            $blockArea->getName()               => $blockArea,
+            $hideWhenLoggedIn->getName()        => $hideWhenLoggedIn,
+            $redirectAfterSuccess->getName()    => $redirectAfterSuccess,
+            $showSnippedWhenLoggedIn->getName() => $showSnippedWhenLoggedIn
         ];
-
-        if ($redirectAfterSuccess !== null) {
-            $data[sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE)] = $redirectAfterSuccess;
-        }
-
-        if ($showSnippedWhenLoggedIn !== null) {
-            $data[sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE)] = $showSnippedWhenLoggedIn;
-        }
-
-        return $data;
     }
 
     public function haveAProtectedAssetFolder()
