@@ -13,10 +13,22 @@ class LoginAreaCest
      */
     public function testLoginAreaElementForm(FunctionalTester $I)
     {
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables();
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement('div.members.login.area');
@@ -36,10 +48,22 @@ class LoginAreaCest
      */
     public function testLoginAreaElementWithDefaultSettingsAndInvalidCredentials(FunctionalTester $I)
     {
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables();
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
 
@@ -59,12 +83,23 @@ class LoginAreaCest
      */
     public function testLoginAreaElementWithDefaultSettingsAndValidCredentials(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
 
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables();
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -79,7 +114,6 @@ class LoginAreaCest
         $I->seeALoggedInFrontEndUser();
     }
 
-
     /**
      * @param FunctionalTester $I
      *
@@ -87,12 +121,23 @@ class LoginAreaCest
      */
     public function testLoginAreaElementWithHiddenAreaAfterLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => true
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
 
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables(null, null, true);
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -114,13 +159,29 @@ class LoginAreaCest
      */
     public function testLoginAreaElementWithRedirectToSpecificDocumentAfterSuccessfullyLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
-
         $redirectDocument = $I->haveAPageDocument('success-document');
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables($redirectDocument);
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type'             => 'relation',
+                'dataFromEditmode' => [
+                    'type'    => 'document',
+                    'id'      => $redirectDocument->getId(),
+                    'subtype' => $redirectDocument->getType()
+                ]
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $redirectDocument->getFullPath()));
@@ -139,18 +200,34 @@ class LoginAreaCest
      */
     public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
-
         $snippetParams = [
             'controller' => '@AppBundle\Controller\DefaultController',
-            'action' => 'snippet'
+            'action'     => 'snippet'
         ];
 
         $successSnippet = $I->haveASnippet('success-snippet', $snippetParams);
         $document = $I->haveAPageDocument('members-area-test');
 
-        $editables = $I->haveMembersAreaEditables(null, $successSnippet, false);
-        $I->seeAnAreaElementPlacedOnDocument($document, $editables);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation'
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type'             => 'relation',
+                'dataFromEditmode' => [
+                    'type'    => 'document',
+                    'id'      => $successSnippet->getId(),
+                    'subtype' => $successSnippet->getType()
+                ]
+            ],
+        ];
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
 

@@ -6,6 +6,7 @@ use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Dachcom\Codeception\Helper\PimcoreCore;
+use Dachcom\Codeception\Util\EditableHelper;
 use Dachcom\Codeception\Util\SystemHelper;
 use Dachcom\Codeception\Util\VersionHelper;
 use DachcomBundle\Test\Util\MembersHelper;
@@ -49,71 +50,6 @@ class Members extends Module implements DependsOnModule
     public function _inject(PimcoreBackend $connection)
     {
         $this->pimcoreBackend = $connection;
-    }
-
-    /**
-     * API Function to create area elements for members
-     *
-     * @param null|Page    $redirectAfterSuccessDocument
-     * @param null|Snippet $loginSnippet
-     * @param bool         $hideAreaAfterLogin
-     *
-     * @return array
-     */
-    public function haveMembersAreaEditables($redirectAfterSuccessDocument = null, $loginSnippet = null, $hideAreaAfterLogin = false)
-    {
-        if (VersionHelper::pimcoreVersionIsGreaterOrEqualThan('6.8.0')) {
-            $blockAreaClass = 'Pimcore\Model\Document\Editable\Areablock';
-            $checkboxClass = 'Pimcore\Model\Document\Editable\Checkbox';
-            $relationClass = 'Pimcore\Model\Document\Editable\Relation';
-        } else {
-            $blockAreaClass = 'Pimcore\Model\Document\Tag\Areablock';
-            $checkboxClass = 'Pimcore\Model\Document\Tag\Checkbox';
-            $relationClass = 'Pimcore\Model\Document\Tag\Relation';
-        }
-
-        $blockArea = new $blockAreaClass();
-        $blockArea->setName(SystemHelper::AREA_TEST_NAMESPACE);
-        $blockArea->setDataFromEditmode([
-            [
-                'key'    => '1',
-                'type'   => 'members_login',
-                'hidden' => false
-            ]
-        ]);
-
-        $redirectAfterSuccess = new $relationClass();
-        $redirectAfterSuccess->setName(sprintf('%s:1.redirectAfterSuccess', SystemHelper::AREA_TEST_NAMESPACE));
-
-        if ($redirectAfterSuccessDocument instanceof Page) {
-            $redirectAfterSuccess->setDataFromEditmode([
-                'id'      => $redirectAfterSuccessDocument->getId(),
-                'type'    => 'document',
-                'subtype' => $redirectAfterSuccessDocument->getType()
-            ]);
-        }
-
-        $hideWhenLoggedIn = new $checkboxClass();
-        $hideWhenLoggedIn->setName(sprintf('%s:1.hideWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
-        $hideWhenLoggedIn->setDataFromEditmode($hideAreaAfterLogin);
-
-        $showSnippedWhenLoggedIn = new $relationClass();
-        $showSnippedWhenLoggedIn->setName(sprintf('%s:1.showSnippedWhenLoggedIn', SystemHelper::AREA_TEST_NAMESPACE));
-
-        if ($loginSnippet instanceof Snippet) {
-            $showSnippedWhenLoggedIn->setDataFromEditmode([
-                'id'      => $loginSnippet->getId(),
-                'type'    => 'document',
-                'subtype' => $loginSnippet->getType()
-            ]);
-        }
-
-        return [
-            $blockArea->getName()               => $blockArea,
-            $hideWhenLoggedIn->getName()        => $hideWhenLoggedIn,
-            $redirectAfterSuccess->getName()    => $redirectAfterSuccess,
-            $showSnippedWhenLoggedIn->getName() => $showSnippedWhenLoggedIn
-        ];
     }
 
     public function haveAProtectedAssetFolder()
