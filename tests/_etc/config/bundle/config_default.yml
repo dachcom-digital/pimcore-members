@@ -1,8 +1,3 @@
-services:
-    DachcomBundle\Test\Services\TestRestrictedStaticRouteListener:
-        tags:
-            - { name: kernel.event_subscriber }
-
 members:
     oauth:
         enabled: true
