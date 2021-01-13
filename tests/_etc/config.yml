@@ -10,3 +10,6 @@ setup_files:
     - { path: app/views/staticRoute.html.twig, dest: ./app/Resources/views/Default/staticRoute.html.twig }
 preload_files:
     - { path: Services/TestRestrictedStaticRouteListener.php }
+additional_composer_packages:
+    - { package: knpuniversity/oauth2-client-bundle, version: ^1.0 }
+    - { package: league/oauth2-google, version: ^3.0 }
