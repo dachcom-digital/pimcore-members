@@ -1,3 +1,5 @@
+bundles:
+    - { namespace: \MembersBundle\MembersBundle }
 setup_files:
     - { path: app/config.yml, dest: ./app/config/config.yml }
     - { path: app/routing.yml, dest: ./app/config/routing.yml }
