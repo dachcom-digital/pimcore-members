@@ -13,7 +13,7 @@ class ChangePasswordFormCest
     public function testChangePasswordForm(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/change-password');
         $I->see('Current password', 'form[name="members_user_change_password_form"] label');
@@ -31,7 +31,7 @@ class ChangePasswordFormCest
     public function testChangePassword(FunctionalTester $I)
     {
         $user = $I->haveARegisteredFrontEndUser(true);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $I->amOnPage('/en/members/profile/change-password');
         $I->fillField('form[name="members_user_change_password_form"] input[type="password"][id="members_user_change_password_form_current_password"]', MembersHelper::DEFAULT_FEU_PASSWORD);

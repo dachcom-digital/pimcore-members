@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\functional\Restriction;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\FunctionalTester;
 
 class DocumentRestrictionCest
@@ -9,14 +10,14 @@ class DocumentRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testDocumentRestrictionWithoutAuthorization(FunctionalTester $I)
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true);
-        $document = $I->haveAPimcoreDocument('document-1');
+        $document = $I->haveAPageDocument('document-1');
 
         $I->addRestrictionToDocument($document, [$group1->getId()]);
         $I->amOnPage($document->getFullPath());
@@ -26,17 +27,17 @@ class DocumentRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testDocumentRestrictionWithoutAccessRights(FunctionalTester $I)
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true);
-        $document = $I->haveAPimcoreDocument('document-1');
+        $document = $I->haveAPageDocument('document-1');
 
         $I->addRestrictionToDocument($document, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
         $I->amOnPage($document->getFullPath());
         $I->see('You have no access rights to view the requested page.', '.members.refused');
     }
@@ -44,17 +45,17 @@ class DocumentRestrictionCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      * @throws \Exception
      */
     public function testDocumentRestrictionWithAuthorization(FunctionalTester $I)
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true, [$group1]);
-        $document = $I->haveAPimcoreDocument('document-1');
+        $document = $I->haveAPageDocument('document-1');
 
         $I->addRestrictionToDocument($document, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
         $I->amOnPage($document->getFullPath());
         $I->see('Test Page for Members', 'title');
     }

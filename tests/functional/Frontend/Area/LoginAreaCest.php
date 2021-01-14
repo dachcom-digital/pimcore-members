@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\functional\Frontend\Area;
 
+use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\FunctionalTester;
 use DachcomBundle\Test\Util\MembersHelper;
 
@@ -12,8 +13,22 @@ class LoginAreaCest
      */
     public function testLoginAreaElementForm(FunctionalTester $I)
     {
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement('div.members.login.area');
@@ -29,12 +44,26 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithDefaultSettingsAndInvalidCredentials(FunctionalTester $I)
     {
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
 
@@ -50,14 +79,27 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithDefaultSettingsAndValidCredentials(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
 
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document);
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -72,18 +114,30 @@ class LoginAreaCest
         $I->seeALoggedInFrontEndUser();
     }
 
-
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithHiddenAreaAfterLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => true
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation',
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
 
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, null, null, true);
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $document->getFullPath()));
@@ -101,15 +155,33 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithRedirectToSpecificDocumentAfterSuccessfullyLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
-
         $redirectDocument = $I->haveAPageDocument('success-document');
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, $redirectDocument);
+
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type'             => 'relation',
+                'dataFromEditmode' => [
+                    'type'    => 'document',
+                    'id'      => $redirectDocument->getId(),
+                    'subtype' => $redirectDocument->getType()
+                ]
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type' => 'relation',
+            ],
+        ];
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
         $I->seeElement(sprintf('form[class="members_user_login"] input[type="hidden"][id="_target_path"][value="%s"]', $redirectDocument->getFullPath()));
@@ -124,15 +196,38 @@ class LoginAreaCest
     /**
      * @param FunctionalTester $I
      *
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I)
     {
-        $I->haveARegisteredFrontEndUser(true);
+        $snippetParams = [
+            'controller' => '@AppBundle\Controller\DefaultController',
+            'action'     => 'snippet'
+        ];
 
-        $successSnippet = $I->haveASnippetDocument('success-snippet');
+        $successSnippet = $I->haveASnippet('success-snippet', $snippetParams);
         $document = $I->haveAPageDocument('members-area-test');
-        $I->seeAMembersAreaElementPlacedOnDocument($document, null, $successSnippet, false);
+
+        $editables = [
+            'hideWhenLoggedIn'        => [
+                'type'             => 'checkbox',
+                'dataFromEditmode' => false
+            ],
+            'redirectAfterSuccess'    => [
+                'type' => 'relation'
+            ],
+            'showSnippedWhenLoggedIn' => [
+                'type'             => 'relation',
+                'dataFromEditmode' => [
+                    'type'    => 'document',
+                    'id'      => $successSnippet->getId(),
+                    'subtype' => $successSnippet->getType()
+                ]
+            ],
+        ];
+
+        $I->haveARegisteredFrontEndUser(true);
+        $I->seeAnAreaElementPlacedOnDocument($document, 'members_login', $editables);
 
         $I->amOnPage('/members-area-test');
 

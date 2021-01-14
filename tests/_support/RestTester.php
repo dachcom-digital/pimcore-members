@@ -2,16 +2,7 @@
 
 namespace DachcomBundle\Test;
 
-/**
- * Class RestTester
- *
- * @package DachcomBundle\Test
- */
-class RestTester extends \Codeception\Actor
+class RestTester extends \Dachcom\Codeception\RestTester
 {
     use _generated\RestTesterActions;
-
-    /**
-     * Define custom actions here
-     */
 }

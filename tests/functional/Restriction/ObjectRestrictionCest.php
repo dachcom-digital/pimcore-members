@@ -15,8 +15,15 @@ class ObjectRestrictionCest
      */
     public function testObjectRestrictionWithoutAuthorization(FunctionalTester $I)
     {
+        $srParams = [
+            'pattern'   => '/(\\w+)\\/members-test-route\\/(\\d+)$/',
+            'reverse'   => '/%_locale/members-test-route/%object_id',
+            'action'    => 'staticRoute',
+            'variables' => '_locale,object_id',
+        ];
+
+        $staticRoute = $I->haveAStaticRoute('test_route', $srParams);
         $classDefinition = $I->haveAPimcoreClass('TestClass');
-        $staticRoute = $I->haveAStaticRoute('test_route');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true);
@@ -35,15 +42,15 @@ class ObjectRestrictionCest
      */
     public function testObjectRestrictionWithoutAccessRights(FunctionalTester $I)
     {
+        $staticRoute = $I->haveAStaticRoute('test_route', $this->getStaticRouteConfig());
         $classDefinition = $I->haveAPimcoreClass('TestClass');
-        $staticRoute = $I->haveAStaticRoute('test_route');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true);
         $object = $I->haveAPimcoreObject($classDefinition->getName(), 'object-1');
 
         $I->addRestrictionToObject($object, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
         $I->amOnStaticRoute($staticRoute->getName(), ['_locale' => 'en', 'object_id' => $object->getId()]);
         $I->see('You have no access rights to view the requested page.', '.members.refused');
     }
@@ -56,16 +63,29 @@ class ObjectRestrictionCest
      */
     public function testObjectRestrictionWithAuthorization(FunctionalTester $I)
     {
+        $staticRoute = $I->haveAStaticRoute('test_route', $this->getStaticRouteConfig());
         $classDefinition = $I->haveAPimcoreClass('TestClass');
-        $staticRoute = $I->haveAStaticRoute('test_route');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true, [$group1]);
         $object = $I->haveAPimcoreObject($classDefinition->getName(), 'object-1');
 
         $I->addRestrictionToObject($object, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
         $I->amOnStaticRoute($staticRoute->getName(), ['_locale' => 'en', 'object_id' => $object->getId()]);
         $I->see(sprintf('object id: %d', $object->getId()), '.static-route-debug');
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getStaticRouteConfig()
+    {
+        return [
+            'pattern'   => '/(\\w+)\\/members-test-route\\/(\\d+)$/',
+            'reverse'   => '/%_locale/members-test-route/%object_id',
+            'action'    => 'staticRoute',
+            'variables' => '_locale,object_id',
+        ];
     }
 }

@@ -15,7 +15,9 @@ class AssetRestrictionCest
     public function testAssetDownloadWithoutAuthorisation(FunctionalTester $I)
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
-        $asset = $I->haveAPimcoreAsset();
+
+        $restrictedFolder = $I->haveAProtectedAssetFolder();
+        $asset = $I->haveAPimcoreAsset('bundle-asset-test', ['parent' => $restrictedFolder]);
 
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
 
@@ -36,10 +38,12 @@ class AssetRestrictionCest
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true);
-        $asset = $I->haveAPimcoreAsset();
+
+        $restrictedFolder = $I->haveAProtectedAssetFolder();
+        $asset = $I->haveAPimcoreAsset('bundle-asset-test', ['parent' => $restrictedFolder]);
 
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $link = $I->haveASingleAssetDownloadLink($asset);
 
@@ -58,10 +62,12 @@ class AssetRestrictionCest
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true, [$group1]);
-        $asset = $I->haveAPimcoreAsset();
+
+        $restrictedFolder = $I->haveAProtectedAssetFolder();
+        $asset = $I->haveAPimcoreAsset('bundle-asset-test', ['parent' => $restrictedFolder]);
 
         $I->addRestrictionToAsset($asset, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $link = $I->haveASingleAssetDownloadLink($asset);
 
@@ -78,12 +84,14 @@ class AssetRestrictionCest
     {
         $group1 = $I->haveAFrontendUserGroup('group-1');
         $user = $I->haveARegisteredFrontEndUser(true, [$group1]);
-        $asset1 = $I->haveAPimcoreAsset('restricted-asset-1');
-        $asset2 = $I->haveAPimcoreAsset('restricted-asset-2');
+        $restrictedFolder = $I->haveAProtectedAssetFolder();
+
+        $asset1 = $I->haveAPimcoreAsset('restricted-asset-1', ['parent' => $restrictedFolder]);
+        $asset2 = $I->haveAPimcoreAsset('restricted-asset-2', ['parent' => $restrictedFolder]);
 
         $I->addRestrictionToAsset($asset1, [$group1->getId()]);
         $I->addRestrictionToAsset($asset2, [$group1->getId()]);
-        $I->amLoggedInAsFrontendUser($user);
+        $I->amLoggedInAsFrontendUser($user, 'members_fe');
 
         $link = $I->haveAMultipleAssetDownloadLink([['asset' => $asset1], ['asset' => $asset2]]);
 

@@ -2,8 +2,9 @@
 
 namespace DachcomBundle\Test\Test;
 
-use DachcomBundle\Test\Helper\PimcoreCore;
-use DachcomBundle\Test\Util\FileGeneratorHelper;
+use Codeception\Exception\ModuleException;
+use Dachcom\Codeception\Test\BundleTestCase;
+use Dachcom\Codeception\Util\SystemHelper;
 use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Configuration\Configuration;
@@ -11,18 +12,15 @@ use MembersBundle\Manager\SsoIdentityManager;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model\DataObject;
-use Pimcore\Tests\Test\TestCase;
+use Pimcore\Model\Document\Page;
 use Pimcore\Tests\Util\TestHelper;
 
-abstract class DachcomBundleTestCase extends TestCase
+abstract class DachcomBundleTestCase extends BundleTestCase
 {
     protected function _after()
     {
-        MembersHelper::cleanUp();
+        SystemHelper::cleanUp(['members_restrictions', 'members_group_relations']);
         MembersHelper::reCreateMembersStructure();
-        FileGeneratorHelper::cleanUp();
-
-        parent::_after();
     }
 
     /**
@@ -30,7 +28,7 @@ abstract class DachcomBundleTestCase extends TestCase
      * @param array $groups
      *
      * @return mixed
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     protected function createUser($published = false, $groups = [])
     {
@@ -62,7 +60,7 @@ abstract class DachcomBundleTestCase extends TestCase
      * @param string $identifier
      *
      * @return SsoIdentityInterface
-     * @throws \Codeception\Exception\ModuleException
+     * @throws ModuleException
      */
     protected function createSsoIdentity($published, $provider, $identifier)
     {
@@ -73,7 +71,6 @@ abstract class DachcomBundleTestCase extends TestCase
 
         $ssoIdentity = $ssoIdentityManager->createSsoIdentity($user, $provider, $identifier, '');
         $ssoIdentityManager->saveIdentity($ssoIdentity);
-
         $ssoIdentityManager->addSsoIdentity($user, $ssoIdentity);
 
         $userManager->updateUser($user);
@@ -104,7 +101,7 @@ abstract class DachcomBundleTestCase extends TestCase
     /**
      * @param array $groups
      *
-     * @return \Pimcore\Model\Document\Page
+     * @return Page
      */
     protected function createRestrictedDocument($groups = [])
     {
@@ -122,24 +119,5 @@ abstract class DachcomBundleTestCase extends TestCase
         }
 
         return $document;
-
-    }
-
-    /**
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
-     * @throws \Codeception\Exception\ModuleException
-     */
-    protected function getContainer()
-    {
-        return $this->getPimcoreBundle()->getContainer();
-    }
-
-    /**
-     * @return PimcoreCore
-     * @throws \Codeception\Exception\ModuleException
-     */
-    protected function getPimcoreBundle()
-    {
-        return $this->getModule('\\' . PimcoreCore::class);
     }
 }
