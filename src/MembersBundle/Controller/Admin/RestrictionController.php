@@ -168,38 +168,8 @@ class RestrictionController extends AdminController
             'success'    => true,
             'isActive'   => !empty($groups),
             'docId'      => (int) $settings->docId,
-            'userGroups' => !empty($groups) ? $restriction->getRelatedGroups() : []
+            'userGroups' => $restriction instanceof Restriction ? $restriction->getRelatedGroups() : []
         ]);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     */
-    public function deleteDocumentRestrictionConfigAction(Request $request)
-    {
-        $data = json_decode($request->query->get('data'));
-
-        $docId = (int) $data->docId;
-        $cType = $data->cType; //object|page|asset
-
-        $restriction = false;
-
-        try {
-            $restriction = Restriction::getByTargetId($docId, $cType);
-        } catch (\Exception $e) {
-        }
-
-        //restriction has been disabled! remove everything!
-        if ($restriction !== false) {
-            $restriction->getDao()->delete();
-        }
-
-        return $this->json(['success' => true]);
     }
 
     /**

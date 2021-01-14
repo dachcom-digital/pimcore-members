@@ -9,29 +9,20 @@ use Pimcore\Event\Model\DocumentEvent;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use MembersBundle\Service\RestrictionService;
 
 class RestrictionStoreListener implements EventSubscriberInterface
 {
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
     /**
      * @var RestrictionService
      */
     protected $serviceRestriction;
 
     /**
-     * @param RequestStack       $requestStack
      * @param RestrictionService $serviceRestriction
      */
-    public function __construct(RequestStack $requestStack, RestrictionService $serviceRestriction)
+    public function __construct(RestrictionService $serviceRestriction)
     {
-        $this->requestStack = $requestStack;
         $this->serviceRestriction = $serviceRestriction;
     }
 
@@ -108,15 +99,9 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleObjectUpdate(DataObjectEvent $e)
     {
-        if (!$this->requestStack->getMasterRequest() instanceof Request) {
-            return;
-        }
-
-        $params = $this->requestStack->getMasterRequest()->get('values');
-
         //only trigger update if object gets moved.
-        //default restriction object update gets handled by restrictionController.
-        if ($params === null) {
+        //default restriction page update gets handled by restrictionController or API.
+        if ($e->hasArgument('oldPath') === false) {
             return;
         }
 
@@ -128,15 +113,9 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleDocumentUpdate(DocumentEvent $e)
     {
-        if (!$this->requestStack->getMasterRequest() instanceof Request) {
-            return;
-        }
-
-        $params = $this->requestStack->getMasterRequest()->get('parentId');
-
         //only trigger update if page gets moved.
-        //default restriction page update gets handled by restrictionController.
-        if ($params === null) {
+        //default restriction page update gets handled by restrictionController or API.
+        if ($e->hasArgument('oldPath') === false) {
             return;
         }
 
@@ -148,15 +127,9 @@ class RestrictionStoreListener implements EventSubscriberInterface
      */
     public function handleAssetUpdate(AssetEvent $e)
     {
-        if (!$this->requestStack->getMasterRequest() instanceof Request) {
-            return;
-        }
-
-        $params = $this->requestStack->getMasterRequest()->get('parentId');
-
         //only trigger update if asset gets moved.
-        //default restriction asset update gets handled by restrictionController.
-        if ($params === null) {
+        //default restriction page update gets handled by restrictionController or API.
+        if ($e->hasArgument('oldPath') === false) {
             return;
         }
 

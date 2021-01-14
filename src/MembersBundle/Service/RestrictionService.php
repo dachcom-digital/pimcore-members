@@ -4,13 +4,30 @@ namespace MembersBundle\Service;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
+use MembersBundle\Event\RestrictionEvent;
+use MembersBundle\MembersEvents;
+use Pimcore\Cache;
 use Pimcore\Model;
 use Pimcore\Model\Element\ElementInterface;
 use MembersBundle\Restriction\Restriction;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RestrictionService
 {
     const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @param ElementInterface $obj
@@ -28,36 +45,46 @@ class RestrictionService
         if (!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
             throw new \Exception(sprintf('restriction cType needs to be one of these: %s', implode(', ', self::ALLOWED_RESTRICTION_CTYPES)));
         }
+
+        $isUpdate = true;
         $restriction = null;
-        $hasRestriction = true;
 
         try {
             $restriction = Restriction::getByTargetId($obj->getId(), $cType);
         } catch (\Exception $e) {
-            $hasRestriction = false;
+            // fail silently
         }
 
-        //remove restriction since no group is selected any more.
         if (empty($userGroupIds)) {
-            if ($hasRestriction === true) {
+
+            // remove restriction if no groups have been assigned
+            // and restriction is not inherited
+
+            if ($restriction instanceof Restriction && $restriction->isInherited() === false) {
+
                 $restriction->getDao()->delete();
-            }
-        } else {
-            if ($hasRestriction === false) {
-                $restriction = new Restriction();
-                $restriction->setTargetId($obj->getId());
-                $restriction->setCtype($cType);
+
+                $this->triggerEvent($obj, $restriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
+                $this->checkRestrictionContext($obj, $cType);
             }
 
-            $restriction->setInherit($inheritable);
-            $restriction->setIsInherited($isInherited);
-            $restriction->setRelatedGroups($userGroupIds);
-            $restriction->getDao()->save();
+            return null;
         }
 
-        $this->checkRestrictionContext($obj, $cType);
+        if (!$restriction instanceof Restriction) {
+            $isUpdate = false;
+            $restriction = new Restriction();
+            $restriction->setTargetId($obj->getId());
+            $restriction->setCtype($cType);
+        }
 
-        \Pimcore\Cache::clearTag('members');
+        $restriction->setInherit($inheritable);
+        $restriction->setIsInherited($isInherited);
+        $restriction->setRelatedGroups($userGroupIds);
+        $restriction->getDao()->save();
+
+        $this->triggerEvent($obj, $restriction, $isUpdate === true ? MembersEvents::ENTITY_UPDATE_RESTRICTION : MembersEvents::ENTITY_CREATE_RESTRICTION);
+        $this->checkRestrictionContext($obj, $cType);
 
         return $restriction;
     }
@@ -67,27 +94,25 @@ class RestrictionService
      *
      * @param ElementInterface $obj
      * @param string           $cType
-     *
-     * @return bool
-     *
-     * @throws DBALException
-     * @throws InvalidArgumentException
      */
     public function deleteRestriction($obj, $cType)
     {
         $docId = $obj->getId();
-        $restriction = false;
+        $restriction = null;
 
         try {
             $restriction = Restriction::getByTargetId($docId, $cType);
         } catch (\Exception $e) {
+            // fail silently
         }
 
-        if ($restriction !== false) {
-            $restriction->getDao()->delete();
+        if (!$restriction instanceof Restriction) {
+            return;
         }
 
-        return true;
+        $restriction->getDao()->delete();
+
+        $this->triggerEvent($obj, $restriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
     }
 
     /**
@@ -288,7 +313,7 @@ class RestrictionService
      * @throws DBALException
      * @throws InvalidArgumentException
      */
-    private function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
+    protected function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
     {
         $hasRestriction = $objectRestriction instanceof Restriction;
         $hasParentRestriction = $parentRestriction instanceof Restriction;
@@ -305,12 +330,17 @@ class RestrictionService
             $restriction->setRelatedGroups($parentRestriction->getRelatedGroups());
             $restriction->getDao()->save();
 
+            $this->triggerEvent($obj, $restriction, MembersEvents::ENTITY_UPDATE_RESTRICTION);
+
             return;
         }
 
         if (!$hasParentRestriction && $hasRestriction) {
             if ($objectRestriction->isInherited()) {
+
                 $objectRestriction->getDao()->delete();
+
+                $this->triggerEvent($obj, $objectRestriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
 
                 return;
             }
@@ -320,9 +350,13 @@ class RestrictionService
             if ($objectRestriction->isInherited()) {
                 if ($parentRestriction->getInherit() === false && $parentRestriction->isInherited() === false) {
                     $objectRestriction->getDao()->delete();
+
+                    $this->triggerEvent($obj, $objectRestriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
                 } else {
                     $objectRestriction->setRelatedGroups($parentRestriction->getRelatedGroups());
                     $objectRestriction->getDao()->save();
+
+                    $this->triggerEvent($obj, $objectRestriction, MembersEvents::ENTITY_UPDATE_RESTRICTION);
                 }
 
                 return;
@@ -335,7 +369,7 @@ class RestrictionService
      *
      * @return bool
      */
-    private function onlyUpdateChildren($obj)
+    protected function onlyUpdateChildren($obj)
     {
         if ($obj instanceof Model\DataObject\AbstractObject) {
             return $obj->getType() === 'folder';
@@ -346,5 +380,24 @@ class RestrictionService
         }
 
         return true;
+    }
+
+    /**
+     * @param ElementInterface $obj
+     * @param Restriction|null $restriction
+     * @param string           $eventName
+     */
+    protected function triggerEvent(ElementInterface $obj, ?Restriction $restriction, string $eventName)
+    {
+        $event = new RestrictionEvent($obj, $restriction);
+
+        $this->eventDispatcher->dispatch($eventName, $event);
+
+        $this->clearMembersCacheTags();
+    }
+
+    protected function clearMembersCacheTags()
+    {
+        Cache::clearTag('members');
     }
 }
