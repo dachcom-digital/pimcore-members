@@ -9,6 +9,7 @@ Just click the "update" button or execute the migration command to finish the bu
 #### Update from Version 3.1.3 to Version 3.1.4
 - **[ENHANCEMENT]**: Improving and adding additional Events for Restriction Changes on Entities ([#148](https://github.com/dachcom-digital/pimcore-members/issues/148))
 - **[ENHANCEMENT]**: Update Twig navigation to allow parameters ([@kjkooistra-youwe](https://github.com/dachcom-digital/pimcore-members/pull/147))
+- **[ENHANCEMENT]**: Protect documents starting with admin ([@youwe-petervanderwal](https://github.com/dachcom-digital/pimcore-members/pull/145))
 
 #### Update from Version 3.1.2 to Version 3.1.3
 - **[ENHANCEMENT]**: Pimcore 6.6.5 ready
