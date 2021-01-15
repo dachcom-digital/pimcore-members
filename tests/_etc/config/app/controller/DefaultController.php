@@ -24,4 +24,8 @@ class DefaultController extends FrontendController
     public function staticRouteAction(Request $request)
     {
     }
+
+    public function navigationAction(Request $request)
+    {
+    }
 }

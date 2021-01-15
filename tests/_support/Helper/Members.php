@@ -81,11 +81,12 @@ class Members extends Module implements DependsOnModule
      *
      * @param bool  $confirmed
      * @param array $groups
+     * @param array $additionalParameter
      *
      * @return mixed
      * @throws ModuleException
      */
-    public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [])
+    public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [], array $additionalParameter = [])
     {
         $configuration = $this->getContainer()->get(Configuration::class);
         $membersStoreObject = DataObject::getByPath($configuration->getConfig('storage_path'));
@@ -98,6 +99,12 @@ class Members extends Module implements DependsOnModule
         $userObject->setUserName(MembersHelper::DEFAULT_FEU_USERNAME);
         $userObject->setPlainPassword(MembersHelper::DEFAULT_FEU_PASSWORD);
         $userObject->setPublished(false);
+
+        if (count($additionalParameter) > 0) {
+            foreach ($additionalParameter as $additionalParam => $additionalParamValue) {
+                $userObject->setObjectVar($additionalParam, $additionalParamValue);
+            }
+        }
 
         $user = $userManager->updateUser($userObject);
 
