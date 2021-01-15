@@ -4,7 +4,7 @@ pimcore.registerNS('pimcore.plugin.members');
 pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     settings: {},
-    ready : false,
+    ready: false,
     dataQueue: [],
 
     getClassName: function () {
@@ -30,25 +30,21 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
                 this.processQueue();
 
             }.bind(this)
-
         });
-
-        var user = pimcore.globalmanager.get('user');
 
     },
 
     openSettings: function () {
         try {
             pimcore.globalmanager.get('members_settings').activate();
-        }
-        catch (e) {
+        } catch (e) {
             pimcore.globalmanager.add('members_settings', new pimcore.plugin.members.settings());
         }
     },
 
     postOpenDocument: function (doc) {
 
-        if( this.ready ) {
+        if (this.ready) {
             this.processElement(doc, 'page');
         } else {
             this.addElementToQueue(doc, 'page');
@@ -57,7 +53,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     postOpenObject: function (obj) {
 
-        if( this.ready ) {
+        if (this.ready) {
             this.processElement(obj, 'object');
         } else {
             this.addElementToQueue(obj, 'object');
@@ -66,7 +62,7 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     postOpenAsset: function (asset) {
 
-        if( this.ready ) {
+        if (this.ready) {
             this.processElement(asset, 'asset');
         } else {
             this.addElementToQueue(asset, 'asset');
@@ -75,14 +71,14 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
     postSaveDocument: function (doc, type, task, only) {
 
-        if( doc.members ) {
+        if (doc.members) {
             doc.members.restrictionTab.save();
         }
     },
 
     postSaveObject: function (obj, task, only) {
 
-        if( obj.members ) {
+        if (obj.members) {
             obj.members.restrictionTab.save();
         }
     },
@@ -93,21 +89,21 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
         if (pimcore.globalmanager.exists('asset_' + assetId) !== false) {
             asset = pimcore.globalmanager.get('asset_' + assetId);
-            if( asset.members ) {
+            if (asset.members) {
                 asset.members.restrictionTab.save();
             }
         }
     },
 
-    addElementToQueue: function(obj, type) {
-        this.dataQueue.push({'obj' : obj, 'type' : type});
+    addElementToQueue: function (obj, type) {
+        this.dataQueue.push({'obj': obj, 'type': type});
     },
 
-    processQueue: function() {
+    processQueue: function () {
 
-        if(this.dataQueue.length > 0) {
+        if (this.dataQueue.length > 0) {
 
-            Ext.each(this.dataQueue, function(data) {
+            Ext.each(this.dataQueue, function (data) {
 
                 var obj = data.obj,
                     type = data.type;
@@ -120,23 +116,23 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
         }
     },
 
-    processElement: function(obj, type) {
-
-        if(this.settings.restriction.enabled === false) {
-            return false;
-        }
+    processElement: function (obj, type) {
 
         var isAllowed = true;
 
-        if(type === 'object' && this.settings.restriction.allowed_objects.indexOf(obj.data.general.o_className) === -1) {
+        if (this.settings.restriction.enabled === false) {
+            return false;
+        }
+
+        if (type === 'object' && this.settings.restriction.allowed_objects.indexOf(obj.data.general.o_className) === -1) {
             isAllowed = false;
-        } else if(type === 'page' && ['page', 'link'].indexOf(obj.type ) === -1) {
+        } else if (type === 'page' && ['page', 'link'].indexOf(obj.type) === -1) {
             isAllowed = false;
-        } else if(type === 'asset' && !(obj.data.filename === 'restricted-assets' || obj.data.path.substring(0, 18) === '/restricted-assets')) {
+        } else if (type === 'asset' && !(obj.data.filename === 'restricted-assets' || obj.data.path.substring(0, 18) === '/restricted-assets')) {
             isAllowed = false;
         }
 
-        if(isAllowed) {
+        if (isAllowed) {
             obj.members = {};
             var restrictionTab = new pimcore.plugin.members.document.restriction(obj);
             restrictionTab.setup(type);

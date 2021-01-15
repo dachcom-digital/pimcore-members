@@ -13,9 +13,6 @@ members.controller.admin.get_groups:
 members.controller.admin.get_next_parent_restriction:
     path: /admin/members/restriction/get-next-parent-restriction
     defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::getNextParentRestrictionAction }
-members.controller.admin.delete_document_restriction_config:
-    path: /admin/members/restriction/delete-document-restriction-config
-    defaults: { _controller: MembersBundle\Controller\Admin\RestrictionController::deleteDocumentRestrictionConfigAction }
 members.asset_request:
     path: /members/request-data/{hash}
     defaults: { _controller: MembersBundle\Controller\RequestController::serveAction }

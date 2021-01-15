@@ -13,6 +13,7 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Security\RestrictionUri;
+use MembersBundle\Service\RestrictionService;
 use Pimcore\File;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
@@ -20,6 +21,7 @@ use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\MembersUser;
 use Pimcore\Model\Document;
 use Pimcore\Model\Document\Email;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 class Members extends Module implements DependsOnModule
@@ -295,6 +297,20 @@ class Members extends Module implements DependsOnModule
     }
 
     /**
+     * Actor function to change restriction to object
+     *
+     * @param AbstractObject $object
+     * @param array          $groups
+     * @param bool           $inherit
+     * @param bool           $inherited
+     */
+    public function changeRestrictionToObject(AbstractObject $object, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($object, 'object', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
      * Actor function to add restriction to asset
      *
      * @param Asset $asset
@@ -303,6 +319,20 @@ class Members extends Module implements DependsOnModule
      * @param bool  $inherited
      */
     public function addRestrictionToAsset(Asset $asset, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($asset, 'asset', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to change restriction to asset
+     *
+     * @param Asset $asset
+     * @param array $groups
+     * @param bool  $inherit
+     * @param bool  $inherited
+     */
+    public function changeRestrictionToAsset(Asset $asset, $groups = [], $inherit = false, $inherited = false)
     {
         $restriction = $this->createElementRestriction($asset, 'asset', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -320,6 +350,120 @@ class Members extends Module implements DependsOnModule
     {
         $restriction = $this->createElementRestriction($document, 'page', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to change restriction to document
+     *
+     * @param Document $document
+     * @param array    $groups
+     * @param bool     $inherit
+     * @param bool     $inherited
+     */
+    public function changeRestrictionToDocument(Document $document, $groups = [], $inherit = false, $inherited = false)
+    {
+        $restriction = $this->createElementRestriction($document, 'page', $groups, $inherit, $inherited);
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to see restriction on element
+     *
+     * @param ElementInterface $element
+     */
+    public function seeRestrictionOnEntity(ElementInterface $element)
+    {
+        $restriction = null;
+
+        try {
+            $type = $this->getEntityRestrictionType($element);
+            $restriction = Restriction::getByTargetId($element->getId(), $type);
+        } catch (\Throwable $e) {
+            // fail silently
+        }
+
+        $this->assertInstanceOf(Restriction::class, $restriction);
+    }
+
+    /**
+     * Actor function to see no restriction on element
+     *
+     * @param ElementInterface $element
+     */
+    public function seeNoRestrictionOnEntity(ElementInterface $element)
+    {
+        $restriction = null;
+
+        try {
+            $type = $this->getEntityRestrictionType($element);
+            $restriction = Restriction::getByTargetId($element->getId(), $type);
+        } catch (\Throwable $e) {
+            // fail silently
+        }
+
+        $this->assertEquals(null, $restriction);
+    }
+
+    /**
+     * Actor function to see restriction with groups on element
+     *
+     * @param ElementInterface $element
+     * @param array            $groups
+     */
+    public function seeRestrictionWithGroupsOnEntity(ElementInterface $element, $groups = [])
+    {
+        $restriction = null;
+
+        try {
+            $type = $this->getEntityRestrictionType($element);
+            $restriction = Restriction::getByTargetId($element->getId(), $type);
+        } catch (\Throwable $e) {
+            // fail silently
+        }
+
+        $groups = array_map(function (GroupInterface $group) {
+            return $group->getId();
+        }, $groups);
+
+        $this->assertEquals(array_sort($groups), array_sort($restriction->getRelatedGroups()));
+    }
+
+    /**
+     * Actor function to see inherited restriction on element
+     *
+     * @param ElementInterface $element
+     */
+    public function seeInheritedRestrictionOnEntity(ElementInterface $element)
+    {
+        $restriction = null;
+
+        try {
+            $type = $this->getEntityRestrictionType($element);
+            $restriction = Restriction::getByTargetId($element->getId(), $type);
+        } catch (\Throwable $e) {
+            // fail silently
+        }
+
+        $this->assertTrue($restriction->getIsInherited());
+    }
+
+    /**
+     * Actor function to see no inherited restriction on element
+     *
+     * @param ElementInterface $element
+     */
+    public function seeNoInheritedRestrictionOnEntity(ElementInterface $element)
+    {
+        $restriction = null;
+
+        try {
+            $type = $this->getEntityRestrictionType($element);
+            $restriction = Restriction::getByTargetId($element->getId(), $type);
+        } catch (\Throwable $e) {
+            // fail silently
+        }
+
+        $this->assertFalse($restriction->getIsInherited());
     }
 
     /**
@@ -378,15 +522,9 @@ class Members extends Module implements DependsOnModule
         bool $inherit = false,
         bool $inherited = false
     ) {
-        $restriction = new Restriction();
-        $restriction->setTargetId($element->getId());
-        $restriction->setCtype($type);
-        $restriction->setInherit($inherit);
-        $restriction->setIsInherited($inherited);
-        $restriction->setRelatedGroups($groups);
-        $restriction->save();
+        $restrictionService = $this->getContainer()->get(RestrictionService::class);
 
-        return $restriction;
+        return $restrictionService->createRestriction($element, $type, $inherit, $inherited, $groups);
     }
 
     /**
@@ -396,5 +534,23 @@ class Members extends Module implements DependsOnModule
     protected function getContainer()
     {
         return $this->getModule('\\' . PimcoreCore::class)->getContainer();
+    }
+
+    /**
+     * @param ElementInterface $element
+     *
+     * @return string
+     */
+    protected function getEntityRestrictionType(ElementInterface $element)
+    {
+        if ($element instanceof Document) {
+            return 'page';
+        } elseif ($element instanceof DataObject) {
+            return 'object';
+        } elseif ($element instanceof Asset) {
+            return 'asset';
+        }
+
+        return '';
     }
 }

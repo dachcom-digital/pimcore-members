@@ -11,6 +11,39 @@
 
 ***
 
+### members.entity.restriction.create
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:ENTITY_CREATE_RESTRICTION` |
+| **name** | `members.entity.restriction.create` |
+| **class** | `\MembersBundle\Event\RestrictionEvent` |
+| **description** | The ENTITY_CREATE_RESTRICTION event occurs after a restriction has been created |
+
+***
+
+### members.entity.restriction.update
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:ENTITY_UPDATE_RESTRICTION` |
+| **name** | `members.entity.restriction.update` |
+| **class** | `\MembersBundle\Event\RestrictionEvent` |
+| **description** | ENTITY_UPDATE_RESTRICTION event occurs after a restriction has been updated |
+
+***
+
+### members.entity.restriction.delete
+
+| Type | Reference |
+|:--- |:--- |
+| **const** | `\MembersEvent:ENTITY_DELETE_RESTRICTION` |
+| **name** | `members.entity.restriction.delete` |
+| **class** | `\MembersBundle\Event\RestrictionEvent` |
+| **description** | The ENTITY_DELETE_RESTRICTION event occurs after a restriction has been deleted |
+
+***
+
 ### members.change_password.edit.initialize
 
 | Type | Reference |

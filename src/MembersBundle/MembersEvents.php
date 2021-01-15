@@ -12,6 +12,27 @@ final class MembersEvents
     const RESTRICTION_CHECK_STATICROUTE = 'members.restriction.staticroute';
 
     /**
+     * The ENTITY_CREATE_RESTRICTION event occurs after a restriction has been created
+     *
+     * @Event("MembersBundle\Event\RestrictionEvent")
+     */
+    const ENTITY_CREATE_RESTRICTION = 'members.entity.restriction.create';
+
+    /**
+     * The ENTITY_UPDATE_RESTRICTION event occurs after a restriction has been updated
+     *
+     * @Event("MembersBundle\Event\RestrictionEvent")
+     */
+    const ENTITY_UPDATE_RESTRICTION = 'members.entity.restriction.update';
+
+    /**
+     * The ENTITY_DELETE_RESTRICTION event occurs after a restriction has been deleted
+     *
+     * @Event("MembersBundle\Event\RestrictionEvent")
+     */
+    const ENTITY_DELETE_RESTRICTION = 'members.entity.restriction.delete';
+
+    /**
      * The CHANGE_PASSWORD_INITIALIZE event occurs when the change password process is initialized.
      *
      * This event allows you to modify the default values of the user before binding the form.

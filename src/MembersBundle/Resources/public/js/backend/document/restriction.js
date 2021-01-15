@@ -1,23 +1,12 @@
 pimcore.registerNS('pimcore.plugin.members.document.restriction');
 pimcore.plugin.members.document.restriction = Class.create({
-    /**
-     *
-     */
+
     layout : null,
 
-    /**
-     *
-     */
     element : null,
 
-    /**
-     *
-     */
     data : null,
 
-    /**
-     *
-     */
     userGroupsStore : null,
 
     /**
@@ -25,9 +14,6 @@ pimcore.plugin.members.document.restriction = Class.create({
      */
     cType : null,
 
-    /**
-     * constructor
-     */
     initialize: function(doc) {
         this.element = doc;
     },
@@ -262,30 +248,11 @@ pimcore.plugin.members.document.restriction = Class.create({
         };
 
         Ext.Ajax.request({
-
             url: '/admin/members/restriction/set-document-restriction-config',
             params: {
                 data : Ext.encode(values)
             }
-
         });
 
-    },
-
-    delete : function() {
-
-        var _self = this,
-            values = {
-                docId: _self.element.id,
-                cType : _self.cType
-            };
-
-        Ext.Ajax.request({
-
-            url: '/admin/members/restriction/delete-document-restriction-config',
-            params: {
-                data : Ext.encode(values)
-            }
-        });
     }
 });

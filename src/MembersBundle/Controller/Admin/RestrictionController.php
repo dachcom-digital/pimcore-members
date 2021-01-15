@@ -8,6 +8,7 @@ use MembersBundle\Restriction\Restriction;
 use MembersBundle\Service\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminController;
 use MembersBundle\Configuration\Configuration;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -136,22 +137,26 @@ class RestrictionController extends AdminController
      */
     public function setDocumentRestrictionConfigAction(Request $request)
     {
-        $data = json_decode($request->query->get('data'));
+        $data = json_decode($request->query->get('data'), true);
 
-        $docId = (int) $data->docId;
-        $settings = $data->settings;
-        $cType = $data->cType; //object|page|asset
+        $docId = (int) $data['docId'];
+        $settings = $data['settings'] ?? null;
+        $cType = $data['cType'] ?? null; //object|page|asset
 
         $pimcoreType = 'document';
-        if ($cType == 'object') {
+        if ($cType === 'object') {
             $pimcoreType = 'object';
-        } elseif ($cType == 'asset') {
+        } elseif ($cType === 'asset') {
             $pimcoreType = 'asset';
         }
 
         $obj = Service::getElementById($pimcoreType, $docId);
 
-        $inheritableState = $settings->membersDocumentInheritable;
+        if (!$obj instanceof ElementInterface) {
+            return $this->json(['success' => false]);
+        }
+
+        $inheritableState = $settings['membersDocumentInheritable'];
 
         if ($inheritableState === 'on') {
             $inheritable = true;
@@ -161,45 +166,15 @@ class RestrictionController extends AdminController
             $inheritable = false;
         }
 
-        $groups = array_filter(explode(',', $settings->membersDocumentUserGroups));
+        $groups = array_filter(explode(',', $settings['membersDocumentUserGroups']));
         $restriction = $this->restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
 
         return $this->json([
             'success'    => true,
             'isActive'   => !empty($groups),
-            'docId'      => (int) $settings->docId,
-            'userGroups' => !empty($groups) ? $restriction->getRelatedGroups() : []
+            'docId'      => (int) $settings['docId'],
+            'userGroups' => $restriction instanceof Restriction ? $restriction->getRelatedGroups() : []
         ]);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     */
-    public function deleteDocumentRestrictionConfigAction(Request $request)
-    {
-        $data = json_decode($request->query->get('data'));
-
-        $docId = (int) $data->docId;
-        $cType = $data->cType; //object|page|asset
-
-        $restriction = false;
-
-        try {
-            $restriction = Restriction::getByTargetId($docId, $cType);
-        } catch (\Exception $e) {
-        }
-
-        //restriction has been disabled! remove everything!
-        if ($restriction !== false) {
-            $restriction->getDao()->delete();
-        }
-
-        return $this->json(['success' => true]);
     }
 
     /**
