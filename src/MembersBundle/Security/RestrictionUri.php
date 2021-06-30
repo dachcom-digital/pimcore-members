@@ -9,20 +9,12 @@ use Pimcore\Model;
 
 class RestrictionUri
 {
-    const PROTECTED_ASSET_FOLDER = 'restricted-assets';
+    public const PROTECTED_ASSET_FOLDER = 'restricted-assets';
 
-    const MEMBERS_REQUEST_URL = '/members/request-data/';
+    public const MEMBERS_REQUEST_URL = '/members/request-data/';
 
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
+    protected RestrictionManagerInterface $restrictionManager;
 
-    /**
-     * RestrictionUri constructor.
-     *
-     * @param RestrictionManagerInterface $restrictionManager
-     */
     public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;

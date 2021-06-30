@@ -2,7 +2,6 @@
 
 namespace MembersBundle;
 
-use MembersBundle\Tool\Install;
 use MembersBundle\DependencyInjection\CompilerPass\OAuthLoginStrategyPass;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
 use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
@@ -21,7 +20,7 @@ class MembersBundle extends AbstractPimcoreBundle implements DependentBundleInte
      */
     public function getInstaller()
     {
-        return $this->container->get(Install::class);
+        return null;
     }
 
     /**

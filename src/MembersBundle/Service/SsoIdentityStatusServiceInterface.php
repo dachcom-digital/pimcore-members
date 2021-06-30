@@ -6,17 +6,7 @@ use MembersBundle\Adapter\User\UserInterface;
 
 interface SsoIdentityStatusServiceInterface
 {
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    public function identityCanCompleteProfile(UserInterface $user);
+    public function identityCanCompleteProfile(UserInterface $user): bool;
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    public function identityCanBeDeleted(UserInterface $user);
+    public function identityCanBeDeleted(UserInterface $user): bool;
 }

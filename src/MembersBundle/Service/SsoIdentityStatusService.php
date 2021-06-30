@@ -6,24 +6,13 @@ use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthIdentityEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 {
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
-     * @param EventDispatcherInterface    $eventDispatcher
-     */
     public function __construct(
         SsoIdentityManagerInterface $ssoIdentityManager,
         EventDispatcherInterface $eventDispatcher
@@ -35,51 +24,36 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
     /**
      * {@inheritdoc}
      */
-    public function identityCanCompleteProfile(UserInterface $user)
+    public function identityCanCompleteProfile(UserInterface $user): bool
     {
         if ($this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION) === false) {
             return $this->determinateProfileCompletionByDefaults($user);
         }
 
         $event = new OAuthIdentityEvent($user);
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION);
 
         return $event->identityCanDispatch();
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    public function identityCanBeDeleted(UserInterface $user)
+    public function identityCanBeDeleted(UserInterface $user): bool
     {
         if ($this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_DELETION) === false) {
             return $this->determinateDeletionByDefaults($user);
         }
 
         $event = new OAuthIdentityEvent($user);
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_IDENTITY_STATUS_DELETION, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_IDENTITY_STATUS_DELETION);
 
         return $event->identityCanDispatch();
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    protected function determinateProfileCompletionByDefaults(UserInterface $user)
+    protected function determinateProfileCompletionByDefaults(UserInterface $user): bool
     {
         return empty($user->getPassword());
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return bool
-     */
-    protected function determinateDeletionByDefaults(UserInterface $user)
+    protected function determinateDeletionByDefaults(UserInterface $user): bool
     {
         // don't touch a user with a stored password
         if (!empty($user->getPassword())) {
@@ -88,10 +62,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 
         // don't touch a user if he has other identities
         $userSsoIdentities = $this->ssoIdentityManager->getSsoIdentities($user);
-        if (is_array($userSsoIdentities) && count($userSsoIdentities) > 0) {
-            return false;
-        }
 
-        return true;
+        return !(is_array($userSsoIdentities) && count($userSsoIdentities) > 0);
     }
 }

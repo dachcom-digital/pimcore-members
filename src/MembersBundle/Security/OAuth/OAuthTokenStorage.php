@@ -7,32 +7,20 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OAuthTokenStorage implements OAuthTokenStorageInterface
 {
-    /**
-     * @var SessionInterface
-     */
-    protected $session;
+    protected SessionInterface $session;
 
-    /**
-     * @param SessionInterface $session
-     */
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function saveToken(string $key, OAuthResponseInterface $OAuthResponse)
+    public function saveToken(string $key, OAuthResponseInterface $OAuthResponse): void
     {
         $this->getSessionBag()->set($this->buildSessionKey('token', $key), $OAuthResponse);
         $this->getSessionBag()->set($this->buildSessionKey('timestamp', $key), time());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function loadToken(string $key, int $maxLifetime = 300)
+    public function loadToken(string $key, int $maxLifetime = 300): ?OAuthResponseInterface
     {
         $timestamp = $this->getSessionBag()->get($this->buildSessionKey('timestamp', $key));
         $token = $this->getSessionBag()->get($this->buildSessionKey('token', $key));
@@ -44,34 +32,20 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function destroyToken(string $key)
+    public function destroyToken(string $key): void
     {
         $this->getSessionBag()->remove($this->buildSessionKey('token', $key));
         $this->getSessionBag()->remove($this->buildSessionKey('timestamp', $key));
     }
 
-    /**
-     * @param string $type
-     * @param string $key
-     *
-     * @return string
-     */
     protected function buildSessionKey(string $type, string $key): string
     {
         return sprintf('members.oauth.token.%s.%s', $type, $key);
     }
 
-    /**
-     * @return NamespacedAttributeBag
-     */
-    protected function getSessionBag()
+    protected function getSessionBag(): NamespacedAttributeBag
     {
         /** @var NamespacedAttributeBag $bag */
-        $bag = $this->session->getBag('members_session');
-
-        return $bag;
+        return $this->session->getBag('members_session');
     }
 }

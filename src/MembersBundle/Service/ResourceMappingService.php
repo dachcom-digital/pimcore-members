@@ -6,35 +6,21 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthResourceEvent;
 use MembersBundle\MembersEvents;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResourceMappingService
 {
-    const MAP_FOR_PROFILE = 'profile';
+    public const MAP_FOR_PROFILE = 'profile';
+    public const MAP_FOR_REGISTRATION = 'registration';
 
-    const MAP_FOR_REGISTRATION = 'registration';
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param UserInterface          $user
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param string                 $type
-     *
-     * @throws \Exception
-     */
-    public function mapResourceData(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type)
+    public function mapResourceData(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
         $eventIdentifier = sprintf('OAUTH_RESOURCE_MAPPING_%s', strtoupper($type));
         $eventPath = sprintf('%s::%s', MembersEvents::class, $eventIdentifier);
@@ -54,12 +40,7 @@ class ResourceMappingService
         $this->eventDispatcher->dispatch($eventName, $event);
     }
 
-    /**
-     * @param UserInterface          $user
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param string                 $type
-     */
-    public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type)
+    public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
         $ownerDetails = $resourceOwner->toArray();
         $disallowedProperties = ['lastLogin', 'password', 'confirmationToken', 'passwordRequestedAt', 'groups', 'ssoIdentities'];
@@ -77,12 +58,7 @@ class ResourceMappingService
         }
     }
 
-    /**
-     * @param UserInterface $user
-     * @param string        $property
-     * @param mixed         $value
-     */
-    protected function setIfEmpty(UserInterface $user, $property, $value = null)
+    protected function setIfEmpty(UserInterface $user, string $property, $value = null)
     {
         $getter = 'get' . ucfirst($property);
         $setter = 'set' . ucfirst($property);

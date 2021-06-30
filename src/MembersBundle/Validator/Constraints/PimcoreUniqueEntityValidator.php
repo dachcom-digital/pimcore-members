@@ -11,16 +11,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class PimcoreUniqueEntityValidator extends ConstraintValidator
 {
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
+    protected UserManagerInterface $userManager;
 
-    /**
-     * IsUniqueEmailValidator constructor.
-     *
-     * @param UserManagerInterface $userManager
-     */
     public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;

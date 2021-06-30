@@ -8,56 +8,22 @@ use MembersBundle\Adapter\User\UserInterface;
 interface SsoIdentityManagerInterface
 {
     /**
-     * @param UserInterface $user
-     *
      * @return SsoIdentityInterface[]
      */
-    public function getSsoIdentities(UserInterface $user);
+    public function getSsoIdentities(UserInterface $user): array;
 
-    /**
-     * @param string $provider
-     * @param string $identifier
-     *
-     * @return UserInterface|null
-     */
-    public function getUserBySsoIdentity(string $provider, $identifier);
+    public function getUserBySsoIdentity(string $provider, string $identifier): ?UserInterface;
 
-    /**
-     * @param UserInterface $user
-     * @param string        $provider
-     * @param string        $identifier
-     *
-     * @return SsoIdentityInterface|null
-     */
-    public function getSsoIdentity(UserInterface $user, $provider, $identifier);
+    public function getSsoIdentity(UserInterface $user, string $provider, string $identifier): ?SsoIdentityInterface;
 
-    /**
-     * @param UserInterface        $user
-     * @param SsoIdentityInterface $ssoIdentity
-     */
     public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity);
 
-    /**
-     * @param UserInterface $user
-     * @param string        $provider
-     * @param string        $identifier
-     * @param mixed         $profileData
-     *
-     * @return SsoIdentityInterface
-     */
-    public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData);
+    public function createSsoIdentity(UserInterface $user, string $provider, string $identifier, string $profileData): SsoIdentityInterface;
+
+    public function saveIdentity(SsoIdentityInterface $ssoIdentity): void;
 
     /**
-     * @param SsoIdentityInterface $ssoIdentity
-     *
-     * @throws \Exception
-     */
-    public function saveIdentity(SsoIdentityInterface $ssoIdentity);
-
-    /**
-     * @param int $ttl (seconds)
-     *
      * @return SsoIdentityInterface[]
      */
-    public function findExpiredSsoIdentities(int $ttl = 0);
+    public function findExpiredSsoIdentities(int $ttl = 0): array;
 }

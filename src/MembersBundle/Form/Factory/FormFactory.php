@@ -3,36 +3,16 @@
 namespace MembersBundle\Form\Factory;
 
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 
 class FormFactory implements FactoryInterface
 {
-    /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
+    private FormFactoryInterface $formFactory;
+    private string $name;
+    private string $type;
+    private array $validationGroups;
 
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var array
-     */
-    private $validationGroups;
-
-    /**
-     * @param FormFactoryInterface $formFactory
-     * @param string               $name
-     * @param string               $type
-     * @param array                $validationGroups
-     */
-    public function __construct(FormFactoryInterface $formFactory, $name, $type, array $validationGroups = null)
+    public function __construct(FormFactoryInterface $formFactory, string $name, string $type, array $validationGroups = [])
     {
         $this->formFactory = $formFactory;
         $this->name = $name;
@@ -40,28 +20,19 @@ class FormFactory implements FactoryInterface
         $this->validationGroups = $validationGroups;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createForm(array $options = [])
+    public function createForm(array $options = []): FormInterface
     {
         $options = array_merge(['validation_groups' => $this->validationGroups], $options);
 
         return $this->formFactory->createNamed($this->name, $this->type, null, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createUnnamedForm()
+    public function createUnnamedForm(): FormInterface
     {
         return $this->formFactory->createNamed('', $this->type, null, ['validation_groups' => $this->validationGroups]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createUnnamedFormWithOptions(array $options = [])
+    public function createUnnamedFormWithOptions(array $options = []): FormInterface
     {
         $options = array_merge(['validation_groups' => $this->validationGroups], $options);
 

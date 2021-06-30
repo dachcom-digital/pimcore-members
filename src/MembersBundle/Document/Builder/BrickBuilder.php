@@ -4,7 +4,6 @@ namespace MembersBundle\Document\Builder;
 
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\Document;
-use Pimcore\Placeholder;
 use Pimcore\Templating\Renderer\IncludeRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,76 +13,24 @@ use Symfony\Component\Security\Core\Security;
 
 class BrickBuilder
 {
-    /**
-     * @var string
-     */
-    protected $sourceType = 'area';
-
-    /**
-     * @var IncludeRenderer
-     */
-    protected $includeRenderer;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var string
-     */
-    protected $logoutUri = null;
-
-    /**
-     * @var bool
-     */
-    protected $hideAfterLogin = false;
-
-    /**
-     * @var Document
-     */
-    protected $redirectPage = null;
-
-    /**
-     * @var Document\Snippet
-     */
-    protected $successSnippet = null;
-
-    /**
-     * @var Request
-     */
-    protected $request = false;
-
-    /**
-     * @var bool
-     */
-    protected $editMode = false;
-
-    /**
-     * @var string
-     */
-    protected $error = null;
-
-    /**
-     * @var array
-     */
-    private $templates = [
+    protected string $sourceType = 'area';
+    protected IncludeRenderer $includeRenderer;
+    protected TokenStorageInterface $tokenStorage;
+    protected UrlGeneratorInterface $urlGenerator;
+    protected ?string $logoutUri = null;
+    protected bool $hideAfterLogin = false;
+    protected ?Document $redirectPage = null;
+    protected ?Document\Snippet $successSnippet = null;
+    protected ?Request $request = null;
+    protected bool $editMode = false;
+    protected ?string $error = null;
+    private array $templates = [
         'area-login'             => 'Auth/Area/login_area',
         'area-logged-in'         => 'Auth/Area/login_area_logged_in',
         'area-logged-in-snippet' => 'Auth/Area/login_area_logged_in_snippet',
         'area-not-available'     => 'Auth/Area/frontend_request'
     ];
 
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param IncludeRenderer       $includeRenderer
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         IncludeRenderer $includeRenderer,
@@ -94,12 +41,7 @@ class BrickBuilder
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @param string $sourceType
-     *
-     * @return $this
-     */
-    public function setup($sourceType)
+    public function setup(string $sourceType): static
     {
         $this->sourceType = $sourceType;
         $this->logoutUri = $this->urlGenerator->generate('members_user_security_logout');
@@ -107,57 +49,34 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return $this
-     */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): static
     {
         $this->request = $request;
 
         return $this;
     }
 
-    /**
-     * @param bool $isEditMode
-     *
-     * @return $this
-     */
-    public function setEditMode($isEditMode = false)
+    public function setEditMode(bool $isEditMode = false): static
     {
         $this->editMode = $isEditMode;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param string $path
-     */
-    public function setTemplate($name, $path = '')
+    public function setTemplate(string $name, string $path = ''): void
     {
         $this->templates[$name] = $path;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getTemplate($name)
+    public function getTemplate(string $name): string
     {
         return $this->templates[$name];
     }
 
     /**
      * Allowed Types: 'page', 'link', 'hardlink'.
-     *
-     * @param Document $page
-     *
-     * @return $this
      */
-    public function setRedirectAfterSuccess($page)
+    public function setRedirectAfterSuccess(Document $page): static
     {
         if ($page instanceof Document) {
             $this->redirectPage = $page;
@@ -166,12 +85,7 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param Document\Snippet $snippet
-     *
-     * @return $this
-     */
-    public function setSnippetAfterLogin($snippet)
+    public function setSnippetAfterLogin(Document\Snippet $snippet): static
     {
         if ($snippet instanceof Document\Snippet) {
             $this->successSnippet = $snippet;
@@ -180,26 +94,14 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param string|bool $hide
-     *
-     * @return $this
-     */
-    public function setHideAfterLogin($hide = false)
+    public function setHideAfterLogin(bool $hide = false): static
     {
-        if (is_string($hide)) {
-            $this->hideAfterLogin = $hide === '1';
-        } elseif (is_bool($hide)) {
-            $this->hideAfterLogin = $hide;
-        }
+        $this->hideAfterLogin = $hide;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getViewParams()
+    public function getViewParams(): array
     {
         $template = '';
 
@@ -256,9 +158,9 @@ class BrickBuilder
                     'current_uri'  => $this->request->getRequestUri()
                 ];
 
-                $placeholder = new Placeholder();
-                $snippetContent = $this->includeRenderer->render($this->successSnippet, $snippetParams, $this->editMode);
-                $params['members_snippet_content'] = $placeholder->replacePlaceholders($snippetContent, $snippetParams);
+//                $placeholder = new Placeholder();
+//                $snippetContent = $this->includeRenderer->render($this->successSnippet, $snippetParams, $this->editMode);
+//                $params['members_snippet_content'] = $placeholder->replacePlaceholders($snippetContent, $snippetParams);
 
                 $template = $this->getTemplate('area-logged-in-snippet');
             } elseif ($this->hideAfterLogin === false) {

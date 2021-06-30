@@ -7,32 +7,16 @@ use MembersBundle\Event\OAuth\OAuthResponseEvent;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class ConnectDispatcher implements DispatcherInterface
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
+    protected TokenStorageInterface $tokenStorage;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected OAuthRegistrationHandler $oAuthRegistrationHandler;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var OAuthRegistrationHandler
-     */
-    protected $oAuthRegistrationHandler;
-
-    /**
-     * @param TokenStorageInterface    $tokenStorage
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param OAuthRegistrationHandler $oAuthRegistrationHandler
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         EventDispatcherInterface $eventDispatcher,
@@ -43,10 +27,7 @@ class ConnectDispatcher implements DispatcherInterface
         $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function dispatch(string $provider, OAuthResponse $oAuthResponse)
+    public function dispatch(string $provider, OAuthResponse $oAuthResponse): ?UserInterface
     {
         $token = $this->tokenStorage->getToken();
 
@@ -59,7 +40,7 @@ class ConnectDispatcher implements DispatcherInterface
 
         $this->oAuthRegistrationHandler->connectSsoIdentity($user, $oAuthResponse);
 
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS, new OAuthResponseEvent($oAuthResponse));
+        $this->eventDispatcher->dispatch(new OAuthResponseEvent($oAuthResponse), MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS);
 
         return $user;
     }

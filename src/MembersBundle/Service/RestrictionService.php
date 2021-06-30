@@ -10,37 +10,20 @@ use Pimcore\Cache;
 use Pimcore\Model;
 use Pimcore\Model\Element\ElementInterface;
 use MembersBundle\Restriction\Restriction;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RestrictionService
 {
-    const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
+    public const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * @param ElementInterface $obj
-     * @param string           $cType
-     * @param bool             $inheritable
-     * @param bool             $isInherited
-     * @param array            $userGroupIds
-     *
-     * @return Restriction|null
-     *
-     * @throws \Exception
-     */
-    public function createRestriction(ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = [])
+    public function createRestriction(ElementInterface $obj, string $cType, bool $inheritable = false, bool $isInherited = false, array $userGroupIds = []): ?Restriction
     {
         if (!in_array($cType, self::ALLOWED_RESTRICTION_CTYPES)) {
             throw new \Exception(sprintf('restriction cType needs to be one of these: %s', implode(', ', self::ALLOWED_RESTRICTION_CTYPES)));
@@ -89,13 +72,7 @@ class RestrictionService
         return $restriction;
     }
 
-    /**
-     * Triggered by pre deletion events of all types.
-     *
-     * @param ElementInterface $obj
-     * @param string           $cType
-     */
-    public function deleteRestriction($obj, $cType)
+    public function deleteRestriction(ElementInterface $obj, string $cType): void
     {
         $docId = $obj->getId();
         $restriction = null;
@@ -115,17 +92,7 @@ class RestrictionService
         $this->triggerEvent($obj, $restriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
     }
 
-    /**
-     * Triggered by post update events of all types ONLY when element gets moved in tree!
-     * Check if element is in right context.
-     *
-     * @param ElementInterface $obj
-     * @param string           $cType
-     *
-     * @throws DBALException
-     * @throws InvalidArgumentException
-     */
-    public function checkRestrictionContext($obj, $cType)
+    public function checkRestrictionContext(ElementInterface $obj, string $cType)
     {
         $restriction = null;
         $parentRestriction = null;
@@ -149,14 +116,7 @@ class RestrictionService
         $this->updateChildren($obj, $cType);
     }
 
-    /**
-     * @param ElementInterface $obj
-     * @param string           $cType
-     *
-     * @throws DBALException
-     * @throws InvalidArgumentException
-     */
-    private function updateChildren($obj, $cType)
+    private function updateChildren(ElementInterface $obj, string $cType): void
     {
         $list = null;
         if ($obj instanceof Model\DataObject\AbstractObject) {
@@ -202,13 +162,7 @@ class RestrictionService
         }
     }
 
-    /**
-     * @param int    $elementId
-     * @param string $cType
-     *
-     * @return array
-     */
-    public function findClosestInheritanceParent($elementId, $cType)
+    public function findClosestInheritanceParent(int $elementId, string $cType): array
     {
         $type = 'document';
         if ($cType === 'object') {
@@ -304,16 +258,7 @@ class RestrictionService
         ];
     }
 
-    /**
-     * @param ElementInterface $obj
-     * @param string           $cType
-     * @param Restriction|null $objectRestriction
-     * @param Restriction|null $parentRestriction
-     *
-     * @throws DBALException
-     * @throws InvalidArgumentException
-     */
-    protected function updateRestrictionContext($obj, $cType, $objectRestriction, $parentRestriction)
+    protected function updateRestrictionContext(ElementInterface $obj, string $cType, ?Restriction $objectRestriction, ?Restriction $parentRestriction)
     {
         $hasRestriction = $objectRestriction instanceof Restriction;
         $hasParentRestriction = $parentRestriction instanceof Restriction;
@@ -364,39 +309,33 @@ class RestrictionService
         }
     }
 
-    /**
-     * @param ElementInterface $obj
-     *
-     * @return bool
-     */
-    protected function onlyUpdateChildren($obj)
+    protected function onlyUpdateChildren(ElementInterface $obj): bool
     {
         if ($obj instanceof Model\DataObject\AbstractObject) {
             return $obj->getType() === 'folder';
-        } elseif ($obj instanceof Model\Document) {
+        }
+
+        if ($obj instanceof Model\Document) {
             return !in_array($obj->getType(), ['page', 'link']);
-        } elseif ($obj instanceof Model\Asset) {
+        }
+
+        if ($obj instanceof Model\Asset) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @param ElementInterface $obj
-     * @param Restriction|null $restriction
-     * @param string           $eventName
-     */
-    protected function triggerEvent(ElementInterface $obj, ?Restriction $restriction, string $eventName)
+    protected function triggerEvent(ElementInterface $obj, ?Restriction $restriction, string $eventName): void
     {
         $event = new RestrictionEvent($obj, $restriction);
 
-        $this->eventDispatcher->dispatch($eventName, $event);
+        $this->eventDispatcher->dispatch($event, $eventName);
 
         $this->clearMembersCacheTags();
     }
 
-    protected function clearMembersCacheTags()
+    protected function clearMembersCacheTags(): void
     {
         Cache::clearTag('members');
     }

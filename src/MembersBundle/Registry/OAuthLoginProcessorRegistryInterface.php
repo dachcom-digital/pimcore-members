@@ -6,19 +6,7 @@ use MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\LoginProcessorInterfa
 
 interface OAuthLoginProcessorRegistryInterface
 {
-    /**
-     * @param string $identifier
-     *
-     * @return bool
-     */
-    public function has($identifier);
+    public function has(string $identifier): bool;
 
-    /**
-     * @param string $identifier
-     *
-     * @return LoginProcessorInterface
-     *
-     * @throws \Exception
-     */
-    public function get($identifier);
+    public function get(string $identifier): LoginProcessorInterface;
 }

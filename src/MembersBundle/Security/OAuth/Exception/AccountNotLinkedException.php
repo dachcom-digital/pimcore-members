@@ -6,23 +6,14 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class AccountNotLinkedException extends AuthenticationException
 {
-    /**
-     * @var string
-     */
-    protected $registrationKey;
+    protected ?string $registrationKey = null;
 
-    /**
-     * @param string $registrationKey
-     */
     public function setRegistrationKey(string $registrationKey)
     {
         $this->registrationKey = $registrationKey;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegistrationKey()
+    public function getRegistrationKey(): ?string
     {
         return $this->registrationKey;
     }

@@ -4,22 +4,9 @@ namespace MembersBundle\Security\OAuth;
 
 interface OAuthTokenStorageInterface
 {
-    /**
-     * @param string                 $key
-     * @param OAuthResponseInterface $OAuthResponse
-     */
-    public function saveToken(string $key, OAuthResponseInterface $OAuthResponse);
+    public function saveToken(string $key, OAuthResponseInterface $OAuthResponse): void;
 
-    /**
-     * @param string $key
-     */
-    public function destroyToken(string $key);
+    public function destroyToken(string $key): void;
 
-    /**
-     * @param string $key
-     * @param int    $maxLifetime
-     *
-     * @return OAuthResponseInterface|null
-     */
-    public function loadToken(string $key, int $maxLifetime = 300);
+    public function loadToken(string $key, int $maxLifetime = 300): ?OAuthResponseInterface;
 }

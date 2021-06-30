@@ -17,10 +17,7 @@ use MembersBundle\Configuration\Configuration as BundleConfiguration;
 
 class MembersExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
@@ -46,13 +43,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         ]);
     }
 
-    /**
-     * @param array            $configs
-     * @param ContainerBuilder $container
-     *
-     * @throws \Exception
-     */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -107,11 +98,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         }
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     */
-    protected function enableOauth(ContainerBuilder $container, array $config)
+    protected function enableOauth(ContainerBuilder $container, array $config): void
     {
         $dispatcherDefinition = new Definition();
         $dispatcherDefinition->setClass(DispatchRouter::class);

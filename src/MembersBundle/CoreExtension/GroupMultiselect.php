@@ -2,6 +2,7 @@
 
 namespace MembersBundle\CoreExtension;
 
+use MembersBundle\Adapter\Group\GroupInterface;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
@@ -31,6 +32,12 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      * @var bool
      */
     public $relationType = true;
+
+    protected function getPhpdocType()
+    {
+        return 'array';
+    }
+
 
     /**
      * @param array $data

@@ -7,22 +7,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ClassInstaller
 {
-    /**
-     * @var OutputInterface
-     */
-    protected $logger;
+    protected OutputInterface $logger;
 
-    /**
-     * @param OutputInterface $logger
-     */
     public function setLogger(OutputInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @param array $classes
-     */
     public function installClasses(array $classes)
     {
         foreach ($this->getClasses($classes) as $className => $path) {
@@ -48,11 +39,6 @@ class ClassInstaller
         }
     }
 
-    /**
-     * @param array $classes
-     *
-     * @return array
-     */
     protected function getClasses(array $classes): array
     {
         $result = [];
@@ -76,10 +62,7 @@ class ClassInstaller
         return $result;
     }
 
-    /**
-     * @param string $msg
-     */
-    protected function log($msg)
+    protected function log(string $msg)
     {
         if (!$this->logger instanceof OutputInterface) {
             return;

@@ -12,23 +12,14 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ChangePasswordFormType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $class;
+    private string $class;
 
-    /**
-     * @param string $class The User class name
-     */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $constraintsOptions = [
             'message' => 'members.validation.current_password.invalid',
@@ -54,10 +45,7 @@ class ChangePasswordFormType extends AbstractType
         $builder->add('submit', SubmitType::class, ['label' => 'members.change_password.submit']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'    => $this->class,
@@ -65,10 +53,7 @@ class ChangePasswordFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_change_password';
     }

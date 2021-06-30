@@ -8,7 +8,7 @@ use MembersBundle\Event\GetResponseUserEvent;
 use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,26 +16,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DeleteAccountController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
+    protected FactoryInterface $formFactory;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected UserManagerInterface $userManager;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @param FactoryInterface         $formFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param UserManagerInterface     $userManager
-     */
     public function __construct(
         FactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
@@ -46,12 +30,7 @@ class DeleteAccountController extends AbstractController
         $this->userManager = $userManager;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return null|RedirectResponse|Response
-     */
-    public function deleteAccountAction(Request $request)
+    public function deleteAccountAction(Request $request): Response
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
@@ -59,7 +38,7 @@ class DeleteAccountController extends AbstractController
         }
 
         $event = new GetResponseUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_INITIALIZE, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::DELETE_ACCOUNT_INITIALIZE);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
@@ -72,7 +51,7 @@ class DeleteAccountController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_SUCCESS, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::DELETE_ACCOUNT_SUCCESS);
 
             $this->userManager->deleteUser($user);
 
@@ -81,7 +60,7 @@ class DeleteAccountController extends AbstractController
                 $response = new RedirectResponse($url);
             }
 
-            $this->eventDispatcher->dispatch(MembersEvents::DELETE_ACCOUNT_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
+            $this->eventDispatcher->dispatch(new FilterUserResponseEvent($user, $request, $response), MembersEvents::DELETE_ACCOUNT_COMPLETED);
 
             return $response;
         }

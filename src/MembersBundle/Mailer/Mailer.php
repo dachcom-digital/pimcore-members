@@ -11,30 +11,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Mailer implements MailerInterface
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
+    protected UrlGeneratorInterface $router;
+    protected Configuration $configuration;
 
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @param UrlGeneratorInterface $router
-     * @param Configuration         $configuration
-     */
     public function __construct(UrlGeneratorInterface $router, Configuration $configuration)
     {
         $this->router = $router;
         $this->configuration = $configuration;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sendConfirmationEmailMessage(UserInterface $user)
+    public function sendConfirmationEmailMessage(UserInterface $user): void
     {
         $template = $this->getMailTemplatePath('register_confirm', $user);
         $url = $this->router->generate('members_user_registration_confirm', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -47,10 +33,7 @@ class Mailer implements MailerInterface
         $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sendConfirmedEmailMessage(UserInterface $user)
+    public function sendConfirmedEmailMessage(UserInterface $user): void
     {
         if ($this->configuration->getConfig('send_user_mail_after_confirmed') === false) {
             return;
@@ -67,10 +50,7 @@ class Mailer implements MailerInterface
         $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sendResettingEmailMessage(UserInterface $user)
+    public function sendResettingEmailMessage(UserInterface $user): void
     {
         $template = $this->getMailTemplatePath('register_password_resetting', $user);
         $url = $this->generateUrl('members_user_resetting_reset', $user, ['token' => $user->getConfirmationToken()]);
@@ -83,10 +63,7 @@ class Mailer implements MailerInterface
         $this->sendMessage($template, $mailParams, (string) $user->getEmail());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sendAdminNotificationEmailMessage(UserInterface $user)
+    public function sendAdminNotificationEmailMessage(UserInterface $user): void
     {
         if ($this->configuration->getConfig('send_admin_mail_after_register') === false) {
             return;
@@ -103,14 +80,7 @@ class Mailer implements MailerInterface
         $this->sendMessage($template, $mailParams, 'templateTo');
     }
 
-    /**
-     * @param string $documentPath
-     * @param array  $mailParams
-     * @param string $toEmail
-     *
-     * @throws \Exception
-     */
-    protected function sendMessage($documentPath, $mailParams, $toEmail)
+    protected function sendMessage(string $documentPath, array $mailParams, string $toEmail): void
     {
         $emailDocument = Email::getByPath($documentPath);
         if (!$emailDocument instanceof Email) {
@@ -134,13 +104,7 @@ class Mailer implements MailerInterface
         $email->send();
     }
 
-    /**
-     * @param string        $type
-     * @param UserInterface $user
-     *
-     * @return null|string
-     */
-    private function getMailTemplatePath($type, UserInterface $user)
+    private function getMailTemplatePath(string $type, UserInterface $user): ?string
     {
         $templates = $this->configuration->getConfig('emails');
 
@@ -170,20 +134,10 @@ class Mailer implements MailerInterface
         return $requestedTemplate;
     }
 
-    /**
-     * @param string        $route
-     * @param UserInterface $user
-     * @param array         $options
-     * @param bool          $addLocale
-     *
-     * @return null|string
-     */
-    private function generateUrl($route, UserInterface $user, $options = [], $addLocale = true)
+    private function generateUrl(string $route, UserInterface $user, array $options = [], bool $addLocale = true): ?string
     {
-        if ($addLocale === true) {
-            if (!empty($user->getProperty('_user_locale'))) {
-                $options['_locale'] = $user->getProperty('_user_locale');
-            }
+        if (($addLocale === true) && !empty($user->getProperty('_user_locale'))) {
+            $options['_locale'] = $user->getProperty('_user_locale');
         }
 
         $context = $this->router->getContext();

@@ -3,80 +3,49 @@
 namespace MembersBundle\Manager;
 
 use MembersBundle\Configuration\Configuration;
+use Pimcore\Model\DataObject\Listing;
 
 class ClassManager implements ClassManagerInterface
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
 
-    /**
-     * @param Configuration $configuration
-     */
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getGroupListing()
+    public function getGroupListing(): Listing
     {
         $groupClass = $this->getGroupClass();
-        if (!\Pimcore\Tool::classExists($groupClass)) {
-            return false;
-        }
 
         return $groupClass::getList();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getUserListing()
+    public function getUserListing(): Listing
     {
         $listing = $this->getUserClass();
-        if (!\Pimcore\Tool::classExists($listing)) {
-            return false;
-        }
 
         return $listing::getList();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSsoIdentityListing()
+    public function getSsoIdentityListing(): Listing
     {
         $listing = $this->getSsoIdentityClass();
-        if (!\Pimcore\Tool::classExists($listing)) {
-            return false;
-        }
 
         return $listing::getList();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getGroupClass()
+    public function getGroupClass(): string
     {
         $className = $this->configuration->getConfig('group');
         if (empty($className['adapter']['class_name'])) {
             return '';
         }
 
-        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
-
-        return $class;
+        return 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getUserClass()
+    public function getUserClass(): string
     {
         $className = $this->configuration->getConfig('user');
 
@@ -84,15 +53,10 @@ class ClassManager implements ClassManagerInterface
             return '';
         }
 
-        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
-
-        return $class;
+        return 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSsoIdentityClass()
+    public function getSsoIdentityClass(): string
     {
         $className = $this->configuration->getConfig('sso');
 
@@ -100,8 +64,6 @@ class ClassManager implements ClassManagerInterface
             return '';
         }
 
-        $class = 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
-
-        return $class;
+        return 'Pimcore\\Model\\DataObject\\' . ucfirst($className['adapter']['class_name']);
     }
 }

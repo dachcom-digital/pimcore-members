@@ -4,49 +4,26 @@ namespace MembersBundle\Event;
 
 use Pimcore\Model\DataObject\AbstractObject;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class StaticRouteEvent extends Event
 {
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
+    protected ?string $routeName;
+    protected ?AbstractObject $object;
 
-    /**
-     * @var Request
-     */
-    protected $routeName;
-
-    /**
-     * @var AbstractObject
-     */
-    protected $object;
-
-    /**
-     * FilterUserResponseEvent constructor.
-     *
-     * @param Request $request
-     * @param string  $routeName
-     */
-    public function __construct($request, $routeName = null)
+    public function __construct(Request $request, ?string $routeName = null)
     {
         $this->request = $request;
         $this->routeName = $routeName;
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): Request
     {
         return $this->request;
     }
 
-    /**
-     * @return Request
-     */
-    public function getRouteName()
+    public function getRouteName(): ?string
     {
         return $this->routeName;
     }
@@ -56,10 +33,7 @@ class StaticRouteEvent extends Event
         $this->object = $object;
     }
 
-    /**
-     * @return AbstractObject
-     */
-    public function getStaticRouteObject()
+    public function getStaticRouteObject(): ?AbstractObject
     {
         return $this->object;
     }

@@ -10,7 +10,7 @@ use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Document;
 use Pimcore\Navigation\Container;
-use Pimcore\Templating\Helper\Navigation;
+use Pimcore\Twig\Extension\Templating\Navigation;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -20,26 +20,10 @@ use Twig\TwigFunction;
  */
 class NavigationExtension extends AbstractExtension
 {
-    /**
-     * @var Navigation
-     */
-    protected $navigationHelper;
+    protected Navigation $navigationHelper;
+    protected RestrictionManagerInterface $restrictionManager;
+    protected TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @param Navigation                  $navigationHelper
-     * @param RestrictionManagerInterface $restrictionManager
-     * @param TokenStorageInterface       $tokenStorage
-     */
     public function __construct(
         Navigation $navigationHelper,
         RestrictionManagerInterface $restrictionManager,
@@ -50,9 +34,6 @@ class NavigationExtension extends AbstractExtension
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @return array
-     */
     public function getFunctions(): array
     {
         return [
@@ -60,19 +41,11 @@ class NavigationExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @see \Pimcore\Twig\Extension\NavigationExtension::buildNavigation()
-     * @param array|Document $params config array or active document (legacy mode)
-     * @param Document|null $navigationRootDocument
-     * @param string|null $htmlMenuPrefix
-     * @param bool|string $cache
-     * @return Container
-     */
     public function buildNavigation(
-        $params = null,
+        array|Document $params = null,
         Document $navigationRootDocument = null,
         string $htmlMenuPrefix = null,
-        $cache = true
+        bool|string $cache = true
     ): Container {
         if (is_array($params)) {
             return $this->buildMembersNavigation($params);
@@ -103,11 +76,7 @@ class NavigationExtension extends AbstractExtension
         return $this->navigationHelper->build($params);
     }
 
-    /**
-     * @param bool|string $cache
-     * @return bool|string
-     */
-    protected function getCacheKey($cache)
+    protected function getCacheKey(bool|string $cache): bool|string
     {
         $cacheKey = $cache;
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
@@ -158,18 +127,11 @@ class NavigationExtension extends AbstractExtension
         return $restrictionElement;
     }
 
-    /**
-     * @param Document      $activeDocument
-     * @param Document|null $navigationRootDocument
-     * @param string|null   $htmlMenuPrefix
-     * @param bool|string   $cache
-     * @return Container
-     */
     protected function legacyBuildNavigation(
         Document $activeDocument,
         ?Document $navigationRootDocument = null,
         ?string $htmlMenuPrefix = null,
-        $cache = true
+        bool|string$cache = true
     ): Container {
         return $this->navigationHelper->buildNavigation(
             $activeDocument,

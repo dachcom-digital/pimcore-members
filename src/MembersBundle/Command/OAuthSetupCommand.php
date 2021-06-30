@@ -16,51 +16,20 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class OAuthSetupCommand extends Command
 {
-    /**
-     * @var bool
-     */
-    protected $oauthEnabled;
+    protected bool $oauthEnabled;
+    protected ClassManagerInterface $classManager;
+    protected ClassInstaller $classInstaller;
 
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
-
-    /**
-     * @var ClassInstaller
-     */
-    protected $classInstaller;
-
-    /**
-     * @param bool $oauthEnabled
-     */
-    public function __construct(bool $oauthEnabled)
+    public function __construct(bool $oauthEnabled, ClassManagerInterface $classManager, ClassInstaller $classInstaller)
     {
-        $this->oauthEnabled = $oauthEnabled;
-
         parent::__construct();
-    }
 
-    /**
-     * @param ClassInstaller $classInstaller
-     */
-    public function setClassInstaller(ClassInstaller $classInstaller)
-    {
+        $this->oauthEnabled = $oauthEnabled;
+        $this->classManager = $classManager;
         $this->classInstaller = $classInstaller;
     }
 
-    /**
-     * @param ClassManagerInterface $classManager
-     */
-    public function setClassManager(ClassManagerInterface $classManager)
-    {
-        $this->classManager = $classManager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -69,10 +38,7 @@ class OAuthSetupCommand extends Command
             ->setDescription('This command helps you the enhance Members with oauth2 connectors.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('');
 
@@ -110,13 +76,7 @@ class OAuthSetupCommand extends Command
         return 0;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    protected function checkInstalledBundlesStep(InputInterface $input, OutputInterface $output)
+    protected function checkInstalledBundlesStep(InputInterface $input, OutputInterface $output): bool
     {
         $oauthInstalled = class_exists('\\KnpU\\OAuth2ClientBundle\\Client\\ClientRegistry');
 
@@ -133,13 +93,7 @@ class OAuthSetupCommand extends Command
         return false;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    protected function checkSsoIdentityAwareUserClass(InputInterface $input, OutputInterface $output)
+    protected function checkSsoIdentityAwareUserClass(InputInterface $input, OutputInterface $output): bool
     {
         $userReflectionClass = $this->getUserClass($output);
         if (!$userReflectionClass instanceof \ReflectionClass) {
@@ -165,13 +119,7 @@ class OAuthSetupCommand extends Command
         return false;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    protected function checkSsoIdentityRelationStep(InputInterface $input, OutputInterface $output)
+    protected function checkSsoIdentityRelationStep(InputInterface $input, OutputInterface $output): bool
     {
         $userReflectionClass = $this->getUserClass($output);
         if (!$userReflectionClass instanceof \ReflectionClass) {
@@ -229,13 +177,7 @@ class OAuthSetupCommand extends Command
         return false;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    protected function checkSsoIdentityClassStep(InputInterface $input, OutputInterface $output)
+    protected function checkSsoIdentityClassStep(InputInterface $input, OutputInterface $output): bool
     {
         $list = new ClassDefinition\Listing();
 
@@ -273,13 +215,7 @@ class OAuthSetupCommand extends Command
         return true;
     }
 
-    /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return bool
-     */
-    protected function checkInstalledStep(InputInterface $input, OutputInterface $output)
+    protected function checkInstalledStep(InputInterface $input, OutputInterface $output): bool
     {
         if ($this->oauthEnabled === true) {
             $output->writeln(sprintf('<info>√ OAuth is enabled</info>'));
@@ -297,12 +233,7 @@ members:
         return false;
     }
 
-    /**
-     * @param OutputInterface $output
-     *
-     * @return \ReflectionClass|null
-     */
-    protected function getUserClass(OutputInterface $output)
+    protected function getUserClass(OutputInterface $output): ?\ReflectionClass
     {
         $userClass = $this->classManager->getUserClass();
 

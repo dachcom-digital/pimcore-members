@@ -4,60 +4,32 @@ namespace MembersBundle\Tool;
 
 class VersionHelper
 {
-    /**
-     * @param string $version
-     *
-     * @return mixed
-     */
-    public static function pimcoreVersionIsEqualThan(string $version)
+    public static function pimcoreVersionIsEqualThan(string $version): int|bool
     {
         return version_compare(self::getPimcoreVersion(), $version, '=');
     }
 
-    /**
-     * @param string $version
-     *
-     * @return mixed
-     */
-    public static function pimcoreVersionIsGreaterThan(string $version)
+    public static function pimcoreVersionIsGreaterThan(string $version): int|bool
     {
         return version_compare(self::getPimcoreVersion(), $version, '>');
     }
 
-    /**
-     * @param string $version
-     *
-     * @return mixed
-     */
-    public static function pimcoreVersionIsGreaterOrEqualThan(string $version)
+    public static function pimcoreVersionIsGreaterOrEqualThan(string $version): int|bool
     {
         return version_compare(self::getPimcoreVersion(), $version, '>=');
     }
 
-    /**
-     * @param string $version
-     *
-     * @return mixed
-     */
-    public static function pimcoreVersionIsLowerThan(string $version)
+    public static function pimcoreVersionIsLowerThan(string $version): int|bool
     {
         return version_compare(self::getPimcoreVersion(), $version, '<');
     }
 
-    /**
-     * @param string $version
-     *
-     * @return mixed
-     */
-    public static function pimcoreVersionIsLowerOrEqualThan(string $version)
+    public static function pimcoreVersionIsLowerOrEqualThan(string $version): int|bool
     {
         return version_compare(self::getPimcoreVersion(), $version, '<=');
     }
 
-    /**
-     * @return string
-     */
-    private static function getPimcoreVersion()
+    private static function getPimcoreVersion(): string
     {
         return preg_replace('/[^0-9.]/', '', \Pimcore\Version::getVersion());
     }

@@ -11,14 +11,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RegistrationTypeExtension extends AbstractTypeExtension
 {
-    /**
-     * @var RequestStack
-     */
-    protected $requestStack;
+    protected RequestStack $requestStack;
 
-    /**
-     * @param RequestStack $requestStack
-     */
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
@@ -44,27 +38,18 @@ class RegistrationTypeExtension extends AbstractTypeExtension
         });
     }
 
-    /**
-     * @return bool
-     */
-    protected function isSSOAwareForm()
+    protected function isSSOAwareForm(): bool
     {
-        $masterRequest = $this->requestStack->getMasterRequest();
+        $masterRequest = $this->requestStack->getMainRequest();
 
         return $masterRequest->attributes->get('_members_sso_aware', null) === true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getExtendedType()
+    public function getExtendedType(): string
     {
         return RegistrationFormType::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function getExtendedTypes(): iterable
     {
         return [RegistrationFormType::class];

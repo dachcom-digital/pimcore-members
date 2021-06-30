@@ -8,29 +8,11 @@ use Pimcore\Model\AbstractModel;
 
 interface RestrictionManagerInterface
 {
-    /**
-     * @param AbstractModel $element
-     *
-     * @return bool|array
-     */
-    public function getElementRestrictedGroups(AbstractModel $element);
+    public function getElementRestrictedGroups(AbstractModel $element): ?array;
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return ElementRestriction
-     */
-    public function getElementRestrictionStatus(AbstractModel $element);
+    public function getElementRestrictionStatus(AbstractModel $element): ElementRestriction;
 
-    /**
-     * @todo: bring it into pimcore context.
-     *
-     * @return bool
-     */
-    public function isFrontendRequestByAdmin();
+    public function isFrontendRequestByAdmin(): bool;
 
-    /**
-     * @return UserInterface|null
-     */
-    public function getUser();
+    public function getUser(): ?UserInterface;
 }

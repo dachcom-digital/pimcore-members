@@ -17,48 +17,30 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class RestrictionManager implements RestrictionManagerInterface
 {
-    const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
+    public const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
 
-    const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
+    public const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
 
-    const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
+    public const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
 
-    const RESTRICTION_SECTION_NOT_ALLOWED = 'members.restriction.not_allowed';
+    public const RESTRICTION_SECTION_NOT_ALLOWED = 'members.restriction.not_allowed';
 
-    const RESTRICTION_SECTION_REFUSED = 'members.restriction.refused';
+    public const RESTRICTION_SECTION_REFUSED = 'members.restriction.refused';
 
-    const REQUEST_RESTRICTION_STORAGE = 'members.restriction.store';
+    public const REQUEST_RESTRICTION_STORAGE = 'members.restriction.store';
 
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
+    protected TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * RestrictionManager constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param Configuration         $configuration
-     */
     public function __construct(Configuration $configuration, TokenStorageInterface $tokenStorage)
     {
         $this->configuration = $configuration;
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return bool|array
-     */
-    public function getElementRestrictedGroups(AbstractModel $element)
+    public function getElementRestrictedGroups(AbstractModel $element): ?array
     {
-        $restriction = false;
+        $restriction = null;
         $groups[] = 'default';
 
         if ($element instanceof Document) {
@@ -81,12 +63,7 @@ class RestrictionManager implements RestrictionManagerInterface
         return $groups;
     }
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return ElementRestriction
-     */
-    public function getElementRestrictionStatus(AbstractModel $element)
+    public function getElementRestrictionStatus(AbstractModel $element): ElementRestriction
     {
         $user = $this->getUser();
         $elementRestriction = new ElementRestriction();
@@ -124,20 +101,14 @@ class RestrictionManager implements RestrictionManagerInterface
         //check if user is not logged in.
         if (!$user instanceof UserInterface) {
             return $elementRestriction;
-        } else {
-            $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
-
-            return $elementRestriction;
         }
+
+        $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
+
+        return $elementRestriction;
     }
 
-    /**
-     * @param array $userGroups
-     * @param array $elementGroups
-     *
-     * @return string
-     */
-    private function filterAllowedSectionToUser($userGroups, $elementGroups)
+    private function filterAllowedSectionToUser(array $userGroups, array $elementGroups): string
     {
         $sectionStatus = self::RESTRICTION_SECTION_NOT_ALLOWED;
 
@@ -158,18 +129,12 @@ class RestrictionManager implements RestrictionManagerInterface
         return $sectionStatus;
     }
 
-    /**
-     * @param ElementInterface $element
-     * @param string           $cType
-     *
-     * @return bool|Restriction
-     */
-    private function getRestrictionElement($element, $cType = 'page')
+    private function getRestrictionElement(ElementInterface $element, string $cType = 'page'): ?Restriction
     {
-        $restriction = false;
+        $restriction = null;
 
         if ($this->isFrontendRequestByAdmin()) {
-            return false;
+            return null;
         }
 
         try {
@@ -192,20 +157,12 @@ class RestrictionManager implements RestrictionManagerInterface
         return $restriction;
     }
 
-    /**
-     * @todo: bring it into pimcore context.
-     *
-     * @return bool
-     */
-    public function isFrontendRequestByAdmin()
+    public function isFrontendRequestByAdmin(): bool
     {
         return \Pimcore\Tool::isFrontendRequestByAdmin();
     }
 
-    /**
-     * @return UserInterface|null
-     */
-    public function getUser()
+    public function getUser(): ?UserInterface
     {
         $token = $this->tokenStorage->getToken();
 

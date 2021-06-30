@@ -10,7 +10,7 @@ use MembersBundle\Form\Factory\FactoryInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -22,38 +22,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RegistrationController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
+    protected FactoryInterface $formFactory;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected UserManagerInterface $userManager;
+    protected TokenStorageInterface $tokenStorage;
+    protected RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @var RequestPropertiesForUserExtractorServiceInterface
-     */
-    protected $requestPropertiesForUserExtractorService;
-
-    /**
-     * @param FactoryInterface                                  $formFactory
-     * @param EventDispatcherInterface                          $eventDispatcher
-     * @param UserManagerInterface                              $userManager
-     * @param TokenStorageInterface                             $tokenStorage
-     * @param RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
-     */
     public function __construct(
         FactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
@@ -68,20 +42,12 @@ class RegistrationController extends AbstractController
         $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response|null
-     *
-     * @throws \Exception
-     */
-    public function registerAction(Request $request)
+    public function registerAction(Request $request): Response
     {
-        /** @var UserInterface $user */
         $user = $this->userManager->createUser();
 
         $event = new GetResponseUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_INITIALIZE, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::REGISTRATION_INITIALIZE);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
@@ -102,7 +68,7 @@ class RegistrationController extends AbstractController
                 $this->userManager->updateUser($user, $this->requestPropertiesForUserExtractorService->extract($request));
 
                 $event = new FormEvent($form, $request);
-                $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_SUCCESS, $event);
+                $this->eventDispatcher->dispatch($event, MembersEvents::REGISTRATION_SUCCESS);
 
                 if (null === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_registration_confirmed');
@@ -110,13 +76,13 @@ class RegistrationController extends AbstractController
                 }
 
                 $event = new FilterUserResponseEvent($user, $request, $response);
-                $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_COMPLETED, $event);
+                $this->eventDispatcher->dispatch($event, MembersEvents::REGISTRATION_COMPLETED);
 
                 return $response;
             }
 
             $event = new FormEvent($form, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_FAILURE, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::REGISTRATION_FAILURE);
 
             if (null !== $response = $event->getResponse()) {
                 return $response;
@@ -128,12 +94,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function checkEmailAction(Request $request)
+    public function checkEmailAction(Request $request): Response
     {
         /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
@@ -154,12 +115,7 @@ class RegistrationController extends AbstractController
         return $this->renderTemplate('@Members/Registration/check_email.html.twig', ['user' => $user]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function checkAdminAction(Request $request)
+    public function checkAdminAction(Request $request): Response
     {
         /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
@@ -180,13 +136,7 @@ class RegistrationController extends AbstractController
         return $this->renderTemplate('@Members/Registration/check_admin.html.twig', ['user' => $user]);
     }
 
-    /**
-     * @param Request $request
-     * @param string  $token
-     *
-     * @return null|RedirectResponse|Response
-     */
-    public function confirmAction(Request $request, $token)
+    public function confirmAction(Request $request, string $token): Response
     {
         /** @var UserInterface $user */
         $user = $this->userManager->findUserByConfirmationToken($token);
@@ -199,7 +149,7 @@ class RegistrationController extends AbstractController
         $user->setPublished(true);
 
         $event = new GetResponseUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRM, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::REGISTRATION_CONFIRM);
 
         $this->userManager->updateUser($user);
 
@@ -208,17 +158,12 @@ class RegistrationController extends AbstractController
             $response = new RedirectResponse($url);
         }
 
-        $this->eventDispatcher->dispatch(MembersEvents::REGISTRATION_CONFIRMED, new FilterUserResponseEvent($user, $request, $response));
+        $this->eventDispatcher->dispatch(new FilterUserResponseEvent($user, $request, $response), MembersEvents::REGISTRATION_CONFIRMED);
 
         return $response;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function confirmedAction(Request $request)
+    public function confirmedAction(Request $request): Response
     {
         $user = $this->getUser();
         if (!is_object($user) || !$user instanceof UserInterface) {
@@ -233,12 +178,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @param NamespacedAttributeBag $session
-     *
-     * @return null|string
-     */
-    private function getTargetUrlFromSession(NamespacedAttributeBag $session)
+    private function getTargetUrlFromSession(NamespacedAttributeBag $session): ?string
     {
         $token = $this->tokenStorage->getToken();
 

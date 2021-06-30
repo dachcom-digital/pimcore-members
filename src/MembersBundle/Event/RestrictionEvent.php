@@ -4,42 +4,25 @@ namespace MembersBundle\Event;
 
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model\Element\ElementInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class RestrictionEvent extends Event
 {
-    /**
-     * @var ElementInterface
-     */
-    protected $element;
+    protected ElementInterface $element;
+    protected ?Restriction $restriction;
 
-    /**
-     * @var Restriction|null
-     */
-    protected $restriction;
-
-    /**
-     * @param ElementInterface $element
-     * @param Restriction|null $restriction
-     */
     public function __construct(ElementInterface $element, ?Restriction $restriction)
     {
         $this->element = $element;
         $this->restriction = $restriction;
     }
 
-    /**
-     * @return ElementInterface
-     */
-    public function getElement()
+    public function getElement(): ElementInterface
     {
         return $this->element;
     }
 
-    /**
-     * @return Restriction|null
-     */
-    public function getRestriction()
+    public function getRestriction(): ?Restriction
     {
         return $this->restriction;
     }

@@ -8,23 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestPropertiesForUserExtractorService implements RequestPropertiesForUserExtractorServiceInterface
 {
-    /**
-     * @var SiteResolver
-     */
-    protected $siteResolver;
+    protected SiteResolver $siteResolver;
 
-    /**
-     * @param SiteResolver $siteResolver
-     */
     public function __construct(SiteResolver $siteResolver)
     {
         $this->siteResolver = $siteResolver;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function extract(Request $request)
+    public function extract(Request $request): array
     {
         $userProperties = [
             '_user_locale' => $request->getLocale()
@@ -40,7 +31,7 @@ class RequestPropertiesForUserExtractorService implements RequestPropertiesForUs
     /**
      * {@inheritdoc}
      */
-    public function extractFromParameterBag(array $parameter)
+    public function extractFromParameterBag(array $parameter): array
     {
         $userProperties = [];
 

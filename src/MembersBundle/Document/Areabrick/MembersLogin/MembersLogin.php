@@ -5,24 +5,13 @@ namespace MembersBundle\Document\Areabrick\MembersLogin;
 use MembersBundle\Document\Builder\BrickBuilder;
 use MembersBundle\Form\Factory\FactoryInterface;
 use Pimcore\Extension\Document\Areabrick\AbstractTemplateAreabrick;
-use Pimcore\Model\Document\Tag\Area\Info;
+use Pimcore\Model\Document\Editable\Area\Info;
 
 class MembersLogin extends AbstractTemplateAreabrick
 {
-    /**
-     * @var BrickBuilder
-     */
-    protected $brickBuilder;
+    protected BrickBuilder $brickBuilder;
+    protected FactoryInterface $formFactory;
 
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
-
-    /**
-     * @param BrickBuilder     $brickBuilder
-     * @param FactoryInterface $formFactory
-     */
     public function __construct(
         BrickBuilder $brickBuilder,
         FactoryInterface $formFactory
@@ -36,23 +25,21 @@ class MembersLogin extends AbstractTemplateAreabrick
      */
     public function action(Info $info)
     {
-        $view = $info->getView();
-
-        /** @var \Pimcore\Model\Document\Tag\Relation $redirectAfterSuccessElement */
-        $redirectAfterSuccessElement = $this->getDocumentTag($info->getDocument(), 'relation', 'redirectAfterSuccess');
+        /** @var \Pimcore\Model\Document\Editable\Relation $redirectAfterSuccessElement */
+        $redirectAfterSuccessElement = $this->getDocumentEditable($info->getDocument(), 'relation', 'redirectAfterSuccess');
         $redirectAfterSuccess = $redirectAfterSuccessElement->getElement();
 
-        /** @var \Pimcore\Model\Document\Tag\Relation $showSnippedWhenLoggedInElement */
-        $showSnippedWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'relation', 'showSnippedWhenLoggedIn');
+        /** @var \Pimcore\Model\Document\Editable\Relation $showSnippedWhenLoggedInElement */
+        $showSnippedWhenLoggedInElement = $this->getDocumentEditable($info->getDocument(), 'relation', 'showSnippedWhenLoggedIn');
         $showSnippedWhenLoggedIn = $showSnippedWhenLoggedInElement->getElement();
 
-        /** @var \Pimcore\Model\Document\Tag\Checkbox $hideWhenLoggedInElement */
-        $hideWhenLoggedInElement = $this->getDocumentTag($info->getDocument(), 'checkbox', 'hideWhenLoggedIn');
+        /** @var \Pimcore\Model\Document\Editable\Checkbox $hideWhenLoggedInElement */
+        $hideWhenLoggedInElement = $this->getDocumentEditable($info->getDocument(), 'checkbox', 'hideWhenLoggedIn');
         $hideWhenLoggedIn = $hideWhenLoggedInElement->isChecked();
 
         $this->brickBuilder->setup('area')
             ->setRequest($info->getRequest())
-            ->setEditMode($view->get('editmode'))
+            ->setEditMode($info->getParam('editmode'))
             ->setRedirectAfterSuccess($redirectAfterSuccess)
             ->setSnippetAfterLogin($showSnippedWhenLoggedIn)
             ->setHideAfterLogin($hideWhenLoggedIn);
@@ -74,74 +61,50 @@ class MembersLogin extends AbstractTemplateAreabrick
 
         $form = $this->formFactory->createUnnamedFormWithOptions($formParams);
 
-        $view->getParameters()->set('form', $form->createView());
+        $info->setParam('form', $form->createView());
         foreach ($params as $key => $param) {
-            $view->getParameters()->set($key, $param);
+            $info->setParam($key, $param);
         }
 
         return null;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasEditTemplate()
+    public function hasEditTemplate(): bool
     {
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public function getViewTemplate()
+    public function getViewTemplate(): string
     {
         return 'MembersBundle:Areas/MembersLogin:view.' . $this->getTemplateSuffix();
     }
 
-    /**
-     * @return string
-     */
-    public function getEditTemplate()
+    public function getEditTemplate(): string
     {
         return 'MembersBundle:Areas/MembersLogin:edit.' . $this->getTemplateSuffix();
     }
 
-    /**
-     * @return string
-     */
-    public function getTemplateSuffix()
+    public function getTemplateSuffix(): string
     {
         return static::TEMPLATE_SUFFIX_TWIG;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'Member Login';
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getHtmlTagOpen(Info $info)
+    public function getHtmlTagOpen(Info $info): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getHtmlTagClose(Info $info)
+    public function getHtmlTagClose(Info $info): string
     {
         return '';
     }

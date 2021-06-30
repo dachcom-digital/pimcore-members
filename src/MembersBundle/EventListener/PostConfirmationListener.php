@@ -16,50 +16,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PostConfirmationListener implements EventSubscriberInterface
 {
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
+    protected UserManagerInterface $userManager;
+    protected MailerInterface $mailer;
+    protected TokenGenerator $tokenGenerator;
+    protected UrlGeneratorInterface $router;
+    protected SessionInterface $session;
+    protected string $postEventType;
+    protected string $postEventOauthType;
 
-    /**
-     * @var MailerInterface
-     */
-    protected $mailer;
-
-    /**
-     * @var TokenGenerator
-     */
-    protected $tokenGenerator;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
-
-    /**
-     * @var SessionInterface
-     */
-    protected $session;
-
-    /**
-     * @var string
-     */
-    protected $postEventType;
-
-    /**
-     * @var string
-     */
-    protected $postEventOauthType;
-
-    /**
-     * @param UserManagerInterface  $userManager
-     * @param MailerInterface       $mailer
-     * @param UrlGeneratorInterface $router
-     * @param SessionInterface      $session
-     * @param TokenGenerator        $tokenGenerator
-     * @param string                $postEventType
-     * @param string                $postEventOauthType
-     */
     public function __construct(
         UserManagerInterface $userManager,
         MailerInterface $mailer,
@@ -78,10 +42,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->postEventOauthType = $postEventOauthType;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::REGISTRATION_SUCCESS => 'onRegistrationSuccess',
@@ -89,13 +50,11 @@ class PostConfirmationListener implements EventSubscriberInterface
     }
 
     /**
-     * @param FormEvent $event
-     *
      * @see confirmByAdmin
      * @see confirmInstant
      * @see confirmByMail
      */
-    public function onRegistrationSuccess(FormEvent $event)
+    public function onRegistrationSuccess(FormEvent $event): void
     {
         $request = $event->getRequest();
 
@@ -109,10 +68,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         call_user_func_array([$this, $methodName], [$event]);
     }
 
-    /**
-     * @param FormEvent $event
-     */
-    private function confirmByMail(FormEvent $event)
+    private function confirmByMail(FormEvent $event): void
     {
         /** @var UserInterface $user */
         $user = $event->getForm()->getData();
@@ -133,10 +89,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $event->setResponse(new RedirectResponse($url));
     }
 
-    /**
-     * @param FormEvent $event
-     */
-    private function confirmByAdmin(FormEvent $event)
+    private function confirmByAdmin(FormEvent $event): void
     {
         /** @var UserInterface $user */
         $user = $event->getForm()->getData();
@@ -157,10 +110,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $event->setResponse(new RedirectResponse($url));
     }
 
-    /**
-     * @param FormEvent $event
-     */
-    private function confirmInstant(FormEvent $event)
+    private function confirmInstant(FormEvent $event): void
     {
         /** @var UserInterface $user */
         $user = $event->getForm()->getData();

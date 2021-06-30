@@ -27,8 +27,6 @@ services:
             $className: 'Pimcore\Security\Encoder\PasswordFieldEncoder'
             $arguments: ['password']
 
-    MembersBundle\Security\LuceneSearchAuthenticator: ~
-
     MembersBundle\Form\Type\LoginFormType:
         tags:
             - { name: form.type, alias: members_user_resetting }

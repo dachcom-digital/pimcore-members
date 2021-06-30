@@ -8,16 +8,11 @@ use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Listing\AbstractListing;
 
+//TODO: QueryBuilder is removed
 class RestrictionQuery
 {
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
+    protected RestrictionManagerInterface $restrictionManager;
 
-    /**
-     * @param RestrictionManagerInterface $restrictionManager
-     */
     public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;
@@ -28,7 +23,7 @@ class RestrictionQuery
      * @param AbstractListing $listing
      * @param string          $queryIdentifier
      */
-    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, $queryIdentifier = 'o_id')
+    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, string $queryIdentifier = 'o_id')
     {
         if ($this->restrictionManager->isFrontendRequestByAdmin()) {
             return;

@@ -15,31 +15,10 @@ use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 
 class MembersCompletenessListener implements EventSubscriberInterface
 {
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
+    protected ClassManagerInterface $classManager;
+    protected Configuration $configuration;
+    private TokenStorageUserResolver $userResolver;
 
-    /**
-     * @var int
-     */
-    protected $memberStorageId;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var TokenStorageUserResolver
-     */
-    private $userResolver;
-
-    /**
-     * @param ClassManagerInterface    $classManager
-     * @param Configuration            $configuration
-     * @param TokenStorageUserResolver $tokenStorageUserResolver
-     */
     public function __construct(
         ClassManagerInterface $classManager,
         Configuration $configuration,
@@ -50,10 +29,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         $this->userResolver = $tokenStorageUserResolver;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             DataObjectEvents::PRE_UPDATE => [
@@ -63,12 +39,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param DataObjectEvent $e
-     *
-     * @throws \Exception
-     */
-    public function checkUniqueness(DataObjectEvent $e)
+    public function checkUniqueness(DataObjectEvent $e): void
     {
         $object = $e->getObject();
 
@@ -108,12 +79,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         }
     }
 
-    /**
-     * @param DataObjectEvent $e
-     *
-     * @throws \Exception
-     */
-    public function checkProperties(DataObjectEvent $e)
+    public function checkProperties(DataObjectEvent $e): void
     {
         /** @var Concrete $object */
         $object = $e->getObject();

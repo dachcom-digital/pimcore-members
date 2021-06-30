@@ -15,12 +15,13 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $validPostRegisterTypes = ['confirm_by_mail', 'confirm_by_admin', 'confirm_instant'];
 
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('members');
+        $treeBuilder = new TreeBuilder('members');
+        $rootNode = $treeBuilder->getRootNode();
+
         $rootNode
             ->children()
                 ->booleanNode('send_admin_mail_after_register')->defaultFalse()->end()

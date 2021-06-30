@@ -12,7 +12,7 @@ use MembersBundle\MembersEvents;
 use MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface;
 use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 use Pimcore\Http\Request\Resolver\SiteResolver;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,44 +21,13 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class OAuthController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
+    protected FactoryInterface $formFactory;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected UserManagerInterface $userManager;
+    protected ClientRegistry $clientRegistry;
+    protected OAuthScopeAllocatorInterface $scopeAllocator;
+    protected SsoIdentityStatusServiceInterface $identityStatusService;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @var ClientRegistry
-     */
-    protected $clientRegistry;
-
-    /**
-     * @var OAuthScopeAllocatorInterface
-     */
-    protected $scopeAllocator;
-
-    /**
-     * @var SsoIdentityStatusServiceInterface
-     */
-    protected $identityStatusService;
-
-    /**
-     * @param FactoryInterface                  $formFactory
-     * @param EventDispatcherInterface          $eventDispatcher
-     * @param UserManagerInterface              $userManager
-     * @param ClientRegistry                    $clientRegistry
-     * @param OAuthScopeAllocatorInterface      $scopeAllocator
-     * @param SsoIdentityStatusServiceInterface $identityStatusService
-     */
     public function __construct(
         FactoryInterface $formFactory,
         EventDispatcherInterface $eventDispatcher,
@@ -75,12 +44,7 @@ class OAuthController extends AbstractController
         $this->identityStatusService = $identityStatusService;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function completeProfileAction(Request $request)
+    public function completeProfileAction(Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -100,7 +64,7 @@ class OAuthController extends AbstractController
                 $this->userManager->updateUser($user);
 
                 $event = new FormEvent($form, $request);
-                $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS, $event);
+                $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_SUCCESS);
 
                 if (null === $response = $event->getResponse()) {
                     $url = $this->generateUrl('members_user_sso_identity_profile_completed');
@@ -108,13 +72,13 @@ class OAuthController extends AbstractController
                 }
 
                 $event = new FilterUserResponseEvent($user, $request, $response);
-                $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED, $event);
+                $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_COMPLETED);
 
                 return $response;
             }
 
             $event = new FormEvent($form, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_SSO_INSTANCE_COMPLETE_PROFILE_FAILURE);
 
             if (null !== $response = $event->getResponse()) {
                 return $response;
@@ -126,12 +90,7 @@ class OAuthController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function profileCompletedAction(Request $request)
+    public function profileCompletedAction(Request $request): Response
     {
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
@@ -141,38 +100,19 @@ class OAuthController extends AbstractController
         return $this->renderTemplate('@Members/Sso/CompleteProfile/completed.html.twig', ['user' => $user]);
     }
 
-    /**
-     * @param Request $request
-     * @param string  $provider
-     *
-     * @return RedirectResponse
-     */
-    public function oAuthConnectAction(Request $request, string $provider)
+    public function oAuthConnectAction(Request $request, string $provider): RedirectResponse
     {
         return $this->oAuthConnect($request, $provider, ['type' => 'login']);
     }
 
-    /**
-     * @param Request $request
-     * @param string  $provider
-     *
-     * @return RedirectResponse
-     */
-    public function oAuthProfileConnectAction(Request $request, string $provider)
+    public function oAuthProfileConnectAction(Request $request, string $provider): RedirectResponse
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->oAuthConnect($request, $provider, ['type' => 'connect']);
     }
 
-    /**
-     * @param Request $request
-     * @param string  $provider
-     * @param array   $params
-     *
-     * @return RedirectResponse
-     */
-    protected function oAuthConnect(Request $request, string $provider, array $params)
+    protected function oAuthConnect(Request $request, string $provider, array $params): RedirectResponse
     {
         $params = array_merge($params, [
             'provider'  => $provider,

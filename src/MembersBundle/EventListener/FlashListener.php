@@ -3,18 +3,15 @@
 namespace MembersBundle\EventListener;
 
 use MembersBundle\MembersEvents;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\EventDispatcher\Event;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FlashListener implements EventSubscriberInterface
 {
-    /**
-     * @var string[]
-     */
-    private static $successMessages = [
+    private static array $successMessages = [
         MembersEvents::CHANGE_PASSWORD_COMPLETED        => 'members.change_password.flash.success',
         MembersEvents::PROFILE_EDIT_COMPLETED           => 'members.profile.flash.updated',
         MembersEvents::REGISTRATION_COMPLETED           => 'members.registration.flash.user_created',
@@ -22,32 +19,16 @@ class FlashListener implements EventSubscriberInterface
         MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS => 'members.oauth.connection.success',
     ];
 
-    /**
-     * @var SessionInterface
-     */
-    protected $session;
+    protected SessionInterface $session;
+    protected TranslatorInterface $translator;
 
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * FlashListener constructor.
-     *
-     * @param SessionInterface    $session
-     * @param TranslatorInterface $translator
-     */
     public function __construct(SessionInterface $session, TranslatorInterface $translator)
     {
         $this->session = $session;
         $this->translator = $translator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::CHANGE_PASSWORD_COMPLETED        => 'addSuccessFlash',
@@ -60,11 +41,7 @@ class FlashListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param Event  $event
-     * @param string $eventName
-     */
-    public function addSuccessFlash(Event $event, $eventName)
+    public function addSuccessFlash(Event $event, string $eventName): void
     {
         if (!isset(self::$successMessages[$eventName])) {
             throw new \InvalidArgumentException('This event does not correspond to a known flash message.');
@@ -77,14 +54,8 @@ class FlashListener implements EventSubscriberInterface
         $this->session->getFlashBag()->add('success', $this->trans(self::$successMessages[$eventName]));
     }
 
-    /**
-     * @param string $message
-     * @param array  $params
-     *
-     * @return string
-     */
-    private function trans($message, array $params = [])
+    private function trans(string $message): string
     {
-        return $this->translator->trans($message, $params);
+        return $this->translator->trans($message);
     }
 }

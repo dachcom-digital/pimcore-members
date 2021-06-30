@@ -6,27 +6,15 @@ use Pimcore\Model;
 
 class Dao extends Model\Dao\AbstractDao
 {
-    /**
-     * @var string
-     */
-    protected $tableName = 'members_restrictions';
-
-    /**
-     * @var string
-     */
-    protected $tableRelationName = 'members_group_relations';
+    protected string $tableName = 'members_restrictions';
+    protected string $tableRelationName = 'members_group_relations';
 
     /**
      * @var Restriction
      */
     protected $model;
 
-    /**
-     * @param int $id
-     *
-     * @throws \Exception
-     */
-    public function getById($id)
+    public function getById(int $id): void
     {
         $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE id  = ?', [$id]);
 
@@ -39,14 +27,7 @@ class Dao extends Model\Dao\AbstractDao
         $this->assignVariablesToModel($data);
     }
 
-    /**
-     * @param string $field
-     * @param null   $value
-     * @param string $cType
-     *
-     * @throws \Exception
-     */
-    public function getByField($field, $value = null, $cType = 'page')
+    public function getByField(string $field, string $value = null, string $cType = 'page')
     {
         $data = $this->db->fetchRow('SELECT * FROM ' . $this->tableName . ' WHERE ' . $field . ' = ? AND ctype = ?', [
             $value,
@@ -62,13 +43,7 @@ class Dao extends Model\Dao\AbstractDao
         $this->assignVariablesToModel($data);
     }
 
-    /**
-     * @return bool
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     */
-    public function save()
+    public function save(): bool
     {
         $saveData = [
             'targetId'    => $this->model->getTargetId(),
@@ -89,12 +64,7 @@ class Dao extends Model\Dao\AbstractDao
         return true;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return mixed
-     */
-    private function addRelationData($data)
+    private function addRelationData(array $data): array
     {
         $relations = $this->db->fetchAll('SELECT * FROM ' . $this->tableRelationName . ' WHERE restrictionId  = ?', [$data['id']]);
 
@@ -107,13 +77,7 @@ class Dao extends Model\Dao\AbstractDao
         return $data;
     }
 
-    /**
-     * @return bool
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     */
-    public function saveRelations()
+    public function saveRelations(): bool
     {
         $groups = $this->model->getRelatedGroups();
 
@@ -137,11 +101,7 @@ class Dao extends Model\Dao\AbstractDao
         return true;
     }
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     */
-    public function delete()
+    public function delete(): void
     {
         $this->db->delete($this->tableName, ['id' => $this->model->getId()]);
         $this->db->delete($this->tableRelationName, ['restrictionId' => $this->model->getId()]);

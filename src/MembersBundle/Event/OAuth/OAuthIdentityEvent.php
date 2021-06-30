@@ -3,50 +3,29 @@
 namespace MembersBundle\Event\OAuth;
 
 use MembersBundle\Adapter\User\UserInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class OAuthIdentityEvent extends Event
 {
-    /**
-     * @var UserInterface
-     */
-    protected $user;
+    protected UserInterface $user;
+    protected bool $dispatchStatus = false;
 
-    /**
-     * @var bool
-     */
-    protected $dispatchStatus;
-
-    /**
-     * @param UserInterface $user
-     */
     public function __construct(UserInterface $user)
     {
         $this->user = $user;
     }
 
-    /**
-     * @return UserInterface
-     */
-    public function getIdentity()
+    public function getIdentity(): UserInterface
     {
         return $this->user;
     }
 
-    /**
-     * @param bool $status
-     */
-    public function setIdentityDispatchStatus(bool $status)
+    public function setIdentityDispatchStatus(bool $status): void
     {
         $this->dispatchStatus = $status;
     }
 
-    /**
-     * @return bool
-     *
-     * @internal
-     */
-    public function identityCanDispatch()
+    public function identityCanDispatch(): bool
     {
         return $this->dispatchStatus;
     }

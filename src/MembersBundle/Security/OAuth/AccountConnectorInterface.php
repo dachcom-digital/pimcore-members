@@ -7,11 +7,5 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 interface AccountConnectorInterface
 {
-    /**
-     * @param UserInterface          $user
-     * @param OAuthResponseInterface $oAuthResponse
-     *
-     * @return SsoIdentityInterface
-     */
-    public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse);
+    public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse): SsoIdentityInterface;
 }

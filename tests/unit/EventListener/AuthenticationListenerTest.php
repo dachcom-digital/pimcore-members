@@ -5,7 +5,7 @@ namespace DachcomBundle\Test\unit\EventListener;
 use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\EventListener\AuthenticationListener;
 use MembersBundle\MembersEvents;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Codeception\TestCase\Test;
 
 class AuthenticationListenerTest extends Test

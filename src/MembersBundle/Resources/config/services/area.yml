@@ -4,7 +4,7 @@ services:
         shared: false
         arguments:
             - '@security.token_storage'
-            - '@pimcore.templating.include_renderer'
+            - '@Pimcore\Templating\Renderer\IncludeRenderer'
             - '@router'
 
     members.area.brick.login:

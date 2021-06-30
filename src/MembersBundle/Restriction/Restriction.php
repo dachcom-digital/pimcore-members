@@ -9,42 +9,14 @@ use Pimcore\Model\AbstractModel;
  */
 class Restriction extends AbstractModel
 {
-    /**
-     * @var int
-     */
-    public $id = null;
+    public ?int $id = null;
+    public ?string $ctype = null;
+    public int $targetId = 0;
+    public bool $isInherited = false;
+    public bool $inherit = false;
+    public array $relatedGroups = [];
 
-    /**
-     * @var string
-     */
-    public $ctype = null;
-
-    /**
-     * @var string
-     */
-    public $targetId = 0;
-
-    /**
-     * @var bool
-     */
-    public $isInherited = false;
-
-    /**
-     * @var bool
-     */
-    public $inherit = false;
-
-    /**
-     * @var array
-     */
-    public $relatedGroups = [];
-
-    /**
-     * @param int $id
-     *
-     * @return Restriction
-     */
-    public static function getById($id)
+    public static function getById(int $id): Restriction
     {
         $obj = new self();
         $obj->getDao()->getById($id);
@@ -52,13 +24,7 @@ class Restriction extends AbstractModel
         return $obj;
     }
 
-    /**
-     * @param int    $id
-     * @param string $cType
-     *
-     * @return Restriction
-     */
-    public static function getByTargetId($id, $cType = 'page')
+    public static function getByTargetId(int $id, string $cType = 'page'): Restriction
     {
         $obj = new self();
         $obj->getDao()->getByField('targetId', (int) $id, $cType);
@@ -66,127 +32,77 @@ class Restriction extends AbstractModel
         return $obj;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
-    public function setId($id)
+    public function setId(int $id): static
     {
-        return $this->id = (int) $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCtype()
-    {
-        return $this->ctype;
-    }
-
-    /**
-     * @param string $cType
-     *
-     * @return static
-     */
-    public function setCtype($cType)
-    {
-        $this->ctype = (string) $cType;
+        $this->id = (int) $id;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTargetId()
+    public function getCtype(): string
+    {
+        return $this->ctype;
+    }
+
+    public function setCtype(string $cType): static
+    {
+        $this->ctype = $cType;
+
+        return $this;
+    }
+
+    public function getTargetId(): string
     {
         return $this->targetId;
     }
 
-    /**
-     * @param int $targetId
-     *
-     * @return static
-     */
-    public function setTargetId($targetId)
+    public function setTargetId(int $targetId): static
     {
         $this->targetId = (int) $targetId;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRelatedGroups()
+    public function getRelatedGroups(): array
     {
         return $this->relatedGroups;
     }
 
-    /**
-     * @param array $relatedGroups
-     *
-     * @return static
-     */
-    public function setRelatedGroups($relatedGroups)
+    public function setRelatedGroups(array $relatedGroups): static
     {
-        $relatedGroups = (array) $relatedGroups;
         $this->relatedGroups = array_map('intval', $relatedGroups);
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getIsInherited()
+    public function getIsInherited(): bool
     {
         return $this->isInherited;
     }
 
-    /**
-     * Alias for getIsInherited().
-     *
-     * @return bool
-     */
-    public function isInherited()
+    public function isInherited(): bool
     {
         return $this->getIsInherited();
     }
 
-    /**
-     * @param bool $isInherited
-     *
-     * @return static
-     */
-    public function setIsInherited($isInherited)
+    public function setIsInherited(bool $isInherited): static
     {
-        $this->isInherited = (bool) $isInherited;
+        $this->isInherited = $isInherited;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getInherit()
+    public function getInherit(): bool
     {
         return $this->inherit;
     }
 
-    /**
-     * @param bool $inherit
-     *
-     * @return static
-     */
-    public function setInherit($inherit)
+    public function setInherit(bool $inherit): static
     {
         $this->inherit = (bool) $inherit;
 

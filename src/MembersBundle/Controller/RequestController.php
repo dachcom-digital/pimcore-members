@@ -14,34 +14,16 @@ class RequestController extends AbstractController
 {
     const BUFFER_SIZE = 8192;
 
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
+    protected RestrictionUri $restrictionUri;
 
-    /**
-     * @var RestrictionUri
-     */
-    protected $restrictionUri;
-
-    /**
-     * @param Configuration  $configuration
-     * @param RestrictionUri $restrictionUri
-     */
     public function __construct(Configuration $configuration, RestrictionUri $restrictionUri)
     {
         $this->configuration = $configuration;
         $this->restrictionUri = $restrictionUri;
     }
 
-    /**
-     * @param null $hash
-     *
-     * @return StreamedResponse
-     *
-     * @throws \Exception
-     */
-    public function serveAction($hash = null)
+    public function serveAction(string $hash = null): StreamedResponse
     {
         if ($this->configuration->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
@@ -59,33 +41,20 @@ class RequestController extends AbstractController
 
         if (count($dataToProcess) == 1) {
             return $this->serveFile($dataToProcess[0]);
-        } elseif (count($dataToProcess) > 1) {
-            return $this->serveZip($dataToProcess);
-        } else {
-            throw $this->createNotFoundException('invalid hash for asset request.');
         }
+
+        if (count($dataToProcess) > 1) {
+            return $this->serveZip($dataToProcess);
+        }
+
+        throw $this->createNotFoundException('invalid hash for asset request.');
     }
 
-    /**
-     * @param Model\Asset $asset
-     *
-     * @return StreamedResponse
-     */
-    private function serveFile(Model\Asset $asset)
+    private function serveFile(Model\Asset $asset): StreamedResponse
     {
         $forceDownload = true;
         $contentType = $asset->getMimetype();
         $fileSize = filesize($asset->getFileSystemPath());
-
-        $hasLuceneSearch = $this->configuration->hasBundle('LuceneSearchBundle\LuceneSearchBundle');
-
-        if ($hasLuceneSearch === true) {
-            /** @var \LuceneSearchBundle\Tool\CrawlerState $crawlerState */
-            $crawlerState = $this->container->get(\LuceneSearchBundle\Tool\CrawlerState::class);
-            if ($crawlerState->isLuceneSearchCrawler() && in_array($asset->getMimetype(), ['application/pdf'])) {
-                $forceDownload = false;
-            }
-        }
 
         $response = new StreamedResponse();
         $response->setStatusCode(200);
@@ -106,6 +75,7 @@ class RequestController extends AbstractController
             $response->headers->set('Content-Transfer-Encoding', 'binary');
         }
 
+        //TODO: Use Flysystem
         $response->setCallback(function () use ($asset) {
             flush();
             ob_flush();
@@ -120,14 +90,7 @@ class RequestController extends AbstractController
         return $response;
     }
 
-    /**
-     * @param array $assets
-     *
-     * @return StreamedResponse
-     *
-     * @throws \Exception
-     */
-    private function serveZip($assets)
+    private function serveZip(array $assets): StreamedResponse
     {
         $fileName = 'package.zip';
         $files = '';

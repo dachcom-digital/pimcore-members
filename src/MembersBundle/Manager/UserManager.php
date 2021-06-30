@@ -9,25 +9,10 @@ use Pimcore\Model\Version;
 
 class UserManager implements UserManagerInterface
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
+    protected ClassManagerInterface $classManager;
+    protected int $memberStorageId;
 
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
-
-    /**
-     * @var int
-     */
-    protected $memberStorageId;
-
-    /**
-     * @param Configuration         $configuration
-     * @param ClassManagerInterface $classManager
-     */
     public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
         $this->configuration = $configuration;
@@ -39,10 +24,7 @@ class UserManager implements UserManagerInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->classManager->getUserClass();
     }
@@ -50,19 +32,16 @@ class UserManager implements UserManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function deleteUser(UserInterface $user)
+    public function deleteUser(UserInterface $user): void
     {
         if (!$user instanceof DataObject\Concrete) {
-            return false;
+            return;
         }
 
-        return $user->delete();
+        $user->delete();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByConfirmationToken($token, $includeUnpublished = true)
+    public function findUserByConfirmationToken(string $token, bool $includeUnpublished = true): ?UserInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('confirmationToken = ?', [$token]);
@@ -70,17 +49,14 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) === 1) {
+        if (count($elements) === 1 && $elements[0] instanceof UserInterface) {
             return $elements[0];
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByEmail($emailAddress, $includeUnpublished = true)
+    public function findUserByEmail(string $emailAddress, $includeUnpublished = true): ?UserInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('email = ?', [$emailAddress]);
@@ -88,7 +64,7 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) === 1) {
+        if (count($elements) === 1 && $elements[0] instanceof UserInterface) {
             return $elements[0];
         }
 
@@ -98,7 +74,7 @@ class UserManager implements UserManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function findUserByUsername($username, $includeUnpublished = true)
+    public function findUserByUsername(string $username, bool $includeUnpublished = true): ?UserInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('userName = ?', [$username]);
@@ -106,17 +82,14 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) === 1) {
+        if (count($elements) === 1 && $elements[0] instanceof UserInterface) {
             return $elements[0];
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserById($userId, $includeUnpublished = true)
+    public function findUserById(int $userId, bool $includeUnpublished = true): ?UserInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition('oo_id = ?', [$userId]);
@@ -124,17 +97,14 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) === 1) {
+        if (count($elements) === 1 && $elements[0] instanceof UserInterface) {
             return $elements[0];
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true)
+    public function findUserByCondition(string $condition = '', array $conditionVariables = [], bool $includeUnpublished = true): ?UserInterface
     {
         $memberListing = $this->classManager->getUserListing();
         $memberListing->setCondition($condition, $conditionVariables);
@@ -142,17 +112,23 @@ class UserManager implements UserManagerInterface
 
         $elements = $memberListing->load();
 
-        if (count($elements) > 0) {
-            return $returnSingle ? $elements[0] : $elements;
+        if (count($elements) === 1 && $elements[0] instanceof UserInterface) {
+            return $elements[0];
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUserByUsernameOrEmail($usernameOrEmail)
+    public function findUsersByCondition(string $condition = '', array $conditionVariables = [], bool $includeUnpublished = true): array
+    {
+        $memberListing = $this->classManager->getUserListing();
+        $memberListing->setCondition($condition, $conditionVariables);
+        $memberListing->setUnpublished($includeUnpublished);
+
+        return $memberListing->load();
+    }
+
+    public function findUserByUsernameOrEmail(string $usernameOrEmail): ?UserInterface
     {
         if (preg_match('/^.+\@\S+\.\S+$/', $usernameOrEmail)) {
             return $this->findUserByEmail($usernameOrEmail);
@@ -161,52 +137,34 @@ class UserManager implements UserManagerInterface
         return $this->findUserByUsername($usernameOrEmail);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findUsers()
+    public function findUsers(): array
     {
         $memberListing = $this->classManager->getUserListing();
 
         return $memberListing->load();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function reloadUser(UserInterface $user)
+    public function reloadUser(UserInterface $user): UserInterface
     {
         throw new \Exception('reload user not implemented');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createUser()
+    public function createUser(): UserInterface
+    {
+        $userClass = $this->classManager->getUserClass();
+
+        return new $userClass();
+    }
+
+    public function createAnonymousUser(string $key): UserInterface
     {
         $userClass = $this->classManager->getUserClass();
         $user = new $userClass();
 
-        return $user;
+        return $this->setupNewUser($user, $key);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createAnonymousUser(string $key)
-    {
-        $userClass = $this->classManager->getUserClass();
-        $user = new $userClass();
-
-        $user = $this->setupNewUser($user, $key);
-
-        return $user;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function updateUser(UserInterface $user, $properties = [])
+    public function updateUser(UserInterface $user, $properties = []): UserInterface
     {
         $new = false;
 
@@ -231,13 +189,7 @@ class UserManager implements UserManagerInterface
         return $new ? $this->saveWithVersion($user) : $this->saveWithoutVersion($user);
     }
 
-    /**
-     * @param UserInterface $user
-     * @param string|null   $key
-     *
-     * @return UserInterface
-     */
-    private function setupNewUser(UserInterface $user, ?string $key)
+    private function setupNewUser(UserInterface $user, ?string $key): UserInterface
     {
         $validKey = $key ?? $user->getEmail();
 
@@ -269,31 +221,15 @@ class UserManager implements UserManagerInterface
         return $user;
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return UserInterface
-     *
-     * @throws \Exception
-     */
-    private function saveWithVersion($user)
+    private function saveWithVersion(UserInterface $user): void
     {
-        return $user->save();
+        $user->save();
     }
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return UserInterface
-     *
-     * @throws \Exception
-     */
-    private function saveWithoutVersion($user)
+    private function saveWithoutVersion(UserInterface $user): void
     {
         Version::disable();
         $state = $user->save();
         Version::enable();
-
-        return $state;
     }
 }

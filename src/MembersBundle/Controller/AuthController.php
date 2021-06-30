@@ -12,27 +12,14 @@ use Symfony\Component\Security\Core\Security;
 
 class AuthController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
+    protected FactoryInterface $formFactory;
 
-    /**
-     * @param FactoryInterface $formFactory
-     */
     public function __construct(FactoryInterface $formFactory)
     {
         $this->formFactory = $formFactory;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Exception
-     */
-    public function loginAction(Request $request)
+    public function loginAction(Request $request): Response
     {
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;

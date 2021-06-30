@@ -6,96 +6,31 @@ use MembersBundle\Adapter\User\UserInterface;
 
 interface UserManagerInterface
 {
-    /**
-     * @return string
-     */
-    public function getClass();
+    public function getClass(): string;
 
-    /**
-     * @param UserInterface $user
-     *
-     * @return mixed
-     */
-    public function deleteUser(UserInterface $user);
+    public function deleteUser(UserInterface $user): void;
 
-    /**
-     * @param string $token
-     * @param bool   $includeUnpublished
-     *
-     * @return null|UserInterface
-     */
-    public function findUserByConfirmationToken($token, $includeUnpublished = true);
+    public function findUserByConfirmationToken(string $token, bool $includeUnpublished = true): ?UserInterface;
 
-    /**
-     * @param string $emailAddress
-     * @param bool   $includeUnpublished
-     *
-     * @return null|UserInterface
-     */
-    public function findUserByEmail($emailAddress, $includeUnpublished = true);
+    public function findUserByEmail(string $emailAddress, bool $includeUnpublished = true): ?UserInterface;
 
-    /**
-     * @param string $username
-     * @param bool   $includeUnpublished
-     *
-     * @return null|UserInterface
-     */
-    public function findUserByUsername($username, $includeUnpublished = true);
+    public function findUserByUsername(string $username, bool $includeUnpublished = true): ?UserInterface;
 
-    /**
-     * @param int  $userId
-     * @param bool $includeUnpublished
-     *
-     * @return null|UserInterface
-     */
-    public function findUserById($userId, $includeUnpublished = true);
+    public function findUserById(int $userId, bool $includeUnpublished = true): ?UserInterface;
 
-    /**
-     * @param string $condition
-     * @param array  $conditionVariables
-     * @param bool   $includeUnpublished
-     * @param bool   $returnSingle
-     *
-     * @return null|array|UserInterface
-     */
-    public function findUserByCondition($condition = '', $conditionVariables = [], $includeUnpublished = true, $returnSingle = true);
+    public function findUserByCondition(string $condition = '', array $conditionVariables = [], bool $includeUnpublished = true): ?UserInterface;
 
-    /**
-     * @param string $usernameOrEmail
-     *
-     * @return null|array|UserInterface
-     */
-    public function findUserByUsernameOrEmail($usernameOrEmail);
+    public function findUsersByCondition(string $condition = '', array $conditionVariables = [], bool $includeUnpublished = true): array;
 
-    /**
-     * @return array
-     */
-    public function findUsers();
+    public function findUserByUsernameOrEmail(string $usernameOrEmail): ?UserInterface;
 
-    /**
-     * @param UserInterface $user
-     *
-     * @throws \Exception
-     */
-    public function reloadUser(UserInterface $user);
+    public function findUsers(): array;
 
-    /**
-     * @return UserInterface
-     */
-    public function createUser();
+    public function reloadUser(UserInterface $user): UserInterface;
 
-    /**
-     * @param string $key
-     *
-     * @return UserInterface
-     */
-    public function createAnonymousUser(string $key);
+    public function createUser(): UserInterface;
 
-    /**
-     * @param UserInterface $user
-     * @param array         $properties
-     *
-     * @return UserInterface
-     */
-    public function updateUser(UserInterface $user, $properties = []);
+    public function createAnonymousUser(string $key): UserInterface;
+
+    public function updateUser(UserInterface $user, array $properties = []): UserInterface;
 }

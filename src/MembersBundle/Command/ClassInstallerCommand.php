@@ -11,23 +11,16 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ClassInstallerCommand extends Command
 {
-    /**
-     * @var ClassInstaller
-     */
-    protected $classInstaller;
+    protected ClassInstaller $classInstaller;
 
-    /**
-     * @param ClassInstaller $classInstaller
-     */
-    public function setClassInstaller(ClassInstaller $classInstaller)
+    public function __construct(ClassInstaller $classInstaller)
     {
+        parent::__construct();
+
         $this->classInstaller = $classInstaller;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -46,7 +39,7 @@ class ClassInstallerCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $classes = ['MembersUser', 'MembersGroup'];
 
