@@ -59,6 +59,7 @@ class Configuration implements ConfigurationInterface
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->scalarNode('class_name')->defaultValue('MembersUser')->end()
+                                ->scalarNode('object_key_form_field')->defaultValue('email')->end()
                             ->end()
                         ->end()
                         ->arrayNode('initial_groups')
