@@ -26,6 +26,7 @@ members:
 > **Tip:** Add this to a separate config file.
 
 ### Custom object keys
+You can define a form field (from the registration form) whose value is used to generate the key of the Pimcore object.
 ```yaml
 members:
     user:
