@@ -88,14 +88,14 @@ You need two classes: User and Group. So let's create it:
 | Name | Field Type | Comment |
 |---------------------|-------------|-------------------------------|
 | userName | Input |  |
-| email | Input |  **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
+| email | Input |  **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md). |
 | confirmationToken | Input | must set to it read only |
 | lastLogin | Date & Time | must set to it read only |
-| password | Password | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_CustomClassName.md). |
+| password | Password | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md). |
 | passwordRequestedAt | Date & Time | must set to it read only |
 | groups | User Group | This field comes with Members |
 
-> `membersUser` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
+> `membersUser` is the default name, you may want to change it. Read [here](docs/20_ClassCustomization.md) how to achieve that.
 
 #### Customer Data Framework
 If you want to use the [Customer Data Framework](https://github.com/pimcore/customer-data-framework) you need to do some further work. Read more about it [here](docs/300_CustomerDataFw.md).
@@ -113,7 +113,7 @@ You want to enable the SSO Feature in Members? Read more about it [here](./docs/
 | name | Input |  |
 | roles | Multiselection | Set "Options Provider Class or Service Name" to `@MembersBundle\CoreExtension\Provider\RoleOptionsProvider` |
 
-> `membersGroup` is the default name, you may want to change it. Read [here](docs/20_CustomClassName.md) how to achieve that.
+> `membersGroup` is the default name, you may want to change it. Read [here](docs/20_ClassCustomization.md) how to achieve that.
 
 Feel free to add additional fields since those are just the required ones. That's it. Members will use those classes to manage authentication and group management.
 
@@ -123,7 +123,7 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 ***
 
 ### User Management: Further Information
-- [Custom Class Names](docs/20_CustomClassName.md)
+- [Custom Class Names](docs/20_ClassCustomization.md)
 - [Frontend Routes & Views](docs/30_FrontendRoutes.md)
 - [Available Events](docs/40_Events.md)
 - [Custom Form Types](docs/50_CustomFormTypes.md)
