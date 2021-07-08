@@ -1,5 +1,6 @@
-# Custom Class Names
+# Class Customization
 
+### Custom names
 If you want to use different class names, you need to modify the default configuration.
 Add those lines to your `AppBundle/Resources/config/pimcore/config.yml`:
     
@@ -23,3 +24,13 @@ members:
 ```
 
 > **Tip:** Add this to a separate config file.
+
+### Custom object keys
+```yaml
+members:
+    user:
+        adapter:
+            object_key_form_field: 'username' # default was 'email'
+```
+
+> **Important:** Choose a unique field to prevent naming conflicts within Pimcore
