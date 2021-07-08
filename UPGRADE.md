@@ -6,6 +6,9 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 3.1.4 to Version 3.1.5
+- **[ENHANCEMENT]**: You can now define a form field which is later used as object-key in Pimcore, when a user registers ([#154](https://github.com/dachcom-digital/pimcore-members/issues/154))
+
 #### Update from Version 3.1.3 to Version 3.1.4
 - **[ENHANCEMENT]**: Improving and adding additional Events for Restriction Changes on Entities ([#148](https://github.com/dachcom-digital/pimcore-members/issues/148))
 - **[ENHANCEMENT]**: Update Twig navigation to allow parameters ([@kjkooistra-youwe](https://github.com/dachcom-digital/pimcore-members/pull/147))
