@@ -1,6 +1,6 @@
 # Restricted Routing
 
-The MembersBundle tries to protected your documents by default. For that a event listener will watch every request.
+The MembersBundle tries to protect your documents by default. For that an event listener will watch every request.
 
 1. If the route is not protected, the restriction will be skipped
 2. If the route is protected and the user is not logged in and not allowed to open the page, he will get redirected via the `members_user_security_login` route.
@@ -13,22 +13,22 @@ Even if the object has a restriction, the view will not notice it and the user w
 There is simple event listener you need to call: `StaticRouteEvent`
 
 ### 1. Service
-First, create a service in your `app/config/services.yml`:
+First, create a service in your `config/services.yaml`:
 
 ```yaml
 app.event_listener.members.restriction.staticroute:
-    class: AppBundle\EventListener\MembersStaticRouteListener
+    class: App\EventListener\MembersStaticRouteListener
     tags:
         - { name: kernel.event_subscriber }
 ```
 
 ### 2. Listener
-Second, create a event listener:
+Second, create an event listener:
 
 ```php
 <?php
 
-namespace AppBundle\EventListener;
+namespace App\EventListener;
 
 use MembersBundle\Event\StaticRouteEvent;
 use MembersBundle\MembersEvents;
@@ -37,14 +37,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RestrictedStaticRouteListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::RESTRICTION_CHECK_STATICROUTE => 'checkStaticRoute'
         ];
     }
 
-    public function checkStaticRoute(StaticRouteEvent $event)
+    public function checkStaticRoute(StaticRouteEvent $event): void
     {
         $request = $event->getRequest();
         if($event->getRouteName() === 'news_detail') {

@@ -3,33 +3,32 @@
 namespace MembersBundle\Tool;
 
 use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\Exception\NotFoundException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ClassInstaller
 {
-    /**
-     * @var OutputInterface
-     */
-    protected $logger;
+    protected ?OutputInterface $logger = null;
 
-    /**
-     * @param OutputInterface $logger
-     */
-    public function setLogger(OutputInterface $logger)
+    public function setLogger(OutputInterface $logger): void
     {
         $this->logger = $logger;
     }
 
-    /**
-     * @param array $classes
-     */
-    public function installClasses(array $classes)
+    public function installClasses(array $classes): void
     {
         foreach ($this->getClasses($classes) as $className => $path) {
             $class = new ClassDefinition();
-            $id = $class->getDao()->getIdByName($className);
 
-            if ($id !== false) {
+            $id = null;
+
+            try {
+                $id = $class->getDao()->getIdByName($className);
+            } catch(NotFoundException $e) {
+                // fail silently
+            }
+
+            if ($id !== null) {
                 $this->log(sprintf('<comment>Class "%s" already exists.</comment>', $className));
 
                 continue;
@@ -48,18 +47,15 @@ class ClassInstaller
         }
     }
 
-    /**
-     * @param array $classes
-     *
-     * @return array
-     */
     protected function getClasses(array $classes): array
     {
         $result = [];
 
+        // @todo: use flysystem configuration
+
         foreach ($classes as $className) {
             $filename = sprintf('class_%s_export.json', $className);
-            $path = realpath(dirname(__FILE__) . '/../Resources/install/classes') . '/' . $filename;
+            $path = dirname(__DIR__) . '/Resources/install/classes' . '/' . $filename;
             $path = realpath($path);
 
             if (false === $path || !is_file($path)) {
@@ -76,10 +72,7 @@ class ClassInstaller
         return $result;
     }
 
-    /**
-     * @param string $msg
-     */
-    protected function log($msg)
+    protected function log(string $msg): void
     {
         if (!$this->logger instanceof OutputInterface) {
             return;

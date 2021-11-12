@@ -4,7 +4,6 @@ namespace MembersBundle\Document\Builder;
 
 use MembersBundle\Adapter\User\UserInterface;
 use Pimcore\Model\Document;
-use Pimcore\Placeholder;
 use Pimcore\Templating\Renderer\IncludeRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -14,76 +13,25 @@ use Symfony\Component\Security\Core\Security;
 
 class BrickBuilder
 {
-    /**
-     * @var string
-     */
-    protected $sourceType = 'area';
+    protected string $sourceType = 'area';
+    protected IncludeRenderer $includeRenderer;
+    protected TokenStorageInterface $tokenStorage;
+    protected UrlGeneratorInterface $urlGenerator;
+    protected ?string $logoutUri = null;
+    protected bool $hideAfterLogin = false;
+    protected ?Document $redirectPage = null;
+    protected ?Document\Snippet $successSnippet = null;
+    protected ?Request $request = null;
+    protected bool $editMode = false;
+    protected ?string $error = null;
 
-    /**
-     * @var IncludeRenderer
-     */
-    protected $includeRenderer;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var string
-     */
-    protected $logoutUri = null;
-
-    /**
-     * @var bool
-     */
-    protected $hideAfterLogin = false;
-
-    /**
-     * @var Document
-     */
-    protected $redirectPage = null;
-
-    /**
-     * @var Document\Snippet
-     */
-    protected $successSnippet = null;
-
-    /**
-     * @var Request
-     */
-    protected $request = false;
-
-    /**
-     * @var bool
-     */
-    protected $editMode = false;
-
-    /**
-     * @var string
-     */
-    protected $error = null;
-
-    /**
-     * @var array
-     */
-    private $templates = [
+    private array $templates = [
         'area-login'             => 'Auth/Area/login_area',
         'area-logged-in'         => 'Auth/Area/login_area_logged_in',
         'area-logged-in-snippet' => 'Auth/Area/login_area_logged_in_snippet',
         'area-not-available'     => 'Auth/Area/frontend_request'
     ];
 
-    /**
-     * @param TokenStorageInterface $tokenStorage
-     * @param IncludeRenderer       $includeRenderer
-     * @param UrlGeneratorInterface $urlGenerator
-     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         IncludeRenderer $includeRenderer,
@@ -94,12 +42,7 @@ class BrickBuilder
         $this->urlGenerator = $urlGenerator;
     }
 
-    /**
-     * @param string $sourceType
-     *
-     * @return $this
-     */
-    public function setup($sourceType)
+    public function setup(string $sourceType): self
     {
         $this->sourceType = $sourceType;
         $this->logoutUri = $this->urlGenerator->generate('members_user_security_logout');
@@ -107,57 +50,34 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return $this
-     */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): self
     {
         $this->request = $request;
 
         return $this;
     }
 
-    /**
-     * @param bool $isEditMode
-     *
-     * @return $this
-     */
-    public function setEditMode($isEditMode = false)
+    public function setEditMode(bool $isEditMode = false): self
     {
         $this->editMode = $isEditMode;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param string $path
-     */
-    public function setTemplate($name, $path = '')
+    public function setTemplate(string $name, string $path = ''): void
     {
         $this->templates[$name] = $path;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getTemplate($name)
+    public function getTemplate(string $name): string
     {
         return $this->templates[$name];
     }
 
     /**
      * Allowed Types: 'page', 'link', 'hardlink'.
-     *
-     * @param Document $page
-     *
-     * @return $this
      */
-    public function setRedirectAfterSuccess($page)
+    public function setRedirectAfterSuccess(?Document $page): self
     {
         if ($page instanceof Document) {
             $this->redirectPage = $page;
@@ -166,12 +86,7 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param Document\Snippet $snippet
-     *
-     * @return $this
-     */
-    public function setSnippetAfterLogin($snippet)
+    public function setSnippetAfterLogin(?Document\Snippet $snippet): self
     {
         if ($snippet instanceof Document\Snippet) {
             $this->successSnippet = $snippet;
@@ -180,12 +95,7 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @param string|bool $hide
-     *
-     * @return $this
-     */
-    public function setHideAfterLogin($hide = false)
+    public function setHideAfterLogin(string|bool $hide = false): self
     {
         if (is_string($hide)) {
             $this->hideAfterLogin = $hide === '1';
@@ -196,10 +106,7 @@ class BrickBuilder
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getViewParams()
+    public function getViewParams(): array
     {
         $template = '';
 
@@ -207,8 +114,8 @@ class BrickBuilder
             'builder_type'            => $this->sourceType,
             'login_uri'               => $this->urlGenerator->generate('members_user_security_login'),
             'logout_uri'              => $this->logoutUri,
-            'is_logged_in'            => $this->tokenStorage->getToken()->getUser() instanceof UserInterface,
-            'members_user'            => $this->tokenStorage->getToken()->getUser(),
+            'is_logged_in'            => $this->tokenStorage->getToken()?->getUser() instanceof UserInterface,
+            'members_user'            => $this->tokenStorage->getToken()?->getUser(),
             'hide_when_logged_in'     => $this->hideAfterLogin,
             'origin'                  => $this->request->getRequestUri(),
             'error'                   => $this->error,
@@ -218,7 +125,7 @@ class BrickBuilder
         if ($this->editMode) {
             //only show backend note
             $template = $this->getTemplate('area-not-available');
-        } elseif (!$this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
+        } elseif (!$this->tokenStorage->getToken()?->getUser() instanceof UserInterface) {
             $authErrorKey = Security::AUTHENTICATION_ERROR;
             $lastUsernameKey = Security::LAST_USERNAME;
 
@@ -247,14 +154,16 @@ class BrickBuilder
             ]);
 
             $template = $this->getTemplate('area-login');
-        } elseif ($this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
+        } elseif ($this->tokenStorage->getToken()?->getUser() instanceof UserInterface) {
             if ($this->hideAfterLogin === false && !is_null($this->successSnippet)) {
                 $snippetParams = [
-                    'user'         => $this->tokenStorage->getToken()->getUser(),
+                    'user'         => $this->tokenStorage->getToken()?->getUser(),
                     'redirect_uri' => is_null($this->redirectPage) ? $this->request->getRequestUri() : $this->redirectPage->getFullPath(),
                     'logout_uri'   => $this->logoutUri,
                     'current_uri'  => $this->request->getRequestUri()
                 ];
+
+                // @todo: fix placeholder
 
                 $placeholder = new Placeholder();
                 $snippetContent = $this->includeRenderer->render($this->successSnippet, $snippetParams, $this->editMode);

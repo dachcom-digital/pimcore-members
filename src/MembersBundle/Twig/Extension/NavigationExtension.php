@@ -7,52 +7,31 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\Restriction\ElementRestriction;
-use Pimcore\Model\AbstractModel;
-use Pimcore\Model\Document;
+use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Navigation\Container;
-use Pimcore\Templating\Helper\Navigation;
+use Pimcore\Navigation\Page\Document;
+use Pimcore\Tool;
+use Pimcore\Twig\Extension\Templating\Navigation;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-/**
- * @see \Pimcore\Twig\Extension\NavigationExtension
- */
 class NavigationExtension extends AbstractExtension
 {
-    /**
-     * @var Navigation
-     */
-    protected $navigationHelper;
+    protected Navigation $navigationExtension;
+    protected RestrictionManagerInterface $restrictionManager;
+    protected TokenStorageInterface $tokenStorage;
 
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @param Navigation                  $navigationHelper
-     * @param RestrictionManagerInterface $restrictionManager
-     * @param TokenStorageInterface       $tokenStorage
-     */
     public function __construct(
-        Navigation $navigationHelper,
+        Navigation $navigationExtension,
         RestrictionManagerInterface $restrictionManager,
         TokenStorageInterface $tokenStorage
     ) {
-        $this->navigationHelper = $navigationHelper;
+        $this->navigationExtension = $navigationExtension;
         $this->restrictionManager = $restrictionManager;
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @return array
-     */
     public function getFunctions(): array
     {
         return [
@@ -60,31 +39,9 @@ class NavigationExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @see \Pimcore\Twig\Extension\NavigationExtension::buildNavigation()
-     * @param array|Document $params config array or active document (legacy mode)
-     * @param Document|null $navigationRootDocument
-     * @param string|null $htmlMenuPrefix
-     * @param bool|string $cache
-     * @return Container
-     */
-    public function buildNavigation(
-        $params = null,
-        Document $navigationRootDocument = null,
-        string $htmlMenuPrefix = null,
-        $cache = true
-    ): Container {
-        if (is_array($params)) {
-            return $this->buildMembersNavigation($params);
-        }
-
-        // using deprecated argument configuration ($params = navigation root document)
-        return $this->legacyBuildNavigation(
-            $params,
-            $navigationRootDocument,
-            $htmlMenuPrefix,
-            $cache
-        );
+    public function buildNavigation(array $params): Container
+    {
+        return $this->buildMembersNavigation($params);
     }
 
     protected function buildMembersNavigation(array $params): Container
@@ -93,26 +50,15 @@ class NavigationExtension extends AbstractExtension
         $params['cache'] = $this->getCacheKey($params['cache'] ?? true);
         $params['pageCallback'] = $this->getPageCallback($params['pageCallback'] ?? null);
 
-        if (!method_exists($this->navigationHelper, 'build')) {
-            throw new \Exception(
-                'Navigation::build() unavailable, update your Pimcore version to >= 6.5',
-                1605864272
-            );
-        }
-
-        return $this->navigationHelper->build($params);
+        return $this->navigationExtension->build($params);
     }
 
-    /**
-     * @param bool|string $cache
-     * @return bool|string
-     */
-    protected function getCacheKey($cache)
+    protected function getCacheKey(mixed $cache): mixed
     {
         $cacheKey = $cache;
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
-        if (\Pimcore\Tool::isFrontendRequestByAdmin() || $cacheKey === false || !($user instanceof UserInterface)) {
+        if ($cacheKey === false || !($user instanceof UserInterface) || Tool::isFrontendRequestByAdmin()) {
             return $cacheKey;
         }
 
@@ -135,7 +81,7 @@ class NavigationExtension extends AbstractExtension
 
     protected function getPageCallback(?\Closure $additionalClosure = null): \Closure
     {
-        return function (\Pimcore\Navigation\Page\Document $document, AbstractModel $page) use ($additionalClosure) {
+        return function (Document $document, ElementInterface $page) use ($additionalClosure) {
             $restrictionElement = $this->applyPageRestrictions($document, $page);
 
             // Call additional closure if configured and also pass restriction element as additional argument
@@ -147,7 +93,7 @@ class NavigationExtension extends AbstractExtension
         };
     }
 
-    protected function applyPageRestrictions(\Pimcore\Navigation\Page\Document $document, AbstractModel $page): ElementRestriction
+    protected function applyPageRestrictions(Document $document, ElementInterface $page): ElementRestriction
     {
         $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($page);
         if ($restrictionElement->getSection() !== RestrictionManager::RESTRICTION_SECTION_ALLOWED) {
@@ -156,27 +102,5 @@ class NavigationExtension extends AbstractExtension
         }
 
         return $restrictionElement;
-    }
-
-    /**
-     * @param Document      $activeDocument
-     * @param Document|null $navigationRootDocument
-     * @param string|null   $htmlMenuPrefix
-     * @param bool|string   $cache
-     * @return Container
-     */
-    protected function legacyBuildNavigation(
-        Document $activeDocument,
-        ?Document $navigationRootDocument = null,
-        ?string $htmlMenuPrefix = null,
-        $cache = true
-    ): Container {
-        return $this->navigationHelper->buildNavigation(
-            $activeDocument,
-            $navigationRootDocument,
-            $htmlMenuPrefix,
-            $this->getPageCallback(),
-            $this->getCacheKey($cache)
-        );
     }
 }

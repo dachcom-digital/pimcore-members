@@ -6,75 +6,40 @@ use MembersBundle\Manager\RestrictionManager;
 
 class ElementRestriction
 {
-    /**
-     * @var int
-     */
-    public $state = RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN;
+    public string $state = RestrictionManager::RESTRICTION_STATE_NOT_LOGGED_IN;
+    public string $section = RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED;
+    public array $restrictionGroups = [];
 
-    /**
-     * @var string
-     */
-    public $section = RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED;
-
-    /**
-     * @var array
-     */
-    public $restrictionGroups = [];
-
-    /**
-     * @return string
-     */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
 
-    /**
-     * @param string $state
-     *
-     * @return $this
-     */
-    public function setState($state)
+    public function setState(string $state): self
     {
         $this->state = $state;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSection()
+    public function getSection(): string
     {
         return $this->section;
     }
 
-    /**
-     * @param string $section
-     *
-     * @return $this
-     */
-    public function setSection($section)
+    public function setSection(string $section): self
     {
         $this->section = $section;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRestrictionGroups()
+    public function getRestrictionGroups(): array
     {
         return $this->restrictionGroups;
     }
 
-    /**
-     * @param array $groups
-     *
-     * @return $this
-     */
-    public function setRestrictionGroups($groups = [])
+    public function setRestrictionGroups(array $groups = []): self
     {
         $this->restrictionGroups = $groups;
 

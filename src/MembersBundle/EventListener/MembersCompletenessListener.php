@@ -15,31 +15,11 @@ use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 
 class MembersCompletenessListener implements EventSubscriberInterface
 {
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
+    protected int $memberStorageId;
+    protected ClassManagerInterface $classManager;
+    protected Configuration $configuration;
+    protected TokenStorageUserResolver $userResolver;
 
-    /**
-     * @var int
-     */
-    protected $memberStorageId;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var TokenStorageUserResolver
-     */
-    private $userResolver;
-
-    /**
-     * @param ClassManagerInterface    $classManager
-     * @param Configuration            $configuration
-     * @param TokenStorageUserResolver $tokenStorageUserResolver
-     */
     public function __construct(
         ClassManagerInterface $classManager,
         Configuration $configuration,
@@ -50,10 +30,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         $this->userResolver = $tokenStorageUserResolver;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             DataObjectEvents::PRE_UPDATE => [
@@ -64,11 +41,9 @@ class MembersCompletenessListener implements EventSubscriberInterface
     }
 
     /**
-     * @param DataObjectEvent $e
-     *
      * @throws \Exception
      */
-    public function checkUniqueness(DataObjectEvent $e)
+    public function checkUniqueness(DataObjectEvent $e): void
     {
         $object = $e->getObject();
 
@@ -109,11 +84,9 @@ class MembersCompletenessListener implements EventSubscriberInterface
     }
 
     /**
-     * @param DataObjectEvent $e
-     *
      * @throws \Exception
      */
-    public function checkProperties(DataObjectEvent $e)
+    public function checkProperties(DataObjectEvent $e): void
     {
         /** @var Concrete $object */
         $object = $e->getObject();
@@ -135,7 +108,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
         //check for locale
         $needLocale = false;
         foreach ($emailTemplates['default'] as $template) {
-            if (strpos($template, '{_locale}') !== false) {
+            if (str_contains($template, '{_locale}')) {
                 $needLocale = true;
 
                 break;

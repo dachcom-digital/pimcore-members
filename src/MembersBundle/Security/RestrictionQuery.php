@@ -5,30 +5,19 @@ namespace MembersBundle\Security;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManagerInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
 use Pimcore\Model\Listing\AbstractListing;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class RestrictionQuery
 {
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
+    protected RestrictionManagerInterface $restrictionManager;
 
-    /**
-     * @param RestrictionManagerInterface $restrictionManager
-     */
     public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;
     }
 
-    /**
-     * @param QueryBuilder    $query
-     * @param AbstractListing $listing
-     * @param string          $queryIdentifier
-     */
-    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, $queryIdentifier = 'o_id')
+    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, string $queryIdentifier = 'o_id')
     {
         if ($this->restrictionManager->isFrontendRequestByAdmin()) {
             return;
@@ -50,13 +39,15 @@ class RestrictionQuery
             $cType = 'page';
         }
 
-        $query->joinLeft(
+        // @todo: fix query
+
+        $query->join(
             ['members_restrictions' => 'members_restrictions'],
             sprintf('members_restrictions.targetId = %s AND members_restrictions.ctype = "%s"', $queryIdentifier, $cType),
             ''
         );
 
-        $query->joinLeft(
+        $query->join(
             ['members_group_relations' => 'members_group_relations'],
             'members_group_relations.restrictionId = members_restrictions.id',
             ''

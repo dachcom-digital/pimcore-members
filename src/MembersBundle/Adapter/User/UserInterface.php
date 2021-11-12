@@ -2,183 +2,73 @@
 
 namespace MembersBundle\Adapter\User;
 
+use Carbon\Carbon;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 interface UserInterface extends BaseUserInterface, EquatableInterface
 {
-    const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
-    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    public function setId(int $id);
 
-    /**
-     * @param int $id
-     *
-     * @return mixed
-     */
-    public function setId($id);
-
-    /**
-     * @return int
-     */
     public function getId();
 
-    /**
-     * @param int $parentId
-     *
-     * @return $this
-     */
-    public function setParentId($parentId);
+    public function setParentId(int $parentId);
 
-    /**
-     * @return int
-     */
     public function getParentId();
 
-    /**
-     * @param string $key
-     *
-     * @return $this
-     */
-    public function setKey($key);
+    public function setKey(string $key);
 
-    /**
-     * @return string
-     */
     public function getKey();
 
-    /**
-     * @param string $name
-     * @param string $type
-     * @param mixed  $data
-     * @param bool   $inherited
-     * @param bool   $inheritable
-     *
-     * @return $this
-     */
-    public function setProperty($name, $type, $data, $inherited = false, $inheritable = false);
+    public function setProperty(string $name, string $type, mixed $data, bool $inherited = false, bool $inheritable = false);
 
-    /**
-     * @param string $name
-     * @param bool   $asContainer
-     *
-     * @return mixed
-     */
-    public function getProperty($name, $asContainer = false);
+    public function getProperty(string $name, bool $asContainer = false);
 
-    /**
-     * @param bool $published
-     *
-     * @return mixed
-     */
-    public function setPublished($published);
+    public function setPublished(bool $published);
 
-    /**
-     * @return int
-     */
     public function getPublished();
 
-    /**
-     * @param string $confirmationToken
-     *
-     * @return mixed
-     */
-    public function setConfirmationToken($confirmationToken);
+    public function setConfirmationToken(?string $confirmationToken): self;
 
-    /**
-     * @return mixed
-     */
-    public function getConfirmationToken();
+    public function getConfirmationToken(): ?string;
 
-    /**
-     * @param \Carbon\Carbon $time
-     *
-     * @return mixed
-     */
-    public function setLastLogin($time);
+    public function setLastLogin(Carbon $time): self;
 
-    /**
-     * @return mixed
-     */
-    public function getLastLogin();
+    public function getLastLogin(): ?Carbon;
 
-    /**
-     * @param string $password
-     *
-     * @return mixed
-     */
-    public function setPassword($password);
+    public function setPassword(string $password): self;
 
-    /**
-     * @return mixed
-     */
-    public function getPassword();
+    public function getPassword(): ?string;
 
-    /**
-     * @param string $email
-     *
-     * @return mixed
-     */
-    public function setEmail($email);
+    public function setEmail(string $email): self;
 
-    /**
-     * @return mixed
-     */
-    public function getEmail();
+    public function getEmail(): ?string;
 
-    /**
-     * Gets the plain password.
-     *
-     * @return string
-     */
-    public function getPlainPassword();
+    public function getPlainPassword(): string;
 
-    /**
-     * @param array $groups
-     *
-     * @return mixed
-     */
-    public function setGroups($groups);
+    public function setGroups(array $groups): self;
 
-    /**
-     * @return mixed
-     */
-    public function getGroups();
+    public function getGroups(): ?array;
 
-    /**
-     * @param \Carbon\Carbon $date
-     *
-     * @return mixed
-     */
-    public function setPasswordRequestedAt($date);
+    public function setPasswordRequestedAt(Carbon $date): self;
 
-    /**
-     * @return mixed
-     */
-    public function getPasswordRequestedAt();
+    public function getPasswordRequestedAt(): ?Carbon;
 
     /**
      * Checks whether the password reset request has expired.
      *
      * @param int $ttl Requests older than this many seconds will be considered expired
-     *
-     * @return int
      */
-    public function isPasswordRequestNonExpired($ttl);
+    public function isPasswordRequestNonExpired(int $ttl): bool;
+
+    public function isAccountNonExpired(): bool;
+
+    public function isAccountNonLocked(): bool;
 
     /**
-     * @return mixed
-     */
-    public function isAccountNonExpired();
-
-    /**
-     * @return mixed
-     */
-    public function isAccountNonLocked();
-
-    /**
-     * @return $this
-     *
      * @throws \Exception
      */
     public function save();

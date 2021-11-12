@@ -74,7 +74,7 @@ You need to change the parent class of your existing user class to `\MembersBund
 Install the [KnpUOAuth2ClientBundle](https://github.com/knpuniversity/oauth2-client-bundle):
 
 ```bash
-$ composer require knpuniversity/oauth2-client-bundle:^1.0
+$ composer require knpuniversity/oauth2-client-bundle:^2.0
 ```
 
 You also need to add some providers. There is a [list of all available provider](https://github.com/knpuniversity/oauth2-client-bundle#step-1-download-the-client-library). 

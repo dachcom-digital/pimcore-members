@@ -9,10 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ResettingRequestFormType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('username', null, [
             'label'       => 'members.resetting.request.username',
@@ -22,10 +19,7 @@ class ResettingRequestFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_resetting_request';
     }

@@ -6,7 +6,7 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthResourceEvent;
 use MembersBundle\MembersEvents;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResourceMappingService
 {
@@ -50,8 +50,7 @@ class ResourceMappingService
             return;
         }
 
-        $event = new OAuthResourceEvent($user, $resourceOwner);
-        $this->eventDispatcher->dispatch($eventName, $event);
+        $this->eventDispatcher->dispatch(new OAuthResourceEvent($user, $resourceOwner), $eventName);
     }
 
     /**

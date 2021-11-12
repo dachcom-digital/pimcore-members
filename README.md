@@ -1,24 +1,25 @@
-# Pimcore Members
+# Pimcore Members Bundle
 Add frontend user authentication and document restriction to pimcore.
 
 [![Join the chat at https://gitter.im/pimcore/pimcore](https://img.shields.io/gitter/room/pimcore/pimcore.svg?style=flat-square)](https://gitter.im/pimcore/pimcore)
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Latest Release](https://img.shields.io/packagist/v/dachcom-digital/members.svg?style=flat-square)](https://packagist.org/packages/dachcom-digital/members)
-[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/Codeception?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3A%22Codeception%22)
-[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/PHP%20Stan?style=flat-square&logo=github&label=phpstan%20level%202)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3A%22PHP%20Stan%22)
+[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/Codeception/master?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3ACodeception+branch%3Amaster)
+[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/PHP%20Stan/master?style=flat-square&logo=github&label=phpstan%20level%204)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3A"PHP+Stan"+branch%3Amaster)
 
 ### Release Plan
 
 | Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained     | Branch     |
 |---------|-----------------------------------|----------------------------|--------------|----------------|------------|
+| **4.x** | `10.1`                            | `5.3`                      |--            | Feature Branch | master     |
 | **3.x** | `6.0` - `6.8`                     | `3.4`, `^4.4`              | 21.07.2019   | Feature Branch | dev-master |
 | **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Bugfix only    | 2.5        |
 | **1.5** | `4.0`                             | --                         | 07.07.2017   | Unsupported    | pimcore4   |
 
 ## Features
-* Create Members in Backend
+* Create Members in backend
 * Allow Members to register in frontend
-* Restrict Documents, Objects and Assets to specific User Roles
+* Restrict documents, objects and assets to specific user roles
 
 ***
 
@@ -30,52 +31,49 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~3.1.0"
+    "dachcom-digital/members" : "~4.0.0"
 }
 ```
 
-### Installation via Extension Manager
-After you have installed the Members Bundle via composer, open pimcore backend and go to `Tools` => `Extension`:
-- Click the green `+` Button in `Enable / Disable` row
-- Click the green `+` Button in `Install/Uninstall` row
-
-### Installation via CommandLine
-After you have installed the Members Bundle via composer:
 - Execute: `$ bin/console pimcore:bundle:enable MembersBundle`
 - Execute: `$ bin/console pimcore:bundle:install MembersBundle`
 
-#### Optional: Class Installation
+## Upgrading
+- Execute: `$ bin/console doctrine:migrations:migrate --prefix 'MembersBundle\Migrations'`
 
+#### Optional: Class Installation
 > Read more about the required classes [below](./README.md#class-installation)).
 
 ```bash
 bin/console members:install:class
 ```
 
+### Security Installation
+Copy `MembersBundle/Resources/config/packages/security.yaml` to `config/packages/security.yaml`
+
 ### Route Installation
-Members does not include any routes per default. Otherwise it would be hard for you to change or override included routes. 
+MembersBundle does not include any routes per default. Otherwise, it would be hard for you to change or override included routes. 
 
 **Include all Routes**
 ```yaml
-# app/config/routing.yml
+# config/routing.yaml
 app:
     resource: '@MembersBundle/Resources/config/pimcore/routing/all.yml'
 ```
 
 **Just include some Routes**
 ```yaml
-# app/config/routing.yml
+# config/routing.yaml
 members_auth:
     resource: '@MembersBundle/Resources/config/pimcore/routing/auth.yml'
     prefix: /{_locale}/members #change your prefix if you have to.
 ```
 
 ### Class Installation
-Unlike members1, this bundle does not install any classes for you any more.
-Since Members should be the one and only frontend authentication Bundle, we need to add the most flexibility as possible.
+Since Members should be the one and only frontend authentication bundle, we need to add the most flexibility as possible.
 But no worries, it's still simple to integrate.
 
-> There is also a class installer command. If your not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
+> There is also a class installer command. If you're not using any special class configuration, feel free to use this command: `$ bin/console members:install:class`
 > Use the `-o` argument to also install the SsoIdentity Class 
 
 You need two classes: User and Group. So let's create it:
@@ -131,7 +129,6 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 - [Email Configuration](docs/70_EmailConfiguration.md)
 - [Groups](docs/80_Groups.md)
 - [Roles](docs/90_Roles.md)
-- [Use LuceneSearch with Members](docs/100_LuceneSearch.md)
 - [Use the Pimcore Customer Framework with Members](docs/300_CustomerDataFw.md)
 
 ***

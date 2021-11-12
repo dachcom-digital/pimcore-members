@@ -7,22 +7,13 @@ use Twig\Extension\AbstractExtension;
 
 class SystemExtension extends AbstractExtension
 {
-    /**
-     * @var bool
-     */
-    protected $oauthEnabled;
+    protected bool $oauthEnabled;
 
-    /**
-     * @param bool $oauthEnabled
-     */
     public function __construct(bool $oauthEnabled)
     {
         $this->oauthEnabled = $oauthEnabled;
     }
 
-    /**
-     * @return array
-     */
     public function getFunctions(): array
     {
         return [
@@ -30,10 +21,7 @@ class SystemExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @return bool
-     */
-    public function oauthIsEnabled()
+    public function oauthIsEnabled(): bool
     {
         return $this->oauthEnabled;
     }

@@ -6,22 +6,9 @@ use Symfony\Component\Form\FormInterface;
 
 interface FactoryInterface
 {
-    /**
-     * @param array $options
-     *
-     * @return FormInterface
-     */
-    public function createForm(array $options = []);
+    public function createForm(array $options = []): FormInterface;
 
-    /**
-     * @return FormInterface
-     */
-    public function createUnnamedForm();
+    public function createUnnamedForm(): FormInterface;
 
-    /**
-     * @param array $options
-     *
-     * @return FormInterface
-     */
-    public function createUnnamedFormWithOptions(array $options);
+    public function createUnnamedFormWithOptions(array $options): FormInterface;
 }

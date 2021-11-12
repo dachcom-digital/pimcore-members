@@ -13,42 +13,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ResettingListener implements EventSubscriberInterface
 {
-    /**
-     * @var UserManagerInterface
-     */
-    private $userManager;
+    private UserManagerInterface $userManager;
+    private UrlGeneratorInterface $router;
+    private int $tokenTtl;
 
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
-    /**
-     * @var int
-     */
-    private $tokenTtl;
-
-    /**
-     * ResettingListener constructor.
-     *
-     * @param UserManagerInterface  $userManager
-     * @param UrlGeneratorInterface $router
-     * @param int                   $tokenTtl
-     */
     public function __construct(
         UserManagerInterface $userManager,
         UrlGeneratorInterface $router,
-        $tokenTtl
+        int $tokenTtl
     ) {
         $this->userManager = $userManager;
         $this->router = $router;
         $this->tokenTtl = $tokenTtl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::RESETTING_RESET_INITIALIZE => 'onResettingResetInitialize',
@@ -57,20 +36,14 @@ class ResettingListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param GetResponseUserEvent $event
-     */
-    public function onResettingResetInitialize(GetResponseUserEvent $event)
+    public function onResettingResetInitialize(GetResponseUserEvent $event): void
     {
         if (!$event->getUser()->isPasswordRequestNonExpired($this->tokenTtl)) {
             $event->setResponse(new RedirectResponse($this->router->generate('members_user_resetting_request')));
         }
     }
 
-    /**
-     * @param FormEvent $event
-     */
-    public function onResettingResetSuccess(FormEvent $event)
+    public function onResettingResetSuccess(FormEvent $event): void
     {
         /** @var UserInterface $user */
         $user = $event->getForm()->getData();
@@ -81,10 +54,7 @@ class ResettingListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
     }
 
-    /**
-     * @param GetResponseUserEvent $event
-     */
-    public function onResettingResetRequest(GetResponseUserEvent $event)
+    public function onResettingResetRequest(GetResponseUserEvent $event): void
     {
         if (!$event->getUser()->isAccountNonLocked()) {
             $event->setResponse(new RedirectResponse($this->router->generate('members_user_resetting_request')));

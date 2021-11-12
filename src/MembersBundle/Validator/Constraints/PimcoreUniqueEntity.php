@@ -6,44 +6,25 @@ use Symfony\Component\Validator\Constraint;
 
 class PimcoreUniqueEntity extends Constraint
 {
-    /**
-     * @var array
-     */
-    public $fields = [];
+    public array $fields = [];
+    public string $message = 'members.validation.value_already_used';
 
-    /**
-     * @var string
-     */
-    public $message = 'members.validation.value_already_used';
-
-    /**
-     * @return array
-     */
-    public function getRequiredOptions()
+    public function getRequiredOptions(): array
     {
         return ['fields'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTargets()
+    public function getTargets(): string
     {
         return self::CLASS_CONSTRAINT;
     }
 
-    /**
-     * @return string
-     */
-    public function validatedBy()
+    public function validatedBy(): string
     {
         return 'members.validator.unique';
     }
 
-    /**
-     * @return string
-     */
-    public function getDefaultOption()
+    public function getDefaultOption(): string
     {
         return 'fields';
     }

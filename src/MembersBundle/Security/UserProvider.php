@@ -11,23 +11,14 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
+    protected UserManagerInterface $userManager;
 
-    /**
-     * @param UserManagerInterface $userManager
-     */
     public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): UserInterface
     {
         $user = $this->findUser($username);
 
@@ -38,10 +29,7 @@ class UserProvider implements UserProviderInterface
         return $user;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function refreshUser(SecurityUserInterface $user)
+    public function refreshUser(SecurityUserInterface $user): UserInterface
     {
         if (!$user instanceof UserInterface) {
             throw new UnsupportedUserException(sprintf('Expected an instance of MembersBundle\Adapter\User\UserInterface, but got "%s".', get_class($user)));
@@ -58,10 +46,7 @@ class UserProvider implements UserProviderInterface
         return $reloadedUser;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsClass($class)
+    public function supportsClass(string $class): bool
     {
         $userClass = $this->userManager->getClass();
 
@@ -71,12 +56,8 @@ class UserProvider implements UserProviderInterface
     /**
      * Finds a user by username.
      * This method is meant to be an extension point for child classes.
-     *
-     * @param string $username
-     *
-     * @return UserInterface|null
      */
-    protected function findUser($username)
+    protected function findUser(string $username): ?UserInterface
     {
         return $this->userManager->findUserByUsername($username);
     }

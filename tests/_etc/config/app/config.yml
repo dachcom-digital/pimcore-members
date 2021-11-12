@@ -1,11 +1,9 @@
 imports:
-    - { resource: parameters.yml }
-    - { resource: security.yml }
-    - { resource: services.yml }
+    - { resource: services.yaml }
     - { resource: 'local/' }
 
 services:
-    AppBundle\Controller\DefaultController:
+    App\Controller\DefaultController:
         public: true
         autowire: true
         autoconfigure: true
@@ -16,10 +14,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-# don't send real emails in functional tests
-swiftmailer:
-    disable_delivery: true
-
 security:
     role_hierarchy:
         ROLE_MEMBERS_MODERATOR: [ROLE_USER]
@@ -28,3 +22,8 @@ framework:
     profiler:
         enabled: true
         collect: false
+    # don't send real emails in functional tests
+    mailer:
+        transports:
+            main: 'null://null'
+            pimcore_newsletter: 'null://null'

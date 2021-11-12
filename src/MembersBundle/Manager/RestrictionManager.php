@@ -8,55 +8,32 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Restriction\ElementRestriction;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Security\RestrictionUri;
-use Pimcore\Model\AbstractModel;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Element\ElementInterface;
+use Pimcore\Tool;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RestrictionManager implements RestrictionManagerInterface
 {
-    const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
+    public const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
+    public const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
+    public const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
+    public const RESTRICTION_SECTION_NOT_ALLOWED = 'members.restriction.not_allowed';
+    public const RESTRICTION_SECTION_REFUSED = 'members.restriction.refused';
+    public const REQUEST_RESTRICTION_STORAGE = 'members.restriction.store';
 
-    const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
+    protected Configuration $configuration;
+    protected TokenStorageInterface $tokenStorage;
 
-    const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
-
-    const RESTRICTION_SECTION_NOT_ALLOWED = 'members.restriction.not_allowed';
-
-    const RESTRICTION_SECTION_REFUSED = 'members.restriction.refused';
-
-    const REQUEST_RESTRICTION_STORAGE = 'members.restriction.store';
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * RestrictionManager constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     * @param Configuration         $configuration
-     */
     public function __construct(Configuration $configuration, TokenStorageInterface $tokenStorage)
     {
         $this->configuration = $configuration;
         $this->tokenStorage = $tokenStorage;
     }
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return bool|array
-     */
-    public function getElementRestrictedGroups(AbstractModel $element)
+    public function getElementRestrictedGroups(ElementInterface $element): array
     {
         $restriction = false;
         $groups[] = 'default';
@@ -81,17 +58,12 @@ class RestrictionManager implements RestrictionManagerInterface
         return $groups;
     }
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return ElementRestriction
-     */
-    public function getElementRestrictionStatus(AbstractModel $element)
+    public function getElementRestrictionStatus(ElementInterface $element): ElementRestriction
     {
         $user = $this->getUser();
         $elementRestriction = new ElementRestriction();
 
-        $restriction = false;
+        $restriction = null;
         if ($element instanceof Document) {
             $restriction = $this->getRestrictionElement($element, 'page');
         } elseif ($element instanceof DataObject\Concrete) {
@@ -104,10 +76,10 @@ class RestrictionManager implements RestrictionManagerInterface
             $elementRestriction->setState(self::RESTRICTION_STATE_LOGGED_IN);
         }
 
-        if ($restriction === false) {
+        if ($restriction === null) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
-                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || strpos($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER) === false
+                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || !str_contains($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER)
                     ? self::RESTRICTION_SECTION_ALLOWED
                     : self::RESTRICTION_SECTION_NOT_ALLOWED);
             } else {
@@ -124,20 +96,13 @@ class RestrictionManager implements RestrictionManagerInterface
         //check if user is not logged in.
         if (!$user instanceof UserInterface) {
             return $elementRestriction;
-        } else {
-            $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
-
-            return $elementRestriction;
         }
+
+        return $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
+
     }
 
-    /**
-     * @param array $userGroups
-     * @param array $elementGroups
-     *
-     * @return string
-     */
-    private function filterAllowedSectionToUser($userGroups, $elementGroups)
+    private function filterAllowedSectionToUser(array $userGroups, array $elementGroups): string
     {
         $sectionStatus = self::RESTRICTION_SECTION_NOT_ALLOWED;
 
@@ -158,18 +123,12 @@ class RestrictionManager implements RestrictionManagerInterface
         return $sectionStatus;
     }
 
-    /**
-     * @param ElementInterface $element
-     * @param string           $cType
-     *
-     * @return bool|Restriction
-     */
-    private function getRestrictionElement($element, $cType = 'page')
+    private function getRestrictionElement(ElementInterface $element, string $cType = 'page'): ?Restriction
     {
-        $restriction = false;
+        $restriction = null;
 
         if ($this->isFrontendRequestByAdmin()) {
-            return false;
+            return null;
         }
 
         try {
@@ -180,32 +139,23 @@ class RestrictionManager implements RestrictionManagerInterface
             } else {
                 $restrictionConfig = $this->configuration->getConfig('restriction');
                 $allowedTypes = $restrictionConfig['allowed_objects'];
-                if ($element instanceof DataObject\Concrete && in_array($element->getClass()->getName(), $allowedTypes)) {
+                if ($element instanceof DataObject\Concrete && in_array($element->getClass()?->getName(), $allowedTypes, true)) {
                     $restriction = Restriction::getByTargetId($element->getId(), $cType);
                 }
             }
         } catch (\Exception $e) {
-            // fail silently:
-            // restriction not found exception
+            // fail silently
         }
 
         return $restriction;
     }
 
-    /**
-     * @todo: bring it into pimcore context.
-     *
-     * @return bool
-     */
-    public function isFrontendRequestByAdmin()
+    public function isFrontendRequestByAdmin(): bool
     {
-        return \Pimcore\Tool::isFrontendRequestByAdmin();
+        return Tool::isFrontendRequestByAdmin();
     }
 
-    /**
-     * @return UserInterface|null
-     */
-    public function getUser()
+    public function getUser(): ?UserInterface
     {
         $token = $this->tokenStorage->getToken();
 

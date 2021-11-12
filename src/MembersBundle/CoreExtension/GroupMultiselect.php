@@ -32,6 +32,16 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      */
     public $relationType = true;
 
+    protected function getPhpdocType()
+    {
+        return 'array';
+    }
+
+    public function rewriteIds($container, $idMapping, $params = [])
+    {
+        // TODO: Implement rewriteIds() method.
+    }
+
     /**
      * @param array $data
      * @param null  $object
@@ -57,9 +67,9 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array                          $data
-     * @param null|DataObject\AbstractObject $object
-     * @param mixed                          $params
+     * @param array           $data
+     * @param null|DataObject $object
+     * @param mixed           $params
      *
      * @return array
      *

@@ -14,7 +14,7 @@ class RestrictionManagerTest extends DachcomBundleTestCase
         $restrictionManager = $this->getContainer()->get(RestrictionManager::class);
         $restrictionGroups = $restrictionManager->getElementRestrictedGroups($document);
 
-        $this->assertInternalType('array', $restrictionGroups);
+        $this->assertIsArray($restrictionGroups);
         $this->assertCount(1, $restrictionGroups);
         $this->assertContains('default', $restrictionGroups);
     }
@@ -27,7 +27,7 @@ class RestrictionManagerTest extends DachcomBundleTestCase
         $restrictionManager = $this->getContainer()->get(RestrictionManager::class);
         $restrictionGroups = $restrictionManager->getElementRestrictedGroups($document);
 
-        $this->assertInternalType('array', $restrictionGroups);
+        $this->assertIsArray($restrictionGroups);
         $this->assertCount(1, $restrictionGroups);
         $this->assertContains($group->getId(), $restrictionGroups);
 

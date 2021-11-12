@@ -1,16 +1,16 @@
 bundles:
     - { namespace: \MembersBundle\MembersBundle }
 setup_files:
-    - { path: app/config.yml, dest: ./app/config/config.yml }
-    - { path: app/routing.yml, dest: ./app/config/routing.yml }
+    - { path: app/config.yml, dest: ./config/config.yaml }
+    - { path: app/routes.yml, dest: ./config/routes.yaml }
     - { path: app/system.yml, dest: ./var/config/system.yml }
-    - { path: app/controller/DefaultController.php, dest: ./src/AppBundle/Controller/DefaultController.php }
-    - { path: app/views/default.html.twig, dest: ./app/Resources/views/Default/default.html.twig }
-    - { path: app/views/snippet.html.twig, dest: ./app/Resources/views/Default/snippet.html.twig }
-    - { path: app/views/staticRoute.html.twig, dest: ./app/Resources/views/Default/staticRoute.html.twig }
-    - { path: app/views/navigation.html.twig, dest: ./app/Resources/views/Default/navigation.html.twig }
+    - { path: app/controller/DefaultController.php, dest: ./src/Controller/DefaultController.php }
+    - { path: app/templates/default.html.twig, dest: ./templates/default/default.html.twig }
+    - { path: app/templates/snippet.html.twig, dest: ./templates/default/snippet.html.twig }
+    - { path: app/templates/staticRoute.html.twig, dest: ./templates/default/staticRoute.html.twig }
+    - { path: app/templates/navigation.html.twig, dest: ./templates/default/navigation.html.twig }
 preload_files:
     - { path: Services/TestRestrictedStaticRouteListener.php }
 additional_composer_packages:
-    - { package: knpuniversity/oauth2-client-bundle, version: ^1.0 }
+    - { package: knpuniversity/oauth2-client-bundle, version: ^2.0 }
     - { package: league/oauth2-google, version: ^3.0 }

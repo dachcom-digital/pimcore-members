@@ -9,22 +9,13 @@ use Twig\TwigFunction;
 
 class RestrictionUriExtension extends AbstractExtension
 {
-    /**
-     * @var RestrictionUri
-     */
-    protected $restrictionUri;
+    protected RestrictionUri $restrictionUri;
 
-    /**
-     * @param RestrictionUri $restrictionUri
-     */
     public function __construct(RestrictionUri $restrictionUri)
     {
         $this->restrictionUri = $restrictionUri;
     }
 
-    /**
-     * @return array
-     */
     public function getFunctions(): array
     {
         return [
@@ -34,14 +25,9 @@ class RestrictionUriExtension extends AbstractExtension
     }
 
     /**
-     * @param null $assetId
-     * @param bool $checkRestriction
-     *
-     * @return string
-     *
      * @throws \Exception
      */
-    public function buildAssetUrl($assetId = null, $checkRestriction = false)
+    public function buildAssetUrl($assetId = null, bool $checkRestriction = false): string
     {
         $download = Asset::getById($assetId);
         if (!$download instanceof Asset) {
@@ -52,14 +38,9 @@ class RestrictionUriExtension extends AbstractExtension
     }
 
     /**
-     * @param array $assetIds
-     * @param bool  $checkRestriction
-     *
-     * @return string
-     *
      * @throws \Exception
      */
-    public function buildAssetPackageUrl(array $assetIds = [], $checkRestriction = false)
+    public function buildAssetPackageUrl(array $assetIds = [], bool $checkRestriction = false): string
     {
         $packageData = [];
         foreach ($assetIds as $assetId) {
@@ -70,8 +51,6 @@ class RestrictionUriExtension extends AbstractExtension
             $packageData[] = ['asset' => $asset];
         }
 
-        $link = $this->restrictionUri->generateAssetPackageUrl($packageData, $checkRestriction);
-
-        return $link;
+        return $this->restrictionUri->generateAssetPackageUrl($packageData, $checkRestriction);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MembersBundle\Security\OAuth\Dispatcher\LoginProcessor;
 
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\Uid\Uuid;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use MembersBundle\Security\OAuth\OAuthTokenStorageInterface;
 use MembersBundle\Security\OAuth\Exception\AccountNotLinkedException;
@@ -10,26 +10,17 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 
 class CompleteProfileProcessor implements LoginProcessorInterface
 {
-    /**
-     * @var OAuthTokenStorageInterface
-     */
-    protected $oAuthTokenStorage;
+    protected OAuthTokenStorageInterface $oAuthTokenStorage;
 
-    /**
-     * @param OAuthTokenStorageInterface $oAuthTokenStorage
-     */
     public function __construct(OAuthTokenStorageInterface $oAuthTokenStorage)
     {
         $this->oAuthTokenStorage = $oAuthTokenStorage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function process(string $provider, OAuthResponse $oAuthResponse)
+    public function process(string $provider, OAuthResponse $oAuthResponse): void
     {
         try {
-            $registrationKey = Uuid::uuid4();
+            $registrationKey = (Uuid::v4())->toRfc4122();
         } catch (\Throwable $e) {
             throw new CustomUserMessageAuthenticationException(
                 sprintf('Error while generating uuid. error was: %s', $e->getMessage())
@@ -46,7 +37,7 @@ class CompleteProfileProcessor implements LoginProcessorInterface
             $provider
         ));
 
-        $exception->setRegistrationKey($registrationKey->toString());
+        $exception->setRegistrationKey($registrationKey);
 
         throw $exception;
     }

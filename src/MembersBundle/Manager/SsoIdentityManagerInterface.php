@@ -7,57 +7,28 @@ use MembersBundle\Adapter\User\UserInterface;
 
 interface SsoIdentityManagerInterface
 {
-    /**
-     * @param UserInterface $user
-     *
-     * @return SsoIdentityInterface[]
-     */
-    public function getSsoIdentities(UserInterface $user);
+    public function getClass(): string;
+
+    public function getUserBySsoIdentity(string $provider, string $identifier): ?UserInterface;
 
     /**
-     * @param string $provider
-     * @param string $identifier
-     *
-     * @return UserInterface|null
+     * @return array<int, SsoIdentityInterface>
      */
-    public function getUserBySsoIdentity(string $provider, $identifier);
+    public function findExpiredSsoIdentities(int $ttl = 0): array;
 
     /**
-     * @param UserInterface $user
-     * @param string        $provider
-     * @param string        $identifier
-     *
-     * @return SsoIdentityInterface|null
+     * @return array<int, SsoIdentityInterface>
      */
-    public function getSsoIdentity(UserInterface $user, $provider, $identifier);
+    public function getSsoIdentities(UserInterface $user): array;
+
+    public function getSsoIdentity(UserInterface $user, string $provider, string $identifier): ?SsoIdentityInterface;
+
+    public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity): void;
+
+    public function createSsoIdentity(UserInterface $user, string $provider, string $identifier, string $profileData): SsoIdentityInterface;
 
     /**
-     * @param UserInterface        $user
-     * @param SsoIdentityInterface $ssoIdentity
-     */
-    public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity);
-
-    /**
-     * @param UserInterface $user
-     * @param string        $provider
-     * @param string        $identifier
-     * @param mixed         $profileData
-     *
-     * @return SsoIdentityInterface
-     */
-    public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData);
-
-    /**
-     * @param SsoIdentityInterface $ssoIdentity
-     *
      * @throws \Exception
      */
-    public function saveIdentity(SsoIdentityInterface $ssoIdentity);
-
-    /**
-     * @param int $ttl (seconds)
-     *
-     * @return SsoIdentityInterface[]
-     */
-    public function findExpiredSsoIdentities(int $ttl = 0);
+    public function saveIdentity(SsoIdentityInterface $ssoIdentity): void;
 }

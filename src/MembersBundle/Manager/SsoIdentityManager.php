@@ -11,26 +11,10 @@ use MembersBundle\Adapter\User\UserInterface;
 
 class SsoIdentityManager implements SsoIdentityManagerInterface
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    protected Connection $connection;
+    protected UserManagerInterface $userManager;
+    protected ClassManagerInterface $classManager;
 
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
-
-    /**
-     * @param Connection            $connection
-     * @param UserManagerInterface  $userManager
-     * @param ClassManagerInterface $classManager
-     */
     public function __construct(
         Connection $connection,
         UserManagerInterface $userManager,
@@ -41,18 +25,12 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $this->classManager = $classManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->classManager->getSsoIdentityClass();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getUserBySsoIdentity(string $provider, $identifier)
+    public function getUserBySsoIdentity(string $provider, string $identifier): ?UserInterface
     {
         $ssoIdentity = $this->findSsoIdentity($provider, $identifier);
 
@@ -63,10 +41,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSsoIdentities(UserInterface $user)
+    public function getSsoIdentities(UserInterface $user): array
     {
         $this->assertSsoAwareUser($user);
 
@@ -84,7 +59,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function getSsoIdentity(UserInterface $user, $provider, $identifier)
+    public function getSsoIdentity(UserInterface $user, string $provider, string $identifier): ?SsoIdentityInterface
     {
         foreach ($this->getSsoIdentities($user) as $ssoIdentity) {
             if ($ssoIdentity->getProvider() === $provider && $ssoIdentity->getIdentifier() === $identifier) {
@@ -95,10 +70,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity)
+    public function addSsoIdentity(UserInterface $user, SsoIdentityInterface $ssoIdentity): void
     {
         $this->assertSsoAwareUser($user);
 
@@ -112,10 +84,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $user->setSsoIdentities(array_unique($ssoIdentities));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createSsoIdentity(UserInterface $user, $provider, $identifier, $profileData)
+    public function createSsoIdentity(UserInterface $user, string $provider, string $identifier, string $profileData): SsoIdentityInterface
     {
         if (!$user instanceof DataObject\Concrete) {
             throw new \RuntimeException('User needs to be an instance of Concrete');
@@ -146,10 +115,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         return $ssoIdentity;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function saveIdentity(SsoIdentityInterface $ssoIdentity)
+    public function saveIdentity(SsoIdentityInterface $ssoIdentity): void
     {
         if (!$ssoIdentity instanceof DataObject\Concrete) {
             throw new \RuntimeException(sprintf('Identity needs to be instance of %s', DataObject\Concrete::class));
@@ -158,10 +124,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $ssoIdentity->save();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function findExpiredSsoIdentities(int $ttl = 0)
+    public function findExpiredSsoIdentities(int $ttl = 0): array
     {
         $ssoIdentityListing = $this->classManager->getSsoIdentityListing();
 
@@ -176,14 +139,9 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * @param string $provider
-     * @param string $identifier
-     *
-     * @return SsoIdentityInterface|null
-     *
      * @throws \Exception
      */
-    protected function findSsoIdentity(string $provider, $identifier)
+    protected function findSsoIdentity(string $provider, string $identifier): ?SsoIdentityInterface
     {
         $ssoIdentityListing = $this->classManager->getSsoIdentityListing();
 
@@ -205,12 +163,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         return null;
     }
 
-    /**
-     * @param SsoIdentityInterface $ssoIdentity
-     *
-     * @return UserInterface|null
-     */
-    protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity)
+    protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity): ?UserInterface
     {
         /** @var DataObject\Concrete $userClass */
         $userClass = $this->classManager->getUserClass();
@@ -239,9 +192,9 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
     }
 
     /**
-     * @param UserInterface $user
+     * @throws \Exception
      */
-    protected function assertSsoAwareUser(UserInterface $user)
+    protected function assertSsoAwareUser(UserInterface $user): void
     {
         if (!$user instanceof SsoAwareUserInterface) {
             throw new \RuntimeException('User needs to implement SsoAwareUserInterface');

@@ -7,12 +7,9 @@ use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 interface SsoAwareUserInterface
 {
     /**
-     * @return SsoIdentityInterface[]
+     * @return array<int, SsoIdentityInterface>
      */
-    public function getSsoIdentities();
+    public function getSsoIdentities(): array;
 
-    /**
-     * @param SsoIdentityInterface[] $ssoIdentities
-     */
-    public function setSsoIdentities($ssoIdentities);
+    public function setSsoIdentities(array $ssoIdentities): void;
 }

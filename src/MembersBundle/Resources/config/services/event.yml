@@ -62,16 +62,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    # event (optional): check restrictions asset
-    MembersBundle\EventListener\Connector\LuceneSearchAssetRestriction:
-        tags:
-            - { name: kernel.event_subscriber }
-
-    # event (optional): check restriction context in frontend search
-    MembersBundle\EventListener\Connector\LuceneSearchRestrictionContext:
-        tags:
-            - { name: kernel.event_subscriber }
-
     MembersBundle\EventListener\TreeListener:
         tags:
             - { name: kernel.event_subscriber }

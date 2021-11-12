@@ -1,3 +1,7 @@
+doctrine_migrations:
+    migrations_paths:
+        'MembersBundle\Migrations': '@MembersBundle/Migrations'
+
 pimcore:
     security:
         encoder_factories:
@@ -7,27 +11,3 @@ pimcore:
             data:
                 map:
                     membersGroupMultiselect: MembersBundle\CoreExtension\GroupMultiselect
-
-security:
-    providers:
-        members:
-            id: MembersBundle\Security\UserProvider
-    firewalls:
-        members_fe:
-            pattern: ^/(?!(admin)($|/)).*$
-            logout_on_user_change: true
-            provider: members
-            form_login:
-                login_path: members_user_security_login
-                check_path: members_user_security_check
-                csrf_token_generator: security.csrf.token_manager
-            logout:
-                path: members_user_security_logout
-                invalidate_session: false
-                target: /
-            anonymous: true
-            user_checker: MembersBundle\Security\UserChecker
-    access_control:
-        - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_locale/members/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }

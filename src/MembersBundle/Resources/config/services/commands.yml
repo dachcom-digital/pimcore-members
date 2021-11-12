@@ -6,7 +6,7 @@ services:
         calls:
             - [setClassInstaller, ['@MembersBundle\Tool\ClassInstaller']]
         tags:
-            - {name: console.command, command: 'members:install:class' }
+            - { name: console.command }
 
     MembersBundle\Command\OAuthSetupCommand:
         autowire: true
@@ -17,4 +17,4 @@ services:
             - [setClassInstaller, ['@MembersBundle\Tool\ClassInstaller']]
             - [setClassManager, ['@MembersBundle\Manager\ClassManager']]
         tags:
-            - {name: console.command, command: 'members:oauth:setup' }
+            - { name: console.command }

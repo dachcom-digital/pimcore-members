@@ -7,15 +7,8 @@ use Pimcore\Model\DataObject\ClassDefinition\Data;
 
 class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
 {
-    /**
-     * @var array
-     */
-    protected $originalRoles;
-
-    /**
-     * @var array
-     */
-    protected $invalidRoles = [
+    protected array $originalRoles;
+    protected array $invalidRoles = [
         'ROLE_PIMCORE_ADMIN'
     ];
 
@@ -57,10 +50,8 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
     /**
      * @param array $context
      * @param Data  $fieldDefinition
-     *
-     * @return bool
      */
-    public function hasStaticOptions($context, $fieldDefinition)
+    public function hasStaticOptions($context, $fieldDefinition): bool
     {
         return false;
     }
@@ -69,7 +60,7 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
      * @param array $context
      * @param Data  $fieldDefinition
      *
-     * @return mixed
+     * @return string
      */
     public function getDefaultValue($context, $fieldDefinition)
     {

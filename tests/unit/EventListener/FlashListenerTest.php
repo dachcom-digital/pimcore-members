@@ -5,21 +5,14 @@ namespace DachcomBundle\Test\unit\EventListener;
 use MembersBundle\EventListener\FlashListener;
 use MembersBundle\MembersEvents;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class FlashListenerTest extends TestCase
 {
-    /**
-     * @var Event
-     */
-    private $event;
+    private Event $event;
+    private FlashListener $listener;
 
-    /**
-     * @var FlashListener
-     */
-    private $listener;
-
-    public function setUp()
+    public function setUp(): void
     {
         $this->event = new Event();
         $flashBag = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Flash\FlashBag')->getMock();
@@ -29,11 +22,11 @@ class FlashListenerTest extends TestCase
             ->method('getFlashBag')
             ->willReturn($flashBag);
 
-        $translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
+        $translator = $this->getMockBuilder('Pimcore\Translation\Translator')->getMock();
         $this->listener = new FlashListener($session, $translator);
     }
 
-    public function testAddSuccessFlash()
+    public function testAddSuccessFlash(): void
     {
         $this->listener->addSuccessFlash($this->event, MembersEvents::CHANGE_PASSWORD_COMPLETED);
     }

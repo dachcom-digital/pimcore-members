@@ -7,11 +7,5 @@ use MembersBundle\Security\OAuth\OAuthResponse;
 
 interface LoginProcessorInterface
 {
-    /**
-     * @param string        $provider
-     * @param OAuthResponse $oAuthResponse
-     *
-     * @return UserInterface|null
-     */
-    public function process(string $provider, OAuthResponse $oAuthResponse);
+    public function process(string $provider, OAuthResponse $oAuthResponse): ?UserInterface;
 }

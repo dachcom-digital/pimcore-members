@@ -1,16 +1,15 @@
 services:
-    members.brick.builder:
-        class: MembersBundle\Document\Builder\BrickBuilder
+    MembersBundle\Document\Builder\BrickBuilder:
         shared: false
         arguments:
             - '@security.token_storage'
-            - '@pimcore.templating.include_renderer'
+            - '@Pimcore\Templating\Renderer\IncludeRenderer'
             - '@router'
 
-    members.area.brick.login:
-        class: MembersBundle\Document\Areabrick\MembersLogin\MembersLogin
+    MembersBundle\Document\Areabrick\MembersLogin\MembersLogin:
         arguments:
-            - '@members.brick.builder'
+            - '@MembersBundle\Document\Builder\BrickBuilder'
             - '@members.security.login.form.factory'
+            - '@translator'
         tags:
             - { name: pimcore.area.brick, id: members_login }

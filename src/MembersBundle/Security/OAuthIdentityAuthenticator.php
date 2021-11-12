@@ -3,9 +3,8 @@
 namespace MembersBundle\Security;
 
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
@@ -25,32 +24,11 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class OAuthIdentityAuthenticator extends SocialAuthenticator
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $router;
+    protected UrlGeneratorInterface $router;
+    protected ClientRegistry $clientRegistry;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected DispatchRouter $dispatchRouter;
 
-    /**
-     * @var ClientRegistry
-     */
-    protected $clientRegistry;
-
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
-
-    /**
-     * @var DispatchRouter
-     */
-    protected $dispatchRouter;
-
-    /**
-     * @param UrlGeneratorInterface       $router
-     * @param ClientRegistry              $clientRegistry
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
-     * @param DispatchRouter              $dispatchRouter
-     */
     public function __construct(
         UrlGeneratorInterface $router,
         ClientRegistry $clientRegistry,
@@ -63,22 +41,12 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         $this->dispatchRouter = $dispatchRouter;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array|bool|string
-     */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return $request->attributes->get('_route') === 'members_user_security_oauth_check';
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return array|null
-     */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
         /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
@@ -99,12 +67,9 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
     }
 
     /**
-     * @param mixed                 $credentials
-     * @param UserProviderInterface $userProvider
-     *
-     * @return UserInterface
+     * {@inheritDoc}
      */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): UserInterface
     {
         if (!is_array($credentials)) {
             throw new CustomUserMessageAuthenticationException(
@@ -133,7 +98,6 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         /** @var AccessToken $accessToken */
         $accessToken = $credentials['access_token'];
 
-        /** @var ResourceOwnerInterface $user */
         $user = $this->getClient($provider)->fetchUserFromToken($accessToken);
 
         $oAuthResponse = new OAuthResponse($provider, $accessToken, $user, $parameter);
@@ -147,14 +111,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         return $this->dispatchRouter->dispatch($type, $provider, $oAuthResponse);
     }
 
-    /**
-     * @param Request        $request
-     * @param TokenInterface $token
-     * @param string         $providerKey
-     *
-     * @return RedirectResponse|Response|null
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): RedirectResponse
     {
         /** @var NamespacedAttributeBag $sessionBag */
         $sessionBag = $request->getSession()->getBag('members_session');
@@ -172,13 +129,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         return new RedirectResponse($targetUrl);
     }
 
-    /**
-     * @param Request                 $request
-     * @param AuthenticationException $exception
-     *
-     * @return Response
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): RedirectResponse
     {
         $session = $request->getSession();
 
@@ -208,13 +159,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         return new RedirectResponse($this->router->generate($routeName, $parameter), Response::HTTP_TEMPORARY_REDIRECT);
     }
 
-    /**
-     * @param Request                      $request
-     * @param AuthenticationException|null $authException
-     *
-     * @return RedirectResponse
-     */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {
         return new RedirectResponse(
             $this->router->generate('members_user_security_login'),
@@ -222,12 +167,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         );
     }
 
-    /**
-     * @param string $service
-     *
-     * @return OAuth2Client
-     */
-    private function getClient(string $service)
+    private function getClient(string $service): OAuth2ClientInterface
     {
         return $this->clientRegistry->getClient($service);
     }

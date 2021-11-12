@@ -7,35 +7,15 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
+use Symfony\Component\Uid\Uuid;
 
 class OAuthRegistrationHandler
 {
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected AccountConnectorInterface $accountConnector;
+    protected UserManagerInterface $userManager;
+    protected RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService;
 
-    /**
-     * @var AccountConnectorInterface
-     */
-    protected $accountConnector;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @var RequestPropertiesForUserExtractorServiceInterface
-     */
-    protected $requestPropertiesForUserExtractorService;
-
-    /**
-     * @param SsoIdentityManagerInterface                       $ssoIdentityManager
-     * @param AccountConnectorInterface                         $accountConnector
-     * @param UserManagerInterface                              $userManager
-     * @param RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
-     */
     public function __construct(
         SsoIdentityManagerInterface $ssoIdentityManager,
         AccountConnectorInterface $accountConnector,
@@ -48,26 +28,17 @@ class OAuthRegistrationHandler
         $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
-    /**
-     * @param OAuthResponseInterface $OAuthResponse
-     *
-     * @return UserInterface|null
-     */
-    public function getUserFromUserResponse(OAuthResponseInterface $OAuthResponse)
+    public function getUserFromUserResponse(OAuthResponseInterface $OAuthResponse): ?UserInterface
     {
         return $this->ssoIdentityManager->getUserBySsoIdentity($OAuthResponse->getProvider(), $OAuthResponse->getResourceOwner()->getId());
     }
 
     /**
-     * @param OAuthResponseInterface $oAuthResponse
-     *
-     * @return UserInterface
-     *
      * @throws \Exception
      */
-    public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse)
+    public function connectNewUserWithSsoIdentity(OAuthResponseInterface $oAuthResponse): UserInterface
     {
-        $newUserIdentityKey = sprintf('sso-%s', \Ramsey\Uuid\Uuid::uuid4()->toString());
+        $newUserIdentityKey = sprintf('sso-%s', (Uuid::v4())->toRfc4122());
 
         $user = $this->userManager->createAnonymousUser($newUserIdentityKey);
 
@@ -84,14 +55,9 @@ class OAuthRegistrationHandler
     }
 
     /**
-     * @param UserInterface          $user
-     * @param OAuthResponseInterface $oAuthResponse
-     *
-     * @return SsoIdentityInterface
-     *
      * @throws \Exception
      */
-    public function connectSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse)
+    public function connectSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse): SsoIdentityInterface
     {
         if (!$user->getId()) {
             throw new \LogicException('Can\'t add a SSO identity to a user which is not saved. Please save user first');

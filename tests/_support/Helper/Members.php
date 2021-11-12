@@ -488,7 +488,7 @@ class Members extends Module implements DependsOnModule
             ->getContainer()->get(RestrictionUri::class)
             ->generateAssetUrl($asset);
 
-        $this->assertInternalType('string', $downloadLink);
+        $this->assertIsString($downloadLink);
 
         return $downloadLink;
     }
@@ -508,7 +508,7 @@ class Members extends Module implements DependsOnModule
             ->getContainer()->get(RestrictionUri::class)
             ->generateAssetPackageUrl($assets);
 
-        $this->assertInternalType('string', $downloadLink);
+        $this->assertIsString($downloadLink);
 
         return $downloadLink;
     }

@@ -7,32 +7,11 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class OAuthResponse implements OAuthResponseInterface
 {
-    /**
-     * @var string
-     */
-    protected $provider;
+    protected string $provider;
+    protected AccessToken $accessToken;
+    protected ResourceOwnerInterface $resourceOwner;
+    protected array $parameter;
 
-    /**
-     * @var AccessToken
-     */
-    protected $accessToken;
-
-    /**
-     * @var ResourceOwnerInterface
-     */
-    protected $resourceOwner;
-
-    /**
-     * @var array
-     */
-    protected $parameter;
-
-    /**
-     * @param string                 $provider
-     * @param AccessToken            $accessToken
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param array                  $parameter
-     */
     public function __construct(string $provider, AccessToken $accessToken, ResourceOwnerInterface $resourceOwner, array $parameter = [])
     {
         $this->provider = $provider;
@@ -41,34 +20,22 @@ class OAuthResponse implements OAuthResponseInterface
         $this->parameter = $parameter;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getProvider()
+    public function getProvider(): string
     {
         return $this->provider;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccessToken()
+    public function getAccessToken(): AccessToken
     {
         return $this->accessToken;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getResourceOwner()
+    public function getResourceOwner(): ResourceOwnerInterface
     {
         return $this->resourceOwner;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameter()
+    public function getParameter(): array
     {
         return $this->parameter;
     }

@@ -6,7 +6,7 @@ use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthIdentityEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 {
@@ -42,7 +42,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
         }
 
         $event = new OAuthIdentityEvent($user);
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION);
 
         return $event->identityCanDispatch();
     }
@@ -59,7 +59,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
         }
 
         $event = new OAuthIdentityEvent($user);
-        $this->eventDispatcher->dispatch(MembersEvents::OAUTH_IDENTITY_STATUS_DELETION, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::OAUTH_IDENTITY_STATUS_DELETION);
 
         return $event->identityCanDispatch();
     }

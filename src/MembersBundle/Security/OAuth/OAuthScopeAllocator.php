@@ -4,22 +4,13 @@ namespace MembersBundle\Security\OAuth;
 
 class OAuthScopeAllocator implements OAuthScopeAllocatorInterface
 {
-    /**
-     * @var array
-     */
-    protected $scopes;
+    protected array $scopes;
 
-    /**
-     * @param array $scopes
-     */
     public function __construct(array $scopes)
     {
         $this->scopes = $scopes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function allocate(string $client): array
     {
         if (!isset($this->scopes[$client])) {

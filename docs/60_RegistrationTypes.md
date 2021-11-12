@@ -23,7 +23,7 @@ Name: `confirm_instant`
 After registration the user gets automatically logged in without any further actions.
 
 ## Configuration
-Add those lines to your `AppBundle/Resources/config/pimcore/config.yml`:
+Add those lines to your `config/config.yaml`:
     
 ```yaml
 members:

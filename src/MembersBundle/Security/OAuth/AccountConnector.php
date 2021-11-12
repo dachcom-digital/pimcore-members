@@ -10,20 +10,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface
 {
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected ResourceMappingService $resourceMappingService;
 
-    /**
-     * @var ResourceMappingService
-     */
-    protected $resourceMappingService;
-
-    /**
-     * @param SsoIdentityManagerInterface $ssoIdentityManager
-     * @param ResourceMappingService      $resourceMappingService
-     */
     public function __construct(
         SsoIdentityManagerInterface $ssoIdentityManager,
         ResourceMappingService $resourceMappingService
@@ -32,13 +21,7 @@ class AccountConnector implements AccountConnectorInterface
         $this->resourceMappingService = $resourceMappingService;
     }
 
-    /**
-     * @param UserInterface          $user
-     * @param OAuthResponseInterface $oAuthResponse
-     *
-     * @return SsoIdentityInterface
-     */
-    public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse)
+    public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse): SsoIdentityInterface
     {
         if (!$user instanceof MembersUserInterface) {
             throw new \InvalidArgumentException('User is not supported');
@@ -77,11 +60,7 @@ class AccountConnector implements AccountConnectorInterface
         return $ssoIdentity;
     }
 
-    /**
-     * @param SsoIdentityInterface   $ssoIdentity
-     * @param OAuthResponseInterface $oAuthResponse
-     */
-    protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity, OAuthResponseInterface $oAuthResponse)
+    protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity, OAuthResponseInterface $oAuthResponse): void
     {
         $token = $oAuthResponse->getAccessToken();
         $tokenValues = $token->getValues();
@@ -91,12 +70,12 @@ class AccountConnector implements AccountConnectorInterface
         $ssoIdentity->setExpiresAt($token->getExpires());
 
         if (empty($ssoIdentity->getScope())) {
-            $scope = isset($tokenValues['scope']) ? $tokenValues['scope'] : null;
+            $scope = $tokenValues['scope'] ?? null;
             $ssoIdentity->setScope($scope);
         }
 
         if (empty($ssoIdentity->getTokenType())) {
-            $scope = isset($tokenValues['token_type']) ? $tokenValues['token_type'] : null;
+            $scope = $tokenValues['token_type'] ?? null;
             $ssoIdentity->setTokenType($scope);
         }
     }
