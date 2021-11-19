@@ -1,18 +1,17 @@
 {
-    "description": null,
+    "description": "",
     "parentClass": "\\MembersBundle\\Adapter\\Sso\\AbstractSSoIdentity",
-    "listingParentClass": null,
-    "useTraits": null,
-    "listingUseTraits": null,
+    "implementsInterfaces": null,
+    "listingParentClass": "",
+    "useTraits": "",
+    "listingUseTraits": "",
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
     "layoutDefinitions": {
         "fieldtype": "panel",
-        "labelWidth": 100,
         "layout": null,
         "border": false,
-        "icon": null,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -27,10 +26,8 @@
         "childs": [
             {
                 "fieldtype": "panel",
-                "labelWidth": 100,
                 "layout": null,
                 "border": false,
-                "icon": null,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -46,10 +43,8 @@
                     {
                         "fieldtype": "input",
                         "width": null,
-                        "queryColumnType": "varchar",
-                        "columnType": "varchar",
+                        "defaultValue": null,
                         "columnLength": 190,
-                        "phpdocType": "string",
                         "regex": "",
                         "unique": null,
                         "showCharCount": null,
@@ -66,15 +61,14 @@
                         "relationType": false,
                         "invisible": false,
                         "visibleGridView": false,
-                        "visibleSearch": false
+                        "visibleSearch": false,
+                        "defaultValueGenerator": ""
                     },
                     {
                         "fieldtype": "input",
                         "width": null,
-                        "queryColumnType": "varchar",
-                        "columnType": "varchar",
+                        "defaultValue": null,
                         "columnLength": 190,
-                        "phpdocType": "string",
                         "regex": "",
                         "unique": null,
                         "showCharCount": null,
@@ -91,7 +85,8 @@
                         "relationType": false,
                         "invisible": false,
                         "visibleGridView": false,
-                        "visibleSearch": false
+                        "visibleSearch": false,
+                        "defaultValueGenerator": ""
                     },
                     {
                         "fieldtype": "textarea",
@@ -100,9 +95,6 @@
                         "maxLength": null,
                         "showCharCount": null,
                         "excludeFromSearchIndex": false,
-                        "queryColumnType": "longtext",
-                        "columnType": "longtext",
-                        "phpdocType": "string",
                         "name": "profileData",
                         "title": "Profile Data",
                         "tooltip": "",
@@ -120,7 +112,6 @@
                     },
                     {
                         "fieldtype": "fieldset",
-                        "labelWidth": 100,
                         "name": "oAuthCredentials",
                         "type": null,
                         "region": null,
@@ -138,14 +129,13 @@
                                 "delegateDatatype": "textarea",
                                 "delegate": {
                                     "fieldtype": "textarea",
-                                    "width": "",
-                                    "height": 200,
+                                    "width": 0,
+                                    "height": 0,
                                     "maxLength": null,
-                                    "showCharCount": false,
+                                    "showCharCount": null,
                                     "excludeFromSearchIndex": false,
                                     "queryColumnType": "longtext",
                                     "columnType": "longtext",
-                                    "phpdocType": "string",
                                     "name": "accessToken",
                                     "title": "accessToken",
                                     "tooltip": "",
@@ -161,8 +151,6 @@
                                     "visibleGridView": false,
                                     "visibleSearch": false
                                 },
-                                "columnType": "LONGBLOB",
-                                "phpdocType": null,
                                 "name": "accessToken",
                                 "title": "accessToken",
                                 "tooltip": "",
@@ -181,10 +169,8 @@
                             {
                                 "fieldtype": "input",
                                 "width": null,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
+                                "defaultValue": null,
                                 "columnLength": 190,
-                                "phpdocType": "string",
                                 "regex": "",
                                 "unique": false,
                                 "showCharCount": false,
@@ -201,15 +187,14 @@
                                 "relationType": false,
                                 "invisible": false,
                                 "visibleGridView": false,
-                                "visibleSearch": false
+                                "visibleSearch": false,
+                                "defaultValueGenerator": ""
                             },
                             {
                                 "fieldtype": "input",
                                 "width": null,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
+                                "defaultValue": null,
                                 "columnLength": 190,
-                                "phpdocType": "string",
                                 "regex": "",
                                 "unique": false,
                                 "showCharCount": false,
@@ -226,21 +211,21 @@
                                 "relationType": false,
                                 "invisible": false,
                                 "visibleGridView": false,
-                                "visibleSearch": false
+                                "visibleSearch": false,
+                                "defaultValueGenerator": ""
                             },
                             {
                                 "fieldtype": "encryptedField",
                                 "delegateDatatype": "textarea",
                                 "delegate": {
                                     "fieldtype": "textarea",
-                                    "width": "",
-                                    "height": 200,
+                                    "width": 0,
+                                    "height": 0,
                                     "maxLength": null,
-                                    "showCharCount": false,
+                                    "showCharCount": null,
                                     "excludeFromSearchIndex": false,
                                     "queryColumnType": "longtext",
                                     "columnType": "longtext",
-                                    "phpdocType": "string",
                                     "name": "refreshToken",
                                     "title": "refreshToken",
                                     "tooltip": "",
@@ -256,8 +241,6 @@
                                     "visibleGridView": false,
                                     "visibleSearch": false
                                 },
-                                "columnType": "LONGBLOB",
-                                "phpdocType": null,
                                 "name": "refreshToken",
                                 "title": "refreshToken",
                                 "tooltip": "",
@@ -276,10 +259,8 @@
                             {
                                 "fieldtype": "input",
                                 "width": null,
-                                "queryColumnType": "varchar",
-                                "columnType": "varchar",
+                                "defaultValue": null,
                                 "columnLength": 190,
-                                "phpdocType": "string",
                                 "regex": "",
                                 "unique": false,
                                 "showCharCount": false,
@@ -296,21 +277,36 @@
                                 "relationType": false,
                                 "invisible": false,
                                 "visibleGridView": false,
-                                "visibleSearch": false
+                                "visibleSearch": false,
+                                "defaultValueGenerator": ""
                             }
                         ],
-                        "locked": false
+                        "locked": false,
+                        "labelWidth": 100,
+                        "labelAlign": "left"
                     }
                 ],
-                "locked": false
+                "locked": false,
+                "icon": null,
+                "labelWidth": 100,
+                "labelAlign": "left"
             }
         ],
-        "locked": false
+        "locked": false,
+        "icon": null,
+        "labelWidth": 100,
+        "labelAlign": "left"
     },
     "icon": "\/bundles\/pimcoreadmin\/img\/flat-color-icons\/lock.svg",
     "previewUrl": null,
     "group": "Members",
+    "showAppLoggerTab": false,
     "linkGeneratorReference": null,
+    "previewGeneratorReference": null,
+    "compositeIndices": [],
+    "generateTypeDeclarations": true,
+    "showFieldLookup": false,
+    "enableGridLocking": false,
     "propertyVisibility": {
         "grid": {
             "id": true,

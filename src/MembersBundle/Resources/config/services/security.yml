@@ -22,8 +22,6 @@ services:
         arguments:
             $authIdentifier: '%members.auth.identifier%'
 
-    MembersBundle\Security\EmailUserProvider: ~
-
     MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory:
         arguments:
             $className: 'Pimcore\Security\Encoder\PasswordFieldEncoder'
