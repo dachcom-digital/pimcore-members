@@ -15,7 +15,7 @@ class UserProviderTest extends Test
     protected function setUp(): void
     {
         $this->userManager = $this->getMockBuilder('MembersBundle\Manager\UserManagerInterface')->getMock();
-        $this->userProvider = new UserProvider($this->userManager);
+        $this->userProvider = new UserProvider('username', $this->userManager);
     }
 
     public function testLoadUserByUsername()
@@ -27,7 +27,7 @@ class UserProviderTest extends Test
             ->with('foobar')
             ->will($this->returnValue($user));
 
-        $this->assertSame($user, $this->userProvider->loadUserByUsername('foobar'));
+        $this->assertSame($user, $this->userProvider->loadUserByIdentifier('foobar'));
     }
 
     public function testLoadUserByInvalidUsername()
@@ -38,7 +38,7 @@ class UserProviderTest extends Test
             ->will($this->returnValue(null));
 
         $this->expectException(\Symfony\Component\Security\Core\Exception\UserNotFoundException::class);
-        $this->userProvider->loadUserByUsername('foobar');
+        $this->userProvider->loadUserByIdentifier('foobar');
     }
 
     public function testRefreshUserBy()

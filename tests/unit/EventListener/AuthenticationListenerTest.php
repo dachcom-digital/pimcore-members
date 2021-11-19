@@ -5,7 +5,7 @@ namespace DachcomBundle\Test\unit\EventListener;
 use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\EventListener\AuthenticationListener;
 use MembersBundle\MembersEvents;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Codeception\TestCase\Test;
 
 class AuthenticationListenerTest extends Test
@@ -23,7 +23,7 @@ class AuthenticationListenerTest extends Test
         $request = $this->getMockBuilder('Symfony\Component\HttpFoundation\Request')->getMock();
 
         $this->event = new FilterUserResponseEvent($user, $request, $response);
-        $this->eventDispatcher = $this->getMockBuilder('Symfony\Contracts\EventDispatcher\EventDispatcher')->getMock();
+        $this->eventDispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')->getMock();
         $this->eventDispatcher
             ->expects($this->once())
             ->method('dispatch');
