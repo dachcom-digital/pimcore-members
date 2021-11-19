@@ -148,7 +148,7 @@ class BrickBuilder
             }
 
             // last username entered by the user
-            $lastUsername = (null === $this->request->getSession()) ? '' : $this->request->getSession()->get($lastUsernameKey);
+            $lastUsername = $this->request->getSession()->get($lastUsernameKey, '');
 
             $params = array_merge($params, [
                 'last_username' => $lastUsername,
@@ -158,10 +158,10 @@ class BrickBuilder
             ]);
 
             $template = $this->getTemplate('area-login');
-        } elseif ($this->tokenStorage->getToken()?->getUser() instanceof UserInterface) {
+        } elseif ($this->tokenStorage->getToken()->getUser() instanceof UserInterface) {
             if ($this->hideAfterLogin === false && !is_null($this->successSnippet)) {
                 $snippetParams = [
-                    'user'         => $this->tokenStorage->getToken()?->getUser(),
+                    'user'         => $this->tokenStorage->getToken()->getUser(),
                     'redirect_uri' => is_null($this->redirectPage) ? $this->request->getRequestUri() : $this->redirectPage->getFullPath(),
                     'logout_uri'   => $this->logoutUri,
                     'current_uri'  => $this->request->getRequestUri()

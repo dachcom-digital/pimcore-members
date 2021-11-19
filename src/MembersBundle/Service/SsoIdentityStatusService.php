@@ -7,6 +7,7 @@ use MembersBundle\MembersEvents;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthIdentityEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as ComponentEventDispatcherInterface;
 
 class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 {
@@ -23,7 +24,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 
     public function identityCanCompleteProfile(UserInterface $user): bool
     {
-        if ($this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION) === false) {
+        if ($this->eventDispatcher instanceof ComponentEventDispatcherInterface && $this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION) === false) {
             return $this->determinateProfileCompletionByDefaults($user);
         }
 
@@ -35,7 +36,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 
     public function identityCanBeDeleted(UserInterface $user): bool
     {
-        if ($this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_DELETION) === false) {
+        if ($this->eventDispatcher instanceof ComponentEventDispatcherInterface && $this->eventDispatcher->hasListeners(MembersEvents::OAUTH_IDENTITY_STATUS_DELETION) === false) {
             return $this->determinateDeletionByDefaults($user);
         }
 

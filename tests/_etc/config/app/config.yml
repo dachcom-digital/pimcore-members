@@ -14,9 +14,13 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-security:
-    role_hierarchy:
-        ROLE_MEMBERS_MODERATOR: [ROLE_USER]
+doctrine:
+    dbal:
+        connections:
+            default:
+                mapping_types:
+                    enum: string
+                    bit: boolean
 
 framework:
     profiler:

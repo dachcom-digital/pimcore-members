@@ -5,7 +5,6 @@ namespace MembersBundle\Controller;
 use MembersBundle\Form\Factory\FactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 
@@ -23,11 +22,10 @@ class AuthController extends AbstractController
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;
 
-        /** @var Session $session */
         $session = $request->getSession();
 
         // last username entered by the user
-        $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
+        $lastUsername = $session->get($lastUsernameKey);
 
         $targetPath = $request->get('_target_path', null);
         $failurePath = $request->get('_failure_path', null);
@@ -41,7 +39,7 @@ class AuthController extends AbstractController
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
-        } elseif (null !== $session && $session->has($authErrorKey)) {
+        } elseif ($session->has($authErrorKey)) {
             $error = $session->get($authErrorKey);
             $session->remove($authErrorKey);
         } else {

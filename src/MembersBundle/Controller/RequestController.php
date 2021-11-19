@@ -52,9 +52,8 @@ class RequestController extends AbstractController
 
     private function serveFile(Model\Asset $asset): StreamedResponse
     {
-        $forceDownload = true;
         $contentType = $asset->getMimetype();
-        $fileSize = filesize($asset->getFileSystemPath());
+        $fileSize = $asset->getFileSize();
 
         $response = new StreamedResponse();
         $response->setStatusCode(200);
@@ -66,19 +65,14 @@ class RequestController extends AbstractController
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Content-Length', $fileSize);
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            $forceDownload ? ResponseHeaderBag::DISPOSITION_ATTACHMENT : ResponseHeaderBag::DISPOSITION_INLINE,
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             \Pimcore\File::getValidFilename(basename($asset->getFileName()))
         ));
-
-        if ($forceDownload === false) {
-            $response->headers->set('Content-Description', 'File Transfer');
-            $response->headers->set('Content-Transfer-Encoding', 'binary');
-        }
 
         $response->setCallback(function () use ($asset) {
             flush();
             ob_flush();
-            $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
+            $handle = fopen(rawurldecode($asset->getLocalFile()), 'rb');
             while (!feof($handle)) {
                 echo fread($handle, self::BUFFER_SIZE);
                 flush();
@@ -99,7 +93,7 @@ class RequestController extends AbstractController
 
         /** @var Model\Asset $asset */
         foreach ($assets as $asset) {
-            $filePath = rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath());
+            $filePath = rawurldecode($asset->getLocalFile());
             $files .= '"' . $filePath . '" ';
         }
 

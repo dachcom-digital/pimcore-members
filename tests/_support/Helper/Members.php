@@ -26,43 +26,29 @@ use Symfony\Component\DependencyInjection\Container;
 
 class Members extends Module implements DependsOnModule
 {
-    /**
-     * @var PimcoreBackend
-     */
-    protected $pimcoreBackend;
+    protected PimcoreBackend $pimcoreBackend;
 
-    /**
-     * @return array|mixed
-     */
-    public function _depends()
+    public function _depends(): array
     {
         return [
-            'DachcomBundle\Test\Helper\PimcoreBackend' => 'Members needs the PimcoreBackend module to work.'
+            PimcoreBackend::class => 'Members needs the PimcoreBackend module to work.'
         ];
     }
 
-    /**
-     * @param PimcoreBackend $connection
-     */
-    public function _inject(PimcoreBackend $connection)
+    public function _inject(PimcoreBackend $connection): void
     {
         $this->pimcoreBackend = $connection;
     }
 
-    public function haveAProtectedAssetFolder()
+    public function haveAProtectedAssetFolder(): Asset
     {
         return Asset::getByPath('/' . RestrictionUri::PROTECTED_ASSET_FOLDER);
     }
 
     /**
      * Actor Function to create a frontend user group.
-     *
-     * @param string $name
-     *
-     * @return DataObject\MembersGroup
-     * @throws \Exception
      */
-    public function haveAFrontendUserGroup(string $name = 'Group 1')
+    public function haveAFrontendUserGroup(string $name = 'Group 1'): DataObject\MembersGroup
     {
         $group = new DataObject\MembersGroup();
         $group->setKey(File::getValidFilename($name));
@@ -78,15 +64,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to create a fully registered frontend user. Confirmation is optionally.
-     *
-     * @param bool  $confirmed
-     * @param array $groups
-     * @param array $additionalParameter
-     *
-     * @return mixed
-     * @throws ModuleException
      */
-    public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [], array $additionalParameter = [])
+    public function haveARegisteredFrontEndUser(bool $confirmed = false, array $groups = [], array $additionalParameter = []): UserInterface
     {
         $configuration = $this->getContainer()->get(Configuration::class);
         $membersStoreObject = DataObject::getByPath($configuration->getConfig('storage_path'));
@@ -124,12 +103,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to publish and confirm (triggered by updateUser()) a frontend user.
-     *
-     * @param UserInterface $user
-     *
-     * @throws ModuleException
      */
-    public function publishAndConfirmAFrontendUser(UserInterface $user)
+    public function publishAndConfirmAFrontendUser(UserInterface $user): void
     {
         $user->setPublished(true);
 
@@ -141,10 +116,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see a logged in frontend user in session bag.
-     *
-     * @throws ModuleException
      */
-    public function seeALoggedInFrontEndUser()
+    public function seeALoggedInFrontEndUser(): void
     {
         $tokenStorage = $this->getContainer()->get('security.token_storage');
 
@@ -154,10 +127,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to see a not logged in frontend user in session bag.
-     *
-     * @throws ModuleException
      */
-    public function seeANotLoggedInFrontEndUser()
+    public function seeANotLoggedInFrontEndUser(): void
     {
         $tokenStorage = $this->getContainer()->get('security.token_storage');
 
@@ -171,11 +142,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to see properties in members user object
-     *
-     * @param UserInterface $user
-     * @param array         $expectedProperties
      */
-    public function seePropertiesInFrontendUser(UserInterface $user, array $expectedProperties = [])
+    public function seePropertiesInFrontendUser(UserInterface $user, array $expectedProperties = []): void
     {
         $userProperties = $user->getProperties();
         foreach ($expectedProperties as $property) {
@@ -185,21 +153,17 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to get confirmation link from email
-     *
-     * @param Email $email
-     *
-     * @return string
      */
-    public function haveConfirmationLinkInEmail(Email $email)
+    public function haveConfirmationLinkInEmail(Email $email): string
     {
         $foundEmails = $this->pimcoreBackend->getEmailsFromDocumentIds([$email->getId()]);
         $serializer = $this->pimcoreBackend->getSerializer();
 
         $propertyKey = 'confirmationUrl';
         $link = null;
-        foreach ($foundEmails as $email) {
-            $params = $serializer->decode($email->getParams(), 'json', ['json_decode_associative' => true]);
-            $key = array_search($propertyKey, array_column($params, 'key'));
+        foreach ($foundEmails as $foundEmail) {
+            $params = $serializer->decode($foundEmail->getParams(), 'json', ['json_decode_associative' => true]);
+            $key = array_search($propertyKey, array_column($params, 'key'), true);
             if ($key === false) {
                 $this->fail(sprintf('Failed asserting that mail params array has the key "%s".', $propertyKey));
             } else {
@@ -216,10 +180,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to check if no users are available in storage.
-     *
-     * @throws \Exception
      */
-    public function seeNoFrontendUserInStorage()
+    public function seeNoFrontendUserInStorage(): void
     {
         $list = MembersUser::getList(['unpublished' => true]);
         $users = $list->load();
@@ -229,10 +191,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to check if the last registered user has an valid token.
-     *
-     * @throws \Exception
      */
-    public function seeAUserWithValidToken()
+    public function seeAUserWithValidToken(): void
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertNotEmpty($user->getConfirmationToken());
@@ -240,10 +200,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to check if the last registered user has an invalid token.
-     *
-     * @throws \Exception
      */
-    public function seeAUserWithInvalidatedToken()
+    public function seeAUserWithInvalidatedToken(): void
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertNull($user->getConfirmationToken());
@@ -251,10 +209,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to check if the last registered user is published.
-     *
-     * @throws \Exception
      */
-    public function seeAPublishedUserAfterRegistration()
+    public function seeAPublishedUserAfterRegistration(): void
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertTrue($user->getPublished());
@@ -262,10 +218,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to check if the last registered user is unpublished.
-     *
-     * @throws \Exception
      */
-    public function seeAUnpublishedUserAfterRegistration()
+    public function seeAUnpublishedUserAfterRegistration(): void
     {
         $user = $this->grabOneUserAfterRegistration();
         $this->assertFalse($user->getPublished());
@@ -274,11 +228,8 @@ class Members extends Module implements DependsOnModule
     /**
      * Actor function to get the last registered frontend user.
      * Only one user in storage is allowed here.
-     *
-     * @return UserInterface
-     * @throws \Exception
      */
-    public function grabOneUserAfterRegistration()
+    public function grabOneUserAfterRegistration(): UserInterface
     {
         $list = MembersUser::getList(['unpublished' => true]);
         $users = $list->getObjects();
@@ -291,13 +242,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to add restriction to object
-     *
-     * @param AbstractObject $object
-     * @param array          $groups
-     * @param bool           $inherit
-     * @param bool           $inherited
      */
-    public function addRestrictionToObject(AbstractObject $object, $groups = [], $inherit = false, $inherited = false)
+    public function addRestrictionToObject(AbstractObject $object, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($object, 'object', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -305,13 +251,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to change restriction to object
-     *
-     * @param AbstractObject $object
-     * @param array          $groups
-     * @param bool           $inherit
-     * @param bool           $inherited
      */
-    public function changeRestrictionToObject(AbstractObject $object, $groups = [], $inherit = false, $inherited = false)
+    public function changeRestrictionToObject(AbstractObject $object, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($object, 'object', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -319,13 +260,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to add restriction to asset
-     *
-     * @param Asset $asset
-     * @param array $groups
-     * @param bool  $inherit
-     * @param bool  $inherited
      */
-    public function addRestrictionToAsset(Asset $asset, $groups = [], $inherit = false, $inherited = false)
+    public function addRestrictionToAsset(Asset $asset, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($asset, 'asset', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -333,13 +269,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to change restriction to asset
-     *
-     * @param Asset $asset
-     * @param array $groups
-     * @param bool  $inherit
-     * @param bool  $inherited
      */
-    public function changeRestrictionToAsset(Asset $asset, $groups = [], $inherit = false, $inherited = false)
+    public function changeRestrictionToAsset(Asset $asset, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($asset, 'asset', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -347,13 +278,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to add restriction to document
-     *
-     * @param Document $document
-     * @param array    $groups
-     * @param bool     $inherit
-     * @param bool     $inherited
      */
-    public function addRestrictionToDocument(Document $document, $groups = [], $inherit = false, $inherited = false)
+    public function addRestrictionToDocument(Document $document, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($document, 'page', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -361,13 +287,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to change restriction to document
-     *
-     * @param Document $document
-     * @param array    $groups
-     * @param bool     $inherit
-     * @param bool     $inherited
      */
-    public function changeRestrictionToDocument(Document $document, $groups = [], $inherit = false, $inherited = false)
+    public function changeRestrictionToDocument(Document $document, array $groups = [], bool $inherit = false, bool $inherited = false): void
     {
         $restriction = $this->createElementRestriction($document, 'page', $groups, $inherit, $inherited);
         $this->assertInstanceOf(Restriction::class, $restriction);
@@ -375,10 +296,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see restriction on element
-     *
-     * @param ElementInterface $element
      */
-    public function seeRestrictionOnEntity(ElementInterface $element)
+    public function seeRestrictionOnEntity(ElementInterface $element): void
     {
         $restriction = null;
 
@@ -394,10 +313,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see no restriction on element
-     *
-     * @param ElementInterface $element
      */
-    public function seeNoRestrictionOnEntity(ElementInterface $element)
+    public function seeNoRestrictionOnEntity(ElementInterface $element): void
     {
         $restriction = null;
 
@@ -413,11 +330,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see restriction with groups on element
-     *
-     * @param ElementInterface $element
-     * @param array            $groups
      */
-    public function seeRestrictionWithGroupsOnEntity(ElementInterface $element, $groups = [])
+    public function seeRestrictionWithGroupsOnEntity(ElementInterface $element, $groups = []): void
     {
         $restriction = null;
 
@@ -437,10 +351,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see inherited restriction on element
-     *
-     * @param ElementInterface $element
      */
-    public function seeInheritedRestrictionOnEntity(ElementInterface $element)
+    public function seeInheritedRestrictionOnEntity(ElementInterface $element): void
     {
         $restriction = null;
 
@@ -456,10 +368,8 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor function to see no inherited restriction on element
-     *
-     * @param ElementInterface $element
      */
-    public function seeNoInheritedRestrictionOnEntity(ElementInterface $element)
+    public function seeNoInheritedRestrictionOnEntity(ElementInterface $element): void
     {
         $restriction = null;
 
@@ -475,18 +385,10 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to generate asset download link with containing a single asset file.
-     *
-     * @param Asset $asset
-     *
-     * @return string
-     * @throws ModuleException
-     * @throws \Exception
      */
-    public function haveASingleAssetDownloadLink(Asset $asset)
+    public function haveASingleAssetDownloadLink(Asset $asset): string
     {
-        $downloadLink = $this
-            ->getContainer()->get(RestrictionUri::class)
-            ->generateAssetUrl($asset);
+        $downloadLink = $this->getContainer()->get(RestrictionUri::class)->generateAssetUrl($asset);
 
         $this->assertIsString($downloadLink);
 
@@ -495,66 +397,44 @@ class Members extends Module implements DependsOnModule
 
     /**
      * Actor Function to generate asset download link with containing multiple assets.
-     *
-     * @param array $assets
-     *
-     * @return string
-     * @throws ModuleException
-     * @throws \Exception
      */
-    public function haveAMultipleAssetDownloadLink(array $assets)
+    public function haveAMultipleAssetDownloadLink(array $assets): string
     {
-        $downloadLink = $this
-            ->getContainer()->get(RestrictionUri::class)
-            ->generateAssetPackageUrl($assets);
+        $downloadLink = $this->getContainer()->get(RestrictionUri::class)->generateAssetPackageUrl($assets);
 
         $this->assertIsString($downloadLink);
 
         return $downloadLink;
     }
 
-    /**
-     * @param        $element
-     * @param string $type
-     * @param array  $groups
-     * @param bool   $inherit
-     * @param bool   $inherited
-     *
-     * @return Restriction
-     */
     protected function createElementRestriction(
         $element,
         string $type = 'page',
         array $groups = [],
         bool $inherit = false,
         bool $inherited = false
-    ) {
+    ): Restriction {
         $restrictionService = $this->getContainer()->get(RestrictionService::class);
 
         return $restrictionService->createRestriction($element, $type, $inherit, $inherited, $groups);
     }
 
-    /**
-     * @return Container
-     * @throws ModuleException
-     */
-    protected function getContainer()
+    protected function getContainer(): Container
     {
         return $this->getModule('\\' . PimcoreCore::class)->getContainer();
     }
 
-    /**
-     * @param ElementInterface $element
-     *
-     * @return string
-     */
-    protected function getEntityRestrictionType(ElementInterface $element)
+    protected function getEntityRestrictionType(ElementInterface $element): string
     {
         if ($element instanceof Document) {
             return 'page';
-        } elseif ($element instanceof DataObject) {
+        }
+
+        if ($element instanceof DataObject) {
             return 'object';
-        } elseif ($element instanceof Asset) {
+        }
+
+        if ($element instanceof Asset) {
             return 'asset';
         }
 

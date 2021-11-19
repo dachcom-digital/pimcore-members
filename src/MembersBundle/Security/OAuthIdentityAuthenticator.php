@@ -144,7 +144,7 @@ class OAuthIdentityAuthenticator extends SocialAuthenticator
         $sessionBag->remove('oauth_state_data');
         $session->set(Security::AUTHENTICATION_ERROR, $exception);
 
-        if ($request->getLocale() === null && $parameterLocale !== null) {
+        if ($parameterLocale !== null) {
             $request->setLocale($parameterLocale);
         }
 

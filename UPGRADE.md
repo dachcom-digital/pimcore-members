@@ -22,7 +22,7 @@
 - [SSO] Make sure you have a valid key for `pimcore.encryption.secret`, defined via env variable `PIMCORE_ENCRYPTION_SECRET` (You can generate a defuse key by executing the `vendor/bin/generate-defuse-key` command)
 - [SECURITY] `setSalt` method removed from `UserTrait.php` (deprecated in symfony 5.3)
 - [SECURITY] `MembersBundle\Security\EmailUserProvider` has been removed. Use [`auth_identifier: 'email'`](./docs/10_AuthIdentifier.md) instead.
-
+- `MembersBundle\Security\RestrictionUri::getAssetUrlInformation()` => `restrictionGroups` always returns array type
 ### Misc
 - Check your email templates (controller and template definition)
 

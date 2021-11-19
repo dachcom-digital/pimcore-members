@@ -133,10 +133,9 @@ class RegistrationController extends AbstractController
 
     public function confirmAction(Request $request, string $token): Response
     {
-        /** @var UserInterface $user */
         $user = $this->userManager->findUserByConfirmationToken($token);
 
-        if (null === $user) {
+        if ($user === null) {
             throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
         }
 

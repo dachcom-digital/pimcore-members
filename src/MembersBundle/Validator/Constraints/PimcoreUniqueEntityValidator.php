@@ -26,7 +26,7 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\PimcoreUniqueEntity');
         }
 
-        if (!is_array($constraint->fields) && !is_string($constraint->fields)) {
+        if (!is_array($constraint->fields) || !is_string($constraint->fields)) {
             throw new UnexpectedTypeException($constraint->fields, 'array');
         }
 
@@ -61,7 +61,7 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
 
         $resultEntity = $this->userManager->findUserByCondition(implode(' AND ', $condition), $values);
 
-        if (null === $resultEntity || ($resultEntity && $resultEntity->getId() === $entity->getId())) {
+        if ($resultEntity === null || ($resultEntity->getId() === $entity->getId())) {
             return;
         }
 

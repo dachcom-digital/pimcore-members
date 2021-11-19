@@ -106,6 +106,15 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
     public function getPassword(): ?string;
 
     /**
+     * @param string|null $userName
+     *
+     * @return $this
+     */
+    public function setUserName(?string $userName);
+
+    public function getUserName(): ?string;
+
+    /**
      * @param string|null $email
      *
      * @return $this

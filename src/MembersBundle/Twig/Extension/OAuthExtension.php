@@ -56,7 +56,7 @@ class OAuthExtension extends AbstractExtension
     {
         $processType = $route === 'members_user_security_oauth_connect' ? 'connect' : 'login';
 
-        $ssoIdentities = $this->getSsoIdentities();
+        $ssoIdentityProviders = $this->getSsoIdentityProvider();
         $resourceOwners = $this->oauthRegistry->getEnabledClientKeys();
 
         if (!is_array($resourceOwners)) {
@@ -66,7 +66,7 @@ class OAuthExtension extends AbstractExtension
         $data = [];
 
         foreach ($resourceOwners as $resourceOwner) {
-            if ($skipConnectedIdentities === true && in_array($resourceOwner, $ssoIdentities, true)) {
+            if ($skipConnectedIdentities === true && in_array($resourceOwner, $ssoIdentityProviders, true)) {
                 continue;
             }
 
@@ -74,17 +74,14 @@ class OAuthExtension extends AbstractExtension
                 'route_name'   => $route,
                 'process_type' => $processType,
                 'identifier'   => $resourceOwner,
-                'connected'    => in_array($resourceOwner, $ssoIdentities, true),
+                'connected'    => in_array($resourceOwner, $ssoIdentityProviders, true),
             ];
         }
 
         return $data;
     }
 
-    /**
-     * @return array<int, SsoIdentityInterface>
-     */
-    protected function getSsoIdentities(): array
+    protected function getSsoIdentityProvider(): array
     {
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 

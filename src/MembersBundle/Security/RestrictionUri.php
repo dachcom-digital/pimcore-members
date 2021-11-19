@@ -36,12 +36,12 @@ class RestrictionUri
     }
 
     /**
-     * @see generateAssetUrl serves data as zip.
-     *
      * @param array $assetData        array( array('asset' => (Asset|string), 'objectProxyId' => FALSE|objectId) );
      * @param bool  $checkRestriction if true, this method will only return a valid string if current user is allowed to open the file
      *
      * @throws \Exception
+     * @see generateAssetUrl serves data as zip.
+     *
      */
     public function generateAssetPackageUrl(array $assetData = [], bool $checkRestriction = false): string
     {
@@ -76,9 +76,10 @@ class RestrictionUri
             return null;
         }
 
-        $info = ['asset' => $asset, 'restrictionGroups' => false];
-
-        $userGroups = false;
+        $info = [
+            'asset'             => $asset,
+            'restrictionGroups' => []
+        ];
 
         try {
             $restriction = Restriction::getByTargetId($assetId, 'asset');
@@ -86,16 +87,15 @@ class RestrictionUri
             return null;
         }
 
+        $userGroups = [];
         if ($restriction instanceof Restriction) {
             $userGroups = $restriction->getRelatedGroups();
         }
 
         //check if asset is maybe in restricted mode without any restriction settings
         //if not, set restriction to null since there is no restriction.
-        if ($userGroups === false) {
-            if (!str_contains($asset->getPath(), self::PROTECTED_ASSET_FOLDER)) {
-                $userGroups = null;
-            }
+        if (!str_contains($asset->getPath(), self::PROTECTED_ASSET_FOLDER)) {
+            $userGroups = [];
         }
 
         $info['restrictionGroups'] = $userGroups;

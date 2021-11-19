@@ -2,13 +2,15 @@
 
 namespace MembersBundle\CoreExtension;
 
+use Pimcore\Model\DataObject\ClassDefinition\Data\PreGetDataInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data\PreSetDataInterface;
 use Pimcore\Model\Element;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
 use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Extension;
 
-class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface
+class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface, PreGetDataInterface, PreSetDataInterface
 {
     use Extension\QueryColumnType;
 
@@ -23,11 +25,6 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     public $queryColumnType = 'text';
 
     /**
-     * @var string
-     */
-    public $phpdocType = 'array';
-
-    /**
      * @var bool
      */
     public $relationType = true;
@@ -39,7 +36,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
 
     public function rewriteIds($container, $idMapping, $params = [])
     {
-        // TODO: Implement rewriteIds() method.
+        // @todo: Implement rewriteIds() method.
     }
 
     /**
@@ -67,13 +64,13 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array           $data
-     * @param null|DataObject $object
-     * @param mixed           $params
+     * @see Data::getDataFromEditmode
      *
-     * @return array
+     * @param array|null|false         $data
+     * @param null|DataObject\Concrete $object
+     * @param mixed                    $params
      *
-     * @see DataObject\ClassDefinition\Data::getDataFromEditmode
+     * @return array|null
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
     {
@@ -97,13 +94,15 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
+     * @see QueryResourcePersistenceAwareInterface::getDataForQueryResource
      *
-     * @return null|string
+     * @param mixed                    $data
+     * @param null|DataObject\Concrete $object
+     * @param array                    $params
      *
      * @throws \Exception
+     *
+     * @return null|string
      */
     public function getDataForQueryResource($data, $object = null, $params = [])
     {
@@ -123,11 +122,13 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
             }
 
             return ',' . implode(',', $d) . ',';
-        } elseif (is_array($data) && count($data) === 0) {
-            return '';
-        } else {
-            throw new \Exception('invalid data passed to getDataForQueryResource - must be array');
         }
+
+        if (is_array($data) && count($data) === 0) {
+            return '';
+        }
+
+        throw new \Exception('invalid data passed to getDataForQueryResource - must be array');
     }
 
     /**
@@ -156,11 +157,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param DataObject\Concrete $object
-     * @param array|null          $data
-     * @param array               $params
-     *
-     * @return array|null
+     * {@inheritDoc}
      */
     public function preSetData($object, $data, $params = [])
     {
@@ -174,11 +171,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function loadData($data, $object = null, $params = [])
     {
@@ -187,10 +180,10 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
             'data'  => []
         ];
 
-        if (is_array($data) && count($data) > 0) {
+        if (is_array($data)) {
             foreach ($data as $element) {
                 $e = null;
-                if ($element['type'] == 'object') {
+                if ($element['type'] === 'object') {
                     $e = DataObject::getById($element['dest_id']);
                 }
                 if ($e instanceof Element\ElementInterface) {
@@ -205,11 +198,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function prepareDataForPersistence($data, $object = null, $params = [])
     {
@@ -217,11 +206,11 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
 
         if (is_array($data) && count($data) > 0) {
             $counter = 1;
-            foreach ($data as $object) {
-                if ($object instanceof Element\ElementInterface) {
+            foreach ($data as $rowObject) {
+                if ($rowObject instanceof Element\ElementInterface) {
                     $return[] = [
-                        'dest_id'   => $object->getId(),
-                        'type'      => Element\Service::getElementType($object),
+                        'dest_id'   => $rowObject->getId(),
+                        'type'      => Element\Service::getElementType($rowObject),
                         'fieldname' => $this->getName(),
                         'index'     => $counter
                     ];
@@ -230,21 +219,26 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
             }
 
             return $return;
-        } elseif (is_array($data) and count($data) === 0) {
+        }
+
+        if (is_array($data) && count($data) === 0) {
             //give empty array if data was not null
             return [];
-        } else {
-            //return null if data was null - this indicates data was not loaded
-            return null;
         }
+
+        //return null if data was null - this indicates data was not loaded
+        return null;
+
     }
 
     /**
-     * @param array           $data
-     * @param null|DataObject $object
-     * @param mixed           $params
+     * @param array                    $data
+     * @param null|DataObject\Concrete $object
+     * @param mixed                    $params
      *
      * @return array
+     * @see Data::getDataFromEditmode
+     *
      */
     public function getDataFromGridEditor($data, $object = null, $params = [])
     {

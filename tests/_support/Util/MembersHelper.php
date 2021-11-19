@@ -6,14 +6,14 @@ use MembersBundle\Tool\Install;
 
 class MembersHelper
 {
-    const DEFAULT_FEU_USERNAME = 'chuck';
-    const DEFAULT_FEU_EMAIL = 'test@universe.org';
-    const DEFAULT_FEU_PASSWORD = 'default-password';
-    const DEFAULT_FEG_NAME = 'Default Group';
+    public const DEFAULT_FEU_USERNAME = 'chuck';
+    public const DEFAULT_FEU_EMAIL = 'test@universe.org';
+    public const DEFAULT_FEU_PASSWORD = 'default-password';
+    public const DEFAULT_FEG_NAME = 'Default Group';
 
     public static function reCreateMembersStructure()
     {
         $installer = \Pimcore::getContainer()->get(Install::class);
-        $installer->initializeFreshSetup();
+        $installer->install();
     }
 }
