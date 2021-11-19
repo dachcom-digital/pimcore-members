@@ -26,11 +26,11 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\PimcoreUniqueEntity');
         }
 
-        if (!is_array($constraint->fields) || !is_string($constraint->fields)) {
+        if (!is_array($constraint->fields)) {
             throw new UnexpectedTypeException($constraint->fields, 'array');
         }
 
-        $fields = (array) $constraint->fields;
+        $fields = $constraint->fields;
 
         if (0 === count($fields)) {
             throw new ConstraintDefinitionException('At least one field has to be specified.');
