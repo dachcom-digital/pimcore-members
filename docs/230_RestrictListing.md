@@ -8,17 +8,38 @@ This is the recommended way.
 ```php
 <?php
 
-use Pimcore\Model\DataObject;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
+use Pimcore\Model;
+use Doctrine\DBAL\Query\QueryBuilder;
 use MembersBundle\Security\RestrictionQuery;
 
-$listing = DataObject\YourObject::getList();
-$listing->onCreateQuery(function (QueryBuilder $query) use ($listing) {
-    $this->container->get(RestrictionQuery::class)
-        ->addRestrictionInjection($query, $listing);
-});
+public function defaultAction(RestrictionQuery $restrictionQuery)
+{
+    # Data Objects
+    $listing = Model\DataObject\YourObject::getList();
+    $listing->onCreateQueryBuilder(function (QueryBuilder $query) use ($restrictionQuery, $listing) {
+        $restrictionQuery->addRestrictionInjection($query, $listing);
+    });
 
-$availableObjects = $listing->getObjects();
+    dump($listing->getObjects());
+
+    # Documents
+    $listing = new Model\Document\Listing();
+    $listing->setLimit(10);
+    $listing->onCreateQueryBuilder(function (QueryBuilder $query) use ($listing, $restrictionQuery) {
+       $restrictionQuery->addRestrictionInjection($query, $listing, 'id');
+    });
+
+    dump($listing->getDocuments());
+
+    # Assets
+    $listing = new Model\Asset\Listing();
+    $listing->setLimit(10);
+    $listing->onCreateQueryBuilder(function (QueryBuilder $query) use ($listing, $restrictionQuery) {
+       $restrictionQuery->addRestrictionInjection($query, $listing, 'id');
+    });
+
+    dump($listing->getAssets());
+}
 ```
 
 ## 2. Statements 

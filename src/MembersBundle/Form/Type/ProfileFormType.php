@@ -32,11 +32,14 @@ class ProfileFormType extends AbstractType
             $constraintsOptions['groups'] = [reset($options['validation_groups'])];
         }
 
-        $builder->add('current_password', PasswordType::class, [
-            'label'       => 'members.form.current_password',
-            'mapped'      => false,
-            'constraints' => [new NotBlank(), new UserPassword($constraintsOptions)],
-        ])->add('submit', SubmitType::class, ['label' => 'members.profile.edit.submit']);
+        $builder
+            ->add('current_password', PasswordType::class, [
+                'label'       => 'members.form.current_password',
+                'mapped'      => false,
+                'constraints' => [new NotBlank(), new UserPassword($constraintsOptions)],
+            ])->add('submit', SubmitType::class, [
+                'label' => 'members.profile.edit.submit'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

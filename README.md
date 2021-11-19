@@ -49,7 +49,9 @@ bin/console members:install:class
 ```
 
 ### Security Installation
-Copy `MembersBundle/Resources/config/packages/security.yaml` to `config/packages/security.yaml`
+It is not possible to merge security configurations from multiple locations, including bundles. Instead, you have to move them to
+one single config file, e.g. `config/packages/security.yaml`. Please adopt `MembersBundle/Resources/config/packages/security.yaml`
+and merge your own firewall configuration into one single file.
 
 ### Route Installation
 MembersBundle does not include any routes per default. Otherwise, it would be hard for you to change or override included routes. 
@@ -121,6 +123,7 @@ You're almost there, just check the [email configuration](docs/70_EmailConfigura
 ***
 
 ### User Management: Further Information
+- [Auth Identifier](docs/10_AuthIdentifier.md) Use `email` instead of `username` for authentication
 - [Custom Class Names](docs/20_ClassCustomization.md)
 - [Frontend Routes & Views](docs/30_FrontendRoutes.md)
 - [Available Events](docs/40_Events.md)

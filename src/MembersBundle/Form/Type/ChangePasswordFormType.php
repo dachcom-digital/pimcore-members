@@ -29,20 +29,21 @@ class ChangePasswordFormType extends AbstractType
             $constraintsOptions['groups'] = [reset($options['validation_groups'])];
         }
 
-        $builder->add('current_password', PasswordType::class, [
-            'label'       => 'members.form.current_password',
-            'mapped'      => false,
-            'constraints' => new UserPassword($constraintsOptions),
-        ]);
-
-        $builder->add('plainPassword', RepeatedType::class, [
-            'type'            => PasswordType::class,
-            'first_options'   => ['label' => 'members.form.new_password'],
-            'second_options'  => ['label' => 'members.form.new_password_confirmation'],
-            'invalid_message' => 'members.validation.password.mismatch',
-        ]);
-
-        $builder->add('submit', SubmitType::class, ['label' => 'members.change_password.submit']);
+        $builder
+            ->add('current_password', PasswordType::class, [
+                'label'       => 'members.form.current_password',
+                'mapped'      => false,
+                'constraints' => new UserPassword($constraintsOptions),
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type'            => PasswordType::class,
+                'first_options'   => ['label' => 'members.form.new_password'],
+                'second_options'  => ['label' => 'members.form.new_password_confirmation'],
+                'invalid_message' => 'members.validation.password.mismatch',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.change_password.submit'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

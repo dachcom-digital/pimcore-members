@@ -18,7 +18,9 @@ services:
 
     MembersBundle\Security\UserChecker: ~
 
-    MembersBundle\Security\UserProvider: ~
+    MembersBundle\Security\UserProvider:
+        arguments:
+            $authIdentifier: '%members.auth.identifier%'
 
     MembersBundle\Security\EmailUserProvider: ~
 
@@ -33,7 +35,6 @@ services:
 
     MembersBundle\Controller\AuthController:
         public: true
-        calls:
-            - [setContainer, ['@service_container']]
         arguments:
             $formFactory: '@members.security.login.form.factory'
+        tags: ['controller.service_arguments']

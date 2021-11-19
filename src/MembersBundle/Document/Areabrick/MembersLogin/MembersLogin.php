@@ -34,7 +34,7 @@ class MembersLogin extends AbstractAreabrick implements EditableDialogBoxInterfa
 
         $editableDialog->setItems([
             [
-                'type' => 'href',
+                'type' => 'relation',
                 'label' => $this->translator->trans('redirect after successful login', [], 'admin'),
                 'name' => 'redirectAfterSuccess',
                 'config' => [
@@ -50,7 +50,7 @@ class MembersLogin extends AbstractAreabrick implements EditableDialogBoxInterfa
                 'name' => 'hideWhenLoggedIn',
             ],
             [
-                'type' => 'href',
+                'type' => 'relation',
                 'label' => $this->translator->trans('Show this snippet when logged in', [], 'admin'),
                 'name' => 'showSnippedWhenLoggedIn',
                 'config' => [

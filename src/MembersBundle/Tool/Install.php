@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Tool;
 
+use League\Flysystem\FilesystemException;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Db\Connection;
@@ -13,6 +14,7 @@ use Pimcore\Model\Document;
 use Pimcore\Model\Translation;
 use Pimcore\Model\User;
 use Pimcore\Tool;
+use Pimcore\Tool\Storage;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 class Install extends SettingsStoreAwareInstaller
@@ -147,8 +149,6 @@ class Install extends SettingsStoreAwareInstaller
      */
     public function installFolder(): void
     {
-        // @todo: use flysystem configuration
-
         $folderName = 'restricted-assets';
 
         if (Asset\Folder::getByPath('/' . $folderName) instanceof Asset\Folder) {
@@ -169,16 +169,17 @@ class Install extends SettingsStoreAwareInstaller
             throw new InstallationException(sprintf('Failed to install protected asset folder. error was: "%s"', $e->getMessage()));
         }
 
-        //now create .htaccess file to disallow every request to this folder (except admin)!
-        $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'w');
-
         $rule = 'RewriteEngine On' . "\n";
         $rule .= 'RewriteCond %{HTTP_HOST}==%{HTTP_REFERER} !^(.*?)==https?://\1/admin/ [OR]' . "\n";
         $rule .= 'RewriteCond %{HTTP_COOKIE} !^.*pimcore_admin_sid.*$ [NC]' . "\n";
         $rule .= 'RewriteRule ^ - [L,F]';
 
-        fwrite($f, $rule);
-        fclose($f);
+        try {
+            $storage = Storage::get('asset');
+            $storage->write($folder->getRealFullPath() . '/.htaccess', $rule);
+        } catch (FilesystemException $e) {
+            throw new InstallationException(sprintf('Error while creating .htaccess protection: %s', $e->getMessage()));
+        }
     }
 
     /**

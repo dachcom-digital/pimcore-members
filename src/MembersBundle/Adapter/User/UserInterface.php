@@ -11,49 +11,124 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
     public const ROLE_DEFAULT = 'ROLE_USER';
     public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
-    public function setId(int $id);
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId($id);
 
+    /**
+     * @return int
+     */
     public function getId();
 
-    public function setParentId(int $parentId);
+    /**
+     * @param int $parentId
+     *
+     * @return $this
+     */
+    public function setParentId($parentId);
 
+    /**
+     * @return int
+     */
     public function getParentId();
 
-    public function setKey(string $key);
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
+    public function setKey($key);
 
+    /**
+     * @return string
+     */
     public function getKey();
 
-    public function setProperty(string $name, string $type, mixed $data, bool $inherited = false, bool $inheritable = false);
+    /**
+     * @param string $name
+     * @param string $type
+     * @param mixed  $data
+     * @param false  $inherited
+     * @param false  $inheritable
+     *
+     * @return $this
+     */
+    public function setProperty($name, $type, $data, $inherited = false, $inheritable = false);
 
-    public function getProperty(string $name, bool $asContainer = false);
+    /**
+     * @param string $name
+     * @param bool   $asContainer
+     *
+     * @return mixed
+     */
+    public function getProperty($name, $asContainer = false);
 
-    public function setPublished(bool $published);
+    /**
+     * @param bool $published
+     *
+     * @return $this
+     */
+    public function setPublished($published);
 
+    /**
+     * @return bool
+     */
     public function getPublished();
 
-    public function setConfirmationToken(?string $confirmationToken): self;
+    /**
+     * @param string|null $confirmationToken
+     *
+     * @return $this
+     */
+    public function setConfirmationToken(?string $confirmationToken);
 
     public function getConfirmationToken(): ?string;
 
-    public function setLastLogin(Carbon $time): self;
+    /**
+     * @param Carbon $time
+     *
+     * @return $this
+     */
+    public function setLastLogin(Carbon $time);
 
     public function getLastLogin(): ?Carbon;
 
-    public function setPassword(string $password): self;
+    /**
+     * @param string $password
+     *
+     * @return $this
+     */
+    public function setPassword(string $password);
 
     public function getPassword(): ?string;
 
-    public function setEmail(string $email): self;
+    /**
+     * @param string|null $email
+     *
+     * @return $this
+     */
+    public function setEmail(?string $email);
 
     public function getEmail(): ?string;
 
-    public function getPlainPassword(): string;
-
-    public function setGroups(array $groups): self;
+    /**
+     * @param array|null $groups
+     *
+     * @return $this
+     */
+    public function setGroups(?array $groups);
 
     public function getGroups(): ?array;
 
-    public function setPasswordRequestedAt(Carbon $date): self;
+    /**
+     * @param Carbon|null $date
+     *
+     * @return $this
+     */
+    public function setPasswordRequestedAt(?Carbon $date);
 
     public function getPasswordRequestedAt(): ?Carbon;
 
@@ -63,6 +138,10 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
      * @param int $ttl Requests older than this many seconds will be considered expired
      */
     public function isPasswordRequestNonExpired(int $ttl): bool;
+
+    public function setPlainPassword(string $password): self;
+
+    public function getPlainPassword(): ?string;
 
     public function isAccountNonExpired(): bool;
 

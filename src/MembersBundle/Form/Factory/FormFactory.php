@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Form\Factory;
 
+use MembersBundle\Validation\ValidationGroupResolverInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -10,9 +11,9 @@ class FormFactory implements FactoryInterface
     private FormFactoryInterface $formFactory;
     private string $name;
     private string $type;
-    private ?array $validationGroups;
+    private null|array|ValidationGroupResolverInterface $validationGroups;
 
-    public function __construct(FormFactoryInterface $formFactory, string $name, string $type, array $validationGroups = null)
+    public function __construct(FormFactoryInterface $formFactory, string $name, string $type, null|array|ValidationGroupResolverInterface $validationGroups = null)
     {
         $this->formFactory = $formFactory;
         $this->name = $name;

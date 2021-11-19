@@ -63,6 +63,8 @@ class Configuration implements ConfigurationInterface
                                 ->scalarNode('object_key_form_field')->defaultValue('email')->end()
                             ->end()
                         ->end()
+                        ->enumNode('auth_identifier')->values(['username', 'email'])->defaultValue('username')->end()
+                        ->booleanNode('only_auth_identifier_registration')->defaultFalse()->end()
                         ->arrayNode('initial_groups')
                             ->prototype('scalar')->defaultValue([])->end()
                             ->validate()

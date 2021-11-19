@@ -59,7 +59,7 @@ members:
 ```
 
 ### Locale Mapping
-Since Members allows to activate users through backend, the locale definition may gets lost.
+Since Members allows activating users through backend, the locale definition may gets lost.
 If a user gets registered, Members will append two properties to the user object:
 
 - `_site_domain`: optional, if the registration happens in a site request, the main domain gets stored.

@@ -1,5 +1,5 @@
-{% extends "@Members/layout.html.twig" %}
+{% extends '@Members/layout.html.twig' %}
 
 {% block members_user_content %}
-<p>{{ 'members.resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}</p>
+    <p>{{ 'members.resetting.check_email'|trans({'%tokenLifetime%': tokenLifetime})|nl2br }}</p>
 {% endblock members_user_content %}

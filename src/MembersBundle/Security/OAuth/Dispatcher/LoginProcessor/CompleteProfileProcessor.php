@@ -2,6 +2,7 @@
 
 namespace MembersBundle\Security\OAuth\Dispatcher\LoginProcessor;
 
+use MembersBundle\Adapter\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use MembersBundle\Security\OAuth\OAuthTokenStorageInterface;
@@ -17,7 +18,7 @@ class CompleteProfileProcessor implements LoginProcessorInterface
         $this->oAuthTokenStorage = $oAuthTokenStorage;
     }
 
-    public function process(string $provider, OAuthResponse $oAuthResponse): void
+    public function process(string $provider, OAuthResponse $oAuthResponse): ?UserInterface
     {
         try {
             $registrationKey = (Uuid::v4())->toRfc4122();

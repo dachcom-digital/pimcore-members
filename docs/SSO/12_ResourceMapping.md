@@ -1,6 +1,6 @@
 # Resource Mapping
 If a user successfully gets connected via a given provider, you're able to map some data to your user entity.
-For example, if you're using a google client, there are some properties you may wanna use (`email`, `name`).
+For example, if you're using a Google client, there are some properties you may want to use (`email`, `name`).
 
 Since every client may vary in naming of properties, you also may want to adjust the mapping. Just use a EventListener to do so.
 

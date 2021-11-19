@@ -1,4 +1,5 @@
-{% extends "@Members/layout.html.twig" %}
+{% extends '@Members/layout.html.twig' %}
+
 {% block members_user_content %}
     <p>{{ 'members.registration.confirmed'|trans({'%username%': user.username}) }}</p>
     {% if targetUrl %}

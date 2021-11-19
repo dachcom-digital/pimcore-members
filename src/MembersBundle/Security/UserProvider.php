@@ -5,25 +5,32 @@ namespace MembersBundle\Security;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface as SecurityUserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
+    protected string $authIdentifier;
     protected UserManagerInterface $userManager;
 
-    public function __construct(UserManagerInterface $userManager)
+    public function __construct(string $authIdentifier, UserManagerInterface $userManager)
     {
+        $this->authIdentifier = $authIdentifier;
         $this->userManager = $userManager;
     }
 
-    public function loadUserByUsername($username): UserInterface
+    public function loadUserByUsername(string $username)
     {
-        $user = $this->findUser($username);
+        throw new UnsupportedUserException('loadUserByUsername is not supported anymore. use loadUserByIdentifier instead.');
+    }
+
+    public function loadUserByIdentifier(string $identifier): UserInterface
+    {
+        $user = $this->findUser($identifier);
 
         if (!$user) {
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
+            throw new UserNotFoundException(sprintf('User with identifier "%s" does not exist.', $identifier));
         }
 
         return $user;
@@ -40,7 +47,7 @@ class UserProvider implements UserProviderInterface
         }
 
         if (null === $reloadedUser = $this->userManager->findUserByCondition('oo_id = ?', [(int) $user->getId()])) {
-            throw new UsernameNotFoundException(sprintf('User with ID "%s" could not be reloaded.', $user->getId()));
+            throw new UserNotFoundException(sprintf('User with ID "%s" could not be reloaded.', $user->getId()));
         }
 
         return $reloadedUser;
@@ -54,11 +61,13 @@ class UserProvider implements UserProviderInterface
     }
 
     /**
-     * Finds a user by username.
+     * Finds a user by username or email address.
      * This method is meant to be an extension point for child classes.
      */
-    protected function findUser(string $username): ?UserInterface
+    protected function findUser(string $identifier): ?UserInterface
     {
-        return $this->userManager->findUserByUsername($username);
+        return $this->authIdentifier === 'email'
+            ? $this->userManager->findUserByEmail($identifier)
+            : $this->userManager->findUserByUsername($identifier);
     }
 }

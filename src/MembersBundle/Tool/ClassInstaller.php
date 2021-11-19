@@ -51,14 +51,12 @@ class ClassInstaller
     {
         $result = [];
 
-        // @todo: use flysystem configuration
-
         foreach ($classes as $className) {
-            $filename = sprintf('class_%s_export.json', $className);
-            $path = dirname(__DIR__) . '/Resources/install/classes' . '/' . $filename;
-            $path = realpath($path);
 
-            if (false === $path || !is_file($path)) {
+            $filename = sprintf('class_%s_export.json', $className);
+            $path = realpath(sprintf('%s/Resources/install/classes/%s', dirname(__DIR__), $filename));
+
+            if ($path === false || !is_file($path)) {
                 throw new \RuntimeException(sprintf(
                     'Class export for class "%s" was expected in "%s" but file does not exist',
                     $className,

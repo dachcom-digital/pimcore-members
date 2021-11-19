@@ -9,83 +9,81 @@ interface SsoIdentityInterface
      */
     public function getId();
 
-    /**
-     * @return string
-     */
-    public function getProvider();
+    public function getProvider(): ?string;
 
     /**
-     * @param string $provider
+     * @param string|null $provider
+     *
+     * @return $this
      */
-    public function setProvider($provider);
+    public function setProvider(?string $provider);
+
+    public function getIdentifier(): ?string;
 
     /**
-     * @return string
+     * @param string|null $identifier
+     *
+     * @return $this
      */
-    public function getIdentifier();
+    public function setIdentifier(?string $identifier);
+
+    public function getProfileData(): ?string;
 
     /**
-     * @param string $identifier
+     * @param string|null $profileData
+     *
+     * @return $this
      */
-    public function setIdentifier($identifier);
+    public function setProfileData(?string $profileData);
 
     /**
-     * @return string
-     */
-    public function getProfileData();
-
-    /**
-     * @param string $profileData
-     */
-    public function setProfileData($profileData);
-
-    /**
-     * @return string
+     * @return string|null|\Pimcore\Model\DataObject\Data\EncryptedField
      */
     public function getAccessToken();
 
     /**
-     * @param string $accessToken
+     * @param string|null|\Pimcore\Model\DataObject\Data\EncryptedField $accessToken
+     *
+     * @return $this
      */
     public function setAccessToken($accessToken);
 
-    /**
-     * @return string
-     */
-    public function getTokenType();
+    public function getTokenType(): ?string;
 
     /**
-     * @param string $tokenType
+     * @param string|null $tokenType
+     *
+     * @return $this
      */
-    public function setTokenType($tokenType);
+    public function setTokenType(?string $tokenType);
+
+    public function getExpiresAt(): ?string;
 
     /**
-     * @return string
+     * @param string|null $expiresAt
+     *
+     * @return $this
      */
-    public function getExpiresAt();
+    public function setExpiresAt(?string $expiresAt);
 
     /**
-     * @param string $expiresAt
-     */
-    public function setExpiresAt($expiresAt);
-
-    /**
-     * @return string
+     * @return string|null|\Pimcore\Model\DataObject\Data\EncryptedField
      */
     public function getRefreshToken();
 
     /**
-     * @param string $refreshToken
+     * @param string|null|\Pimcore\Model\DataObject\Data\EncryptedField $refreshToken
+     *
+     * @return $this
      */
     public function setRefreshToken($refreshToken);
 
-    /**
-     * @return string
-     */
-    public function getScope();
+    public function getScope(): ?string;
 
     /**
-     * @param string $scope
+     * @param string|null $scope
+     *
+     * @return $this
      */
-    public function setScope($scope);
+    public function setScope(?string $scope);
 }

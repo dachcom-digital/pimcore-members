@@ -6,7 +6,7 @@ services:
             - '@form.factory'
             - '%members_user.registration.form.name%'
             - '%members_user.registration.form.type%'
-            - '%members_user.registration.form.validation_groups%'
+            - '@MembersBundle\Validation\RegistrationValidationGroupResolver'
 
     MembersBundle\Form\Type\RegistrationFormType:
         arguments:
@@ -14,11 +14,24 @@ services:
         tags:
             - { name: form.type, alias: members_user_registration }
 
+    MembersBundle\Form\Extension\RegistrationAuthIdentifierTypeExtension:
+        arguments:
+            $authIdentifier: '%members.auth.identifier%'
+            $onlyAuthIdentifierRegistration: '%members.auth.only_auth_identifier_registration%'
+        tags:
+            - { name: form.type_extension, extended_type: MembersBundle\Form\Type\RegistrationFormType }
+
+    MembersBundle\Validation\RegistrationValidationGroupResolver:
+        arguments:
+            $requestStack: '@request_stack'
+            $defaultValidationGroups: '%members_user.registration.form.validation_groups%'
+            $authIdentifier: '%members.auth.identifier%'
+            $onlyAuthIdentifierRegistration: '%members.auth.only_auth_identifier_registration%'
+
     MembersBundle\Controller\RegistrationController:
         public: true
         autowire: true
         autoconfigure: true
-        calls:
-            - [setContainer, ['@service_container']]
         arguments:
             $formFactory: '@members.registration.form.factory'
+        tags: ['controller.service_arguments']

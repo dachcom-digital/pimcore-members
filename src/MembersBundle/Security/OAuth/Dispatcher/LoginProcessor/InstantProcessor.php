@@ -15,7 +15,7 @@ class InstantProcessor implements LoginProcessorInterface
         $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
     }
 
-    public function process(string $provider, OAuthResponse $oAuthResponse): UserInterface
+    public function process(string $provider, OAuthResponse $oAuthResponse): ?UserInterface
     {
         return $this->oAuthRegistrationHandler->connectNewUserWithSsoIdentity($oAuthResponse);
     }

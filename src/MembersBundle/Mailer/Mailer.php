@@ -127,7 +127,7 @@ class Mailer implements MailerInterface
             $_requestedTemplate = str_replace('{_locale}', $userLocale, $requestedTemplate);
 
             //fallback: there is maybe a nice locale to url transform, like "de_CH" => "de-ch"
-            if (!Service::pathExists($_requestedTemplate) && str_contains($userLocale, '_')) {
+            if (str_contains($userLocale, '_') && !Service::pathExists($_requestedTemplate)) {
                 $_requestedTemplate = str_replace('{_locale}', strtolower(str_replace('_', '-', $userLocale)), $requestedTemplate);
             }
 

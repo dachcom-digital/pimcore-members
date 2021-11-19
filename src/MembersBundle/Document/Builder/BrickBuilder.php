@@ -10,12 +10,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
+use Twig\Environment;
 
 class BrickBuilder
 {
     protected string $sourceType = 'area';
-    protected IncludeRenderer $includeRenderer;
     protected TokenStorageInterface $tokenStorage;
+    protected IncludeRenderer $includeRenderer;
+    protected Environment $templateRenderer;
     protected UrlGeneratorInterface $urlGenerator;
     protected ?string $logoutUri = null;
     protected bool $hideAfterLogin = false;
@@ -35,10 +37,12 @@ class BrickBuilder
     public function __construct(
         TokenStorageInterface $tokenStorage,
         IncludeRenderer $includeRenderer,
+        Environment $templateRenderer,
         UrlGeneratorInterface $urlGenerator
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->includeRenderer = $includeRenderer;
+        $this->templateRenderer = $templateRenderer;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -163,11 +167,9 @@ class BrickBuilder
                     'current_uri'  => $this->request->getRequestUri()
                 ];
 
-                // @todo: fix placeholder
-
-                $placeholder = new Placeholder();
                 $snippetContent = $this->includeRenderer->render($this->successSnippet, $snippetParams, $this->editMode);
-                $params['members_snippet_content'] = $placeholder->replacePlaceholders($snippetContent, $snippetParams);
+
+                $params['members_snippet_content'] = $this->templateRenderer->createTemplate($snippetContent)->render($snippetParams);
 
                 $template = $this->getTemplate('area-logged-in-snippet');
             } elseif ($this->hideAfterLogin === false) {

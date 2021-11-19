@@ -5,7 +5,6 @@ security:
     firewalls:
         members_fe:
             pattern: ^/(?!(admin)($|/)).*$
-            logout_on_user_change: true
             provider: members
             form_login:
                 login_path: members_user_security_login

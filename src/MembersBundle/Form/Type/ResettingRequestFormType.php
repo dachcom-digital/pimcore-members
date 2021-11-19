@@ -11,12 +11,14 @@ class ResettingRequestFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('username', null, [
-            'label'       => 'members.resetting.request.username',
-            'constraints' => [new NotBlank()]
-        ])->add('submit', SubmitType::class, [
-            'label' => 'members.resetting.request.submit',
-        ]);
+        $builder
+            ->add('username', null, [
+                'label'       => 'members.resetting.request.username',
+                'constraints' => [new NotBlank()]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.resetting.request.submit',
+            ]);
     }
 
     public function getBlockPrefix(): string

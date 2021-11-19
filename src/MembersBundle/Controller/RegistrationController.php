@@ -53,12 +53,7 @@ class RegistrationController extends AbstractController
             return $event->getResponse();
         }
 
-        $formOptions = [];
-        if ($request->attributes->get('_members_sso_aware', null) === true) {
-            $formOptions['validation_groups'] = 'SSO';
-        }
-
-        $form = $this->formFactory->createForm($formOptions);
+        $form = $this->formFactory->createForm();
 
         $form->setData($user);
         $form->handleRequest($request);

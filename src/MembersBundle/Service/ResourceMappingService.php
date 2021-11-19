@@ -10,31 +10,22 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResourceMappingService
 {
-    const MAP_FOR_PROFILE = 'profile';
+    public const MAP_FOR_PROFILE = 'profile';
+    public const MAP_FOR_REGISTRATION = 'registration';
 
-    const MAP_FOR_REGISTRATION = 'registration';
+    protected string $authIdentifier;
+    protected EventDispatcherInterface $eventDispatcher;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(string $authIdentifier, EventDispatcherInterface $eventDispatcher)
     {
+        $this->authIdentifier = $authIdentifier;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
-     * @param UserInterface          $user
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param string                 $type
-     *
      * @throws \Exception
      */
-    public function mapResourceData(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type)
+    public function mapResourceData(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
         $eventIdentifier = sprintf('OAUTH_RESOURCE_MAPPING_%s', strtoupper($type));
         $eventPath = sprintf('%s::%s', MembersEvents::class, $eventIdentifier);
@@ -53,12 +44,7 @@ class ResourceMappingService
         $this->eventDispatcher->dispatch(new OAuthResourceEvent($user, $resourceOwner), $eventName);
     }
 
-    /**
-     * @param UserInterface          $user
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param string                 $type
-     */
-    public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type)
+    public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
         $ownerDetails = $resourceOwner->toArray();
         $disallowedProperties = ['lastLogin', 'password', 'confirmationToken', 'passwordRequestedAt', 'groups', 'ssoIdentities'];
@@ -74,14 +60,15 @@ class ResourceMappingService
 
             $this->setIfEmpty($user, $property, $value);
         }
+
+        // we NEED a valid property for UserInterface::getUserIdentifier() which requires a string as return value
+        // since there is almost never a given username via OAuthResponse, we need to set username as an empty string!
+        if ($this->authIdentifier === 'username' && empty($user->getUserName())) {
+            $user->setUserName('');
+        }
     }
 
-    /**
-     * @param UserInterface $user
-     * @param string        $property
-     * @param mixed         $value
-     */
-    protected function setIfEmpty(UserInterface $user, $property, $value = null)
+    protected function setIfEmpty(UserInterface $user, string $property, mixed $value = null): void
     {
         $getter = 'get' . ucfirst($property);
         $setter = 'set' . ucfirst($property);

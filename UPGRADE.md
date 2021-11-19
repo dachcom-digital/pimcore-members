@@ -1,13 +1,35 @@
 # Upgrade Notes
 
 ## Migrating from Version 3.x to Version 4.0
-- Firewall settings are not included by default anymore. Copy `MembersBundle/Resources/config/packages/security.yaml` to `config/packages/security.yaml`
+
+### Breaking Changes
+
+- It is no longer possible to merge security configurations from multiple locations, including bundles. Instead, you have to move
+  them to one single config file, e.g. config/packages/security.yaml. Please
+  adopt `MembersBundle/Resources/config/packages/security.yaml` and merge your own firewall configuration into one single file.
 - `LuceneSearchBundle` support removed
 - All Folders in `views` are lowercase/dashed now (`views/areas`, `views/auth`, `views/backend`, ...)
 - PHP8 return type declarations added: you may have to adjust your extensions accordingly
-- TWIG Helper `members_build_nav()` legacy navigation building support removed
+- Twig Helper `members_build_nav()` legacy navigation building support removed
 - `UserTrait::hasGroup` has been removed, use either `UserTrait::hasGroupId` or `UserTrait::hasGroupName` instead
+- PIMCORE removed the `Placeholder` feature, so we need to pass all the variables to the twig template:
+    - If you're using a custom email controller, make sure to pass all email variables to the view template and also check your
+      email templates and replace all the deprecated variables (e.g. `%DataObject(user,{\"method\" : \"getUsername\"});` with `{{ user.username }}`)`
+    - Area Snippets: If any snippet contains placeholder elements, you need to pass the values from your snippet controller to the
+      view template: `return $this->render('default/snippet.html.twig', array_filter($request->attributes->all(), static function ($parameterKey) { return !str_starts_with($parameterKey, '_'); }, ARRAY_FILTER_USE_KEY));`
+      and also replace the deprecated variables like described in email templates above
+- [SSO] You need to set `framework.session.cookie_samesite` to `lax`, otherwise the oAUthConnect won't work properly
+- [SSO] Make sure you have a valid key for `pimcore.encryption.secret`, defined via env variable `PIMCORE_ENCRYPTION_SECRET` (You can generate a defuse key by executing the `vendor/bin/generate-defuse-key` command)
+- [SECURITY] `setSalt` method removed from `UserTrait.php` (deprecated in symfony 5.3)
+
+### Misc
 - Check your email templates (controller and template definition)
+
+### New Features
+- You're able to switch the [auth_identifier](./docs/10_AuthIdentifier.md) (Use `email` instead of `username` for authentication)
+- `addRestrictionInjection()` comes with an optional `$aliasFrom` argument
+- Your able to pass an instance of `\MembersBundle\Validation\ValidationGroupResolverInterface` to each `validation_groups` property instead of array
+
 ***
 
 Members 3.x Upgrade Notes: https://github.com/dachcom-digital/pimcore-members/blob/3.x/UPGRADE.md

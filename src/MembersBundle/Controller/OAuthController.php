@@ -12,6 +12,7 @@ use MembersBundle\MembersEvents;
 use MembersBundle\Security\OAuth\OAuthScopeAllocatorInterface;
 use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 use Pimcore\Http\Request\Resolver\SiteResolver;
+use Pimcore\Model\Site;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,12 +115,20 @@ class OAuthController extends AbstractController
 
     protected function oAuthConnect(Request $request, string $provider, array $params): RedirectResponse
     {
+        $siteId = null;
+        if ($request->attributes->has(SiteResolver::ATTRIBUTE_SITE)) {
+            $site = $request->attributes->get(SiteResolver::ATTRIBUTE_SITE);
+            if ($site instanceof Site) {
+                $siteId = $site->getId();
+            }
+        }
+
         $params = array_merge($params, [
             'provider'  => $provider,
             'parameter' => [
                 'locale'      => $request->getLocale(),
                 'target_path' => $request->get('_target_path', null),
-                'site_id'     => $request->attributes->has(SiteResolver::ATTRIBUTE_SITE) ? $request->attributes->get(SiteResolver::ATTRIBUTE_SITE) : null
+                'site_id'     => $siteId
             ]
         ]);
 

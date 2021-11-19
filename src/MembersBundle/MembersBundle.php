@@ -54,6 +54,13 @@ class MembersBundle extends AbstractPimcoreBundle implements DependentBundleInte
         ];
     }
 
+    public function getEditmodeCssPaths(): array
+    {
+        return [
+            '/bundles/members/css/admin-editmode.css',
+        ];
+    }
+
     protected function getComposerPackageName(): string
     {
         return self::PACKAGE_NAME;

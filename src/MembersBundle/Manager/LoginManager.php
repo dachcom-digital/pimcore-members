@@ -17,14 +17,14 @@ class LoginManager implements LoginManagerInterface
     private UserChecker $userChecker;
     private SessionAuthenticationStrategyInterface $sessionStrategy;
     private RequestStack $requestStack;
-    private RememberMeServicesInterface $rememberMeService;
+    private ?RememberMeServicesInterface $rememberMeService;
 
     public function __construct(
         TokenStorageInterface $tokenStorage,
         UserChecker $userChecker,
         SessionAuthenticationStrategyInterface $sessionStrategy,
         RequestStack $requestStack,
-        RememberMeServicesInterface $rememberMeService = null
+        ?RememberMeServicesInterface $rememberMeService = null
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->userChecker = $userChecker;

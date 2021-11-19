@@ -20,14 +20,16 @@ class ResettingFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('plainPassword', RepeatedType::class, [
-            'type'            => PasswordType::class,
-            'first_options'   => ['label' => 'members.form.new_password'],
-            'second_options'  => ['label' => 'members.form.new_password_confirmation'],
-            'invalid_message' => 'members.validation.password.mismatch',
-        ])->add('submit', SubmitType::class, [
-            'label' => 'members.resetting.reset.submit',
-        ]);
+        $builder
+            ->add('plainPassword', RepeatedType::class, [
+                'type'            => PasswordType::class,
+                'first_options'   => ['label' => 'members.form.new_password'],
+                'second_options'  => ['label' => 'members.form.new_password_confirmation'],
+                'invalid_message' => 'members.validation.password.mismatch',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.resetting.reset.submit',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

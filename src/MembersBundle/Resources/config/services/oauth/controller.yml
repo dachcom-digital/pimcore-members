@@ -5,7 +5,6 @@ services:
 
     MembersBundle\Controller\OAuthController:
         public: true
-        calls:
-            - [setContainer, ['@service_container']]
         arguments:
             $formFactory: '@members.oauth.complete_profile.form.factory'
+        tags: ['controller.service_arguments']

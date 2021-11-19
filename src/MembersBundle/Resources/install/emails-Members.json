@@ -9,7 +9,7 @@
         "path": "email",
         "key": "register-confirm",
         "controller": "MembersBundle\\Controller\\EmailController::emailAction",
-        "template": "@Members\\email\\email.html.twig",
+        "template": "",
         "data": {
             "de": [
                 {
@@ -20,7 +20,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hallo {{ username }}</p><p>Bitte bestätigen Sie Ihre Registrierung <a href=\"{{ confirmationUrl }}\">hier</a>.</p><p>Mit besten Grüßen, das Team.</p>"
+                    "value": "<p>Hallo {{ user.username }}</p><p>Bitte bestätigen Sie Ihre Registrierung <a href=\"{{ confirmationUrl }}\">hier</a>.</p><p>Mit besten Grüßen, das Team.</p>"
                 }
             ],
             "en": [
@@ -32,7 +32,7 @@
                 {
                     "key": "email_content",
                     "type": "wysiwyg",
-                    "value": "<p>Hi {{ username }}</p><p>Please confirm your account <a href=\"{{ confirmationUrl }}\">here</a>.</p><p>Regards, the Team.</p>"
+                    "value": "<p>Hi {{ user.username }}</p><p>Please confirm your account <a href=\"{{ confirmationUrl }}\">here</a>.</p><p>Regards, the Team.</p>"
                 }
             ]
         }
@@ -42,7 +42,7 @@
         "path": "email",
         "key": "register-confirmed",
         "controller": "MembersBundle\\Controller\\EmailController::emailAction",
-        "template": "@Members\\email\\email.html.twig",
+        "template": "",
         "data": {
             "de": [
                 {
@@ -75,7 +75,7 @@
         "path": "email",
         "key": "password-reset",
         "controller": "MembersBundle\\Controller\\EmailController::emailAction",
-        "template": "@Members\\email\\email.html.twig",
+        "template": "",
         "data": {
             "de": [
                 {
@@ -108,7 +108,7 @@
         "path": "email",
         "key": "admin-register-notification",
         "controller": "@MembersBundle\\Controller\\EmailController::emailAction",
-        "template": "@Members\\email\\email.html.twig",
+        "template": "",
         "data": {
             "de": [
                 {

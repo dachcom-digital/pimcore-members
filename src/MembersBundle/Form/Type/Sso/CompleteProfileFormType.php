@@ -25,23 +25,23 @@ class CompleteProfileFormType extends AbstractType
         /** @var UserInterface $user */
         $user = $builder->getData();
 
-        $builder->add('email', EmailType::class, [
-            'label'    => 'members.form.email',
-            'disabled' => !empty($user->getEmail())
-        ]);
-
-        $builder->add('username', null, ['label' => 'members.form.username']);
-
-        $builder->add('plainPassword', RepeatedType::class, [
-            'type'            => PasswordType::class,
-            'first_options'   => ['label' => 'members.form.password'],
-            'second_options'  => ['label' => 'members.form.password_confirmation'],
-            'invalid_message' => 'members.validation.password.mismatch',
-        ]);
-
-        $builder->add('submit', SubmitType::class, [
-            'label' => 'members.oauth.sso.complete_profile.submit',
-        ]);
+        $builder
+            ->add('email', EmailType::class, [
+                'label'    => 'members.form.email',
+                'disabled' => !empty($user->getEmail())
+            ])
+            ->add('username', null, [
+                'label' => 'members.form.username', 'empty_data' => ''
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type'            => PasswordType::class,
+                'first_options'   => ['label' => 'members.form.password'],
+                'second_options'  => ['label' => 'members.form.password_confirmation'],
+                'invalid_message' => 'members.validation.password.mismatch',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.oauth.sso.complete_profile.submit',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

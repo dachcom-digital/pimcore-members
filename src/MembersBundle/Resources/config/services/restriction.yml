@@ -8,10 +8,8 @@ services:
 
     MembersBundle\Controller\RequestController:
         public: true
-        calls:
-            - [setContainer, ['@service_container']]
+        tags: ['controller.service_arguments']
 
     MembersBundle\Controller\Admin\RestrictionController:
         public: true
-        calls:
-            - [setContainer, ['@service_container']]
+        tags: ['controller.service_arguments']

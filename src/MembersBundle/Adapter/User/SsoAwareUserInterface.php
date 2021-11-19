@@ -11,5 +11,10 @@ interface SsoAwareUserInterface
      */
     public function getSsoIdentities(): array;
 
-    public function setSsoIdentities(array $ssoIdentities): void;
+    /**
+     * @param array|null $ssoIdentities
+     *
+     * @return $this
+     */
+    public function setSsoIdentities(?array $ssoIdentities);
 }

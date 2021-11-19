@@ -7,34 +7,32 @@ use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\HttpFoundation\RequestStack;
 
-class RegistrationTypeExtension extends AbstractTypeExtension
+class RegistrationAuthIdentifierTypeExtension extends AbstractTypeExtension
 {
-    protected RequestStack $requestStack;
+    protected string $authIdentifier;
+    protected bool $onlyAuthIdentifierRegistration;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(string $authIdentifier, bool $onlyAuthIdentifierRegistration)
     {
-        $this->requestStack = $requestStack;
+        $this->authIdentifier = $authIdentifier;
+        $this->onlyAuthIdentifierRegistration = $onlyAuthIdentifierRegistration;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        if ($this->isSSOAwareForm() === false) {
+        if ($this->onlyAuthIdentifierRegistration === false) {
             return;
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
-            if ($form->has('plainPassword')) {
-                $form->remove('plainPassword');
+            if ($this->authIdentifier === 'username' && $form->has('email')) {
+                $form->remove('email');
+            } elseif ($this->authIdentifier === 'email' && $form->has('username')) {
+                $form->remove('username');
             }
         });
-    }
-
-    protected function isSSOAwareForm(): bool
-    {
-        return $this->requestStack->getMainRequest()->attributes->get('_members_sso_aware', null) === true;
     }
 
     public function getExtendedType(): string

@@ -11,28 +11,26 @@ trait UserTrait
     private array $roles = [];
 
     /**
-     * The salt to use for hashing
-     */
-    protected ?string $salt;
-
-    /**
      * Plain password. Used for model validation.
      * Must not be persisted.
      */
-    protected string $plainPassword;
+    protected ?string $plainPassword = null;
 
-    public function setSalt(?string $salt): self
-    {
-        $this->salt = $salt;
-
-        return $this;
-    }
-
+    /**
+     * This method is deprecated since Symfony 5.3
+     *
+     * @deprecated
+     */
     public function getSalt(): ?string
     {
-        // user has no salt as we use password_hash
-        // which handles the salt by itself
         return null;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        $authIdentifier = \Pimcore::getContainer()?->getParameter('members.auth.identifier');
+
+        return $authIdentifier === 'email' ? $this->getEmail() : $this->getUserName();
     }
 
     /**
@@ -57,7 +55,7 @@ trait UserTrait
      */
     public function isEqualTo(UserInterface $user): bool
     {
-        return $user instanceof self && $user->getId() === $this->getId();
+         return $user instanceof self && $user->getId() === $this->getId();
     }
 
     public function getRoles(): array
@@ -145,7 +143,7 @@ trait UserTrait
         return $this;
     }
 
-    public function getPlainPassword(): string
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }

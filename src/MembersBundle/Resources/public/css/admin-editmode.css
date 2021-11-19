@@ -1,0 +1,47 @@
+.pimcore_icon_data_group_members {
+    background: url(/bundles/members/img/members.svg) center center no-repeat !important;
+}
+
+.members_icon_user_group,
+.pimcore_icon_membersGroupMultiselect {
+    background: url(/bundles/members/img/group.svg) no-repeat scroll left center transparent !important;
+}
+
+.members_icon_document_restriction {
+    background: url(/bundles/members/img/lock.svg) no-repeat scroll left center transparent !important;
+}
+
+.members-locked .x-grid-cell-inner .x-tree-node-text {
+    position: relative;
+}
+
+.members-locked .x-grid-cell-inner .x-tree-node-text:after {
+    content: "";
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 13px;
+    height: 14px;
+    left: -10px;
+    bottom: -4px;
+}
+
+.members-locked-main .x-grid-cell-inner .x-tree-node-text:after {
+    background-image: url(/bundles/members/img/tree_lock.png);
+}
+
+.members-locked-inherit .x-grid-cell-inner .x-tree-node-text:after {
+    background-image: url(/bundles/members/img/tree_lock_inherit.png);
+}
+
+.members-alert-info {
+    font-family: 'Open Sans', 'Helvetica Neue', helvetica, arial, verdana, sans-serif;
+    background-color: #dcd1ea;
+    color: #6428b4;
+    padding: 5px 10px;
+    margin: 5px 0;
+    border: 1px solid #6428b4;
+    border-radius: 0;
+    font-size: 90%;
+    width: 100%;
+}

@@ -3,6 +3,7 @@ bundles:
 setup_files:
     - { path: app/config.yml, dest: ./config/config.yaml }
     - { path: app/routes.yml, dest: ./config/routes.yaml }
+    - { path: app/security.yml, dest: ./config/packages/security.yaml }
     - { path: app/system.yml, dest: ./var/config/system.yml }
     - { path: app/controller/DefaultController.php, dest: ./src/Controller/DefaultController.php }
     - { path: app/templates/default.html.twig, dest: ./templates/default/default.html.twig }

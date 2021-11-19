@@ -1,4 +1,5 @@
 {% extends '@Members/layout.html.twig' %}
+
 {% block members_user_content %}
     <p>{{ 'members.oauth.sso.complete_profile.confirmed'|trans({'%username%': user.username}) }}</p>
     <a class="btn btn-primary btn-sm" href="{{ path('members_user_profile_show') }}">{{ 'members.oauth.sso.complete_profile.back_to_profile'|trans }}</a>
