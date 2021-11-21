@@ -72,7 +72,7 @@ class LoginAreaCest
         $I->click('Log In');
 
         $I->seeANotLoggedInFrontEndUser();
-        $I->see('Invalid credentials.', '.members.login.area div');
+        $I->see('Username could not be found.', '.members.login.area div');
 
     }
 
