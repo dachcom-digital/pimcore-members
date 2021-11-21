@@ -107,7 +107,7 @@
         "type": "email",
         "path": "email",
         "key": "admin-register-notification",
-        "controller": "@MembersBundle\\Controller\\EmailController::emailAction",
+        "controller": "MembersBundle\\Controller\\EmailController::emailAction",
         "template": "",
         "data": {
             "de": [

@@ -14,5 +14,6 @@ class PimcoreBackend extends \Dachcom\Codeception\Helper\PimcoreBackend
         SystemHelper::cleanUp(['members_restrictions', 'members_group_relations']);
         FileGeneratorHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
+        MembersHelper::assertMailSender();
     }
 }

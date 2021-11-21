@@ -342,11 +342,13 @@ class Members extends Module implements DependsOnModule
             // fail silently
         }
 
-        $groups = array_map(function (GroupInterface $group) {
+        $groupIds = array_map(static function (GroupInterface $group) {
             return $group->getId();
         }, $groups);
 
-        $this->assertEquals(array_sort($groups), array_sort($restriction->getRelatedGroups()));
+        $restrictionGroupIds = $restriction->getRelatedGroups();
+
+        $this->assertEquals(sort($groupIds), sort($restrictionGroupIds));
     }
 
     /**

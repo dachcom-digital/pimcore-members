@@ -1,4 +1,6 @@
 security:
+    hide_user_not_found: false
+
     providers:
         pimcore_admin:
             id: Pimcore\Bundle\AdminBundle\Security\User\UserProvider

@@ -2,6 +2,7 @@
 
 namespace DachcomBundle\Test\Helper;
 
+use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\User\AbstractSsoAwareUser;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Tool\Console;
@@ -25,5 +26,8 @@ class PimcoreBundleCore extends \Dachcom\Codeception\Helper\PimcoreBundleCore
         $def = ClassDefinition::getByName('MembersUser');
         $def->setParentClass(AbstractSsoAwareUser::class);
         $def->save();
+
+        // we need to set a valid sender
+        MembersHelper::assertMailSender();
     }
 }
