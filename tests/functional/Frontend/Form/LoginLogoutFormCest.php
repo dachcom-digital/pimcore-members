@@ -28,7 +28,7 @@ class LoginLogoutFormCest
     public function testLoginWithNonExistingUser(FunctionalTester $I)
     {
         $this->login($I);
-        $I->see('invalid credentials.', 'div');
+        $I->see('Username could not be found.', 'div');
         $I->seeANotLoggedInFrontEndUser();
     }
 

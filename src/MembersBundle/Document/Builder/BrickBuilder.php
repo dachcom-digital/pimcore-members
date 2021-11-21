@@ -28,10 +28,10 @@ class BrickBuilder
     protected ?string $error = null;
 
     private array $templates = [
-        'area-login'             => 'Auth/Area/login_area',
-        'area-logged-in'         => 'Auth/Area/login_area_logged_in',
-        'area-logged-in-snippet' => 'Auth/Area/login_area_logged_in_snippet',
-        'area-not-available'     => 'Auth/Area/frontend_request'
+        'area-login'             => 'auth/area/login_area',
+        'area-logged-in'         => 'auth/area/login_area_logged_in',
+        'area-logged-in-snippet' => 'auth/area/login_area_logged_in_snippet',
+        'area-not-available'     => 'auth/area/frontend_request'
     ];
 
     public function __construct(
