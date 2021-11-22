@@ -9,6 +9,7 @@ use MembersBundle\Manager\ClassManagerInterface;
 use Pimcore\Event\DataObjectEvents;
 use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Model\DataObject\Concrete;
+use Pimcore\Model\Element\ValidationException;
 use Pimcore\Model\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
@@ -70,14 +71,14 @@ class MembersCompletenessListener implements EventSubscriberInterface
                     $artifact = 'username';
                 }
 
-                throw new \Exception(sprintf('The %s is already used.', $artifact));
+                throw new ValidationException(sprintf('The %s is already used.', $artifact));
             }
         } elseif ($object instanceof GroupInterface) {
             $groupListing = $this->classManager->getGroupListing();
             $groupListing->setCondition('name = ? AND oo_id != ?', [$object->getName(), (int) $object->getId()]);
             $groupListing->setUnpublished(true);
             if (count($groupListing->getObjects()) > 0) {
-                throw new \Exception('The group name is already used.');
+                throw new ValidationException('The group name is already used.');
             }
         }
     }
@@ -87,6 +88,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
      */
     public function checkProperties(DataObjectEvent $e): void
     {
+        $messageBlock = [];
         /** @var Concrete $object */
         $object = $e->getObject();
 
@@ -124,22 +126,21 @@ class MembersCompletenessListener implements EventSubscriberInterface
         $userSite = $object->getProperty('_site_domain');
 
         if (($needLocale && empty($userLocale)) || ($needSite && empty($userSite))) {
-            $message = "\n" . '######################' . "\n";
-            $message .= 'This member object needs some additional properties!' . "\n";
-            $message .= 'Since you have enabled localized mail templates you need to add some additional properties' . "\n";
-            $message .= '(If you want to disable this message, remove the localized parameters from your members mail configuration).' . "\n";
+            $messageBlock[] = '<h3>This member object needs some additional properties!</h3>';
+            $messageBlock[] = 'Since you have enabled localized mail templates you need to add some additional properties (If you want to disable this message, remove the localized parameters from your members mail configuration).';
+            $messageBlock[] = '<ul>';
 
             if ($needLocale && empty($userLocale)) {
-                $message .= '- Define a "_user_locale" (text) property with a valid locale (like "de" or "en_US") before publishing the user object.' . "\n";
+                $messageBlock[] = '<li>Define a <code>_user_locale</code> (text) property with a valid locale (like "de" or "en_US") before publishing the user object.</li>';
             }
 
             if ($needSite && empty($userSite)) {
-                $message .= '- Define a "_site_domain" (text) property with a valid main domain (like "your-page.com") before publishing the user object.' . "\n";
+                $messageBlock[] = '<li>Define a <code>_site_domain</code> (text) property with a valid main domain (like "your-page.com") before publishing the user object.</li>';
             }
 
-            $message .= '######################';
+            $messageBlock[] = '</ul>';
 
-            throw new \Exception($message);
+            throw new ValidationException(implode('', $messageBlock));
         }
     }
 }

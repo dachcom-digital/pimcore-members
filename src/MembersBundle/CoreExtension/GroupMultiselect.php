@@ -394,7 +394,7 @@ class GroupMultiselect extends AbstractRelations implements
             return implode('<br />', $paths);
         }
 
-        return null;
+        return 'no preview';
     }
 
     /**
