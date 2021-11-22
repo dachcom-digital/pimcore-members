@@ -1,6 +1,6 @@
 | Q             | A
 | ------------- | ---
-| Branch?       | dev-master for features / 2.5 for bug fixes
+| Branch?       | master
 | Bug fix?      | yes/no
 | New feature?  | yes/no
 | BC breaks?    | no
