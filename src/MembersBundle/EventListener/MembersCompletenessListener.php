@@ -60,7 +60,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
                 (int) $object->getId()
             ]);
 
-            $elements = $memberListing->load();
+            $elements = $memberListing->getObjects();
 
             if (count($elements) > 0) {
                 /** @var UserInterface $foundObject */
@@ -76,8 +76,7 @@ class MembersCompletenessListener implements EventSubscriberInterface
             $groupListing = $this->classManager->getGroupListing();
             $groupListing->setCondition('name = ? AND oo_id != ?', [$object->getName(), (int) $object->getId()]);
             $groupListing->setUnpublished(true);
-            $elements = $groupListing->load();
-            if (count($elements) > 0) {
+            if (count($groupListing->getObjects()) > 0) {
                 throw new \Exception('The group name is already used.');
             }
         }

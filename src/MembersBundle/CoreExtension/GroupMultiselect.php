@@ -2,6 +2,7 @@
 
 namespace MembersBundle\CoreExtension;
 
+use MembersBundle\Adapter\Group\GroupInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\PreGetDataInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\PreSetDataInterface;
 use Pimcore\Model\Element;
@@ -9,10 +10,30 @@ use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
 use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Extension;
+use Pimcore\Normalizer\NormalizerInterface;
 
-class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface, PreGetDataInterface, PreSetDataInterface
+class GroupMultiselect extends AbstractRelations implements
+    QueryResourcePersistenceAwareInterface,
+    PreGetDataInterface,
+    PreSetDataInterface,
+    NormalizerInterface
 {
     use Extension\QueryColumnType;
+
+    /**
+     * @internal
+     */
+    public int $width = 0;
+
+    /**
+     * @internal
+     */
+    public int $height = 0;
+
+    /**
+     * @internal
+     */
+    public string $renderType = 'list';
 
     /**
      * @var string
@@ -29,52 +50,126 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
      */
     public $relationType = true;
 
-    protected function getPhpdocType()
+    public function setRenderType(string $renderType): self
+    {
+        $this->renderType = $renderType;
+
+        return $this;
+    }
+
+    public function getRenderType(): string
+    {
+        return $this->renderType;
+    }
+
+    public function getWidth(): int
+    {
+        return $this->width;
+    }
+
+    public function setWidth(mixed $width): self
+    {
+        $this->width = is_numeric($width) ? (int) $width : 0;
+
+        return $this;
+    }
+
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    public function setHeight(mixed $height): self
+    {
+        $this->height = is_numeric($height) ? (int) $height : 0;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameterTypeDeclaration(): ?string
     {
         return 'array';
     }
 
-    public function rewriteIds($container, $idMapping, $params = [])
+    /**
+     * {@inheritdoc}
+     */
+    public function getReturnTypeDeclaration(): ?string
     {
-        // @todo: Implement rewriteIds() method.
+        return '?array';
     }
 
     /**
-     * @param array $data
-     * @param null  $object
-     * @param array $params
-     *
-     * @return string
+     * {@inheritdoc}
+     */
+    public function getPhpdocInputType(): ?string
+    {
+        return $this->getPhpdocType();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhpdocReturnType(): ?string
+    {
+        return $this->getPhpdocType();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPhpdocType()
+    {
+        return sprintf('array|\%s[]', GroupInterface::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rewriteIds($container, $idMapping, $params = [])
+    {
+        $data = $this->getDataFromObjectParam($container, $params);
+
+        return $this->rewriteIdsService($data, $idMapping);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getDataForEditmode($data, $object = null, $params = [])
     {
-        $returnIds = [];
+        $returnData = [];
 
-        if (is_array($data)) {
-            foreach ($data as $el) {
-                if ($el instanceof Element\ElementInterface) {
-                    $returnIds[] = $el->getId();
-                } else { //keep BC!
-                    $returnIds[] = $el;
-                }
+        if (!is_array($data)) {
+            return [];
+        }
+
+        foreach ($data as $el) {
+            if ($el instanceof Element\ElementInterface) {
+                $returnData[] = [
+                    'id'   => $el->getId(),
+                    'name' => method_exists($el, 'getName') ? $el->getName() : $el->getKey()
+                ];
+            } elseif (is_numeric($el)) {
+                $returnData[] = [
+                    'id'   => $el,
+                    'name' => $el
+                ];
             }
         }
 
-        return implode(',', $returnIds);
+        return $returnData;
     }
 
     /**
-     * @see Data::getDataFromEditmode
-     *
-     * @param array|null|false         $data
-     * @param null|DataObject\Concrete $object
-     * @param mixed                    $params
-     *
-     * @return array|null
+     * {@inheritdoc}
      */
     public function getDataFromEditmode($data, $object = null, $params = [])
     {
-        //if not set, return null
+        //if not set, return empty null
         if ($data === null || $data === false) {
             return null;
         }
@@ -94,15 +189,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @see QueryResourcePersistenceAwareInterface::getDataForQueryResource
-     *
-     * @param mixed                    $data
-     * @param null|DataObject\Concrete $object
-     * @param array                    $params
-     *
-     * @throws \Exception
-     *
-     * @return null|string
+     * {@inheritdoc}
      */
     public function getDataForQueryResource($data, $object = null, $params = [])
     {
@@ -132,12 +219,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param DataObject\Concrete $object
-     * @param array               $params
-     *
-     * @return array
-     *
-     * @throws \Exception
+     * {@inheritdoc}
      */
     public function preGetData($object, $params = [])
     {
@@ -228,39 +310,54 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
 
         //return null if data was null - this indicates data was not loaded
         return null;
-
     }
 
     /**
-     * @param array                    $data
-     * @param null|DataObject\Concrete $object
-     * @param mixed                    $params
-     *
-     * @return array
-     * @see Data::getDataFromEditmode
-     *
+     * {@inheritdoc}
      */
-    public function getDataFromGridEditor($data, $object = null, $params = [])
+    public function normalize($value, $params = [])
     {
-        return $this->getDataFromEditmode($data, $object, $params);
+        if (is_array($value)) {
+            $result = [];
+            foreach ($value as $element) {
+                $type = Element\Service::getElementType($element);
+                $id = $element->getId();
+                $result[] = [
+                    'type' => $type,
+                    'id'   => $id,
+                ];
+            }
+
+            return $result;
+        }
+
+        return null;
     }
 
     /**
-     * @param array|null      $data
-     * @param null|DataObject $object
-     * @param array           $params
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getDataForGrid($data, $object = null, $params = [])
+    public function denormalize($value, $params = [])
     {
-        return $this->getDataForEditmode($data, $object, $params);
+        if (is_array($value)) {
+            $result = [];
+            foreach ($value as $elementData) {
+                $type = $elementData['type'];
+                $id = $elementData['id'];
+                $element = Element\Service::getElementById($type, $id);
+                if ($element) {
+                    $result[] = $element;
+                }
+            }
+
+            return $result;
+        }
+
+        return null;
     }
 
     /**
-     * @param null|DataObject[] $data
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function resolveDependencies($data)
     {
@@ -282,13 +379,7 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
     }
 
     /**
-     * @param array|null      $data
-     * @param null|DataObject $object
-     * @param array           $params
-     *
-     * @return string|null
-     *
-     * @see Data::getVersionPreview
+     * {@inheritdoc}
      */
     public function getVersionPreview($data, $object = null, $params = [])
     {
@@ -304,5 +395,59 @@ class GroupMultiselect extends AbstractRelations implements QueryResourcePersist
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getForCsvExport($object, $params = [])
+    {
+        $data = $this->getDataFromObjectParam($object, $params);
+
+        if (is_array($data)) {
+            return implode(',', $data);
+        }
+
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDataForSearchIndex($object, $params = [])
+    {
+        $data = $this->getDataFromObjectParam($object, $params);
+
+        if (is_array($data)) {
+            return implode(' ', $data);
+        }
+
+        return '';
+    }
+
+    /**
+     * @param array                    $data
+     * @param null|DataObject\Concrete $object
+     * @param mixed                    $params
+     *
+     * @return array
+     * @see Data::getDataFromEditmode
+     *
+     */
+    public function getDataFromGridEditor($data, $object = null, $params = [])
+    {
+        return $this->getDataFromEditmode($data, $object, $params);
+    }
+
+    /**
+     * @param array|null      $data
+     * @param null|DataObject $object
+     * @param array           $params
+     *
+     * @return array
+     */
+    public function getDataForGrid($data, $object = null, $params = [])
+    {
+        return $this->getDataForEditmode($data, $object, $params);
     }
 }

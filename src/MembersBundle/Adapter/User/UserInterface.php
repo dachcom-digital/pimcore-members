@@ -124,11 +124,11 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
     public function getEmail(): ?string;
 
     /**
-     * @param array|null $groups
+     * @param array $groups
      *
      * @return $this
      */
-    public function setGroups(?array $groups);
+    public function setGroups(array $groups);
 
     public function getGroups(): ?array;
 

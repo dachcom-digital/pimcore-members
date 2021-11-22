@@ -19,11 +19,6 @@ class RestrictionController extends AdminController
     protected ClassManagerInterface $classManager;
     protected RestrictionService $restrictionService;
 
-    /**
-     * @param Configuration         $configuration
-     * @param ClassManagerInterface $classManager
-     * @param RestrictionService    $restrictionService
-     */
     public function __construct(
         Configuration $configuration,
         ClassManagerInterface $classManager,
@@ -36,14 +31,16 @@ class RestrictionController extends AdminController
 
     public function getGlobalSettingsAction(): JsonResponse
     {
-        return $this->json(['settings' => $this->configuration->getConfigArray()]);
+        return $this->json([
+            'settings' => $this->configuration->getConfigArray()
+        ]);
     }
 
     public function getGroupsAction(): JsonResponse
     {
+        $groups = [];
         $list = $this->classManager->getGroupListing();
 
-        $groups = [];
         /** @var GroupInterface $group */
         foreach ($list->getObjects() as $group) {
             $data = [
