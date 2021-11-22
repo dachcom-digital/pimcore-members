@@ -8,28 +8,14 @@ use MembersBundle\Security\OAuth\OAuthResponse;
 
 class DispatchRouter
 {
-    /**
-     * @var array
-     */
-    protected $dispatcher;
+    protected array $dispatcher = [];
 
-    /**
-     * @param string              $dispatcherName
-     * @param DispatcherInterface $dispatcher
-     */
-    public function register(string $dispatcherName, DispatcherInterface $dispatcher)
+    public function register(string $dispatcherName, DispatcherInterface $dispatcher): void
     {
         $this->dispatcher[$dispatcherName] = $dispatcher;
     }
 
-    /**
-     * @param string        $dispatcherName
-     * @param string        $provider
-     * @param OAuthResponse $oAuthResponse
-     *
-     * @return UserInterface|null
-     */
-    public function dispatch(string $dispatcherName, string $provider, OAuthResponse $oAuthResponse)
+    public function dispatch(string $dispatcherName, string $provider, OAuthResponse $oAuthResponse): ?UserInterface
     {
         /** @var DispatcherInterface $dispatcher */
         $dispatcher = $this->dispatcher[$dispatcherName];

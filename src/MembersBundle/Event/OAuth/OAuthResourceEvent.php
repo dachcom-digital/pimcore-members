@@ -4,42 +4,25 @@ namespace MembersBundle\Event\OAuth;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use MembersBundle\Adapter\User\UserInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class OAuthResourceEvent extends Event
 {
-    /**
-     * @var UserInterface
-     */
-    protected $user;
+    protected UserInterface $user;
+    protected ResourceOwnerInterface $resourceOwner;
 
-    /**
-     * @var ResourceOwnerInterface
-     */
-    protected $resourceOwner;
-
-    /**
-     * @param ResourceOwnerInterface $resourceOwner
-     * @param UserInterface          $user
-     */
     public function __construct(UserInterface $user, ResourceOwnerInterface $resourceOwner)
     {
         $this->resourceOwner = $resourceOwner;
         $this->user = $user;
     }
 
-    /**
-     * @return UserInterface
-     */
-    public function getUser()
+    public function getUser(): UserInterface
     {
         return $this->user;
     }
 
-    /**
-     * @return ResourceOwnerInterface
-     */
-    public function getResourceOwner()
+    public function getResourceOwner(): ResourceOwnerInterface
     {
         return $this->resourceOwner;
     }

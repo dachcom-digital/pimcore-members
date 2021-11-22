@@ -9,14 +9,14 @@ use Pimcore\Model\DataObject\TestClass;
 
 class TestRestrictedStaticRouteListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::RESTRICTION_CHECK_STATICROUTE => 'checkStaticRoute'
         ];
     }
 
-    public function checkStaticRoute(StaticRouteEvent $event)
+    public function checkStaticRoute(StaticRouteEvent $event): void
     {
         if($event->getRouteName() !== 'test_route') {
             return;

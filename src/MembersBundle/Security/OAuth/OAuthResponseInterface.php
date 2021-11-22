@@ -7,23 +7,11 @@ use League\OAuth2\Client\Token\AccessToken;
 
 interface OAuthResponseInterface
 {
-    /**
-     * @return string
-     */
-    public function getProvider();
+    public function getProvider(): string;
 
-    /**
-     * @return AccessToken
-     */
-    public function getAccessToken();
+    public function getAccessToken(): AccessToken;
 
-    /**
-     * @return ResourceOwnerInterface
-     */
-    public function getResourceOwner();
+    public function getResourceOwner(): ResourceOwnerInterface;
 
-    /**
-     * @return array
-     */
-    public function getParameter();
+    public function getParameter(): array;
 }

@@ -1,14 +1,17 @@
 {
-    "description": null,
+    "description": "",
     "parentClass": "\\MembersBundle\\Adapter\\Group\\AbstractGroup",
-    "useTraits": null,
+    "implementsInterfaces": null,
+    "listingParentClass": "",
+    "useTraits": "",
+    "listingUseTraits": "",
     "allowInherit": false,
     "allowVariants": false,
     "showVariants": false,
     "layoutDefinitions": {
         "fieldtype": "panel",
-        "labelWidth": 100,
         "layout": null,
+        "border": false,
         "name": "pimcore_root",
         "type": null,
         "region": null,
@@ -16,15 +19,15 @@
         "width": null,
         "height": null,
         "collapsible": false,
-        "collapsed": null,
+        "collapsed": false,
         "bodyStyle": null,
         "datatype": "layout",
         "permissions": null,
         "childs": [
             {
                 "fieldtype": "panel",
-                "labelWidth": 100,
                 "layout": null,
+                "border": false,
                 "name": "Layout",
                 "type": null,
                 "region": null,
@@ -32,7 +35,7 @@
                 "width": null,
                 "height": null,
                 "collapsible": false,
-                "collapsed": null,
+                "collapsed": false,
                 "bodyStyle": null,
                 "datatype": "layout",
                 "permissions": null,
@@ -40,11 +43,11 @@
                     {
                         "fieldtype": "input",
                         "width": null,
-                        "queryColumnType": "varchar",
-                        "columnType": "varchar",
+                        "defaultValue": null,
                         "columnLength": 190,
-                        "phpdocType": "string",
                         "regex": "",
+                        "unique": null,
+                        "showCharCount": null,
                         "name": "name",
                         "title": "Group Name",
                         "tooltip": "",
@@ -58,19 +61,19 @@
                         "relationType": false,
                         "invisible": false,
                         "visibleGridView": false,
-                        "visibleSearch": false
+                        "visibleSearch": false,
+                        "defaultValueGenerator": ""
                     },
                     {
                         "fieldtype": "multiselect",
-                        "options": [],
+                        "options": null,
                         "width": "",
                         "height": "",
                         "maxItems": "",
+                        "renderType": null,
                         "optionsProviderClass": "@MembersBundle\\CoreExtension\\Provider\\RoleOptionsProvider",
                         "optionsProviderData": "",
-                        "queryColumnType": "text",
-                        "columnType": "text",
-                        "phpdocType": "array",
+                        "dynamicOptions": false,
                         "name": "roles",
                         "title": "roles",
                         "tooltip": "",
@@ -87,14 +90,27 @@
                         "visibleSearch": false
                     }
                 ],
-                "locked": false
+                "locked": false,
+                "icon": null,
+                "labelWidth": 100,
+                "labelAlign": "left"
             }
         ],
-        "locked": false
+        "locked": false,
+        "icon": null,
+        "labelWidth": 100,
+        "labelAlign": "left"
     },
     "icon": "\/bundles\/members\/img\/objectGroup.svg",
     "previewUrl": null,
     "group": null,
+    "showAppLoggerTab": false,
+    "linkGeneratorReference": null,
+    "previewGeneratorReference": null,
+    "compositeIndices": [],
+    "generateTypeDeclarations": true,
+    "showFieldLookup": false,
+    "enableGridLocking": false,
     "propertyVisibility": {
         "grid": {
             "id": true,

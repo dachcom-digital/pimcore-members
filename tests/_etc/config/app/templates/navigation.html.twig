@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page for Members</title>
+</head>
+<body>
+<div id="site">
+    {% block content %}
+        <div class="nav">
+            {% set nav = members_build_nav({
+                active: pimcore_document(1),
+                root: pimcore_document(1)
+            }) %}
+            {{ pimcore_render_nav(nav, 'menu', 'renderMenu', { maxDepth: 2 }) }}
+        </div>
+    {% endblock %}
+</div>
+</body>
+</html>

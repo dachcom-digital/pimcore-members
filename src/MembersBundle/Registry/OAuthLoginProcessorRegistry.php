@@ -6,38 +6,19 @@ use MembersBundle\Security\OAuth\Dispatcher\LoginProcessor\LoginProcessorInterfa
 
 class OAuthLoginProcessorRegistry implements OAuthLoginProcessorRegistryInterface
 {
-    /**
-     * @var array
-     */
-    protected $processor;
+    protected array $processor = [];
 
-    /**
-     * @param LoginProcessorInterface $service
-     * @param string                  $identifier
-     */
-    public function register($service, $identifier)
+    public function register(LoginProcessorInterface $service, string $identifier): void
     {
-        if (!in_array(LoginProcessorInterface::class, class_implements($service), true)) {
-            throw new \InvalidArgumentException(
-                sprintf('%s needs to implement "%s", "%s" given.', get_class($service), LoginProcessorInterface::class, implode(', ', class_implements($service)))
-            );
-        }
-
         $this->processor[$identifier] = $service;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function has($identifier)
+    public function has(string $identifier): bool
     {
         return isset($this->processor[$identifier]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function get($identifier)
+    public function get($identifier): LoginProcessorInterface
     {
         if (!$this->has($identifier)) {
             throw new \Exception('"' . $identifier . '" Data Provider does not exist');

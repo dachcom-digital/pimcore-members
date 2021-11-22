@@ -8,7 +8,7 @@ This event triggers, if you have enabled the [identity clean-up task](./31_Liste
 ```php
 <?php
 
-namespace AppBundle\EventListener;
+namespace App\EventListener;
 
 use MembersBundle\MembersEvents;
 use MembersBundle\Event\OAuth\OAuthIdentityEvent;
@@ -16,14 +16,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class IdentityStatusDeletionEvent implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::OAUTH_IDENTITY_STATUS_DELETION => 'onDispatch'
         ];
     }
 
-    public function onDispatch(OAuthIdentityEvent $event)
+    public function onDispatch(OAuthIdentityEvent $event): void
     {
         $user = $event->getIdentity();
    
@@ -44,7 +44,7 @@ If you want to change that, use the `OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION` e
 ```php
 <?php
 
-namespace AppBundle\EventListener;
+namespace App\EventListener;
 
 use MembersBundle\MembersEvents;
 use MembersBundle\Event\OAuth\OAuthIdentityEvent;
@@ -52,14 +52,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class IdentityStatusProfileCompletionEvent implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION => 'onDispatch'
         ];
     }
 
-    public function onDispatch(OAuthIdentityEvent $event)
+    public function onDispatch(OAuthIdentityEvent $event): void
     {
         $user = $event->getIdentity();
    

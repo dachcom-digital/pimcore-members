@@ -8,44 +8,29 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 trait UserTrait
 {
-    /**
-     * The salt to use for hashing.
-     *
-     * @var string
-     */
-    protected $salt;
+    private array $roles = [];
 
     /**
      * Plain password. Used for model validation.
      * Must not be persisted.
+     */
+    protected ?string $plainPassword = null;
+
+    /**
+     * This method is deprecated since Symfony 5.3
      *
-     * @var string
+     * @deprecated
      */
-    protected $plainPassword;
-
-    /**
-     * @var array
-     */
-    private $roles = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSalt($salt)
+    public function getSalt(): ?string
     {
-        $this->salt = $salt;
-
-        return $this;
+        return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSalt()
+    public function getUserIdentifier(): string
     {
-        // user has no salt as we use password_hash
-        // which handles the salt by itself
-        return null;
+        $authIdentifier = \Pimcore::getContainer()?->getParameter('members.auth.identifier');
+
+        return $authIdentifier === 'email' ? $this->getEmail() : $this->getUserName();
     }
 
     /**
@@ -54,25 +39,26 @@ trait UserTrait
      *
      * {@inheritdoc}
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        /** @var Password $field */
-        $field = $this->getClass()->getFieldDefinition('password');
+        $field = $this->getClass()?->getFieldDefinition('password');
+
+        if (!$field instanceof Password) {
+            throw new \Exception('Field "password" class not found');
+        }
+
         $field->getDataForResource($this->getPassword(), $this);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isEqualTo(UserInterface $user)
+    public function isEqualTo(UserInterface $user): bool
     {
-        return $user instanceof self && $user->getId() === $this->getId();
+         return $user instanceof self && $user->getId() === $this->getId();
     }
 
-    /**
-     * @return array
-     */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = $this->roles;
 
@@ -88,9 +74,6 @@ trait UserTrait
         return array_unique($roles);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getGroupNames(): array
     {
         $names = [];
@@ -103,33 +86,7 @@ trait UserTrait
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @deprecated UserTrait::hasGroup is deprecated and will be removed with 4.0,
-     * please use either UserTrait::hasGroupId or UserTrait::hasGroupName instead.
-     */
-    public function hasGroup($name)
-    {
-        trigger_error(
-            sprintf(
-                '%s::%s is deprecated and will be removed with 4.0, please use either %s::hasGroupId or %s::hasGroupName instead.',
-                static::class,
-                __METHOD__,
-                static::class,
-                static::class
-            ),
-            E_USER_DEPRECATED
-        );
-
-        return in_array($name, $this->getGroupNames());
-    }
-
-    /**
      * Checks if a certain group is assigned to the user by comparing ID's.
-     *
-     * @param GroupInterface $userGroup
-     *
-     * @return bool
      */
     public function hasGroupId(GroupInterface $userGroup): bool
     {
@@ -144,10 +101,6 @@ trait UserTrait
 
     /**
      * Checks if a certain group is assigned to the user by comparing group names.
-     *
-     * @param GroupInterface $userGroup
-     *
-     * @return bool
      */
     public function hasGroupName(GroupInterface $userGroup): bool
     {
@@ -156,8 +109,6 @@ trait UserTrait
 
     /**
      * Adds a group to the user.
-     *
-     * @param GroupInterface $userGroup
      */
     public function addGroup(GroupInterface $userGroup): void
     {
@@ -169,8 +120,6 @@ trait UserTrait
 
     /**
      * Removes a group from the user.
-     *
-     * @param GroupInterface $userGroup
      */
     public function removeGroup(GroupInterface $userGroup): void
     {
@@ -187,51 +136,33 @@ trait UserTrait
         $this->setGroups($groups);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setPlainPassword($password)
+    public function setPlainPassword(string $password): self
     {
         $this->plainPassword = $password;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isPasswordRequestNonExpired($ttl)
+    public function isPasswordRequestNonExpired(int $ttl): bool
     {
         return $this->getPasswordRequestedAt() instanceof \Carbon\Carbon && $this->getPasswordRequestedAt()->getTimestamp() + $ttl > time();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isAccountNonExpired()
+    public function isAccountNonExpired(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function isAccountNonLocked()
+    public function isAccountNonLocked(): bool
     {
         return true;
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return (string) $this->getUsername();

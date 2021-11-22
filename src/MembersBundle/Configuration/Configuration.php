@@ -6,68 +6,35 @@ use Pimcore\Extension\Bundle\PimcoreBundleManager;
 
 class Configuration
 {
-    const SYSTEM_CONFIG_DIR_PATH = PIMCORE_PRIVATE_VAR . '/bundles/MembersBundle';
+    protected PimcoreBundleManager $bundleManager;
+    protected array $config;
 
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var PimcoreBundleManager
-     */
-    protected $bundleManager;
-
-    /**
-     * @param PimcoreBundleManager $bundleManager
-     */
     public function __construct(PimcoreBundleManager $bundleManager)
     {
         $this->bundleManager = $bundleManager;
     }
 
-    /**
-     * @param array $config
-     */
-    public function setConfig($config = [])
+    public function setConfig(array $config = []): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getConfigArray()
+    public function getConfigArray(): array
     {
         return $this->config;
     }
 
-    /**
-     * @param string $slot
-     *
-     * @return mixed
-     */
-    public function getConfig($slot)
+    public function getConfig(string $slot): mixed
     {
         return $this->config[$slot];
     }
 
-    /**
-     * @param string $slot
-     *
-     * @return mixed
-     */
-    public function getOAuthConfig($slot)
+    public function getOAuthConfig(string $slot): mixed
     {
         return $this->config['oauth'][$slot];
     }
 
-    /**
-     * @param string $bundleName
-     *
-     * @return bool
-     */
-    public function hasBundle($bundleName = 'ExtensionBundle\ExtensionBundle')
+    public function hasBundle(string $bundleName = 'ExtensionBundle\ExtensionBundle'): bool
     {
         try {
             $hasExtension = $this->bundleManager->isEnabled($bundleName);

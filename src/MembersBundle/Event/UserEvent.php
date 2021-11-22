@@ -2,46 +2,27 @@
 
 namespace MembersBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use MembersBundle\Adapter\User\UserInterface;
 
 class UserEvent extends Event
 {
-    /**
-     * @var null|Request
-     */
-    protected $request;
+    protected ?UserInterface $user = null;
+    protected ?Request $request = null;
 
-    /**
-     * @var UserInterface
-     */
-    protected $user;
-
-    /**
-     * UserEvent constructor.
-     *
-     * @param UserInterface $user
-     * @param Request|null  $request
-     */
-    public function __construct(UserInterface $user, Request $request = null)
+    public function __construct(?UserInterface $user, ?Request $request = null)
     {
         $this->user = $user;
         $this->request = $request;
     }
 
-    /**
-     * @return UserInterface
-     */
-    public function getUser()
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }
 
-    /**
-     * @return Request
-     */
-    public function getRequest()
+    public function getRequest(): ?Request
     {
         return $this->request;
     }

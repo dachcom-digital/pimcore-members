@@ -13,24 +13,25 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class LoginFormType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('_username', null, [
-            'label'       => 'members.auth.login.username',
-            'constraints' => [new NotBlank()],
-            'data'        => $options['last_username']
-        ])->add('_password', PasswordType::class, [
-            'label'       => 'members.auth.login.password',
-            'constraints' => [new NotBlank()],
-        ])->add('_remember_me', CheckboxType::class, [
-            'label'    => 'members.auth.login.remember_me',
-            'required' => false
-        ])->add('_submit', SubmitType::class, [
-            'label' => 'members.auth.login.submit'
-        ]);
+        $builder
+            ->add('_username', null, [
+                'label'       => 'members.auth.login.username',
+                'constraints' => [new NotBlank()],
+                'data'        => $options['last_username']
+            ])
+            ->add('_password', PasswordType::class, [
+                'label'       => 'members.auth.login.password',
+                'constraints' => [new NotBlank()],
+            ])
+            ->add('_remember_me', CheckboxType::class, [
+                'label'    => 'members.auth.login.remember_me',
+                'required' => false
+            ])
+            ->add('_submit', SubmitType::class, [
+                'label' => 'members.auth.login.submit'
+            ]);
 
         if ($options['_target_path'] !== null) {
             $builder->add(
@@ -48,10 +49,7 @@ class LoginFormType extends AbstractType
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'csrf_token_id'   => 'authenticate',
@@ -62,10 +60,7 @@ class LoginFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_login';
     }

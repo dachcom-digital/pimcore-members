@@ -1,26 +1,26 @@
 members_user_security_oauth_login:
     path: /{_locale}/members/oauth/login/{provider}
     defaults:
-        _controller: MembersBundle:OAuth:oAuthConnect
+        _controller: MembersBundle\Controller\OAuthController::oAuthConnectAction
 
 members_user_security_oauth_connect:
     path: /{_locale}/members/oauth/connect/{provider}
     defaults:
-        _controller: MembersBundle:OAuth:oAuthProfileConnect
+        _controller: MembersBundle\Controller\OAuthController::oAuthProfileConnectAction
 
 members_user_security_oauth_check:
     path: /members/oauth/check
     defaults:
-        _controller: MembersBundle:OAuth:oAuthConnectCheck
+        _controller: MembersBundle\Controller\OAuthController::oAuthConnectCheckAction
 
 members_user_sso_identity_complete_profile:
     path: /{_locale}/members/oauth/complete-profile
     methods:  [GET, POST]
     defaults:
-        _controller: MembersBundle:OAuth:completeProfile
+        _controller: MembersBundle\Controller\OAuthController::completeProfileAction
 
 members_user_sso_identity_profile_completed:
     path: /{_locale}/members/oauth/profile-completed
     methods: [GET]
     defaults:
-        _controller: MembersBundle:OAuth:profileCompleted
+        _controller: MembersBundle\Controller\OAuthController::profileCompletedAction

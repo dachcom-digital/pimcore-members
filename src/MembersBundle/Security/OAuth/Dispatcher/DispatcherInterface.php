@@ -7,11 +7,5 @@ use MembersBundle\Security\OAuth\OAuthResponse;
 
 interface DispatcherInterface
 {
-    /**
-     * @param string        $provider
-     * @param OAuthResponse $oAuthResponse
-     *
-     * @return UserInterface|null
-     */
-    public function dispatch(string $provider, OAuthResponse $oAuthResponse);
+    public function dispatch(string $provider, OAuthResponse $oAuthResponse): ?UserInterface;
 }

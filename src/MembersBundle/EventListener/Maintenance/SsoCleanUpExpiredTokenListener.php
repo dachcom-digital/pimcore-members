@@ -11,38 +11,12 @@ use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 
 class SsoCleanUpExpiredTokenListener implements TaskInterface
 {
-    /**
-     * @var bool
-     */
-    protected $oauthEnabled;
+    protected bool $oauthEnabled;
+    protected bool $cleanUpExpiredTokens;
+    protected int $expiredTokensTtl;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected SsoIdentityStatusServiceInterface $ssoIdentityStatusService;
 
-    /**
-     * @var bool
-     */
-    protected $cleanUpExpiredTokens;
-
-    /**
-     * @var int
-     */
-    protected $expiredTokensTtl;
-
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
-
-    /**
-     * @var SsoIdentityStatusServiceInterface
-     */
-    protected $ssoIdentityStatusService;
-
-    /**
-     * @param bool                              $oauthEnabled
-     * @param bool                              $cleanUpExpiredTokens
-     * @param int                               $expiredTokensTtl
-     * @param SsoIdentityManagerInterface       $ssoIdentityManager
-     * @param SsoIdentityStatusServiceInterface $ssoIdentityStatusService
-     */
     public function __construct(
         bool $oauthEnabled,
         bool $cleanUpExpiredTokens,
@@ -60,7 +34,7 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
     /**
      * @throws \Exception
      */
-    public function execute()
+    public function execute(): void
     {
         if ($this->oauthEnabled === false) {
             return;
@@ -82,11 +56,9 @@ class SsoCleanUpExpiredTokenListener implements TaskInterface
     }
 
     /**
-     * @param SsoIdentityInterface $ssoIdentity
-     *
      * @throws \Exception
      */
-    protected function handleIdentityRemoval(SsoIdentityInterface $ssoIdentity)
+    protected function handleIdentityRemoval(SsoIdentityInterface $ssoIdentity): void
     {
         $user = $this->ssoIdentityManager->getUserBySsoIdentity($ssoIdentity->getProvider(), $ssoIdentity->getIdentifier());
 

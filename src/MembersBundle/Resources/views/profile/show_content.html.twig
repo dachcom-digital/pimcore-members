@@ -1,0 +1,10 @@
+<div class="members_user_show">
+    <p>{{ 'members.profile.show.username'|trans }}: {{ user.username is not empty ? user.username : '--' }}</p>
+    <p>{{ 'members.profile.show.email'|trans }}: {{ user.email }}</p>
+
+    {% if members_system_oauth_enabled() == true %}
+        {% set link_params = {_target_path: app.request.pathInfo} %}
+        {% include '@Members/sso/partial/_social_login.html.twig' with { social_route: 'members_user_security_oauth_connect', link_params: link_params } only %}
+        {% include '@Members/sso/partial/_complete_profile.html.twig' only %}
+    {% endif %}
+</div>

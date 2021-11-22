@@ -2,169 +2,57 @@
 
 namespace MembersBundle\Tool;
 
-use Doctrine\DBAL\Schema\Schema;
-use Doctrine\DBAL\Migrations\AbortMigrationException;
-use Doctrine\DBAL\Migrations\MigrationException;
-use Doctrine\DBAL\Migrations\Version;
+use League\Flysystem\FilesystemException;
 use MembersBundle\Configuration\Configuration;
 use Pimcore\Bundle\AdminBundle\Security\User\TokenStorageUserResolver;
 use Pimcore\Db\Connection;
-use Pimcore\Extension\Bundle\Installer\MigrationInstaller;
-use Pimcore\Migrations\Migration\InstallMigration;
+use Pimcore\Extension\Bundle\Installer\Exception\InstallationException;
+use Pimcore\Extension\Bundle\Installer\SettingsStoreAwareInstaller;
 use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document;
 use Pimcore\Model\Translation;
 use Pimcore\Model\User;
 use Pimcore\Tool;
-use Symfony\Component\Filesystem\Filesystem;
+use Pimcore\Tool\Storage;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
-class Install extends MigrationInstaller
+class Install extends SettingsStoreAwareInstaller
 {
-    /**
-     * @var TokenStorageUserResolver
-     */
-    protected $resolver;
+    protected TokenStorageUserResolver $resolver;
+    protected DecoderInterface $serializer;
+    protected Configuration $configuration;
 
-    /**
-     * @var DecoderInterface
-     */
-    protected $serializer;
-
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
-
-    /**
-     * @param TokenStorageUserResolver $resolver
-     */
-    public function setTokenStorageUserResolver(TokenStorageUserResolver $resolver)
+    public function setTokenStorageUserResolver(TokenStorageUserResolver $resolver): void
     {
         $this->resolver = $resolver;
     }
 
-    /**
-     * @param DecoderInterface $serializer
-     */
-    public function setSerializer(DecoderInterface $serializer)
+    public function setSerializer(DecoderInterface $serializer): void
     {
         $this->serializer = $serializer;
     }
 
-    /**
-     * @param Configuration $configuration
-     */
-    public function setConfiguration(Configuration $configuration)
+    public function setConfiguration(Configuration $configuration): void
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMigrationVersion(): string
-    {
-        return '00000001';
-    }
-
-    /**
-     * @throws AbortMigrationException
-     * @throws MigrationException
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function beforeInstallMigration()
-    {
-        $markVersionsAsMigrated = true;
-
-        // legacy:
-        //   we switched from config to migration
-        //   if config.yml exists, this instance needs to migrate
-        //   so every migration needs to run.
-        // fresh:
-        //   skip all versions since they are not required anymore
-        //   (fresh installation does not require any version migrations)
-        $fileSystem = new Filesystem();
-        if ($fileSystem->exists(Configuration::SYSTEM_CONFIG_DIR_PATH . '/config.yml')) {
-            $markVersionsAsMigrated = false;
-        }
-
-        if ($markVersionsAsMigrated === true) {
-            $migrationConfiguration = $this->migrationManager->getBundleConfiguration($this->bundle);
-            $this->migrationManager->markVersionAsMigrated($migrationConfiguration->getVersion($migrationConfiguration->getLatestVersion()));
-        }
-
-        $this->initializeFreshSetup();
-    }
-
-    /**
-     * @param Schema  $schema
-     * @param Version $version
-     */
-    public function migrateInstall(Schema $schema, Version $version)
-    {
-        /** @var InstallMigration $migration */
-        $migration = $version->getMigration();
-        if ($migration->isDryRun()) {
-            $this->outputWriter->write('<fg=cyan>DRY-RUN:</> Skipping installation');
-
-            return;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function needsReloadAfterInstall()
-    {
-        return true;
-    }
-
-    /**
-     * @throws AbortMigrationException
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function initializeFreshSetup()
+    public function install(): void
     {
         $this->installObjectFolder();
         $this->installEmails();
         $this->installFolder();
         $this->installTranslations();
         $this->installDbStructure();
+
+        parent::install();
     }
 
     /**
-     * @param Schema  $schema
-     * @param Version $version
+     * @throws InstallationException
      */
-    public function migrateUninstall(Schema $schema, Version $version)
-    {
-        /** @var InstallMigration $migration */
-        $migration = $version->getMigration();
-        if ($migration->isDryRun()) {
-            $this->outputWriter->write('<fg=cyan>DRY-RUN:</> Skipping uninstallation');
-
-            return;
-        }
-
-        // currently nothing to do.
-    }
-
-    /**
-     * @param string|null $version
-     *
-     * @throws AbortMigrationException
-     */
-    protected function beforeUpdateMigration(string $version = null)
-    {
-        $this->installTranslations();
-    }
-
-    /**
-     * @throws AbortMigrationException
-     */
-    private function installObjectFolder()
+    private function installObjectFolder(): void
     {
         //install object folder "/members" and lock it!
         $storagePath = $this->configuration->getConfig('storage_path');
@@ -177,22 +65,18 @@ class Install extends MigrationInstaller
         try {
             DataObject\Service::createFolderByPath($storagePath, ['locked' => true]);
         } catch (\Exception $e) {
-            throw new AbortMigrationException(sprintf('Failed to create members object storage. error was: "%s"', $e->getMessage()));
+            throw new InstallationException(sprintf('Failed to create members object storage. error was: "%s"', $e->getMessage()));
         }
     }
 
-    /**
-     * @throws AbortMigrationException
-     */
-    private function installEmails()
+    private function installEmails(): void
     {
         $file = $this->getInstallSourcesPath() . '/emails-Members.json';
         $contents = file_get_contents($file);
         $docs = $this->serializer->decode($contents, 'json');
+        $defaultLanguage = \Pimcore\Tool::getDefaultLanguage();
 
-        try {
-            $defaultLanguage = \Pimcore\Config::getSystemConfig()->general->defaultLanguage;
-        } catch (\Exception $e) {
+        if ($defaultLanguage === null) {
             $defaultLanguage = 'en';
         }
 
@@ -214,15 +98,10 @@ class Install extends MigrationInstaller
                     $document->setUserOwner($this->getUserId());
                     $document->setUserModification($this->getUserId());
 
-                    if (isset($def['module'])) {
-                        $document->setModule($def['module']);
-                    }
                     if (isset($def['controller'])) {
                         $document->setController($def['controller']);
                     }
-                    if (isset($def['action'])) {
-                        $document->setAction($def['action']);
-                    }
+
                     if (isset($def['template'])) {
                         $document->setTemplate($def['template']);
                     }
@@ -246,7 +125,7 @@ class Install extends MigrationInstaller
                                     if ($type === 'objectProperty') {
                                         $document->setValue($key, $content);
                                     } else {
-                                        $document->setRawElement($key, $type, $content);
+                                        $document->setRawEditable($key, $type, $content);
                                     }
                                 }
                             }
@@ -258,7 +137,7 @@ class Install extends MigrationInstaller
                     try {
                         $document->save();
                     } catch (\Exception $e) {
-                        throw new AbortMigrationException(sprintf('Failed to install members email. error was: "%s"', $e->getMessage()));
+                        throw new InstallationException(sprintf('Failed to install members email. error was: "%s"', $e->getMessage()));
                     }
                 }
             }
@@ -266,9 +145,9 @@ class Install extends MigrationInstaller
     }
 
     /**
-     * @throws AbortMigrationException
+     * @throws InstallationException
      */
-    public function installFolder()
+    public function installFolder(): void
     {
         $folderName = 'restricted-assets';
 
@@ -287,56 +166,51 @@ class Install extends MigrationInstaller
         try {
             $folder->save();
         } catch (\Exception $e) {
-            throw new AbortMigrationException(sprintf('Failed to install protected asset folder. error was: "%s"', $e->getMessage()));
+            throw new InstallationException(sprintf('Failed to install protected asset folder. error was: "%s"', $e->getMessage()));
         }
-
-        //now create .htaccess file to disallow every request to this folder (except admin)!
-        $f = fopen(PIMCORE_ASSET_DIRECTORY . $folder->getFullPath() . '/.htaccess', 'w');
 
         $rule = 'RewriteEngine On' . "\n";
         $rule .= 'RewriteCond %{HTTP_HOST}==%{HTTP_REFERER} !^(.*?)==https?://\1/admin/ [OR]' . "\n";
         $rule .= 'RewriteCond %{HTTP_COOKIE} !^.*pimcore_admin_sid.*$ [NC]' . "\n";
         $rule .= 'RewriteRule ^ - [L,F]';
 
-        fwrite($f, $rule);
-        fclose($f);
+        try {
+            $storage = Storage::get('asset');
+            $storage->write($folder->getRealFullPath() . '/.htaccess', $rule);
+        } catch (FilesystemException $e) {
+            throw new InstallationException(sprintf('Error while creating .htaccess protection: %s', $e->getMessage()));
+        }
     }
 
     /**
-     * @throws AbortMigrationException
+     * @throws InstallationException
      */
-    public function installTranslations()
+    public function installTranslations(): void
     {
         $csv = $this->getInstallSourcesPath() . '/translations/frontend.csv';
         $csvAdmin = $this->getInstallSourcesPath() . '/translations/admin.csv';
 
         try {
-            Translation\Website::importTranslationsFromFile($csv, true, Tool\Admin::getLanguages());
+            Translation::importTranslationsFromFile($csv, Translation::DOMAIN_DEFAULT, true, Tool\Admin::getLanguages());
         } catch (\Exception $e) {
-            throw new AbortMigrationException(sprintf('Failed to install admin translations. error was: "%s"', $e->getMessage()));
+            throw new InstallationException(sprintf('Failed to install admin translations. error was: "%s"', $e->getMessage()));
         }
 
         try {
-            Translation\Admin::importTranslationsFromFile($csvAdmin, true, Tool\Admin::getLanguages());
+            Translation::importTranslationsFromFile($csvAdmin, Translation::DOMAIN_ADMIN, true, Tool\Admin::getLanguages());
         } catch (\Exception $e) {
-            throw new AbortMigrationException(sprintf('Failed to install admin translations. error was: "%s"', $e->getMessage()));
+            throw new InstallationException(sprintf('Failed to install admin translations. error was: "%s"', $e->getMessage()));
         }
     }
 
-    /**
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    public function installDbStructure()
+    public function installDbStructure(): void
     {
         /** @var Connection $db */
         $db = \Pimcore\Db::get();
         $db->query(file_get_contents($this->getInstallSourcesPath() . '/sql/install.sql'));
     }
 
-    /**
-     * @return int
-     */
-    protected function getUserId()
+    protected function getUserId(): int
     {
         $userId = 0;
         $user = $this->resolver->getUser();
@@ -347,10 +221,7 @@ class Install extends MigrationInstaller
         return $userId;
     }
 
-    /**
-     * @return string
-     */
-    protected function getInstallSourcesPath()
+    protected function getInstallSourcesPath(): string
     {
         return __DIR__ . '/../Resources/install';
     }

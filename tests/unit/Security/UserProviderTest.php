@@ -4,23 +4,18 @@ namespace DachcomBundle\Test\unit\Security;
 
 use MembersBundle\Security\UserProvider;
 use Codeception\TestCase\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use Pimcore\Model\DataObject\MembersUser;
 
 class UserProviderTest extends Test
 {
-    /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
-     */
-    private $userManager;
-    /**
-     * @var UserProvider
-     */
-    private $userProvider;
+    private MockObject $userManager;
+    private UserProvider $userProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->userManager = $this->getMockBuilder('MembersBundle\Manager\UserManagerInterface')->getMock();
-        $this->userProvider = new UserProvider($this->userManager);
+        $this->userProvider = new UserProvider('username', $this->userManager);
     }
 
     public function testLoadUserByUsername()
@@ -32,7 +27,7 @@ class UserProviderTest extends Test
             ->with('foobar')
             ->will($this->returnValue($user));
 
-        $this->assertSame($user, $this->userProvider->loadUserByUsername('foobar'));
+        $this->assertSame($user, $this->userProvider->loadUserByIdentifier('foobar'));
     }
 
     public function testLoadUserByInvalidUsername()
@@ -42,8 +37,8 @@ class UserProviderTest extends Test
             ->with('foobar')
             ->will($this->returnValue(null));
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UsernameNotFoundException::class);
-        $this->userProvider->loadUserByUsername('foobar');
+        $this->expectException(\Symfony\Component\Security\Core\Exception\UserNotFoundException::class);
+        $this->userProvider->loadUserByIdentifier('foobar');
     }
 
     public function testRefreshUserBy()
@@ -81,7 +76,7 @@ class UserProviderTest extends Test
             ->method('getClass')
             ->will($this->returnValue(get_class($user)));
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UsernameNotFoundException::class);
+        $this->expectException(\Symfony\Component\Security\Core\Exception\UserNotFoundException::class);
         $this->userProvider->refreshUser($user);
     }
 

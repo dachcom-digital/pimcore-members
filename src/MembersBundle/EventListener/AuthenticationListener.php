@@ -6,29 +6,16 @@ use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\Event\UserEvent;
 use MembersBundle\MembersEvents;
 use MembersBundle\Manager\LoginManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Exception\AccountStatusException;
 
 class AuthenticationListener implements EventSubscriberInterface
 {
-    /**
-     * @var LoginManagerInterface
-     */
-    private $loginManager;
+    private LoginManagerInterface $loginManager;
+    private string $firewallName;
 
-    /**
-     * @var string
-     */
-    private $firewallName;
-
-    /**
-     * AuthenticationListener constructor.
-     *
-     * @param LoginManagerInterface $loginManager
-     * @param string                $firewallName
-     */
-    public function __construct(LoginManagerInterface $loginManager, $firewallName = 'members_fe')
+    public function __construct(LoginManagerInterface $loginManager, string $firewallName = 'members_fe')
     {
         $this->loginManager = $loginManager;
         $this->firewallName = $firewallName;
@@ -37,7 +24,7 @@ class AuthenticationListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::REGISTRATION_COMPLETED    => 'authenticate',
@@ -46,17 +33,13 @@ class AuthenticationListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param FilterUserResponseEvent  $event
-     * @param string                   $eventName
-     * @param EventDispatcherInterface $eventDispatcher
-     */
-    public function authenticate(FilterUserResponseEvent $event, $eventName, EventDispatcherInterface $eventDispatcher)
+    public function authenticate(FilterUserResponseEvent $event, string $eventName, EventDispatcherInterface $eventDispatcher): void
     {
         try {
             $this->loginManager->logInUser($this->firewallName, $event->getUser(), $event->getResponse());
-            $eventDispatcher->dispatch(MembersEvents::SECURITY_IMPLICIT_LOGIN, new UserEvent($event->getUser(), $event->getRequest()));
+            $eventDispatcher->dispatch(new UserEvent($event->getUser(), $event->getRequest()), MembersEvents::SECURITY_IMPLICIT_LOGIN);
         } catch (AccountStatusException $ex) {
+            // fail silently
         }
     }
 }

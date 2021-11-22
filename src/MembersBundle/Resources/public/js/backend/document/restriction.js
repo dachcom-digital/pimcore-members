@@ -1,25 +1,17 @@
 pimcore.registerNS('pimcore.plugin.members.document.restriction');
 pimcore.plugin.members.document.restriction = Class.create({
 
-    layout : null,
+    layout: null,
+    element: null,
+    data: null,
+    userGroupsStore: null,
+    cType: null,
 
-    element : null,
-
-    data : null,
-
-    userGroupsStore : null,
-
-    /**
-     * string 'object' or 'page'
-     */
-    cType : null,
-
-    initialize: function(doc) {
+    initialize: function (doc) {
         this.element = doc;
     },
 
-    setup: function ( cType )
-    {
+    setup: function (cType) {
         var _self = this;
 
         this.cType = cType;
@@ -27,45 +19,36 @@ pimcore.plugin.members.document.restriction = Class.create({
         if (!this.layout) {
 
             Ext.Ajax.request({
-
                 url: '/admin/members/restriction/get-document-restriction-config',
                 params: {
                     docId: _self.element.id,
                     cType: _self.cType
                 },
-                success: function(result){
-
+                success: function (result) {
                     _self.data = Ext.decode(result.responseText);
                     _self.renderLayout();
-
                 }
-
             });
-
-            var proxy = new Ext.data.HttpProxy({
-                url : '/admin/members/restriction/get-groups'
-            });
-
-            var reader = new Ext.data.JsonReader({}, [
-                {name:'id'},
-                {name:'name'}
-            ]);
 
             this.userGroupsStore = new Ext.data.Store({
-                restful:    false,
-                proxy:      proxy,
-                reader:     reader,
-                autoload:   true
+                proxy: new Ext.data.HttpProxy({
+                    url: '/admin/members/restriction/get-groups'
+                }),
+                reader: new Ext.data.JsonReader({}, [
+                    {name: 'id'},
+                    {name: 'name'}
+                ]),
+                autoload: true
             });
         }
     },
 
-    renderLayout : function() {
+    renderLayout: function () {
 
         var _self = this,
             restrictionItems = [];
 
-        if(this.data.isInherited === true) {
+        if (this.data.isInherited === true) {
 
             restrictionItems.push(
                 {
@@ -78,10 +61,10 @@ pimcore.plugin.members.document.restriction = Class.create({
                     },
                     items: [
                         {
-                            xtype:'fieldset',
+                            xtype: 'fieldset',
                             border: false,
-                            padding:'8px 0 8px 8px',
-                            margin:'0 0 5px 0',
+                            padding: '8px 0 8px 8px',
+                            margin: '0 0 5px 0',
                             style: {
                                 borderTop: '0 !important',
                                 background: '#4e4e4e',
@@ -90,10 +73,9 @@ pimcore.plugin.members.document.restriction = Class.create({
                             items: [
                                 {
                                     xtype: 'label',
-                                    style: {
-                                    },
+                                    style: {},
                                     listeners: {
-                                        beforerender: function() {
+                                        beforerender: function () {
 
                                             var el = this;
 
@@ -104,7 +86,7 @@ pimcore.plugin.members.document.restriction = Class.create({
                                                     docId: _self.element.id,
                                                     cType: _self.cType
                                                 },
-                                                success: function(result){
+                                                success: function (result) {
                                                     var data = Ext.decode(result.responseText),
                                                         str = data.key === null ? '--' : '<em>"' + data.key + '"</em> (' + data.path + ')';
                                                     el.setHtml(t('members_restriction_inherited_from') + ' ' + str);
@@ -128,20 +110,27 @@ pimcore.plugin.members.document.restriction = Class.create({
                             style: 'margin:10px 0 10px 10px;',
                             handler: function (btn) {
 
-                                var $a = this.layout.getForm().findField('membersDocumentRestrict'),
+                                var fieldset,
+                                    $a = this.layout.getForm().findField('membersDocumentRestrict'),
                                     $b = this.layout.getForm().findField('membersDocumentInheritable'),
                                     $c = this.layout.getForm().findField('membersDocumentUserGroups');
 
-                                if($a) { $a.enable(); }
-                                if($b) { $b.enable(); }
+                                if ($a) {
+                                    $a.enable();
+                                }
 
-                                if($c) {
-                                    $c.setDisabled(false)
+                                if ($b) {
+                                    $b.enable();
+                                }
+
+                                if ($c) {
+                                    $c
+                                        .setDisabled(false)
                                         .setDisabled(true)
                                         .setDisabled(false); //oh yea...
                                 }
 
-                                var fieldset = btn.up('fieldset');
+                                fieldset = btn.up('fieldset');
                                 fieldset.hide();
 
                             }.bind(this)
@@ -164,11 +153,11 @@ pimcore.plugin.members.document.restriction = Class.create({
                 valueField: 'id',
                 displayField: 'name',
                 minHeight: 100,
-                queryMode : 'local',
+                queryMode: 'local',
                 value: this.data.userGroups,
-                listeners : {
-                    beforerender : function() {
-                        if(!_self.userGroupsStore.isLoaded() && !_self.userGroupsStore.isLoading())
+                listeners: {
+                    beforerender: function () {
+                        if (!_self.userGroupsStore.isLoaded() && !_self.userGroupsStore.isLoading())
                             _self.userGroupsStore.load();
                     }
                 }
@@ -179,25 +168,25 @@ pimcore.plugin.members.document.restriction = Class.create({
             || this.cType === 'object'
             || (this.cType === 'asset' && this.element.type === 'folder');
 
-        if(showInheritElements) {
+        if (showInheritElements) {
 
             restrictionItems.push({
-                xtype:'checkbox',
+                xtype: 'checkbox',
                 name: 'membersDocumentInheritable',
                 fieldLabel: t('members_enable_document_inheritable'),
                 checked: this.data.inherit || this.element.type === 'folder',
                 readOnly: this.element.type === 'folder',
                 disabled: this.data.isInherited === true,
                 listeners: {
-                    afterrender: function(e,b) {
+                    afterrender: function (e, b) {
                         var me = this;
-                        if(_self.element.type === 'folder') {
+                        if (_self.element.type === 'folder') {
 
                             Ext.create('Ext.tip.ToolTip', {
                                 target: me.el,
                                 title: 'Info',
                                 width: 200,
-                                showDelay:50,
+                                showDelay: 50,
                                 html: t('members_enable_document_inheritable_locked'),
                                 listeners: {
                                     scope: me
@@ -216,7 +205,7 @@ pimcore.plugin.members.document.restriction = Class.create({
             iconCls: 'pimcore_material_icon members_icon_document_restriction',
             border: false,
             autoScroll: true,
-            bodyStyle:'padding:0 10px 0 10px;',
+            bodyStyle: 'padding:0 10px 0 10px;',
             items: [
                 {
                     xtype: 'fieldset',
@@ -231,26 +220,26 @@ pimcore.plugin.members.document.restriction = Class.create({
             ]
         });
 
-        this.element.tabbar.add( this.layout );
+        this.element.tabbar.add(this.layout);
         this.element.members.restrictionTab = this;
 
     },
 
-    save : function() {
+    save: function () {
 
         var _self = this,
             settings = this.layout.getForm().getValues();
 
         var values = {
             docId: _self.element.id,
-            cType : _self.cType,
-            settings : settings
+            cType: _self.cType,
+            settings: settings
         };
 
         Ext.Ajax.request({
             url: '/admin/members/restriction/set-document-restriction-config',
             params: {
-                data : Ext.encode(values)
+                data: Ext.encode(values)
             }
         });
 

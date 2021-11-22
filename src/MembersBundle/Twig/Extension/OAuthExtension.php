@@ -13,32 +13,11 @@ use Twig\TwigFunction;
 
 class OAuthExtension extends AbstractExtension
 {
-    /**
-     * @var ClientRegistry
-     */
-    protected $oauthRegistry;
+    protected ClientRegistry $oauthRegistry;
+    protected SsoIdentityManagerInterface $ssoIdentityManager;
+    protected TokenStorageInterface $tokenStorage;
+    protected SsoIdentityStatusServiceInterface $identityStatusService;
 
-    /**
-     * @var SsoIdentityManagerInterface
-     */
-    protected $ssoIdentityManager;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
-     * @var SsoIdentityStatusServiceInterface
-     */
-    protected $identityStatusService;
-
-    /**
-     * @param ClientRegistry                    $oauthRegistry
-     * @param SsoIdentityManagerInterface       $ssoIdentityManager
-     * @param TokenStorageInterface             $tokenStorage
-     * @param SsoIdentityStatusServiceInterface $identityStatusService
-     */
     public function __construct(
         ClientRegistry $oauthRegistry,
         SsoIdentityManagerInterface $ssoIdentityManager,
@@ -51,9 +30,6 @@ class OAuthExtension extends AbstractExtension
         $this->identityStatusService = $identityStatusService;
     }
 
-    /**
-     * @return array
-     */
     public function getFunctions(): array
     {
         return [
@@ -62,10 +38,7 @@ class OAuthExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @return bool
-     */
-    public function canCompleteProfile()
+    public function canCompleteProfile(): bool
     {
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
@@ -77,16 +50,13 @@ class OAuthExtension extends AbstractExtension
     }
 
     /**
-     * @param string $route                   members_user_security_oauth_login|members_user_security_oauth_connect
-     * @param bool   $skipConnectedIdentities
-     *
-     * @return array
+     * Allowed route parameters: members_user_security_oauth_login|members_user_security_oauth_connect
      */
-    public function getSocialLinks(string $route = 'members_user_security_oauth_login', $skipConnectedIdentities = false)
+    public function getSocialLinks(string $route = 'members_user_security_oauth_login', bool $skipConnectedIdentities = false): array
     {
         $processType = $route === 'members_user_security_oauth_connect' ? 'connect' : 'login';
 
-        $ssoIdentities = $this->getSsoIdentities();
+        $ssoIdentityProviders = $this->getSsoIdentityProvider();
         $resourceOwners = $this->oauthRegistry->getEnabledClientKeys();
 
         if (!is_array($resourceOwners)) {
@@ -96,7 +66,7 @@ class OAuthExtension extends AbstractExtension
         $data = [];
 
         foreach ($resourceOwners as $resourceOwner) {
-            if ($skipConnectedIdentities === true && in_array($resourceOwner, $ssoIdentities)) {
+            if ($skipConnectedIdentities === true && in_array($resourceOwner, $ssoIdentityProviders, true)) {
                 continue;
             }
 
@@ -104,17 +74,14 @@ class OAuthExtension extends AbstractExtension
                 'route_name'   => $route,
                 'process_type' => $processType,
                 'identifier'   => $resourceOwner,
-                'connected'    => in_array($resourceOwner, $ssoIdentities),
+                'connected'    => in_array($resourceOwner, $ssoIdentityProviders, true),
             ];
         }
 
         return $data;
     }
 
-    /**
-     * @return array|SsoIdentityInterface[]
-     */
-    protected function getSsoIdentities()
+    protected function getSsoIdentityProvider(): array
     {
         $user = $this->tokenStorage->getToken() ? $this->tokenStorage->getToken()->getUser() : null;
 
@@ -122,7 +89,7 @@ class OAuthExtension extends AbstractExtension
             return [];
         }
 
-        return array_map(function (SsoIdentityInterface $identity) {
+        return array_map(static function (SsoIdentityInterface $identity) {
             return $identity->getProvider();
         }, $this->ssoIdentityManager->getSsoIdentities($user));
     }

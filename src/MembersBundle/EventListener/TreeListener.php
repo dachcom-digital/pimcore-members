@@ -11,23 +11,14 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 
 class TreeListener implements EventSubscriberInterface
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
 
-    /**
-     * @param Configuration $configuration
-     */
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * @return array
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         $defaultEvents = [
             AdminEvents::OBJECT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA => ['handleObjectTree', 0]
@@ -44,10 +35,7 @@ class TreeListener implements EventSubscriberInterface
         return $defaultEvents;
     }
 
-    /**
-     * @param GenericEvent $event
-     */
-    public function handleObjectTree(GenericEvent $event)
+    public function handleObjectTree(GenericEvent $event): void
     {
         $objects = $event->getArgument('objects');
 
@@ -59,28 +47,25 @@ class TreeListener implements EventSubscriberInterface
                 continue;
             }
 
-            if (!in_array($object['className'], $allowedTypes)) {
+            if (!in_array($object['className'], $allowedTypes, true)) {
                 continue;
             }
 
             $restriction = $this->getRestriction($object['id'], 'object');
-            if ($restriction === false) {
+            if (!$restriction instanceof Restriction) {
                 continue;
             }
 
             $lockClass = $restriction->isInherited() ? 'members-locked-inherit' : 'members-locked-main';
 
-            $currentClass = isset($object['cls']) ? $object['cls'] : '';
-            $object['cls'] = join(' ', [$currentClass, 'members-locked', $lockClass]);
+            $currentClass = $object['cls'] ?? '';
+            $object['cls'] = implode(' ', [$currentClass, 'members-locked', $lockClass]);
         }
 
         $event->setArgument('objects', $objects);
     }
 
-    /**
-     * @param GenericEvent $event
-     */
-    public function handleAssetTree(GenericEvent $event)
+    public function handleAssetTree(GenericEvent $event): void
     {
         $assets = $event->getArgument('assets');
 
@@ -89,58 +74,47 @@ class TreeListener implements EventSubscriberInterface
                 continue;
             }
 
-            if (strpos($asset['basePath'], RestrictionUri::PROTECTED_ASSET_FOLDER) === false) {
+            if (!str_contains($asset['basePath'], RestrictionUri::PROTECTED_ASSET_FOLDER)) {
                 continue;
             }
 
             $restriction = $this->getRestriction($asset['id'], 'asset');
-            if ($restriction === false) {
+            if (!$restriction instanceof Restriction) {
                 continue;
             }
 
             $lockClass = $restriction->isInherited() ? 'members-locked-inherit' : 'members-locked-main';
-            $currentClass = isset($asset['cls']) ? $asset['cls'] : '';
-            $asset['cls'] = join(' ', [$currentClass, 'members-locked', $lockClass]);
+            $currentClass = $asset['cls'] ?? '';
+            $asset['cls'] = implode(' ', [$currentClass, 'members-locked', $lockClass]);
         }
 
         $event->setArgument('assets', $assets);
     }
 
-    /**
-     * @param GenericEvent $event
-     */
-    public function handleDocumentTree(GenericEvent $event)
+    public function handleDocumentTree(GenericEvent $event): void
     {
         $documents = $event->getArgument('documents');
 
         foreach ($documents as &$document) {
             $restriction = $this->getRestriction($document['id'], 'page');
-            if ($restriction === false) {
+            if (!$restriction instanceof Restriction) {
                 continue;
             }
 
             $lockClass = $restriction->isInherited() ? 'members-locked-inherit' : 'members-locked-main';
-            $currentClass = isset($document['cls']) ? $document['cls'] : '';
-            $document['cls'] = join(' ', [$currentClass, 'members-locked', $lockClass]);
+            $currentClass = $document['cls'] ?? '';
+            $document['cls'] = implode(' ', [$currentClass, 'members-locked', $lockClass]);
         }
 
         $event->setArgument('documents', $documents);
     }
 
-    /**
-     * @param int    $id
-     * @param string $type
-     *
-     * @return bool|Restriction
-     */
-    private function getRestriction($id, $type)
+    private function getRestriction(int $id, string $type): ?Restriction
     {
-        $restriction = false;
-
         try {
             $restriction = Restriction::getByTargetId($id, $type);
         } catch (\Exception $e) {
-            // fail silently
+            return null;
         }
 
         return $restriction;

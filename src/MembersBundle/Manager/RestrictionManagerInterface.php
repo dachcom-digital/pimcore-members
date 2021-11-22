@@ -4,33 +4,15 @@ namespace MembersBundle\Manager;
 
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Restriction\ElementRestriction;
-use Pimcore\Model\AbstractModel;
+use Pimcore\Model\Element\ElementInterface;
 
 interface RestrictionManagerInterface
 {
-    /**
-     * @param AbstractModel $element
-     *
-     * @return bool|array
-     */
-    public function getElementRestrictedGroups(AbstractModel $element);
+    public function getElementRestrictedGroups(ElementInterface $element): array;
 
-    /**
-     * @param AbstractModel $element
-     *
-     * @return ElementRestriction
-     */
-    public function getElementRestrictionStatus(AbstractModel $element);
+    public function getElementRestrictionStatus(ElementInterface $element): ElementRestriction;
 
-    /**
-     * @todo: bring it into pimcore context.
-     *
-     * @return bool
-     */
-    public function isFrontendRequestByAdmin();
+    public function isFrontendRequestByAdmin(): bool;
 
-    /**
-     * @return UserInterface|null
-     */
-    public function getUser();
+    public function getUser(): ?UserInterface;
 }

@@ -2,19 +2,19 @@
 
 namespace MembersBundle\Adapter\User;
 
+use Carbon\Carbon;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 interface UserInterface extends BaseUserInterface, EquatableInterface
 {
-    const ROLE_DEFAULT = 'ROLE_USER';
-
-    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    public const ROLE_DEFAULT = 'ROLE_USER';
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
     /**
      * @param int $id
      *
-     * @return mixed
+     * @return $this
      */
     public function setId($id);
 
@@ -51,8 +51,8 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
      * @param string $name
      * @param string $type
      * @param mixed  $data
-     * @param bool   $inherited
-     * @param bool   $inheritable
+     * @param false  $inherited
+     * @param false  $inheritable
      *
      * @return $this
      */
@@ -69,116 +69,94 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
     /**
      * @param bool $published
      *
-     * @return mixed
+     * @return $this
      */
     public function setPublished($published);
 
     /**
-     * @return int
+     * @return bool
      */
     public function getPublished();
 
     /**
-     * @param string $confirmationToken
+     * @param string|null $confirmationToken
      *
-     * @return mixed
+     * @return $this
      */
-    public function setConfirmationToken($confirmationToken);
+    public function setConfirmationToken(?string $confirmationToken);
+
+    public function getConfirmationToken(): ?string;
 
     /**
-     * @return mixed
-     */
-    public function getConfirmationToken();
-
-    /**
-     * @param \Carbon\Carbon $time
+     * @param Carbon $time
      *
-     * @return mixed
+     * @return $this
      */
-    public function setLastLogin($time);
+    public function setLastLogin(Carbon $time);
 
-    /**
-     * @return mixed
-     */
-    public function getLastLogin();
+    public function getLastLogin(): ?Carbon;
 
     /**
      * @param string $password
      *
-     * @return mixed
+     * @return $this
      */
-    public function setPassword($password);
+    public function setPassword(string $password);
+
+    public function getPassword(): ?string;
 
     /**
-     * @return mixed
-     */
-    public function getPassword();
-
-    /**
-     * @param string $email
+     * @param string|null $userName
      *
-     * @return mixed
+     * @return $this
      */
-    public function setEmail($email);
+    public function setUserName(?string $userName);
+
+    public function getUserName(): ?string;
 
     /**
-     * @return mixed
-     */
-    public function getEmail();
-
-    /**
-     * Gets the plain password.
+     * @param string|null $email
      *
-     * @return string
+     * @return $this
      */
-    public function getPlainPassword();
+    public function setEmail(?string $email);
+
+    public function getEmail(): ?string;
 
     /**
      * @param array $groups
      *
-     * @return mixed
+     * @return $this
      */
-    public function setGroups($groups);
+    public function setGroups(array $groups);
+
+    public function getGroups(): ?array;
 
     /**
-     * @return mixed
-     */
-    public function getGroups();
-
-    /**
-     * @param \Carbon\Carbon $date
+     * @param Carbon|null $date
      *
-     * @return mixed
+     * @return $this
      */
-    public function setPasswordRequestedAt($date);
+    public function setPasswordRequestedAt(?Carbon $date);
 
-    /**
-     * @return mixed
-     */
-    public function getPasswordRequestedAt();
+    public function getPasswordRequestedAt(): ?Carbon;
 
     /**
      * Checks whether the password reset request has expired.
      *
      * @param int $ttl Requests older than this many seconds will be considered expired
-     *
-     * @return int
      */
-    public function isPasswordRequestNonExpired($ttl);
+    public function isPasswordRequestNonExpired(int $ttl): bool;
+
+    public function setPlainPassword(string $password): self;
+
+    public function getPlainPassword(): ?string;
+
+    public function isAccountNonExpired(): bool;
+
+    public function isAccountNonLocked(): bool;
 
     /**
-     * @return mixed
-     */
-    public function isAccountNonExpired();
-
-    /**
-     * @return mixed
-     */
-    public function isAccountNonLocked();
-
-    /**
-     * @return $this
-     *
      * @throws \Exception
      */
     public function save();

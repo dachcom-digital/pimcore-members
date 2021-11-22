@@ -15,26 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RestrictionController extends AdminController
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
+    protected ClassManagerInterface $classManager;
+    protected RestrictionService $restrictionService;
 
-    /**
-     * @var ClassManagerInterface
-     */
-    protected $classManager;
-
-    /**
-     * @var RestrictionService
-     */
-    protected $restrictionService;
-
-    /**
-     * @param Configuration         $configuration
-     * @param ClassManagerInterface $classManager
-     * @param RestrictionService    $restrictionService
-     */
     public function __construct(
         Configuration $configuration,
         ClassManagerInterface $classManager,
@@ -45,28 +29,20 @@ class RestrictionController extends AdminController
         $this->restrictionService = $restrictionService;
     }
 
-    /**
-     * @return string
-     */
-    public function getGlobalSettingsAction()
+    public function getGlobalSettingsAction(): JsonResponse
     {
-        return $this->json(['settings' => $this->configuration->getConfigArray()]);
+        return $this->json([
+            'settings' => $this->configuration->getConfigArray()
+        ]);
     }
 
-    /**
-     * @return string
-     */
-    public function getGroupsAction()
+    public function getGroupsAction(): JsonResponse
     {
+        $groups = [];
         $list = $this->classManager->getGroupListing();
 
-        if ($list === false) {
-            return $this->json([]);
-        }
-
-        $groups = [];
         /** @var GroupInterface $group */
-        foreach ($list->load() as $group) {
+        foreach ($list->getObjects() as $group) {
             $data = [
                 'id'          => $group->getId(),
                 'name'        => $group->getName(),
@@ -86,12 +62,7 @@ class RestrictionController extends AdminController
         return $this->json($groups);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function getDocumentRestrictionConfigAction(Request $request)
+    public function getDocumentRestrictionConfigAction(Request $request): JsonResponse
     {
         $documentId = $request->query->get('docId');
         $cType = $request->query->get('cType');
@@ -104,9 +75,9 @@ class RestrictionController extends AdminController
         $userGroups = [];
 
         try {
-            /** @var Restriction $restriction */
             $restriction = Restriction::getByTargetId($documentId, $cType);
         } catch (\Exception $e) {
+            // fail silently
         }
 
         if (!is_null($restriction)) {
@@ -128,18 +99,11 @@ class RestrictionController extends AdminController
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     *
-     * @throws \Exception
-     */
-    public function setDocumentRestrictionConfigAction(Request $request)
+    public function setDocumentRestrictionConfigAction(Request $request): JsonResponse
     {
-        $data = json_decode($request->query->get('data'), true);
+        $data = json_decode($request->query->get('data'), true, 512, JSON_THROW_ON_ERROR);
 
-        $docId = (int) $data['docId'];
+        $documentId = (int) $data['docId'];
         $settings = $data['settings'] ?? null;
         $cType = $data['cType'] ?? null; //object|page|asset
 
@@ -150,21 +114,14 @@ class RestrictionController extends AdminController
             $pimcoreType = 'asset';
         }
 
-        $obj = Service::getElementById($pimcoreType, $docId);
+        $obj = Service::getElementById($pimcoreType, $documentId);
 
         if (!$obj instanceof ElementInterface) {
             return $this->json(['success' => false]);
         }
 
-        $inheritableState = $settings['membersDocumentInheritable'];
-
-        if ($inheritableState === 'on') {
-            $inheritable = true;
-        } elseif (is_null($inheritableState)) {
-            $inheritable = false;
-        } else {
-            $inheritable = false;
-        }
+        $inheritableState = $settings['membersDocumentInheritable'] ?? null;
+        $inheritable = $inheritableState === 'on';
 
         $groups = array_filter(explode(',', $settings['membersDocumentUserGroups']));
         $restriction = $this->restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
@@ -172,17 +129,12 @@ class RestrictionController extends AdminController
         return $this->json([
             'success'    => true,
             'isActive'   => !empty($groups),
-            'docId'      => (int) $settings['docId'],
+            'docId'      => $documentId,
             'userGroups' => $restriction instanceof Restriction ? $restriction->getRelatedGroups() : []
         ]);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function getNextParentRestrictionAction(Request $request)
+    public function getNextParentRestrictionAction(Request $request): JsonResponse
     {
         $elementId = $request->query->get('docId');
         $cType = $request->query->get('cType');

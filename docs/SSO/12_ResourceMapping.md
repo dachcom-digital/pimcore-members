@@ -1,6 +1,6 @@
 # Resource Mapping
 If a user successfully gets connected via a given provider, you're able to map some data to your user entity.
-For example, if you're using a google client, there are some properties you may wanna use (`email`, `name`).
+For example, if you're using a Google client, there are some properties you may want to use (`email`, `name`).
 
 Since every client may vary in naming of properties, you also may want to adjust the mapping. Just use a EventListener to do so.
 
@@ -27,7 +27,7 @@ First, add your service:
 ```php
 <?php
 
-namespace AppBundle\EventListener;
+namespace App\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use MembersBundle\Adapter\User\UserInterface;
@@ -36,7 +36,7 @@ use MembersBundle\MembersEvents;
 
 class MembersResourceMappingListener implements EventSubscriberInterface
 {
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::OAUTH_RESOURCE_MAPPING_PROFILE      => 'onProfileMapping',
@@ -44,7 +44,7 @@ class MembersResourceMappingListener implements EventSubscriberInterface
         ];
     }
 
-    public function onProfileMapping(OAuthResourceEvent $event)
+    public function onProfileMapping(OAuthResourceEvent $event): void
     {
         $user = $event->getUser();
         $resourceOwner = $event->getResourceOwner();
@@ -53,7 +53,7 @@ class MembersResourceMappingListener implements EventSubscriberInterface
         $this->mapData($user, $ownerDetails);
     }
 
-    public function onRegistrationMapping(OAuthResourceEvent $event)
+    public function onRegistrationMapping(OAuthResourceEvent $event): void
     {
         $user = $event->getUser();
         $resourceOwner = $event->getResourceOwner();
@@ -62,7 +62,7 @@ class MembersResourceMappingListener implements EventSubscriberInterface
         $this->mapData($user, $ownerDetails);
     }
 
-    protected function mapData(UserInterface $user, array $ownerDetails)
+    protected function mapData(UserInterface $user, array $ownerDetails): void
     {
         if (empty($user->getEmail()) && isset($ownerDetails['email'])) {
             $user->setEmail($ownerDetails['email']);
@@ -78,7 +78,7 @@ class MembersResourceMappingListener implements EventSubscriberInterface
 Then, register it:
 
 ```yaml
-AppBundle\EventListener\MembersResourceMappingListener:
+App\EventListener\MembersResourceMappingListener:
     autowire: true
     tags:
         - { name: kernel.event_subscriber }

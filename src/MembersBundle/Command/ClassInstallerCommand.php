@@ -11,29 +11,21 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class ClassInstallerCommand extends Command
 {
-    /**
-     * @var ClassInstaller
-     */
-    protected $classInstaller;
+    protected static $defaultName = 'members:install:class';
+    protected static $defaultDescription = 'Install Members Default Classes';
 
-    /**
-     * @param ClassInstaller $classInstaller
-     */
-    public function setClassInstaller(ClassInstaller $classInstaller)
+    protected ClassInstaller $classInstaller;
+
+    public function setClassInstaller(ClassInstaller $classInstaller): void
     {
         $this->classInstaller = $classInstaller;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
         $this
-            ->setName('members:install:class')
-            ->setDescription('Install Members Default Classes')
             ->setHelp('This command will install a "MembersUser" and "MembersGroup" Class with all the required fields.')
             ->addOption(
                 'oauth',
@@ -43,10 +35,7 @@ class ClassInstallerCommand extends Command
             );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $classes = ['MembersUser', 'MembersGroup'];
 

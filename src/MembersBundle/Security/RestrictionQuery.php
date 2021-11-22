@@ -5,36 +5,27 @@ namespace MembersBundle\Security;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManagerInterface;
-use Pimcore\Db\ZendCompatibility\QueryBuilder;
-use Pimcore\Model\Listing\AbstractListing;
+use Pimcore\Model;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class RestrictionQuery
 {
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
+    protected RestrictionManagerInterface $restrictionManager;
 
-    /**
-     * @param RestrictionManagerInterface $restrictionManager
-     */
     public function __construct(RestrictionManagerInterface $restrictionManager)
     {
         $this->restrictionManager = $restrictionManager;
     }
 
-    /**
-     * @param QueryBuilder    $query
-     * @param AbstractListing $listing
-     * @param string          $queryIdentifier
-     */
-    public function addRestrictionInjection(QueryBuilder $query, AbstractListing $listing, $queryIdentifier = 'o_id')
+    public function addRestrictionInjection(QueryBuilder $query, Model\Listing\AbstractListing $listing, string $queryIdentifier = 'o_id', ?string $aliasFrom = null)
     {
+        $additionalQuery = '';
+        $allowedGroups = [];
+
         if ($this->restrictionManager->isFrontendRequestByAdmin()) {
             return;
         }
 
-        $allowedGroups = [];
         if ($this->restrictionManager->getUser() instanceof UserInterface) {
             $groups = $this->restrictionManager->getUser()->getGroups();
             /** @var GroupInterface $group */
@@ -43,38 +34,38 @@ class RestrictionQuery
             }
         }
 
-        $cType = 'object';
-        if ($listing instanceof \Pimcore\Model\Asset\Listing) {
+        if ($listing instanceof Model\DataObject\Listing) {
+            $cType = 'object';
+            $typedAliasFrom = $listing->getDao()->getTableName();
+        } elseif ($listing instanceof Model\Asset\Listing) {
             $cType = 'asset';
-        } elseif ($listing instanceof \Pimcore\Model\Document\Listing) {
+            $typedAliasFrom = 'assets';
+            $additionalQuery = sprintf(' AND assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
+        } elseif ($listing instanceof Model\Document\Listing) {
             $cType = 'page';
+            $typedAliasFrom = 'documents';
+        } else {
+            throw new \Exception(sprintf('Cannot determinate listing of class "%s"', get_class($listing)));
         }
 
-        $query->joinLeft(
-            ['members_restrictions' => 'members_restrictions'],
-            sprintf('members_restrictions.targetId = %s AND members_restrictions.ctype = "%s"', $queryIdentifier, $cType),
-            ''
+        $aliasFrom = $aliasFrom ?? $typedAliasFrom;
+
+        $query->join($aliasFrom, 'members_restrictions', 'mr',
+            sprintf('mr.targetId = %s.%s AND mr.ctype = "%s"', $aliasFrom, $queryIdentifier, $cType),
         );
 
-        $query->joinLeft(
-            ['members_group_relations' => 'members_group_relations'],
-            'members_group_relations.restrictionId = members_restrictions.id',
-            ''
+        $query->join($aliasFrom, 'members_group_relations', 'mgr',
+            'mgr.restrictionId = mr.id'
         );
-
-        $assetQuery = '';
-        if ($listing instanceof \Pimcore\Model\Asset\Listing) {
-            $assetQuery = sprintf('AND assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
-        }
 
         if (count($allowedGroups) > 0) {
-            $subQuery = sprintf('(members_restrictions.targetId IS NULL %s)', $assetQuery);
-            $queryStr = sprintf('%s OR (members_restrictions.ctype = "%s" AND members_group_relations.groupId IN (%s))', $subQuery, $cType, implode(',', $allowedGroups));
+            $subQuery = sprintf('(mr.targetId IS NULL%s)', $additionalQuery);
+            $queryStr = sprintf('%s OR (mr.ctype = "%s" AND mgr.groupId IN (%s))', $subQuery, $cType, implode(',', $allowedGroups));
         } else {
-            $queryStr = sprintf('members_restrictions.targetId IS NULL %s', $assetQuery);
+            $queryStr = sprintf('mr.targetId IS NULL%s', $additionalQuery);
         }
 
         $query->where($queryStr);
-        $query->group($queryIdentifier);
+        $query->groupBy($queryIdentifier);
     }
 }

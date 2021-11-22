@@ -11,7 +11,7 @@ class SessionConfigurator implements SessionConfiguratorInterface
     /**
      * {@inheritdoc}
      */
-    public function configure(SessionInterface $session)
+    public function configure(SessionInterface $session): void
     {
         $bag = new NamespacedAttributeBag('_members_session');
         $bag->setName('members_session');

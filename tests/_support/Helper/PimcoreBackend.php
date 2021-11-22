@@ -9,16 +9,11 @@ use DachcomBundle\Test\Util\MembersHelper;
 
 class PimcoreBackend extends \Dachcom\Codeception\Helper\PimcoreBackend
 {
-    /**
-     * @param TestInterface $test
-     *
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function _after(TestInterface $test)
+    public function _after(TestInterface $test): void
     {
         SystemHelper::cleanUp(['members_restrictions', 'members_group_relations']);
         FileGeneratorHelper::cleanUp();
         MembersHelper::reCreateMembersStructure();
+        MembersHelper::assertMailSender();
     }
-
 }

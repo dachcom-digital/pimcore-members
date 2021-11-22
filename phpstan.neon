@@ -1,25 +1,14 @@
 includes:
 	- %currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/extension.neon
 parameters:
+    scanFiles:
+        - %currentWorkingDirectory%/vendor/pimcore/pimcore/stubs/dynamic-constants.php
     reportUnmatchedIgnoredErrors: false
     symfony:
-        container_xml_path: %currentWorkingDirectory%/var/cache/test/appTestKernelTestDebugContainer.xml
+        container_xml_path: %currentWorkingDirectory%/var/cache/test/TestKernelTestDebugContainer.xml
     excludes_analyse:
         # only works if optional bundles are available:
         - '**/AbstractCustomerUser.php'
-        - '**/LuceneSearchAssetRestriction.php'
-        - '**/LuceneSearchRestrictionContext.php'
     ignoreErrors:
-        # There is no global constants definition file we could include, ignore it:
-        - '#Constant PIMCORE_[A-Z\\_]+ not found\.#'
-        # Symfony DI (remove this line after symfony 4 support only):
-        - '#Method Symfony\\Contracts\\EventDispatcher\\EventDispatcherInterface::dispatch\(\) invoked with 2 parameters, 1 required\.#'
-        # Ignore optional bundle dependencies:
-        - '#Class LuceneSearchBundle[A-Za-z\/\\_]+ not found\.#'
-        - '#Service "LuceneSearchBundle[A-Za-z\/\\_]+" is not registered in the container\.#'
-        - '#Call to method isLuceneSearchCrawler\(\) on an unknown class LuceneSearchBundle\\Tool\\CrawlerState\.#'
-        - '#PHPDoc tag @var for variable \$crawlerState contains unknown class LuceneSearchBundle\\Tool\\CrawlerState\.$#'
-        # Nullable user can be null:
-        - '#MembersBundle\\Event\\GetResponseNullableUserEvent::__construct\(\) does not call parent constructor(.*)+\.#'
-        # Symfony DI (remove this line with symfony 4.2):MembersBundle/Security/OAuth/OAuthResponse.php
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)\.#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\.#'
+        - '#Comparison operation \"\>\" between int\<1, max\> and 0 is always true\.#'

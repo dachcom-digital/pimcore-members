@@ -157,7 +157,7 @@ class ObjectRestrictionCest
         return [
             'pattern'   => '/(\\w+)\\/members-test-route\\/(\\d+)$/',
             'reverse'   => '/%_locale/members-test-route/%object_id',
-            'action'    => 'staticRoute',
+            'action'    => 'staticRouteAction',
             'variables' => '_locale,object_id',
         ];
     }

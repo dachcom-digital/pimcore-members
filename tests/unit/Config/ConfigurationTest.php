@@ -15,7 +15,7 @@ class ConfigurationTest extends DachcomBundleTestCase
         $configuration = $this->getContainer()->get(Configuration::class);
         $adminConfig = $configuration->getConfigArray();
 
-        $this->assertInternalType('array', $adminConfig);
+        $this->assertIsArray($adminConfig);
         $this->assertArrayHasKey('send_admin_mail_after_register', $adminConfig);
     }
 
@@ -27,6 +27,6 @@ class ConfigurationTest extends DachcomBundleTestCase
         $configuration = $this->getContainer()->get(Configuration::class);
         $configSlot = $configuration->getConfig('post_register_type');
 
-        $this->assertInternalType('string', $configSlot);
+        $this->assertIsString($configSlot);
     }
 }

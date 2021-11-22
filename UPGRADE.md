@@ -1,50 +1,36 @@
 # Upgrade Notes
-![upgrade](https://user-images.githubusercontent.com/700119/31535145-3c01a264-affa-11e7-8d86-f04c33571f65.png)  
+
+## Migrating from Version 3.x to Version 4.0
+
+### Breaking Changes
+
+- It is no longer possible to merge security configurations from multiple locations, including bundles. Instead, you have to move
+  them to one single config file, e.g. config/packages/security.yaml. Please
+  adopt `MembersBundle/Resources/config/packages/security.yaml` and merge your own firewall configuration into one single file.
+- `LuceneSearchBundle` support removed
+- All Folders in `views` are lowercase/dashed now (`views/areas`, `views/auth`, `views/backend`, ...)
+- PHP8 return type declarations added: you may have to adjust your extensions accordingly
+- Twig Helper `members_build_nav()` legacy navigation building support removed
+- `UserTrait::hasGroup` has been removed, use either `UserTrait::hasGroupId` or `UserTrait::hasGroupName` instead
+- PIMCORE removed the `Placeholder` feature, so we need to pass all the variables to the twig template:
+    - If you're using a custom email controller, make sure to pass all email variables to the view template and also check your
+      email templates and replace all the deprecated variables (e.g. `%DataObject(user,{\"method\" : \"getUsername\"});` with `{{ user.username }}`)`
+    - Area Snippets: If any snippet contains placeholder elements, you need to pass the values from your snippet controller to the
+      view template: `return $this->render('default/snippet.html.twig', array_filter($request->attributes->all(), static function ($parameterKey) { return !str_starts_with($parameterKey, '_'); }, ARRAY_FILTER_USE_KEY));`
+      and also replace the deprecated variables like described in email templates above
+- [SSO] You need to set `framework.session.cookie_samesite` to `lax`, otherwise the oAUthConnect won't work properly
+- [SSO] Make sure you have a valid key for `pimcore.encryption.secret`, defined via env variable `PIMCORE_ENCRYPTION_SECRET` (You can generate a defuse key by executing the `vendor/bin/generate-defuse-key` command)
+- [SECURITY] `setSalt` method removed from `UserTrait.php` (deprecated in symfony 5.3)
+- [SECURITY] `MembersBundle\Security\EmailUserProvider` has been removed. Use [`auth_identifier: 'email'`](./docs/10_AuthIdentifier.md) instead.
+- `MembersBundle\Security\RestrictionUri::getAssetUrlInformation()` => `restrictionGroups` always returns array type
+### Misc
+- Check your email templates (controller and template definition)
+
+### New Features
+- You're able to switch the [auth_identifier](./docs/10_AuthIdentifier.md) (Use `email` instead of `username` for authentication)
+- `addRestrictionInjection()` comes with an optional `$aliasFrom` argument
+- Your able to pass an instance of `\MembersBundle\Validation\ValidationGroupResolverInterface` to each `validation_groups` property instead of array
 
 ***
 
-After every update you should check the pimcore extension manager. 
-Just click the "update" button or execute the migration command to finish the bundle update.
-
-#### Update from Version 3.1.4 to Version 3.1.5
-- **[ENHANCEMENT]**: You can now define a form field which is later used as object-key in Pimcore, when a user registers ([#154](https://github.com/dachcom-digital/pimcore-members/issues/154))
-
-#### Update from Version 3.1.3 to Version 3.1.4
-- **[ENHANCEMENT]**: Improving and adding additional Events for Restriction Changes on Entities ([#148](https://github.com/dachcom-digital/pimcore-members/issues/148))
-- **[ENHANCEMENT]**: Update Twig navigation to allow parameters ([@kjkooistra-youwe](https://github.com/dachcom-digital/pimcore-members/pull/147))
-- **[ENHANCEMENT]**: Protect documents starting with admin ([@youwe-petervanderwal](https://github.com/dachcom-digital/pimcore-members/pull/145))
-
-#### Update from Version 3.1.2 to Version 3.1.3
-- **[ENHANCEMENT]**: Pimcore 6.6.5 ready
-- **[ENHANCEMENT]**: only set Initial Groups if present ([#135](https://github.com/dachcom-digital/pimcore-members/pull/135))
-- **[ENHANCEMENT]**: change file write mode to `w` only, to allow installation on AWS ([#137](https://github.com/dachcom-digital/pimcore-members/issues/137))
-- **[BUGFIX]**: Implement `preSetData` ([#140](https://github.com/dachcom-digital/pimcore-members/issues/140))
-- **[BUGFIX]**: [GroupMultiselect] Dependencies resolver added ([#139](https://github.com/dachcom-digital/pimcore-members/issues/139))
-
-#### Update from Version 3.1.1 to Version 3.1.2
-- **[ENHANCEMENT]**: Pimcore 6.6.0 ready
-
-#### Update from Version 3.1.0 to Version 3.1.1
-- **[ENHANCEMENT]**: Allow to redirect back to requested secure page after login: [#133](https://github.com/dachcom-digital/pimcore-members/issues/133)
-- **[BUGFIX]**: Use right route form login `check_path` 
-
-#### Update from Version 3.0.1 to Version 3.1.0
-- **[ENHANCEMENT]**: Pimcore 6.4.0 and 6.5.0 ready
-- **[NEW FEATURE]**: [SSO via OAuth2](https://github.com/dachcom-digital/pimcore-members/issues/21)
-- **[IMPROVEMENTS]**: [Make Mailer-Implementation switchable](https://github.com/dachcom-digital/pimcore-members/issues/107)
-- **[IMPROVEMENTS, SECURITY BC BREAK]**: [Harmonize Asset Restriction Query](https://github.com/dachcom-digital/pimcore-members/issues/118): Every asset living in `restricted-assets` will be rejected in listing if you're using the `addRestrictionInjection()` method by default
-
-#### Update from Version 3.0.0 to Version 3.0.1
-- **[IMPROVEMENTS]**: [User helper functions added](https://github.com/dachcom-digital/pimcore-members/issues/105)
-- **[BUGFIX]**: [Fix UserAwareEncoderFactory auto loading issue](https://github.com/dachcom-digital/pimcore-members/issues/114)
-- **[BUGFIX]**: [Fix wrong wrong conditions in restriction manager](https://github.com/dachcom-digital/pimcore-members/issues/115)
-
-#### Update from Version 2.x to Version 3.0.0
-- **[NEW FEATURE]**: Pimcore 6.0.0 ready
-- **[BC BREAK]**: All Services are marked as private now (Except `RoleOptionsProvider`).
-- **[BC BREAK]**: All Controllers are registered as services now! If you're using you'r own controller logic, be sure the're adjusted properly!
-- **[ATTENTION]**: All Forms are registered in FQCN now. Aliases for the old service IDs are available.
-
-***
-
-Members 2.x Upgrade Notes: https://github.com/dachcom-digital/pimcore-members/blob/2.5/UPGRADE.md
+Members 3.x Upgrade Notes: https://github.com/dachcom-digital/pimcore-members/blob/3.x/UPGRADE.md

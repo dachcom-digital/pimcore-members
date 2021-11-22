@@ -10,24 +10,13 @@ use Codeception\TestCase\Test;
 
 class AuthenticationListenerTest extends Test
 {
-    const FIREWALL_NAME = 'foo';
+    public const FIREWALL_NAME = 'foo';
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
+    private EventDispatcherInterface $eventDispatcher;
+    private FilterUserResponseEvent $event;
+    private AuthenticationListener $listener;
 
-    /**
-     * @var FilterUserResponseEvent
-     */
-    private $event;
-
-    /**
-     * @var AuthenticationListener
-     */
-    private $listener;
-
-    public function setUp()
+    public function setUp(): void
     {
         $user = $this->getMockBuilder('MembersBundle\Adapter\User\UserInterface')->getMock();
         $response = $this->getMockBuilder('Symfony\Component\HttpFoundation\Response')->getMock();

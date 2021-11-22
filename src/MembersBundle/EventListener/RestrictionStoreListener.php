@@ -13,23 +13,14 @@ use MembersBundle\Service\RestrictionService;
 
 class RestrictionStoreListener implements EventSubscriberInterface
 {
-    /**
-     * @var RestrictionService
-     */
-    protected $serviceRestriction;
+    protected RestrictionService $serviceRestriction;
 
-    /**
-     * @param RestrictionService $serviceRestriction
-     */
     public function __construct(RestrictionService $serviceRestriction)
     {
         $this->serviceRestriction = $serviceRestriction;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             DataObjectEvents::PRE_DELETE => 'handleObjectDeletion',
@@ -46,58 +37,37 @@ class RestrictionStoreListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param DocumentEvent $e
-     */
-    public function handleDocumentDeletion(DocumentEvent $e)
+    public function handleDocumentDeletion(DocumentEvent $e): void
     {
         $this->serviceRestriction->deleteRestriction($e->getDocument(), 'page');
     }
 
-    /**
-     * @param AssetEvent $e
-     */
-    public function handleAssetDeletion(AssetEvent $e)
+    public function handleAssetDeletion(AssetEvent $e): void
     {
         $this->serviceRestriction->deleteRestriction($e->getAsset(), 'asset');
     }
 
-    /**
-     * @param DataObjectEvent $e
-     */
-    public function handleObjectDeletion(DataObjectEvent $e)
+    public function handleObjectDeletion(DataObjectEvent $e): void
     {
         $this->serviceRestriction->deleteRestriction($e->getObject(), 'object');
     }
 
-    /**
-     * @param DataObjectEvent $e
-     */
-    public function handleObjectAdd(DataObjectEvent $e)
+    public function handleObjectAdd(DataObjectEvent $e): void
     {
         $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
     }
 
-    /**
-     * @param DocumentEvent $e
-     */
-    public function handleDocumentAdd(DocumentEvent $e)
+    public function handleDocumentAdd(DocumentEvent $e): void
     {
         $this->serviceRestriction->checkRestrictionContext($e->getDocument(), 'page');
     }
 
-    /**
-     * @param AssetEvent $e
-     */
-    public function handleAssetAdd(AssetEvent $e)
+    public function handleAssetAdd(AssetEvent $e): void
     {
         $this->serviceRestriction->checkRestrictionContext($e->getAsset(), 'asset');
     }
 
-    /**
-     * @param DataObjectEvent $e
-     */
-    public function handleObjectUpdate(DataObjectEvent $e)
+    public function handleObjectUpdate(DataObjectEvent $e): void
     {
         //only trigger update if object gets moved.
         //default restriction page update gets handled by restrictionController or API.
@@ -108,10 +78,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
         $this->serviceRestriction->checkRestrictionContext($e->getObject(), 'object');
     }
 
-    /**
-     * @param DocumentEvent $e
-     */
-    public function handleDocumentUpdate(DocumentEvent $e)
+    public function handleDocumentUpdate(DocumentEvent $e): void
     {
         //only trigger update if page gets moved.
         //default restriction page update gets handled by restrictionController or API.
@@ -122,10 +89,7 @@ class RestrictionStoreListener implements EventSubscriberInterface
         $this->serviceRestriction->checkRestrictionContext($e->getDocument(), 'page');
     }
 
-    /**
-     * @param AssetEvent $e
-     */
-    public function handleAssetUpdate(AssetEvent $e)
+    public function handleAssetUpdate(AssetEvent $e): void
     {
         //only trigger update if asset gets moved.
         //default restriction page update gets handled by restrictionController or API.

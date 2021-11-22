@@ -14,26 +14,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OAuthRegistrationListener implements EventSubscriberInterface
 {
-    /**
-     * @var OAuthRegistrationHandler
-     */
-    protected $oAuthRegistrationHandler;
+    protected OAuthRegistrationHandler $oAuthRegistrationHandler;
+    protected OAuthTokenStorageInterface $oAuthTokenStorage;
+    protected ResourceMappingService $resourceMappingService;
 
-    /**
-     * @var OAuthTokenStorageInterface
-     */
-    protected $oAuthTokenStorage;
-
-    /**
-     * @var ResourceMappingService
-     */
-    protected $resourceMappingService;
-
-    /**
-     * @param OAuthRegistrationHandler   $oAuthRegistrationHandler
-     * @param OAuthTokenStorageInterface $oAuthTokenStorage
-     * @param ResourceMappingService     $resourceMappingService
-     */
     public function __construct(
         OAuthRegistrationHandler $oAuthRegistrationHandler,
         OAuthTokenStorageInterface $oAuthTokenStorage,
@@ -44,10 +28,7 @@ class OAuthRegistrationListener implements EventSubscriberInterface
         $this->resourceMappingService = $resourceMappingService;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             MembersEvents::REGISTRATION_INITIALIZE => 'onRegistrationInitialization',
@@ -55,10 +36,7 @@ class OAuthRegistrationListener implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param GetResponseUserEvent $event
-     */
-    public function onRegistrationInitialization(GetResponseUserEvent $event)
+    public function onRegistrationInitialization(GetResponseUserEvent $event): void
     {
         $request = $event->getRequest();
         $user = $event->getUser();
@@ -85,11 +63,9 @@ class OAuthRegistrationListener implements EventSubscriberInterface
     }
 
     /**
-     * @param FilterUserResponseEvent $event
-     *
      * @throws \Exception
      */
-    public function onRegistrationComplete(FilterUserResponseEvent $event)
+    public function onRegistrationComplete(FilterUserResponseEvent $event): void
     {
         $request = $event->getRequest();
         $user = $event->getUser();
@@ -105,13 +81,7 @@ class OAuthRegistrationListener implements EventSubscriberInterface
         $this->oAuthRegistrationHandler->connectSsoIdentity($user, $oAuthResponse);
     }
 
-    /**
-     * @param Request $request
-     * @param bool    $destroyToken
-     *
-     * @return OAuthResponseInterface|null
-     */
-    protected function getOAuthResponse(Request $request, bool $destroyToken = false)
+    protected function getOAuthResponse(Request $request, bool $destroyToken = false): ?OAuthResponseInterface
     {
         $registrationKey = $request->get('registrationKey', null);
 

@@ -3,45 +3,29 @@
 namespace MembersBundle\Controller;
 
 use MembersBundle\Form\Factory\FactoryInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Security;
 
 class AuthController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $formFactory;
+    protected FactoryInterface $formFactory;
 
-    /**
-     * @param FactoryInterface $formFactory
-     */
     public function __construct(FactoryInterface $formFactory)
     {
         $this->formFactory = $formFactory;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Exception
-     */
-    public function loginAction(Request $request)
+    public function loginAction(Request $request): Response
     {
         $authErrorKey = Security::AUTHENTICATION_ERROR;
         $lastUsernameKey = Security::LAST_USERNAME;
 
-        /** @var Session $session */
         $session = $request->getSession();
 
         // last username entered by the user
-        $lastUsername = (null === $session) ? null : $session->get($lastUsernameKey);
+        $lastUsername = $session->get($lastUsernameKey);
 
         $targetPath = $request->get('_target_path', null);
         $failurePath = $request->get('_failure_path', null);
@@ -55,7 +39,7 @@ class AuthController extends AbstractController
         // get the error if any (works with forward and redirect -- see below)
         if ($request->attributes->has($authErrorKey)) {
             $error = $request->attributes->get($authErrorKey);
-        } elseif (null !== $session && $session->has($authErrorKey)) {
+        } elseif ($session->has($authErrorKey)) {
             $error = $session->get($authErrorKey);
             $session->remove($authErrorKey);
         } else {
@@ -72,15 +56,15 @@ class AuthController extends AbstractController
             'error'         => $error
         ];
 
-        return $this->renderTemplate('@Members/Auth/login.html.twig', $authParams);
+        return $this->renderTemplate('@Members/auth/login.html.twig', $authParams);
     }
 
-    public function checkAction()
+    public function checkAction(): void
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall using form_login in your security firewall configuration.');
     }
 
-    public function logoutAction()
+    public function logoutAction(): void
     {
         throw new \RuntimeException('You must activate the logout in your security firewall configuration.');
     }

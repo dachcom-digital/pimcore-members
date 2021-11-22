@@ -1,0 +1,7 @@
+{% extends '@Members/form/form_wrapper.html.twig' %}
+
+{% block form %}
+    {{ form_start(form, { 'action': path('members_user_delete_account'), 'attr': {'novalidate': 'novalidate', 'class': 'members_user_delete_account' } }) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock form %}

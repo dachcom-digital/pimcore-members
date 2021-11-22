@@ -8,38 +8,19 @@ use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
 use Pimcore\Http\Request\Resolver\DocumentResolver as DocumentResolverService;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
-use Pimcore\Templating\Helper\HeadMeta;
+use Pimcore\Twig\Extension\Templating\HeadMeta;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * Adds Meta Data entries of document to HeadMeta view helper.
- */
 class HeadMetaListener implements EventSubscriberInterface
 {
     use PimcoreContextAwareTrait;
 
-    /**
-     * @var DocumentResolverService
-     */
-    protected $documentResolverService;
+    protected DocumentResolverService $documentResolverService;
+    protected HeadMeta $headMeta;
+    protected RestrictionManagerInterface $restrictionManager;
 
-    /**
-     * @var HeadMeta
-     */
-    protected $headMeta;
-
-    /**
-     * @var RestrictionManagerInterface
-     */
-    protected $restrictionManager;
-
-    /**
-     * @param DocumentResolverService     $documentResolverService
-     * @param HeadMeta                    $headMeta
-     * @param RestrictionManagerInterface $restrictionManager
-     */
     public function __construct(
         RestrictionManagerInterface $restrictionManager,
         DocumentResolverService $documentResolverService,
@@ -50,23 +31,17 @@ class HeadMetaListener implements EventSubscriberInterface
         $this->restrictionManager = $restrictionManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => ['onKernelRequest', -20] //after forbidden route listener!
         ];
     }
 
-    /**
-     * @param GetResponseEvent $event
-     */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         // just add meta data on master request
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 

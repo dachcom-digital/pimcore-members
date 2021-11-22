@@ -1,0 +1,13 @@
+{#
+
+ * renders one of these templates:
+ *
+ * @view @Members/auth/area/login_area.html.twig
+ * @view @Members/auth/area/login_area_logged_in.html.twig
+ * @view @Members/auth/area/login_area_logged_in_snippet.html.twig
+ * can be empty if area should be hidden after successfully login
+
+#}
+{% if members_area_template != '' %}
+    {% include '@Members/' ~ members_area_template ~ '.html.twig' %}
+{% endif %}

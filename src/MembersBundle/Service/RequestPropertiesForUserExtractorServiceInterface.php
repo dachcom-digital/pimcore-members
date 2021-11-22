@@ -6,17 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface RequestPropertiesForUserExtractorServiceInterface
 {
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    public function extract(Request $request);
+    public function extract(Request $request): array;
 
-    /**
-     * @param array $parameter
-     *
-     * @return mixed
-     */
-    public function extractFromParameterBag(array $parameter);
+    public function extractFromParameterBag(array $parameter): array;
 }

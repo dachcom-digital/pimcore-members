@@ -3,7 +3,7 @@
 Now - since you have restricted some documents to certain groups, you need to manipulate the pimcore navigation renderer.
 
 **Navigation:** Do **not** use the default nav builder extension (`pimcore_build_nav`). Just use the `members_build_nav` to build
-secure menus. Otherwise your restricted pages will show up. This twig extension will also handle your navigation cache strategy.
+secure menus. Otherwise, your restricted pages will show up. This twig extension will also handle your navigation cache strategy.
 
 ## Usage
 
@@ -32,11 +32,9 @@ the navigation document. Note that the `ElementRestriction` argument is also pas
 As you cannot use closures directly within Twig templates, create a function to return one.
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace AppBundle\Twig\Extension;
+namespace App\Twig\Extension;
 
 use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Model\AbstractModel;
@@ -46,17 +44,10 @@ use Twig\TwigFunction;
 
 class NavigationExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     * @return TwigFunction[]
-     */
     public function getFunctions(): array
     {
         return [
-            new TwigFunction(
-                'navigation_callback',
-                [$this, 'getNavigationCallback']
-            ),
+            new TwigFunction('navigation_callback', [$this, 'getNavigationCallback'])
         ];
     }
 

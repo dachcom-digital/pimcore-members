@@ -4,7 +4,7 @@ Every Group is connected with the `ROLE_USER` role by default.
 
 ## Add Roles
 
-Adding Roles is quite simple. Add this to your `app/config/config.yml`:
+Adding Roles is quite simple. Add this to your `config/config.yaml`:
 
 ```yaml
 

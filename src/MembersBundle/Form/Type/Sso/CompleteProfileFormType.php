@@ -13,50 +13,38 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CompleteProfileFormType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    protected $class;
+    protected string $class;
 
-    /**
-     * @param string $class The User class name
-     */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         /** @var UserInterface $user */
         $user = $builder->getData();
 
-        $builder->add('email', EmailType::class, [
-            'label'    => 'members.form.email',
-            'disabled' => !empty($user->getEmail())
-        ]);
-
-        $builder->add('username', null, ['label' => 'members.form.username']);
-
-        $builder->add('plainPassword', RepeatedType::class, [
-            'type'            => PasswordType::class,
-            'first_options'   => ['label' => 'members.form.password'],
-            'second_options'  => ['label' => 'members.form.password_confirmation'],
-            'invalid_message' => 'members.validation.password.mismatch',
-        ]);
-
-        $builder->add('submit', SubmitType::class, [
-            'label' => 'members.oauth.sso.complete_profile.submit',
-        ]);
+        $builder
+            ->add('email', EmailType::class, [
+                'label'    => 'members.form.email',
+                'disabled' => !empty($user->getEmail())
+            ])
+            ->add('username', null, [
+                'label' => 'members.form.username', 'empty_data' => ''
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type'            => PasswordType::class,
+                'first_options'   => ['label' => 'members.form.password'],
+                'second_options'  => ['label' => 'members.form.password_confirmation'],
+                'invalid_message' => 'members.validation.password.mismatch',
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.oauth.sso.complete_profile.submit',
+            ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'    => $this->class,
@@ -64,10 +52,7 @@ class CompleteProfileFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_sso_identity_complete_profile';
     }

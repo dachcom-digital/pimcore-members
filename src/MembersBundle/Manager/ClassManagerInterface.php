@@ -6,33 +6,15 @@ use Pimcore\Model\DataObject\Listing;
 
 interface ClassManagerInterface
 {
-    /**
-     * @return Listing
-     */
-    public function getGroupListing();
+    public function getGroupListing(): Listing;
 
-    /**
-     * @return Listing
-     */
-    public function getUserListing();
+    public function getUserListing(): Listing;
 
-    /**
-     * @return Listing
-     */
-    public function getSsoIdentityListing();
+    public function getSsoIdentityListing(): Listing;
 
-    /**
-     * @return string
-     */
-    public function getGroupClass();
+    public function getGroupClass(): string;
 
-    /**
-     * @return string
-     */
-    public function getUserClass();
+    public function getUserClass(): string;
 
-    /**
-     * @return string
-     */
-    public function getSsoIdentityClass();
+    public function getSsoIdentityClass(): string;
 }

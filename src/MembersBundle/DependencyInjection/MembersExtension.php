@@ -17,10 +17,7 @@ use MembersBundle\Configuration\Configuration as BundleConfiguration;
 
 class MembersExtension extends Extension implements PrependExtensionInterface
 {
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
@@ -47,12 +44,9 @@ class MembersExtension extends Extension implements PrependExtensionInterface
     }
 
     /**
-     * @param array            $configs
-     * @param ContainerBuilder $container
-     *
      * @throws \Exception
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
@@ -67,6 +61,8 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $container->setParameter('members.registration.event.oauth_type', $config['post_register_type_oauth']);
         $container->setParameter('members.resetting.retry_ttl', $config['relations']['resetting']['retry_ttl']);
         $container->setParameter('members.resetting.token_ttl', $config['relations']['resetting']['token_ttl']);
+        $container->setParameter('members.auth.identifier', $config['user']['auth_identifier']);
+        $container->setParameter('members.auth.only_auth_identifier_registration', $config['user']['only_auth_identifier_registration']);
 
         $container->setParameter('members.oauth.enabled', $config['oauth']['enabled']);
         $container->setParameter('members.oauth.clean_up_expired_tokens', $config['oauth']['clean_up_expired_tokens']);
@@ -107,11 +103,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         }
     }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     */
-    protected function enableOauth(ContainerBuilder $container, array $config)
+    protected function enableOauth(ContainerBuilder $container, array $config): void
     {
         $dispatcherDefinition = new Definition();
         $dispatcherDefinition->setClass(DispatchRouter::class);

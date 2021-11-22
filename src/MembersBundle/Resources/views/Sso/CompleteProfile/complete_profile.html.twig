@@ -1,8 +1,0 @@
-{% extends '@Members/layout.html.twig' %}
-
-{% block members_user_content %}
-    <div class="members complete-profile">
-        <h2 class="mb-4">{{ 'members.oauth.sso.complete_profile.headline'|trans }}</h2>
-        {% include '@Members/Sso/CompleteProfile/complete_profile_content.html.twig' %}
-    </div>
-{% endblock members_user_content %}

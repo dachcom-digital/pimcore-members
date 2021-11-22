@@ -1,0 +1,19 @@
+{% extends '@Members/form/form_wrapper.html.twig' %}
+
+{% block form %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {{ form_start(form, { 'action': path('members_user_security_check'), 'attr': {'novalidate': 'novalidate', 'class': 'members_user_login' } }) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    {% if members_system_oauth_enabled() == true %}
+        {% set link_params = {} %}
+        {% if form._target_path is defined %}
+            {% set link_params = {_target_path: form._target_path.vars.value} %}
+        {% endif %}
+        {% include '@Members/sso/partial/_social_login.html.twig' with { link_params: link_params } only %}
+    {% endif %}
+{% endblock form %}

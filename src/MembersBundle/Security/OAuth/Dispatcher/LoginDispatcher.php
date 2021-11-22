@@ -2,26 +2,16 @@
 
 namespace MembersBundle\Security\OAuth\Dispatcher;
 
+use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Registry\OAuthLoginProcessorRegistryInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Security\OAuth\OAuthResponse;
 
 class LoginDispatcher implements DispatcherInterface
 {
-    /**
-     * @var Configuration
-     */
-    protected $configuration;
+    protected Configuration $configuration;
+    protected OAuthLoginProcessorRegistryInterface $loginProcessorRegistry;
 
-    /**
-     * @var OAuthLoginProcessorRegistryInterface
-     */
-    protected $loginProcessorRegistry;
-
-    /**
-     * @param Configuration                        $configuration
-     * @param OAuthLoginProcessorRegistryInterface $loginProcessorRegistry
-     */
     public function __construct(
         Configuration $configuration,
         OAuthLoginProcessorRegistryInterface $loginProcessorRegistry
@@ -30,10 +20,7 @@ class LoginDispatcher implements DispatcherInterface
         $this->loginProcessorRegistry = $loginProcessorRegistry;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function dispatch(string $provider, OAuthResponse $oAuthResponse)
+    public function dispatch(string $provider, OAuthResponse $oAuthResponse): ?UserInterface
     {
         $activationStrategyName = $this->configuration->getOAuthConfig('activation_type');
 
@@ -41,8 +28,6 @@ class LoginDispatcher implements DispatcherInterface
             throw new \Exception(sprintf('no dispatcher with identifier %s found', $provider));
         }
 
-        $processor = $this->loginProcessorRegistry->get($activationStrategyName);
-
-        return $processor->process($provider, $oAuthResponse);
+        return $this->loginProcessorRegistry->get($activationStrategyName)->process($provider, $oAuthResponse);
     }
 }

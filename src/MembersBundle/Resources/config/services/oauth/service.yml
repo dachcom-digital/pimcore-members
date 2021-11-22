@@ -3,7 +3,9 @@ services:
         autowire: true
         autoconfigure: true
 
-    MembersBundle\Service\ResourceMappingService: ~
+    MembersBundle\Service\ResourceMappingService:
+        arguments:
+            $authIdentifier: '%members.auth.identifier%'
 
     MembersBundle\Service\SsoIdentityStatusServiceInterface: '@MembersBundle\Service\SsoIdentityStatusService'
     MembersBundle\Service\SsoIdentityStatusService: ~

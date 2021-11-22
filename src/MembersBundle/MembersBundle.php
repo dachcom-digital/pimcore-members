@@ -14,40 +14,28 @@ class MembersBundle extends AbstractPimcoreBundle implements DependentBundleInte
 {
     use PackageVersionTrait;
 
-    const PACKAGE_NAME = 'dachcom-digital/members';
+    public const PACKAGE_NAME = 'dachcom-digital/members';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getInstaller()
+    public function getInstaller(): Install
     {
         return $this->container->get(Install::class);
     }
 
-    /**
-     * @param ContainerBuilder $container
-     */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
         $container->addCompilerPass(new OAuthLoginStrategyPass());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function registerDependentBundles(BundleCollection $collection)
+    public static function registerDependentBundles(BundleCollection $collection): void
     {
         if (class_exists('\\KnpU\\OAuth2ClientBundle\\KnpUOAuth2ClientBundle')) {
             $collection->addBundle(new \KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle());
         }
     }
 
-    /**
-     * @return string[]
-     */
-    public function getJsPaths()
+    public function getJsPaths(): array
     {
         return [
             '/bundles/members/js/backend/startup.js',
@@ -59,19 +47,20 @@ class MembersBundle extends AbstractPimcoreBundle implements DependentBundleInte
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function getCssPaths()
+    public function getCssPaths(): array
     {
         return [
             '/bundles/members/css/admin.css'
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function getEditmodeCssPaths(): array
+    {
+        return [
+            '/bundles/members/css/admin-editmode.css',
+        ];
+    }
+
     protected function getComposerPackageName(): string
     {
         return self::PACKAGE_NAME;

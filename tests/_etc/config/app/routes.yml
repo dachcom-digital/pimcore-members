@@ -1,0 +1,5 @@
+_pimcore:
+    resource: '@PimcoreCoreBundle/Resources/config/routing.yml'
+
+app:
+    resource: '@MembersBundle/Resources/config/pimcore/routing/all.yml'

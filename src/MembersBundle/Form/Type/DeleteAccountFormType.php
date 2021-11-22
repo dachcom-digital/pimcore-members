@@ -14,47 +14,36 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 
 class DeleteAccountFormType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $class;
+    private string $class;
 
-    /**
-     * @param string $class The User class name
-     */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('current_password', RepeatedType::class, [
-            'type'            => PasswordType::class,
-            'first_options'   => ['label' => 'members.form.current_password'],
-            'second_options'  => ['label' => 'members.form.current_password_confirmation'],
-            'label'           => 'members.form.current_password',
-            'mapped'          => false,
-            'invalid_message' => 'members.validation.password.mismatch',
-            'constraints'     => [new UserPassword(['message' => 'members.validation.current_password.invalid'])],
-        ]);
-
-        $builder->add('deleteConfirm', CheckboxType::class, [
-            'label'       => 'members.form.delete_account.confirm',
-            'mapped'      => false,
-            'constraints' => [new IsTrue(['message' => 'members.validation.delete_account.confirm_not_checked'])],
-        ]);
-
-        $builder->add('submit', SubmitType::class, ['label' => 'members.delete_account.submit']);
+        $builder
+            ->add('current_password', RepeatedType::class, [
+                'type'            => PasswordType::class,
+                'first_options'   => ['label' => 'members.form.current_password'],
+                'second_options'  => ['label' => 'members.form.current_password_confirmation'],
+                'label'           => 'members.form.current_password',
+                'mapped'          => false,
+                'invalid_message' => 'members.validation.password.mismatch',
+                'constraints'     => [new UserPassword(['message' => 'members.validation.current_password.invalid'])],
+            ])
+            ->add('deleteConfirm', CheckboxType::class, [
+                'label'       => 'members.form.delete_account.confirm',
+                'mapped'      => false,
+                'constraints' => [new IsTrue(['message' => 'members.validation.delete_account.confirm_not_checked'])],
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'members.delete_account.submit'
+            ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'    => $this->class,
@@ -62,10 +51,7 @@ class DeleteAccountFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_delete_account';
     }

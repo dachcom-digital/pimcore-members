@@ -6,34 +6,32 @@ use MembersBundle\EventListener\FlashListener;
 use MembersBundle\MembersEvents;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class FlashListenerTest extends TestCase
 {
-    /**
-     * @var Event
-     */
-    private $event;
+    private Event $event;
+    private FlashListener $listener;
 
-    /**
-     * @var FlashListener
-     */
-    private $listener;
-
-    public function setUp()
+    public function setUp(): void
     {
         $this->event = new Event();
-        $flashBag = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Flash\FlashBag')->getMock();
-        $session = $this->getMockBuilder('Symfony\Component\HttpFoundation\Session\Session')->disableOriginalConstructor()->getMock();
+        $flashBag = $this->getMockBuilder(FlashBag::class)->getMock();
+        $session = $this->getMockBuilder(Session::class)->disableOriginalConstructor()->getMock();
         $session
             ->expects($this->once())
             ->method('getFlashBag')
             ->willReturn($flashBag);
 
-        $translator = $this->getMockBuilder('Symfony\Component\Translation\TranslatorInterface')->getMock();
+        // nah.
+        $translator = \Pimcore::getContainer()->get(TranslatorInterface::class);
+
         $this->listener = new FlashListener($session, $translator);
     }
 
-    public function testAddSuccessFlash()
+    public function testAddSuccessFlash(): void
     {
         $this->listener->addSuccessFlash($this->event, MembersEvents::CHANGE_PASSWORD_COMPLETED);
     }

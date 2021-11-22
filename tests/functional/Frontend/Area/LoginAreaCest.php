@@ -16,7 +16,7 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => false
+                'dataFromResource' => false
             ],
             'redirectAfterSuccess'    => [
                 'type' => 'relation',
@@ -51,7 +51,7 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => false
+                'dataFromResource' => false
             ],
             'redirectAfterSuccess'    => [
                 'type' => 'relation',
@@ -72,7 +72,7 @@ class LoginAreaCest
         $I->click('Log In');
 
         $I->seeANotLoggedInFrontEndUser();
-        $I->see('Invalid credentials.', '.members.login.area div');
+        $I->see('Username could not be found.', '.members.login.area div');
 
     }
 
@@ -86,7 +86,7 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => false
+                'dataFromResource' => false
             ],
             'redirectAfterSuccess'    => [
                 'type' => 'relation',
@@ -124,7 +124,7 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => true
+                'dataFromResource' => true
             ],
             'redirectAfterSuccess'    => [
                 'type' => 'relation',
@@ -165,11 +165,11 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => false
+                'dataFromResource' => false
             ],
             'redirectAfterSuccess'    => [
                 'type'             => 'relation',
-                'dataFromEditmode' => [
+                'dataFromResource' => [
                     'type'    => 'document',
                     'id'      => $redirectDocument->getId(),
                     'subtype' => $redirectDocument->getType()
@@ -201,8 +201,8 @@ class LoginAreaCest
     public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I)
     {
         $snippetParams = [
-            'controller' => '@AppBundle\Controller\DefaultController',
-            'action'     => 'snippet'
+            'controller' => 'App\Controller\DefaultController',
+            'action'     => 'snippetAction'
         ];
 
         $successSnippet = $I->haveASnippet('success-snippet', $snippetParams);
@@ -211,14 +211,14 @@ class LoginAreaCest
         $editables = [
             'hideWhenLoggedIn'        => [
                 'type'             => 'checkbox',
-                'dataFromEditmode' => false
+                'dataFromResource' => false
             ],
             'redirectAfterSuccess'    => [
                 'type' => 'relation'
             ],
             'showSnippedWhenLoggedIn' => [
                 'type'             => 'relation',
-                'dataFromEditmode' => [
+                'dataFromResource' => [
                     'type'    => 'document',
                     'id'      => $successSnippet->getId(),
                     'subtype' => $successSnippet->getType()

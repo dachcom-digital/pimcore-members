@@ -13,23 +13,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProfileFormType extends AbstractType
 {
-    /**
-     * @var string
-     */
-    private $class;
+    private string $class;
 
-    /**
-     * @param string $class The User class name
-     */
-    public function __construct($class)
+    public function __construct(string $class)
     {
         $this->class = $class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $this->buildUserForm($builder, $options);
 
@@ -41,17 +32,17 @@ class ProfileFormType extends AbstractType
             $constraintsOptions['groups'] = [reset($options['validation_groups'])];
         }
 
-        $builder->add('current_password', PasswordType::class, [
-            'label'       => 'members.form.current_password',
-            'mapped'      => false,
-            'constraints' => [new NotBlank(), new UserPassword($constraintsOptions)],
-        ])->add('submit', SubmitType::class, ['label' => 'members.profile.edit.submit']);
+        $builder
+            ->add('current_password', PasswordType::class, [
+                'label'       => 'members.form.current_password',
+                'mapped'      => false,
+                'constraints' => [new NotBlank(), new UserPassword($constraintsOptions)],
+            ])->add('submit', SubmitType::class, [
+                'label' => 'members.profile.edit.submit'
+            ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class'    => $this->class,
@@ -59,21 +50,12 @@ class ProfileFormType extends AbstractType
         ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return 'members_user_profile';
     }
 
-    /**
-     * Builds the embedded form representing the user.
-     *
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
-    protected function buildUserForm(FormBuilderInterface $builder, array $options)
+    protected function buildUserForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('username', null, ['label' => 'members.form.username'])

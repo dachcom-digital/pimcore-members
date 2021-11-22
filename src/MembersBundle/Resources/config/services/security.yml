@@ -18,16 +18,14 @@ services:
 
     MembersBundle\Security\UserChecker: ~
 
-    MembersBundle\Security\UserProvider: ~
-
-    MembersBundle\Security\EmailUserProvider: ~
+    MembersBundle\Security\UserProvider:
+        arguments:
+            $authIdentifier: '%members.auth.identifier%'
 
     MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory:
         arguments:
             $className: 'Pimcore\Security\Encoder\PasswordFieldEncoder'
             $arguments: ['password']
-
-    MembersBundle\Security\LuceneSearchAuthenticator: ~
 
     MembersBundle\Form\Type\LoginFormType:
         tags:
@@ -35,7 +33,6 @@ services:
 
     MembersBundle\Controller\AuthController:
         public: true
-        calls:
-            - [setContainer, ['@service_container']]
         arguments:
             $formFactory: '@members.security.login.form.factory'
+        tags: ['controller.service_arguments']

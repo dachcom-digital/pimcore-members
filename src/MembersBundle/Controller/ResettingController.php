@@ -13,7 +13,7 @@ use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGeneratorInterface;
 use Pimcore\Http\RequestHelper;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,50 +21,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ResettingController extends AbstractController
 {
-    /**
-     * @var FactoryInterface
-     */
-    protected $requestResettingFormFactory;
+    protected FactoryInterface $requestResettingFormFactory;
+    protected FactoryInterface $resettingFormFactory;
+    protected EventDispatcherInterface $eventDispatcher;
+    protected UserManagerInterface $userManager;
+    protected TokenGeneratorInterface $tokenGenerator;
+    protected MailerInterface $mailer;
+    protected RequestHelper $requestHelper;
 
-    /**
-     * @var FactoryInterface
-     */
-    protected $resettingFormFactory;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var UserManagerInterface
-     */
-    protected $userManager;
-
-    /**
-     * @var TokenGeneratorInterface
-     */
-    protected $tokenGenerator;
-
-    /**
-     * @var MailerInterface
-     */
-    protected $mailer;
-
-    /**
-     * @var RequestHelper
-     */
-    protected $requestHelper;
-
-    /**
-     * @param FactoryInterface         $requestResettingFormFactory
-     * @param FactoryInterface         $resettingFormFactory
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param UserManagerInterface     $userManager
-     * @param TokenGeneratorInterface  $tokenGenerator
-     * @param MailerInterface          $mailer
-     * @param RequestHelper            $requestHelper
-     */
     public function __construct(
         FactoryInterface $requestResettingFormFactory,
         FactoryInterface $resettingFormFactory,
@@ -83,29 +47,17 @@ class ResettingController extends AbstractController
         $this->requestHelper = $requestHelper;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function requestAction(Request $request)
+    public function requestAction(Request $request): Response
     {
         $form = $this->requestResettingFormFactory->createUnnamedForm();
         $form->handleRequest($request);
 
         $params = ['form' => $form->createView()];
 
-        return $this->renderTemplate('@Members/Resetting/request.html.twig', $params);
+        return $this->renderTemplate('@Members/resetting/request.html.twig', $params);
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response|null
-     *
-     * @throws \Exception
-     */
-    public function sendEmailAction(Request $request)
+    public function sendEmailAction(Request $request): Response
     {
         $username = $request->request->get('username');
 
@@ -114,7 +66,7 @@ class ResettingController extends AbstractController
 
         /* Dispatch init event */
         $event = new GetResponseNullableUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_INITIALIZE, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_SEND_EMAIL_INITIALIZE);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
@@ -123,7 +75,7 @@ class ResettingController extends AbstractController
         $ttl = $this->getParameter('members.resetting.retry_ttl');
         if ($user !== null && !$user->isPasswordRequestNonExpired($ttl)) {
             $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::RESETTING_RESET_REQUEST, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_RESET_REQUEST);
 
             if (null !== $event->getResponse()) {
                 return $event->getResponse();
@@ -135,7 +87,7 @@ class ResettingController extends AbstractController
 
             /* Dispatch confirm event */
             $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_CONFIRM, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_SEND_EMAIL_CONFIRM);
 
             if (null !== $event->getResponse()) {
                 return $event->getResponse();
@@ -147,7 +99,7 @@ class ResettingController extends AbstractController
 
             /* Dispatch completed event */
             $event = new GetResponseUserEvent($user, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::RESETTING_SEND_EMAIL_COMPLETED, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_SEND_EMAIL_COMPLETED);
 
             if (null !== $event->getResponse()) {
                 return $event->getResponse();
@@ -157,12 +109,7 @@ class ResettingController extends AbstractController
         return new RedirectResponse($this->generateUrl('members_user_resetting_check_email', ['username' => $username]));
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function checkEmailAction(Request $request)
+    public function checkEmailAction(Request $request): Response
     {
         $username = $request->query->get('username');
 
@@ -171,21 +118,15 @@ class ResettingController extends AbstractController
             return new RedirectResponse($this->generateUrl('members_user_resetting_request'));
         }
 
-        return $this->renderTemplate('@Members/Resetting/check_email.html.twig', [
+        return $this->renderTemplate('@Members/resetting/check_email.html.twig', [
             'tokenLifetime' => ceil($this->getParameter('members.resetting.retry_ttl') / 3600),
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param string  $token
-     *
-     * @return null|RedirectResponse|Response
-     */
-    public function resetAction(Request $request, $token = null)
+    public function resetAction(Request $request, ?string $token = null): Response
     {
         if ($this->requestHelper->isFrontendRequestByAdmin($request)) {
-            return $this->renderTemplate('@Members/Backend/frontend_request.html.twig');
+            return $this->renderTemplate('@Members/backend/frontend_request.html.twig');
         }
 
         $user = $this->userManager->findUserByConfirmationToken($token);
@@ -195,7 +136,7 @@ class ResettingController extends AbstractController
         }
 
         $event = new GetResponseUserEvent($user, $request);
-        $this->eventDispatcher->dispatch(MembersEvents::RESETTING_RESET_INITIALIZE, $event);
+        $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_RESET_INITIALIZE);
 
         if (null !== $event->getResponse()) {
             return $event->getResponse();
@@ -208,22 +149,19 @@ class ResettingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $event = new FormEvent($form, $request);
-            $this->eventDispatcher->dispatch(MembersEvents::RESETTING_RESET_SUCCESS, $event);
+            $this->eventDispatcher->dispatch($event, MembersEvents::RESETTING_RESET_SUCCESS);
 
             if (null === $response = $event->getResponse()) {
                 $url = $this->generateUrl('members_user_profile_show');
                 $response = new RedirectResponse($url);
             }
 
-            $this->eventDispatcher->dispatch(
-                MembersEvents::RESETTING_RESET_COMPLETED,
-                new FilterUserResponseEvent($user, $request, $response)
-            );
+            $this->eventDispatcher->dispatch(new FilterUserResponseEvent($user, $request, $response), MembersEvents::RESETTING_RESET_COMPLETED);
 
             return $response;
         }
 
-        return $this->renderTemplate('@Members/Resetting/reset.html.twig', [
+        return $this->renderTemplate('@Members/resetting/reset.html.twig', [
             'token' => $token,
             'form'  => $form->createView(),
         ]);
