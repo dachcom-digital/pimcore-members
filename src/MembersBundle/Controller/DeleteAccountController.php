@@ -66,8 +66,8 @@ class DeleteAccountController extends AbstractController
             return $response;
         }
 
-        return $this->renderTemplate('@Members/delete-account/delete_account.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('@Members/delete-account/delete_account.html.twig', [
+            'form' => $form,
         ]);
     }
 }

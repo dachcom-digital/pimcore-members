@@ -50,13 +50,11 @@ class AuthController extends AbstractController
             $error = null; // The value does not come from the security component.
         }
 
-        $authParams = [
-            'form'          => $form->createView(),
+        return $this->renderForm('@Members/auth/login.html.twig', [
+            'form'          => $form,
             'last_username' => $lastUsername,
             'error'         => $error
-        ];
-
-        return $this->renderTemplate('@Members/auth/login.html.twig', $authParams);
+        ]);
     }
 
     public function checkAction(): void

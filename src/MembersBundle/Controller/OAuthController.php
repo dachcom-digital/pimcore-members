@@ -86,8 +86,8 @@ class OAuthController extends AbstractController
             }
         }
 
-        return $this->renderTemplate('@Members/sso/complete-profile/complete_profile.html.twig', [
-            'form' => $form->createView()
+        return $this->renderForm('@Members/sso/complete-profile/complete_profile.html.twig', [
+            'form' => $form
         ]);
     }
 

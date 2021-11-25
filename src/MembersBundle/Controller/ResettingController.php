@@ -52,9 +52,9 @@ class ResettingController extends AbstractController
         $form = $this->requestResettingFormFactory->createUnnamedForm();
         $form->handleRequest($request);
 
-        $params = ['form' => $form->createView()];
-
-        return $this->renderTemplate('@Members/resetting/request.html.twig', $params);
+        return $this->renderForm('@Members/resetting/request.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     public function sendEmailAction(Request $request): Response
@@ -161,9 +161,9 @@ class ResettingController extends AbstractController
             return $response;
         }
 
-        return $this->renderTemplate('@Members/resetting/reset.html.twig', [
+        return $this->renderForm('@Members/resetting/reset.html.twig', [
             'token' => $token,
-            'form'  => $form->createView(),
+            'form'  => $form,
         ]);
     }
 }
