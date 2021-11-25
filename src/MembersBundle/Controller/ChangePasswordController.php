@@ -67,8 +67,8 @@ class ChangePasswordController extends AbstractController
             return $response;
         }
 
-        return $this->renderTemplate('@Members/change-password/change_password.html.twig', [
-            'form' => $form->createView(),
+        return $this->renderForm('@Members/change-password/change_password.html.twig', [
+            'form' => $form,
         ]);
     }
 }

@@ -108,7 +108,7 @@ class MembersLogin extends AbstractAreabrick implements EditableDialogBoxInterfa
             $info->setParam($key, $param);
         }
 
-        return null;
+        return new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200);
     }
 
     public function getTemplate(): string
