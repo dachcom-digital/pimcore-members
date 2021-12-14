@@ -123,7 +123,8 @@ class RestrictionController extends AdminController
         $inheritableState = $settings['membersDocumentInheritable'] ?? null;
         $inheritable = $inheritableState === 'on';
 
-        $groups = array_filter(explode(',', $settings['membersDocumentUserGroups']));
+        $groups = array_filter(explode(',', $settings['membersDocumentUserGroups'] ?? ''));
+
         $restriction = $this->restrictionService->createRestriction($obj, $cType, $inheritable, false, $groups);
 
         return $this->json([

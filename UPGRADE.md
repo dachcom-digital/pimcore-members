@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+### 4.0.1
+- [Bugfix] fix inherited group check #162
+
 ## Migrating from Version 3.x to Version 4.0
 
 ### Breaking Changes
