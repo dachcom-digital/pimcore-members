@@ -84,6 +84,17 @@ In this example, we're going to install the google client:
 $ composer require league/oauth2-google:^3.0
 ```
 
+## Set Cookie SameSite to Lax
+Otherwise, the oauth connection won't work.
+> If you have any hints to allow processing an oauth connection within `strict` mode, 
+> please [tell us](https://github.com/dachcom-digital/pimcore-members/issues).
+
+```yaml
+framework:
+    session:
+        cookie_samesite: 'lax'
+```
+
 ## Enable Feature
 Read more about the `activation_type` [here](./11_IntegrationTypes.md).
 

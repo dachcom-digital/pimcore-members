@@ -22,7 +22,7 @@
     - Area Snippets: If any snippet contains placeholder elements, you need to pass the values from your snippet controller to the
       view template: `return $this->render('default/snippet.html.twig', array_filter($request->attributes->all(), static function ($parameterKey) { return !str_starts_with($parameterKey, '_'); }, ARRAY_FILTER_USE_KEY));`
       and also replace the deprecated variables like described in email templates above
-- [SSO] You need to set `framework.session.cookie_samesite` to `lax`, otherwise the oAUthConnect won't work properly
+- [SSO] ⚠️ You need to set `framework.session.cookie_samesite` to `lax`, otherwise the oAUthConnect won't work properly
 - [SSO] Make sure you have a valid key for `pimcore.encryption.secret`, defined via env variable `PIMCORE_ENCRYPTION_SECRET` (You can generate a defuse key by executing the `vendor/bin/generate-defuse-key` command)
 - [SECURITY] `setSalt` method removed from `UserTrait.php` (deprecated in symfony 5.3)
 - [SECURITY] `MembersBundle\Security\EmailUserProvider` has been removed. Use [`auth_identifier: 'email'`](./docs/10_AuthIdentifier.md) instead.
