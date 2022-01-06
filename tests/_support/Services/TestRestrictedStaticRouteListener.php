@@ -18,7 +18,7 @@ class TestRestrictedStaticRouteListener implements EventSubscriberInterface
 
     public function checkStaticRoute(StaticRouteEvent $event): void
     {
-        if($event->getRouteName() !== 'test_route') {
+        if (str_starts_with($event->getRouteName(), 'test_route') === false) {
             return;
         }
 

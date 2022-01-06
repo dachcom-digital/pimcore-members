@@ -22,7 +22,10 @@ class ObjectRestrictionCest
             'variables' => '_locale,object_id',
         ];
 
-        $staticRoute = $I->haveAStaticRoute('test_route', $srParams);
+        // we need to use unique static route names
+        // @see https://github.com/pimcore/pimcore/pull/11126#issuecomment-1006733007
+
+        $staticRoute = $I->haveAStaticRoute('test_route_1', $srParams);
         $classDefinition = $I->haveAPimcoreClass('TestClass');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
@@ -42,7 +45,7 @@ class ObjectRestrictionCest
      */
     public function testObjectRestrictionWithoutAccessRights(FunctionalTester $I)
     {
-        $staticRoute = $I->haveAStaticRoute('test_route', $this->getStaticRouteConfig());
+        $staticRoute = $I->haveAStaticRoute('test_route_2', $this->getStaticRouteConfig());
         $classDefinition = $I->haveAPimcoreClass('TestClass');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
@@ -63,7 +66,7 @@ class ObjectRestrictionCest
      */
     public function testObjectRestrictionWithAuthorization(FunctionalTester $I)
     {
-        $staticRoute = $I->haveAStaticRoute('test_route', $this->getStaticRouteConfig());
+        $staticRoute = $I->haveAStaticRoute('test_route_3', $this->getStaticRouteConfig());
         $classDefinition = $I->haveAPimcoreClass('TestClass');
 
         $group1 = $I->haveAFrontendUserGroup('group-1');
