@@ -58,14 +58,14 @@ MembersBundle does not include any routes per default. Otherwise, it would be ha
 
 **Include all Routes**
 ```yaml
-# config/routing.yaml
+# config/routes.yaml
 app:
     resource: '@MembersBundle/Resources/config/pimcore/routing/all.yml'
 ```
 
 **Just include some Routes**
 ```yaml
-# config/routing.yaml
+# config/routes.yaml
 members_auth:
     resource: '@MembersBundle/Resources/config/pimcore/routing/auth.yml'
     prefix: /{_locale}/members #change your prefix if you have to.
