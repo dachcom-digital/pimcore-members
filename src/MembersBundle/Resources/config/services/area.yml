@@ -11,6 +11,6 @@ services:
         arguments:
             - '@MembersBundle\Document\Builder\BrickBuilder'
             - '@members.security.login.form.factory'
-            - '@translator'
+            - '@Pimcore\Translation\Translator'
         tags:
             - { name: pimcore.area.brick, id: members_login }
