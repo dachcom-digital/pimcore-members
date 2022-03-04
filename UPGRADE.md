@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+### 4.0.2
+- [BUGFIX] [MembersLogin] Inject correct Translator service [#aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/165)
+
 ### 4.0.1
 - [BUGFIX] fix inherited group check [#162](https://github.com/dachcom-digital/pimcore-members/issues/162)
 - [ENHANCEMENT] return proper HTTP response codes on form submit [@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/161)
