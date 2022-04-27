@@ -77,7 +77,7 @@ class ForbiddenRouteListener implements EventSubscriberInterface
         $restrictionRoute = $this->getRouteForRestriction($restriction);
 
         if ($restrictionRoute !== false) {
-            $parameters = $restrictionRoute === 'members_user_security_login' ? ['_target_path' => $event->getRequest()->getUri()] : [];
+            $parameters = $restrictionRoute === 'members_user_security_login' ? ['_target_path' => $event->getRequest()->getPathInfo()] : [];
             $response = new RedirectResponse($this->router->generate($restrictionRoute, $parameters));
             $event->setResponse($response);
         }
