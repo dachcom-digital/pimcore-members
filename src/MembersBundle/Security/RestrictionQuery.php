@@ -50,11 +50,11 @@ class RestrictionQuery
 
         $aliasFrom = $aliasFrom ?? $typedAliasFrom;
 
-        $query->join($aliasFrom, 'members_restrictions', 'mr',
+        $query->leftJoin($aliasFrom, 'members_restrictions', 'mr',
             sprintf('mr.targetId = %s.%s AND mr.ctype = "%s"', $aliasFrom, $queryIdentifier, $cType),
         );
 
-        $query->join($aliasFrom, 'members_group_relations', 'mgr',
+        $query->leftJoin($aliasFrom, 'members_group_relations', 'mgr',
             'mgr.restrictionId = mr.id'
         );
 
@@ -65,7 +65,7 @@ class RestrictionQuery
             $queryStr = sprintf('mr.targetId IS NULL%s', $additionalQuery);
         }
 
-        $query->where($queryStr);
-        $query->groupBy($queryIdentifier);
+        $query->andWhere($queryStr);
+        $query->addGroupBy(sprintf('%s.%s', $aliasFrom, $queryIdentifier));
     }
 }
