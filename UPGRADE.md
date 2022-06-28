@@ -1,11 +1,15 @@
 # Upgrade Notes
 
+### 4.0.3
+- **[BUGFIX]**: Fix join behaviour, query-building and `$queryIdentifier` on RestrictionQuery [@scrummer](https://github.com/dachcom-digital/pimcore-members/pull/167)
+- **[BUGFIX]**: Remove scheme and host from `_target_path` in ForbiddenRouteListener [@lukas-schnieper](https://github.com/dachcom-digital/pimcore-members/pull/166)
+
 ### 4.0.2
-- [BUGFIX] [MembersLogin] Inject correct Translator service [#aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/165)
+- **[BUGFIX]**: [MembersLogin] Inject correct Translator service [@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/165)
 
 ### 4.0.1
-- [BUGFIX] fix inherited group check [#162](https://github.com/dachcom-digital/pimcore-members/issues/162)
-- [ENHANCEMENT] return proper HTTP response codes on form submit [@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/161)
+- **[BUGFIX]**: fix inherited group check [#162](https://github.com/dachcom-digital/pimcore-members/issues/162)
+- **[ENHANCEMENT]**: return proper HTTP response codes on form submit [@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/161)
 
 ## Migrating from Version 3.x to Version 4.0
 
