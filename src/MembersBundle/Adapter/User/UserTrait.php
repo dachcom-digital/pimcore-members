@@ -71,7 +71,7 @@ trait UserTrait
         // we need to make sure to have at least one role
         $roles[] = static::ROLE_DEFAULT;
 
-        return array_unique($roles);
+        return array_values(array_unique($roles));
     }
 
     public function getGroupNames(): array
