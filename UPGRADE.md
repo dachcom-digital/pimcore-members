@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+### 4.0.4
+- **[BUGFIX]**: assert non list array after filtering user roles [@dasraab](https://github.com/dachcom-digital/pimcore-members/pull/169)
+
 ### 4.0.3
 - **[BUGFIX]**: Fix join behaviour, query-building and `$queryIdentifier` on RestrictionQuery [@scrummer](https://github.com/dachcom-digital/pimcore-members/pull/167)
 - **[BUGFIX]**: Remove scheme and host from `_target_path` in ForbiddenRouteListener [@lukas-schnieper](https://github.com/dachcom-digital/pimcore-members/pull/166)
