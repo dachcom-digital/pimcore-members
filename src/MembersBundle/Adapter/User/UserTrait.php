@@ -65,13 +65,13 @@ trait UserTrait
         /** @var GroupInterface $group */
         foreach ($this->getGroups() as $group) {
             $groupRoles = $group->getRoles();
-            $roles = array_merge($roles, is_array($groupRoles) ? $groupRoles : []);
+            $roles[] = is_array($groupRoles) ? $groupRoles : [];
         }
 
         // we need to make sure to have at least one role
-        $roles[] = static::ROLE_DEFAULT;
+        $roles[] = [static::ROLE_DEFAULT];
 
-        return array_unique($roles);
+        return array_values(array_unique(array_merge([], ...$roles)));
     }
 
     public function getGroupNames(): array
