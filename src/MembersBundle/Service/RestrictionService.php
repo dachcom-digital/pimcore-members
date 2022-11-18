@@ -302,7 +302,7 @@ class RestrictionService
             }
         }
 
-        if ($hasParentRestriction && $hasRestriction) {
+        if ($hasParentRestriction) {
             if ($objectRestriction->isInherited()) {
                 if ($parentRestriction->getInherit() === false && $parentRestriction->isInherited() === false) {
                     $objectRestriction->getDao()->delete();
