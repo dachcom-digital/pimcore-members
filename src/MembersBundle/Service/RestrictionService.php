@@ -215,10 +215,7 @@ class RestrictionService
         $pathParts = array_filter(explode('/', $path));
         foreach ($pathParts as $pathPart) {
             $tmpPaths[] = $pathPart;
-            $t = '/' . implode('/', $tmpPaths);
-            if (!empty($t)) {
-                $paths[] = $t;
-            }
+            $paths[] = sprintf('/%s', implode('/', $tmpPaths));
         }
 
         $paths = array_reverse($paths);
@@ -294,7 +291,7 @@ class RestrictionService
             return;
         }
 
-        if (!$hasParentRestriction && $hasRestriction) {
+        if (!$hasParentRestriction) {
             if ($objectRestriction->isInherited()) {
 
                 $objectRestriction->getDao()->delete();
