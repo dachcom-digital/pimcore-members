@@ -62,18 +62,18 @@ class NavigationExtension extends AbstractExtension
             return $cacheKey;
         }
 
-        $allowedGroups = $user->getGroups();
         $groupIds = [];
+        $allowedGroups = $user->getGroups();
+
         if (!empty($allowedGroups)) {
+
             /** @var GroupInterface $group */
             foreach ($allowedGroups as $group) {
                 $groupIds[] = $group->getId();
             }
 
-            if (!empty($groupIds)) {
-                $mergedCacheKey = is_bool($cache) ? '' : $cache;
-                $cacheKey = ltrim($mergedCacheKey . '-' . implode('-', $groupIds), '-');
-            }
+            $mergedCacheKey = is_bool($cache) ? '' : $cache;
+            $cacheKey = ltrim($mergedCacheKey . '-' . implode('-', $groupIds), '-');
         }
 
         return $cacheKey;

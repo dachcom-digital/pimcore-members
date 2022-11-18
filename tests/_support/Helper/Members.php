@@ -423,7 +423,7 @@ class Members extends Module implements DependsOnModule
 
     protected function getContainer(): Container
     {
-        return $this->getModule('\\' . PimcoreCore::class)->getContainer();
+        return $this->getModule('\\' . PimcoreCore::class)->_getContainer();
     }
 
     protected function getEntityRestrictionType(ElementInterface $element): string

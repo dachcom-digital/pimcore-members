@@ -10,6 +10,7 @@ use MembersBundle\Manager\ClassManagerInterface;
 use MembersBundle\Tool\ClassInstaller;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -204,6 +205,7 @@ class OAuthSetupCommand extends Command
             return true;
         }
 
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('<error>x</error> <question>SSoIdentityClass not found.</question> Do you want to install it now? (y/n) ', false);
 

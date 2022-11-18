@@ -4,6 +4,7 @@ namespace MembersBundle\Command;
 
 use MembersBundle\Tool\ClassInstaller;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,6 +40,7 @@ class ClassInstallerCommand extends Command
     {
         $classes = ['MembersUser', 'MembersGroup'];
 
+        /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion('Do you want to install the classes now? (y/n) ', false);
 
