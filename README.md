@@ -4,14 +4,14 @@ Add frontend user authentication and document restriction to pimcore.
 [![Join the chat at https://gitter.im/pimcore/pimcore](https://img.shields.io/gitter/room/pimcore/pimcore.svg?style=flat-square)](https://gitter.im/pimcore/pimcore)
 [![Software License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Latest Release](https://img.shields.io/packagist/v/dachcom-digital/members.svg?style=flat-square)](https://packagist.org/packages/dachcom-digital/members)
-[![Tests](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/Codeception/master?style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3ACodeception+branch%3Amaster)
-[![PhpStan](https://img.shields.io/github/workflow/status/dachcom-digital/pimcore-members/PHP%20Stan/master?style=flat-square&logo=github&label=phpstan%20level%204)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3A"PHP+Stan"+branch%3Amaster)
+[![Tests](https://img.shields.io/github/actions/workflow/status/dachcom-digital/pimcore-members/.github/workflows/codeception.yml?branch=master&style=flat-square&logo=github&label=codeception)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3ACodeception+branch%3Amaster)
+[![PhpStan](https://img.shields.io/github/actions/workflow/status/dachcom-digital/pimcore-members/.github/workflows/php-stan.yml?branch=master&style=flat-square&logo=github&label=phpstan%20level%204)](https://github.com/dachcom-digital/pimcore-members/actions?query=workflow%3A"PHP+Stan"+branch%3Amaster)
 
 ### Release Plan
 
 | Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained     | Branch   |
 |---------|-----------------------------------|----------------------------|--------------|----------------|----------|
-| **4.x** | `10.2` - `10.5`                   | `5.3`                      | 22.11.2021   | Feature Branch | master   |
+| **4.x** | `10.2` - `10.5`                   | `5.4`                      | 22.11.2021   | Feature Branch | master   |
 | **3.x** | `6.0` - `6.8`                     | `3.4`, `^4.4`              | 21.07.2019   | Feature Branch | 3.x      |
 | **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Bugfix only    | 2.5      |
 | **1.5** | `4.0`                             | --                         | 07.07.2017   | Unsupported    | pimcore4 |
