@@ -109,7 +109,7 @@ class RequestController extends AbstractController
         $response->setCallback(function () use ($asset) {
             flush();
             ob_flush();
-            $handle = fopen(rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath()), 'rb');
+            $handle = fopen($this->getFilePath($asset), 'rb');
             while (!feof($handle)) {
                 echo fread($handle, self::BUFFER_SIZE);
                 flush();
@@ -134,7 +134,7 @@ class RequestController extends AbstractController
 
         /** @var Model\Asset $asset */
         foreach ($assets as $asset) {
-            $filePath = rawurldecode(PIMCORE_ASSET_DIRECTORY . $asset->getFullPath());
+            $filePath = $this->getFilePath($asset);
             $files .= '"' . $filePath . '" ';
         }
 
@@ -166,5 +166,16 @@ class RequestController extends AbstractController
         });
 
         return $response;
+    }
+
+    private function getFilePath(Model\Asset $asset): string
+    {
+        $filePath = $asset->getFullPath();
+
+        if (0 !== \strpos(PIMCORE_ASSET_DIRECTORY, 's3://')) {
+            $filePath = PIMCORE_ASSET_DIRECTORY . $filePath;
+        }
+
+        return \rawurldecode($filePath);
     }
 }
