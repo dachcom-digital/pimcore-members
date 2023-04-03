@@ -6,6 +6,9 @@
 After every update you should check the pimcore extension manager. 
 Just click the "update" button or execute the migration command to finish the bundle update.
 
+#### Update from Version 3.1.5 to Version 3.1.6
+- **[ENHANCEMENT]**: It is now possible to download protected assets from a S3 bucket ([@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/173))
+
 #### Update from Version 3.1.4 to Version 3.1.5
 - **[ENHANCEMENT]**: You can now define a form field which is later used as object-key in Pimcore, when a user registers ([#154](https://github.com/dachcom-digital/pimcore-members/issues/154))
 
