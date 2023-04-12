@@ -6,6 +6,7 @@ use Pimcore\Model;
 use Pimcore\Tool\Console;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Security\RestrictionUri;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -52,33 +53,18 @@ class RequestController extends AbstractController
 
     private function serveFile(Model\Asset $asset): StreamedResponse
     {
-        $contentType = $asset->getMimetype();
-        $fileSize = $asset->getFileSize();
-
-        $response = new StreamedResponse();
-        $response->setStatusCode(200);
-        $response->headers->set('Content-Type', $contentType);
+        $response = new StreamedResponse(static fn () => fpassthru($asset->getStream()), Response::HTTP_OK);
+        $response->headers->set('Content-Type', $asset->getMimetype());
         $response->headers->set('Connection', 'Keep-Alive');
         $response->headers->set('Expires', 0);
         $response->headers->set('Provider', 'Pimcore-Members');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->headers->set('Pragma', 'public');
-        $response->headers->set('Content-Length', $fileSize);
+        $response->headers->set('Content-Length', $asset->getFileSize());
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             \Pimcore\File::getValidFilename(basename($asset->getFileName()))
         ));
-
-        $response->setCallback(function () use ($asset) {
-            flush();
-            ob_flush();
-            $handle = fopen(rawurldecode($asset->getLocalFile()), 'rb');
-            while (!feof($handle)) {
-                echo fread($handle, self::BUFFER_SIZE);
-                flush();
-                ob_flush();
-            }
-        });
 
         return $response;
     }
