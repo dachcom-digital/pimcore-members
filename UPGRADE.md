@@ -1,11 +1,16 @@
 # Upgrade Notes
 
+### 4.1.0
+- **[FEATURE]**: PIMCORE 10.5 support only
+- **[ENHANCEMENT]**: Add public asset path protection, read more about it [here](./docs/200_Restrictions.md#public-assets-path-protection)
+
 ### 4.0.4
 - **[BUGFIX]**: assert non list array after filtering user roles [@dasraab](https://github.com/dachcom-digital/pimcore-members/pull/169)
 
 ### 4.0.3
 - **[BUGFIX]**: Fix join behaviour, query-building and `$queryIdentifier` on RestrictionQuery [@scrummer](https://github.com/dachcom-digital/pimcore-members/pull/167)
 - **[BUGFIX]**: Remove scheme and host from `_target_path` in ForbiddenRouteListener [@lukas-schnieper](https://github.com/dachcom-digital/pimcore-members/pull/166)
+- **[DEPRECATION]**: Constants `RestrictionUri::PROTECTED_ASSET_FOLDER` and `RestrictionUri::MEMBERS_REQUEST_URL` have been marked as deprecated and will be removed in 5.0
 
 ### 4.0.2
 - **[BUGFIX]**: [MembersLogin] Inject correct Translator service [@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/165)
@@ -37,6 +42,7 @@
 - [SECURITY] `setSalt` method removed from `UserTrait.php` (deprecated in symfony 5.3)
 - [SECURITY] `MembersBundle\Security\EmailUserProvider` has been removed. Use [`auth_identifier: 'email'`](./docs/10_AuthIdentifier.md) instead.
 - `MembersBundle\Security\RestrictionUri::getAssetUrlInformation()` => `restrictionGroups` always returns array type
+
 ### Misc
 - Check your email templates (controller and template definition)
 

@@ -14,5 +14,9 @@ interface RestrictionManagerInterface
 
     public function isFrontendRequestByAdmin(): bool;
 
+    public function elementIsInProtectedStorageFolder(ElementInterface $element): bool;
+
+    public function pathIsInProtectedStorageFolder(string $path): bool;
+
     public function getUser(): ?UserInterface;
 }

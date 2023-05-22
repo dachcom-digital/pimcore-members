@@ -50,6 +50,11 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    # event: check asset public frontend path
+    MembersBundle\EventListener\AssetFrontendPathListener:
+        tags:
+            - { name: kernel.event_subscriber }
+
     # event: post add and update events of objects
     MembersBundle\EventListener\MembersCompletenessListener:
         tags:

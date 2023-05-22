@@ -10,6 +10,7 @@ use DachcomBundle\Test\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
+use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Security\RestrictionUri;
@@ -42,7 +43,7 @@ class Members extends Module implements DependsOnModule
 
     public function haveAProtectedAssetFolder(): Asset
     {
-        return Asset::getByPath('/' . RestrictionUri::PROTECTED_ASSET_FOLDER);
+        return Asset::getByPath('/' . RestrictionManager::PROTECTED_ASSET_FOLDER);
     }
 
     /**
