@@ -57,7 +57,7 @@ class RequestController extends AbstractController
 
     public function serveProtectedAssetPathAction(Request $request, ?string $hash = null): Response
     {
-         if ($this->configuration->getConfig('restriction')['enabled'] === false) {
+        if ($this->configuration->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
@@ -76,11 +76,16 @@ class RequestController extends AbstractController
 
     private function servePath(Request $request, string $path): Response
     {
-        if (!preg_match('@.*/(image|video)-thumb__[\d]+__.*@', $path, $matches)) {
-            return throw $this->createNotFoundException();
-        }
+        // @todo: replace this with Asset\Service::getStreamedResponseByUri() in P11
 
-        $pimcoreThumbnailRoute = '_pimcore_service_thumbnail';
+        $regExpression = sprintf('/(%s)(%s)-thumb__(%s)__(%s)\/(%s)/',
+            '.*',
+            'video|image',
+            '\d+',
+            '[a-zA-Z0-9_\-]+',
+            '.*'
+        );
+
         $storage = $this->storage->get('thumbnail');
         $storagePath = urldecode($path);
 
@@ -90,15 +95,24 @@ class RequestController extends AbstractController
             return new StreamedResponse(function () use ($stream) {
                 fpassthru($stream);
             }, 200, [
-                'Content-Type' => $storage->mimeType($storagePath),
+                'Content-Type'   => $storage->mimeType($storagePath),
+                'Content-Length' => $storage->fileSize($storagePath),
             ]);
         }
 
-        $collection = new RouteCollection();
-        $collection->add($pimcoreThumbnailRoute, $this->router->getRouteCollection()->get($pimcoreThumbnailRoute));
-        $matcher = new UrlMatcher($collection, $this->router->getContext());
+        if (preg_match($regExpression, $path, $matches)) {
+            $data = [
+                'prefix'        => ltrim($matches[1], '/'),
+                'type'          => $matches[2],
+                'assetId'       => $matches[3],
+                'thumbnailName' => $matches[4],
+                'filename'      => $matches[5],
+            ];
+        } else {
+            return throw $this->createNotFoundException();
+        }
 
-        return $this->forward('Pimcore\Bundle\CoreBundle\Controller\PublicServicesController::thumbnailAction', $matcher->matchRequest($request));
+        return $this->forward('Pimcore\Bundle\CoreBundle\Controller\PublicServicesController::thumbnailAction', $data);
     }
 
     private function serveFile(Model\Asset $asset): StreamedResponse
