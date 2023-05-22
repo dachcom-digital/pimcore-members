@@ -1,6 +1,5 @@
 # Restrictions
-
-The Restriction Feature is disabled by default. So activate it first:
+The Restriction Feature is disabled by default.
 
 ```yaml
 members:
@@ -16,7 +15,7 @@ Once activated, you'll see a restriction tab in every document.
 ### Document Inheritance
 If your enable the inheritance checkbox, all child objects will inherit the restriction.
 
-> If you're adding a new child element to a inheritable document, it will automatically adopt the restriction.
+> If you're adding a new child element to an inheritable document, it will automatically adopt the restriction.
 
 ## Enable Object Restriction
 If you want to restrict object, you need to define them in the members configuration first:
@@ -34,7 +33,7 @@ Now you should see a restriction tab in all of those defined objects.
 ### Object Inheritance
 If your enable the inheritance checkbox, all child objects will inherit the restriction.
 
-> If you're adding a new child element to a inheritable object, it will automatically adopt the restriction.
+> If you're adding a new child element to an inheritable object, it will automatically adopt the restriction.
 
 ## Asset Restriction
 After you've activated the restriction globally, you're able to restrict assets.
@@ -45,7 +44,18 @@ After you've activated the restriction globally, you're able to restrict assets.
 Since assets can't have child assets you need to create a folder first.
 Open the folder, and you'll see the inheritance checkbox. If you activate it, all assets will inherit all the restriction information from this folder.
 
-> If you're adding a new asset into a inheritable folder, it will automatically adopt the restriction.
+> If you're adding a new asset into an inheritable folder, it will automatically adopt the restriction.
+
+### Public Assets Path Protection
+Members can't protect Assets which are located out of the `/restricted-assets` folder, but it is possible to hide public assets and corresponding thumbnail paths. 
+This feature is disabled by default.
+
+```yaml
+members:
+    restriction:
+        enabled: true
+        enable_public_asset_path_protection: true
+```
 
 ## Global Restriction Check Helper
 To get current restriction information about a document, object or asset, just call the restriction manager:

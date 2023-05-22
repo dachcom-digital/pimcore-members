@@ -250,6 +250,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->booleanNode('enabled')->defaultFalse()->end()
+                ->booleanNode('enable_public_asset_path_protection')->defaultFalse()->end()
                 ->arrayNode('allowed_objects')
                     ->prototype('scalar')->end()
                     ->validate()

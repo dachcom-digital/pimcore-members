@@ -1,5 +1,9 @@
 # Upgrade Notes
 
+### 4.1.0
+- **[FEATURE]**: PIMCORE 10.5 support only
+- **[ENHANCEMENT]**: Add public asset path protection, read more about it [here](./docs/200_Restrictions.md#public-assets-path-protection)
+
 ### 4.0.4
 - **[BUGFIX]**: assert non list array after filtering user roles [@dasraab](https://github.com/dachcom-digital/pimcore-members/pull/169)
 

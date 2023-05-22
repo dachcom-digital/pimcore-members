@@ -7,7 +7,6 @@ use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Restriction\ElementRestriction;
 use MembersBundle\Restriction\Restriction;
-use MembersBundle\Security\RestrictionUri;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
@@ -17,6 +16,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class RestrictionManager implements RestrictionManagerInterface
 {
+    public const PROTECTED_ASSET_FOLDER = 'restricted-assets';
+
     public const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
     public const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
     public const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
@@ -79,9 +80,10 @@ class RestrictionManager implements RestrictionManagerInterface
         if ($restriction === null) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
-                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || !str_contains($element->getPath(), RestrictionUri::PROTECTED_ASSET_FOLDER)
+                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || !$this->elementIsInProtectedStorageFolder($element)
                     ? self::RESTRICTION_SECTION_ALLOWED
-                    : self::RESTRICTION_SECTION_NOT_ALLOWED);
+                    : self::RESTRICTION_SECTION_NOT_ALLOWED
+                );
             } else {
                 $elementRestriction->setSection(self::RESTRICTION_SECTION_ALLOWED);
             }
@@ -148,6 +150,20 @@ class RestrictionManager implements RestrictionManagerInterface
         }
 
         return $restriction;
+    }
+
+    public function elementIsInProtectedStorageFolder(ElementInterface $element): bool
+    {
+        if (!$element instanceof Asset) {
+            return false;
+        }
+
+        return $this->pathIsInProtectedStorageFolder($element->getPath());
+    }
+
+    public function pathIsInProtectedStorageFolder(string $path): bool
+    {
+        return str_contains($path, self::PROTECTED_ASSET_FOLDER);
     }
 
     public function isFrontendRequestByAdmin(): bool

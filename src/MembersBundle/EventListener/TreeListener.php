@@ -3,6 +3,7 @@
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Configuration\Configuration;
+use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Security\RestrictionUri;
 use Pimcore\Event\AdminEvents;
@@ -11,11 +12,11 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 
 class TreeListener implements EventSubscriberInterface
 {
-    protected Configuration $configuration;
-
-    public function __construct(Configuration $configuration)
+    public function __construct(
+        protected Configuration $configuration,
+        protected RestrictionManager $restrictionManager
+    )
     {
-        $this->configuration = $configuration;
     }
 
     public static function getSubscribedEvents(): array
@@ -70,11 +71,12 @@ class TreeListener implements EventSubscriberInterface
         $assets = $event->getArgument('assets');
 
         foreach ($assets as &$asset) {
+
             if (!isset($asset['basePath'])) {
                 continue;
             }
 
-            if (!str_contains($asset['basePath'], RestrictionUri::PROTECTED_ASSET_FOLDER)) {
+            if ($this->restrictionManager->pathIsInProtectedStorageFolder($asset['basePath']) === false) {
                 continue;
             }
 

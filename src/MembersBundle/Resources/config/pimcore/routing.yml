@@ -16,3 +16,6 @@ members.controller.admin.get_next_parent_restriction:
 members.asset_request:
     path: /members/request-data/{hash}
     defaults: { _controller: MembersBundle\Controller\RequestController::serveAction }
+members.asset_path_request:
+    path: /members/asset-path/{hash}
+    defaults: { _controller: MembersBundle\Controller\RequestController::serveProtectedAssetPathAction }

@@ -4,6 +4,7 @@ namespace MembersBundle\Security;
 
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Model;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -40,7 +41,7 @@ class RestrictionQuery
         } elseif ($listing instanceof Model\Asset\Listing) {
             $cType = 'asset';
             $typedAliasFrom = 'assets';
-            $additionalQuery = sprintf(' AND assets.path NOT LIKE "/%s%%"', RestrictionUri::PROTECTED_ASSET_FOLDER);
+            $additionalQuery = sprintf(' AND assets.path NOT LIKE "/%s%%"', RestrictionManager::PROTECTED_ASSET_FOLDER);
         } elseif ($listing instanceof Model\Document\Listing) {
             $cType = 'page';
             $typedAliasFrom = 'documents';
