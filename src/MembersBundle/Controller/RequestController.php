@@ -120,12 +120,10 @@ class RequestController extends AbstractController
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Content-Length', $asset->getFileSize());
-        $response->headers->set('Content-Disposition',
-            $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                \Pimcore\File::getValidFilename(basename($asset->getFileName()))
-            )
-        );
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            \Pimcore\File::getValidFilename(basename($asset->getFileName()))
+        ));
 
         return $response;
     }
