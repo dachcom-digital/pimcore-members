@@ -3,22 +3,19 @@
 namespace MembersBundle\Controller;
 
 use Pimcore\Model;
-use Pimcore\Tool\Console;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Security\RestrictionUri;
 use Pimcore\Tool\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 
 class RequestController extends AbstractController
 {
-    public const BUFFER_SIZE = 8192;
-
     public function __construct(
         protected RouterInterface $router,
         protected Storage $storage,
@@ -27,7 +24,7 @@ class RequestController extends AbstractController
     ) {
     }
 
-    public function serveAction(Request $request, ?string $hash = null): StreamedResponse
+    public function serveAction(Request $request, ?string $hash = null): Response
     {
         if ($this->configuration->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
@@ -112,77 +109,51 @@ class RequestController extends AbstractController
 
     private function serveFile(Model\Asset $asset): StreamedResponse
     {
-        $contentType = $asset->getMimetype();
-        $fileSize = $asset->getFileSize();
+        $response = new StreamedResponse(static function () use ($asset) {
+            fpassthru($asset->getStream());
+        });
 
-        $response = new StreamedResponse();
-        $response->setStatusCode(200);
-        $response->headers->set('Content-Type', $contentType);
+        $response->headers->set('Content-Type', $asset->getMimetype());
         $response->headers->set('Connection', 'Keep-Alive');
         $response->headers->set('Expires', 0);
         $response->headers->set('Provider', 'Pimcore-Members');
         $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
         $response->headers->set('Pragma', 'public');
-        $response->headers->set('Content-Length', $fileSize);
-        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            \Pimcore\File::getValidFilename(basename($asset->getFileName()))
-        ));
-
-        $response->setCallback(function () use ($asset) {
-            flush();
-            ob_flush();
-            $handle = fopen(rawurldecode($asset->getLocalFile()), 'rb');
-            while (!feof($handle)) {
-                echo fread($handle, self::BUFFER_SIZE);
-                flush();
-                ob_flush();
-            }
-        });
+        $response->headers->set('Content-Length', $asset->getFileSize());
+        $response->headers->set('Content-Disposition',
+            $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                \Pimcore\File::getValidFilename(basename($asset->getFileName()))
+            )
+        );
 
         return $response;
     }
 
-    /**
-     * @throws \Exception
-     */
-    private function serveZip(array $assets): StreamedResponse
+    private function serveZip(array $assets): BinaryFileResponse
     {
-        $fileName = 'package.zip';
-        $files = '';
+        $fileName = 'package';
+        $tempZipPath = sprintf('%s/%s-%s.zip', PIMCORE_SYSTEM_TEMP_DIRECTORY, uniqid('', false), $fileName);
+
+        $archive = new \ZipArchive();
+        $archive->open($tempZipPath, \ZipArchive::CREATE);
 
         /** @var Model\Asset $asset */
         foreach ($assets as $asset) {
-            $filePath = rawurldecode($asset->getLocalFile());
-            $files .= '"' . $filePath . '" ';
+            $archive->addFromString($asset->getFilename(), stream_get_contents($asset->getStream()));
         }
 
-        $response = new StreamedResponse();
-        $response->setStatusCode(200);
+        $archive->close();
+
+        $response = new BinaryFileResponse(new Stream($tempZipPath));
+        $response->deleteFileAfterSend(true);
+
         $response->headers->set('Content-Type', 'application/zip');
         $response->headers->set('Content-Transfer-Encoding', 'binary');
         $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $fileName
+            sprintf('%s.zip', $fileName)
         ));
-
-        $zibLib = Console::getExecutable('zip');
-        if (empty($zibLib)) {
-            throw new NotFoundHttpException('zip extension not found on this server.');
-        }
-
-        $response->setCallback(function () use ($files) {
-            mb_http_output('pass');
-            flush();
-            ob_flush();
-            $handle = popen('zip -r -j - ' . $files, 'r');
-            while (!feof($handle)) {
-                echo fread($handle, self::BUFFER_SIZE);
-                flush();
-                ob_flush();
-            }
-            pclose($handle);
-        });
 
         return $response;
     }
