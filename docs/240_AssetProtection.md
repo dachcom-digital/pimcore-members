@@ -19,9 +19,12 @@ $downloadLink = $this->restrictionUri->generateAssetUrl($download);
 
 ### Package
 If you want to get multiple downloads at once, you can use the generateAssetPackageUrl() method. 
-This will create a zip file on the fly, so no temp files on your server!
+This will create a temporary zip file containing all requested files!
 
->**Important:** Your server need the zip module to create streamed zip files!
+>**Important:** Since we need to fetch all assets via stream by flysystem, it is no longer possible to push the zip file to the client on the fly.
+> Therefor we need to store the archive in `PIMCORE_SYSTEM_TEMP_DIRECTORY` until the file has been downloaded. 
+> 
+> Depending on your system and archive size, this can temporarily consume a lot of space and memory! 
 
 ```php
 <?php
