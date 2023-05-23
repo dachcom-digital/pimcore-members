@@ -7,13 +7,12 @@ use Pimcore\Tool\Console;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Security\RestrictionUri;
 use Pimcore\Tool\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 
 class RequestController extends AbstractController
@@ -55,26 +54,22 @@ class RequestController extends AbstractController
         throw $this->createNotFoundException('invalid hash for asset request.');
     }
 
-    public function serveProtectedAssetPathAction(Request $request, ?string $hash = null): Response
+    public function serveProtectedAssetPathAction(Request $request, int $id, string $path, string $extension): Response
     {
         if ($this->configuration->getConfig('restriction')['enabled'] === false) {
             throw $this->createNotFoundException('members restriction has been disabled.');
         }
 
-        if (empty($hash)) {
-            throw $this->createNotFoundException('invalid hash for asset request.');
+        $decodedPath = $this->restrictionUri->decodePublicAssetUrl($id, $path, $extension);
+
+        if ($decodedPath === null) {
+            return new BinaryFileResponse(PIMCORE_PATH . '/bundles/AdminBundle/Resources/public/img/filetype-not-supported.svg');
         }
 
-        $dataToProcess = $this->restrictionUri->decodeAssetUrl($hash);
-
-        if ($dataToProcess === null || count($dataToProcess) === 0) {
-            throw $this->createNotFoundException('invalid hash for asset request.');
-        }
-
-        return $this->servePath($request, $dataToProcess[0]);
+        return $this->servePath($decodedPath);
     }
 
-    private function servePath(Request $request, string $path): Response
+    private function servePath(string $path): Response
     {
         // @todo: replace this with Asset\Service::getStreamedResponseByUri() in P11
 

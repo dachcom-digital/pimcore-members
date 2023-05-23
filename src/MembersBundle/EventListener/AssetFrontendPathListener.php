@@ -57,7 +57,7 @@ class AssetFrontendPathListener implements EventSubscriberInterface
             return;
         }
 
-        $this->checkAsset($event, $event->getSubject(), $event->getArgument('frontendPath'));
+        $this->checkAsset($event, $event->getSubject());
     }
 
     public function checkVideoImageThumbnailPath(GenericEvent $event): void
@@ -71,7 +71,7 @@ class AssetFrontendPathListener implements EventSubscriberInterface
             return;
         }
 
-        $this->checkAsset($event, $thumbnail->getAsset(), $event->getArgument('frontendPath'));
+        $this->checkAsset($event, $thumbnail->getAsset());
     }
 
     public function checkDocumentImageThumbnailPath(GenericEvent $event): void
@@ -85,7 +85,7 @@ class AssetFrontendPathListener implements EventSubscriberInterface
             return;
         }
 
-        $this->checkAsset($event, $thumbnail->getAsset(), $event->getArgument('frontendPath'));
+        $this->checkAsset($event, $thumbnail->getAsset());
     }
 
     public function checkImageThumbnailPath(GenericEvent $event): void
@@ -99,24 +99,22 @@ class AssetFrontendPathListener implements EventSubscriberInterface
             return;
         }
 
-        $this->checkAsset($event, $thumbnail->getAsset(), $event->getArgument('frontendPath'));
+        $this->checkAsset($event, $thumbnail->getAsset());
     }
 
-    private function checkAsset(GenericEvent $event, Asset $asset, ?string $frontendPath = null): void
+    private function checkAsset(GenericEvent $event, Asset $asset): void
     {
-        try {
-            $assetStream = $this->restrictionUri->generateAssetStreamUrl($asset, $frontendPath);
-        } catch (AccessDeniedException $e) {
-            $event->setArgument('frontendPath', '/bundles/pimcoreadmin/img/filetype-not-supported.svg');
-
+        if (!$event->hasArgument('frontendPath')) {
             return;
         }
 
-        if ($assetStream === null) {
+        $publicAssetPath = $this->restrictionUri->generatePublicAssetUrl($asset, $event->getArgument('frontendPath'));
+
+        if ($publicAssetPath === null) {
             return;
         }
 
-        $event->setArgument('frontendPath', $assetStream);
+        $event->setArgument('frontendPath', $publicAssetPath);
     }
 
     private function contextMatches(): bool

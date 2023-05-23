@@ -42,29 +42,13 @@ class RestrictionUri
         return empty($urlData) ? '' : $this->generateUrl([$urlData]);
     }
 
-    /**
-     * @thrwos AccessDeniedException
-     * @throws \Exception
-     */
-    public function generateAssetStreamUrl(Model\Asset $asset, ?string $thumbnailPath = null): ?string
+    public function generatePublicAssetUrl(Model\Asset $asset, string $thumbnailPath): ?string
     {
         if (!$this->restrictionManager->elementIsInProtectedStorageFolder($asset)) {
             return null;
         }
 
-        $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($asset);
-
-        if ($restrictionElement->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED) {
-            throw new AccessDeniedException('Asset access forbidden');
-        }
-
-        $urlData = $this->getAssetData($asset, false, true, $thumbnailPath);
-
-        if (count($urlData) === 0) {
-            return null;
-        }
-
-        return $this->generateUrl([$urlData], $asset instanceof Model\Asset\Video, 'members.asset_path_request');
+        return $this->generatePublicUrl($asset, $thumbnailPath);
     }
 
     /**
@@ -132,6 +116,24 @@ class RestrictionUri
         return $info;
     }
 
+    public function decodePublicAssetUrl(int $assetId, string $path, string $extension): ?string
+    {
+        $filePath = base64_decode($path);
+        $asset = Model\Asset::getById($assetId);
+
+        if (!$asset instanceof Model\Asset) {
+            return null;
+        }
+
+        $restrictionElement = $this->restrictionManager->getElementRestrictionStatus($asset);
+
+        if ($restrictionElement->getSection() === RestrictionManager::RESTRICTION_SECTION_NOT_ALLOWED) {
+            return null;
+        }
+
+        return $filePath;
+    }
+
     public function decodeAssetUrl(string $requestData): ?array
     {
         $fileInfo = $this->parseUrlFragment($requestData);
@@ -145,12 +147,6 @@ class RestrictionUri
 
             $assetId = $file['f'];
             $proxyId = $file['p'];
-            $thumbnailPath = $file['tp'] ?? null;
-
-            if ($thumbnailPath !== null) {
-                $dataToProcess[] = $thumbnailPath;
-                continue;
-            }
 
             $asset = Model\Asset::getById($assetId);
 
@@ -179,7 +175,7 @@ class RestrictionUri
     /**
      * @throws \Exception
      */
-    private function getAssetData(string|Model\Asset $asset = '', bool|int $objectProxyId = false, bool $checkRestriction = false, ?string $thumbnailPath = null): array
+    private function getAssetData(string|Model\Asset $asset = '', bool|int $objectProxyId = false, bool $checkRestriction = false): array
     {
         if (is_string($asset)) {
             $asset = Model\Asset::getByPath($asset);
@@ -205,34 +201,35 @@ class RestrictionUri
             }
         }
 
-        $params = [
-            'f'  => $asset->getId(),
-            'p'  => $objectProxyId !== false ? (int) $objectProxyId : false
+        return [
+            'f' => $asset->getId(),
+            'p' => $objectProxyId !== false ? (int) $objectProxyId : false
         ];
-
-        if ($thumbnailPath !== null) {
-            $params['tp'] = $thumbnailPath;
-        }
-
-        return $params;
     }
 
     /**
      * @throws \JsonException
      */
-    private function generateUrl(array $data, bool $isVideoAsset = false, string $route = 'members.asset_request'): string
+    private function generateUrl(array $data): string
     {
         $encodedData = json_encode($data, JSON_THROW_ON_ERROR);
         $params = rtrim(base64_encode($encodedData), '=');
 
         $urlParts = [$params];
 
-        // pimcore checks against video extension in url
-        if ($isVideoAsset === true) {
-            $urlParts[] = '.mp4';
-        }
+        return $this->router->generate('members.asset_request', ['hash' => implode('', $urlParts)]);
+    }
 
-        return $this->router->generate($route, ['hash' => implode('', $urlParts)]);
+    private function generatePublicUrl(Model\Asset $asset, string $path): string
+    {
+        return $this->router->generate(
+            'members.asset_path_request',
+            [
+                'id'        => $asset->getId(),
+                'path'      => base64_encode($path),
+                'extension' => pathinfo($path, PATHINFO_EXTENSION)
+            ]
+        );
     }
 
     /**
@@ -240,10 +237,6 @@ class RestrictionUri
      */
     private function parseUrlFragment(string $urlFragment): ?array
     {
-        if (str_ends_with($urlFragment, '.mp4')) {
-            $urlFragment = substr($urlFragment, 0, -4);
-        }
-
         $base64DecodedData = $urlFragment . str_repeat('=', strlen($urlFragment) % 4);
         $fileInfo = json_decode(base64_decode($base64DecodedData), true, 512, JSON_THROW_ON_ERROR);
 

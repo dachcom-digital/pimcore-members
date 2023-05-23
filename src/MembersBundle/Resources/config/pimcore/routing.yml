@@ -17,5 +17,5 @@ members.asset_request:
     path: /members/request-data/{hash}
     defaults: { _controller: MembersBundle\Controller\RequestController::serveAction }
 members.asset_path_request:
-    path: /members/asset-path/{hash}
+    path: /members/asset/{id}/{path}.{extension}
     defaults: { _controller: MembersBundle\Controller\RequestController::serveProtectedAssetPathAction }
