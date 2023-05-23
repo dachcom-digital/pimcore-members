@@ -1,29 +1,15 @@
-pimcore.registerNS('pimcore.layout.toolbar');
-pimcore.registerNS('pimcore.plugin.members');
+class MembersCore {
+    constructor() {
+        this.ready = false;
+        this.settings = {};
+        this.dataQueue = [];
+    }
 
-pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
-
-    settings: {},
-    ready: false,
-    dataQueue: [],
-
-    getClassName: function () {
-        return 'pimcore.plugin.members';
-    },
-
-    initialize: function () {
-        pimcore.plugin.broker.registerPlugin(this);
-    },
-
-    uninstall: function () {
-    },
-
-    pimcoreReady: function (params, broker) {
-
+    init() {
         Ext.Ajax.request({
             url: '/admin/members/restriction/get-global-settings',
             success: function (response) {
-                var resp = Ext.decode(response.responseText);
+                const resp = Ext.decode(response.responseText);
 
                 this.settings = resp.settings;
                 this.ready = true;
@@ -31,61 +17,63 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
             }.bind(this)
         });
+    }
 
-    },
+    postOpenDocument(ev) {
 
-    openSettings: function () {
-        try {
-            pimcore.globalmanager.get('members_settings').activate();
-        } catch (e) {
-            pimcore.globalmanager.add('members_settings', new pimcore.plugin.members.settings());
-        }
-    },
-
-    postOpenDocument: function (doc) {
+        const document = ev.detail.document;
 
         if (this.ready) {
-            this.processElement(doc, 'page');
+            this.processElement(document, 'page');
         } else {
-            this.addElementToQueue(doc, 'page');
+            this.addElementToQueue(document, 'page');
         }
-    },
+    }
 
-    postOpenObject: function (obj) {
+    postOpenObject(ev) {
+
+        const object = ev.detail.object;
 
         if (this.ready) {
-            this.processElement(obj, 'object');
+            this.processElement(object, 'object');
         } else {
-            this.addElementToQueue(obj, 'object');
+            this.addElementToQueue(object, 'object');
         }
-    },
+    }
 
-    postOpenAsset: function (asset) {
+    postOpenAsset(ev) {
+
+        const asset = ev.detail.asset;
 
         if (this.ready) {
             this.processElement(asset, 'asset');
         } else {
             this.addElementToQueue(asset, 'asset');
         }
-    },
+    }
 
-    postSaveDocument: function (doc, type, task, only) {
+    postSaveDocument(ev) {
 
-        if (doc.members) {
-            doc.members.restrictionTab.save();
+        const document = ev.detail.document;
+
+        if (document.members) {
+            document.members.restrictionTab.save();
         }
-    },
+    }
 
-    postSaveObject: function (obj, task, only) {
+    postSaveObject(ev) {
 
-        if (obj.members) {
-            obj.members.restrictionTab.save();
+        const object = ev.detail.object;
+
+        if (object.members) {
+            object.members.restrictionTab.save();
         }
-    },
+    }
 
-    postSaveAsset: function (assetId) {
+    postSaveAsset(ev) {
 
-        var asset;
+        let asset,
+            assetId = ev.detail.id;
 
         if (pimcore.globalmanager.exists('asset_' + assetId) !== false) {
             asset = pimcore.globalmanager.get('asset_' + assetId);
@@ -93,32 +81,34 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
                 asset.members.restrictionTab.save();
             }
         }
-    },
+    }
 
-    addElementToQueue: function (obj, type) {
+    addElementToQueue(obj, type) {
         this.dataQueue.push({'obj': obj, 'type': type});
-    },
+    }
 
-    processQueue: function () {
+    processQueue() {
 
-        if (this.dataQueue.length > 0) {
-
-            Ext.each(this.dataQueue, function (data) {
-
-                var obj = data.obj,
-                    type = data.type;
-
-                this.processElement(obj, type);
-
-            }.bind(this));
-
-            this.dataQueue = {};
+        if (this.dataQueue.length === 0) {
+            return;
         }
-    },
 
-    processElement: function (obj, type) {
+        Ext.each(this.dataQueue, function (data) {
 
-        var isAllowed = true;
+            const obj = data.obj;
+            const type = data.type;
+
+            this.processElement(obj, type);
+
+        }.bind(this));
+
+        this.dataQueue = {};
+    }
+
+    processElement(obj, type) {
+
+        let isAllowed = true,
+            restrictionTab;
 
         if (this.settings.restriction.enabled === false) {
             return false;
@@ -134,10 +124,18 @@ pimcore.plugin.members = Class.create(pimcore.plugin.admin, {
 
         if (isAllowed) {
             obj.members = {};
-            var restrictionTab = new pimcore.plugin.members.document.restriction(obj);
+            restrictionTab = new pimcore.plugin.members.document.restriction(obj);
             restrictionTab.setup(type);
         }
     }
-});
+}
 
-new pimcore.plugin.members();
+const membersCoreHandler = new MembersCore();
+
+document.addEventListener(pimcore.events.pimcoreReady, membersCoreHandler.init.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postOpenDocument, membersCoreHandler.postOpenDocument.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postOpenObject, membersCoreHandler.postOpenObject.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postOpenAsset, membersCoreHandler.postOpenAsset.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postSaveDocument, membersCoreHandler.postSaveDocument.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postSaveObject, membersCoreHandler.postSaveObject.bind(membersCoreHandler));
+document.addEventListener(pimcore.events.postSaveAsset, membersCoreHandler.postSaveAsset.bind(membersCoreHandler));
