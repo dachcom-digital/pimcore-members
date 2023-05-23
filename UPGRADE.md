@@ -3,7 +3,7 @@
 ### 4.1.0
 - **[FEATURE]**: PIMCORE 10.5 support only
 - **[ENHANCEMENT]**: Add public asset path protection, read more about it [here](./docs/200_Restrictions.md#public-assets-path-protection)
-- **[ENHANCEMENT]**: Respect flysystem stream in asset/zip download [#174|@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/174)
+- **[ENHANCEMENT]**: Respect flysystem stream in asset/zip download, read more about it [here](./docs/240_AssetProtection.md#package) | [#174|@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/174)
 
 ### 4.0.4
 - **[BUGFIX]**: assert non list array after filtering user roles [@dasraab](https://github.com/dachcom-digital/pimcore-members/pull/169)
