@@ -1,7 +1,7 @@
 {% extends '@Members/layout.html.twig' %}
 
 {% block members_user_content %}
-    {% set user_name = user is not null ? user.username ?: user.email : '' %}
+    {% set user_name = user is not null ? user.username|default(user.email) : '' %}
     <p>{{ tokenFound ? 'members.registration.confirmed'|trans({ '%username%': user_name }) : 'members.registration.already_confirmed_or_not_found'|trans }}</p>
     {% if targetUrl %}
         <p><a href="{{ targetUrl }}">{{ 'members.registration.back'|trans }}</a></p>
