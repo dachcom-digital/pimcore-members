@@ -67,8 +67,6 @@ class OAuthIdentityAuthenticator extends OAuth2Authenticator implements Authenti
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client, $provider, $type, $parameter) {
-
-                /** @var OAuth2ClientInterface $facebookUser */
                 $user = $client->fetchUserFromToken($accessToken);
                 $oAuthResponse = new OAuthResponse($provider, $accessToken, $user, $parameter);
                 $memberUser = $this->ssoIdentityManager->getUserBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
