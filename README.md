@@ -50,8 +50,12 @@ bin/console members:install:class
 
 ### Security Installation
 It is not possible to merge security configurations from multiple locations, including bundles. Instead, you have to move them to
-one single config file, e.g. `config/packages/security.yaml`. Please adopt `MembersBundle/Resources/config/packages/security.yaml`
+one single config file, e.g. `config/packages/security.yaml`. Please adopt [security_auth_manager.yaml](./src/MembersBundle/Resources/config/packages/security_auth_manager.yaml)
 and merge your own firewall configuration into one single file.
+
+#### Legacy Security Configuration
+⚠️ If you still want to use the legacy authenticator, adopt [security_legacy.yaml](./src/MembersBundle/Resources/config/packages/security_legacy.yaml)
+Keep in mind, that this configuration will be removed in Members 5.0.
 
 ### Route Installation
 MembersBundle does not include any routes per default. Otherwise, it would be hard for you to change or override included routes. 
@@ -85,15 +89,15 @@ You need two classes: User and Group. So let's create it:
 2. Add parent class: `\MembersBundle\Adapter\User\AbstractUser`
 3. Add fields:
 
-| Name | Field Type | Comment |
-|---------------------|-------------|-------------------------------|
-| userName | Input |  |
-| email | Input |  **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md). |
-| confirmationToken | Input | must set to it read only |
-| lastLogin | Date & Time | must set to it read only |
-| password | Password | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md). |
-| passwordRequestedAt | Date & Time | must set to it read only |
-| groups | User Group | This field comes with Members |
+| Name                | Field Type  | Comment                                                                                                         |
+|---------------------|-------------|-----------------------------------------------------------------------------------------------------------------|
+| userName            | Input       |                                                                                                                 |
+| email               | Input       | **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md).                       |
+| confirmationToken   | Input       | must set to it read only                                                                                        |
+| lastLogin           | Date & Time | must set to it read only                                                                                        |
+| password            | Password    | Hide it, if you want. **Note:** Do not add this field if you're using the [CMF](docs/20_ClassCustomization.md). |
+| passwordRequestedAt | Date & Time | must set to it read only                                                                                        |
+| groups              | User Group  | This field comes with Members                                                                                   |
 
 > `membersUser` is the default name, you may want to change it. Read [here](docs/20_ClassCustomization.md) how to achieve that.
 
@@ -108,9 +112,9 @@ You want to enable the SSO Feature in Members? Read more about it [here](./docs/
 2. Add parent class: `\MembersBundle\Adapter\Group\AbstractGroup`
 3. Add fields:
 
-| Name | Field Type | Comment |
-|---------------------|-------------|-------------------------------|
-| name | Input |  |
+| Name  | Field Type     | Comment                                                                                                     |
+|-------|----------------|-------------------------------------------------------------------------------------------------------------|
+| name  | Input          |                                                                                                             |
 | roles | Multiselection | Set "Options Provider Class or Service Name" to `@MembersBundle\CoreExtension\Provider\RoleOptionsProvider` |
 
 > `membersGroup` is the default name, you may want to change it. Read [here](docs/20_ClassCustomization.md) how to achieve that.

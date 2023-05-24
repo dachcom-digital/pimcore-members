@@ -5,6 +5,7 @@
 - **[ENHANCEMENT]**: Add public asset path protection, read more about it [here](./docs/200_Restrictions.md#public-assets-path-protection)
 - **[ENHANCEMENT]**: Respect flysystem stream in asset/zip download, read more about it [here](./docs/240_AssetProtection.md#package) | [#174|@aarongerig](https://github.com/dachcom-digital/pimcore-members/pull/174)
 - **[ENHANCEMENT]**: Do not throw any exception if confirmation token couldn't be found. Please check `views/registration/confirmed.html.twig` for changes to adopt [#175](https://github.com/dachcom-digital/pimcore-members/issues/175)
+- **[NEW FEATURE]**: Provide new authentication workflow (`security.enable_authenticator_manager = true`). If you want to switch, read more about it [here](./README.md#security-installation) | [#160](https://github.com/dachcom-digital/pimcore-members/issues/160)
 
 ### 4.0.4
 - **[BUGFIX]**: assert non list array after filtering user roles [@dasraab](https://github.com/dachcom-digital/pimcore-members/pull/169)
