@@ -54,7 +54,7 @@ one single config file, e.g. `config/packages/security.yaml`. Please adopt [secu
 and merge your own firewall configuration into one single file.
 
 #### Legacy Security Configuration
-If you still want to use the legacy authenticator, use the Please adopt [security_legacy.yaml](./src/MembersBundle/Resources/config/packages/security_legacy.yaml)
+⚠️ If you still want to use the legacy authenticator, adopt [security_legacy.yaml](./src/MembersBundle/Resources/config/packages/security_legacy.yaml)
 Keep in mind, that this configuration will be removed in Members 5.0.
 
 ### Route Installation
