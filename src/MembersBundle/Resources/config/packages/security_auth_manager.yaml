@@ -1,0 +1,41 @@
+security:
+
+    enable_authenticator_manager: true
+
+    # symfony default is set to "true".
+    # you may want to keep it "true" but keep in mind that this hide meaningful exceptions like "acount is disabled"
+    # instead the BadCredentialsException will be thrown
+    hide_user_not_found: false
+
+    providers:
+
+        # [...] other providers
+
+        members:
+            id: MembersBundle\Security\UserProvider
+
+    firewalls:
+
+        # [...] other firewalls
+
+        members_fe:
+            pattern: ^/(?!(admin)($|/)).*$
+            provider: members
+            entry_point: form_login
+            form_login:
+                login_path: members_user_security_login
+                check_path: members_user_security_check
+                enable_csrf: true
+            logout:
+                path: members_user_security_logout
+                invalidate_session: false
+                target: /
+            user_checker: MembersBundle\Security\UserChecker
+
+    access_control:
+
+        # [...] other access controls
+
+        - { path: ^/_locale/members/login$, role: PUBLIC_ACCESS }
+        - { path: ^/_locale/members/register, role: PUBLIC_ACCESS }
+        - { path: ^/_locale/members/resetting, role: PUBLIC_ACCESS }

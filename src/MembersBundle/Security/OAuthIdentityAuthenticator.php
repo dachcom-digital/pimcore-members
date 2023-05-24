@@ -22,6 +22,9 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @deprecated since 4.1 and will be removed in 5.0
+ */
 class OAuthIdentityAuthenticator extends SocialAuthenticator
 {
     protected UrlGeneratorInterface $router;

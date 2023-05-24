@@ -3,9 +3,6 @@ doctrine_migrations:
         'MembersBundle\Migrations': '@MembersBundle/Migrations'
 
 pimcore:
-    security:
-        encoder_factories:
-            MembersBundle\Adapter\User\UserInterface: MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory
     objects:
         class_definitions:
             data:

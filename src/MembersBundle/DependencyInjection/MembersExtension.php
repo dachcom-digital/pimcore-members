@@ -2,10 +2,12 @@
 
 namespace MembersBundle\DependencyInjection;
 
+use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Security\Authenticator\OAuthIdentityAuthenticator;
+use MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory;
 use MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher;
 use MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher;
 use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
-use MembersBundle\Security\OAuthIdentityAuthenticator;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -22,25 +24,13 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
-        if ($container->hasExtension('security') === false) {
-            return;
+        $oauthEnabled = false;
+        if ($container->hasExtension('security') === true && $config['oauth']['enabled'] === true) {
+            $oauthEnabled = true;
         }
 
-        if ($config['oauth']['enabled'] === false) {
-            return;
-        }
+        $this->extendPimcoreSecurityConfiguration($container, $oauthEnabled);
 
-        $container->loadFromExtension('security', [
-            'firewalls' => [
-                'members_fe' => [
-                    'guard' => [
-                        'authenticators' => [
-                            OAuthIdentityAuthenticator::class
-                        ]
-                    ]
-                ]
-            ]
-        ]);
     }
 
     /**
@@ -101,6 +91,8 @@ class MembersExtension extends Extension implements PrependExtensionInterface
             $loader->load('oauth.yml');
             $this->enableOauth($container, $config);
         }
+
+        $this->buildSecurityConfiguration($container, $loader);
     }
 
     protected function enableOauth(ContainerBuilder $container, array $config): void
@@ -120,5 +112,79 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         foreach ($config['relations']['sso_identity_complete_profile']['form'] as $confName => $confValue) {
             $container->setParameter('members_user.oauth.sso_identity_complete_profile.form.' . $confName, $confValue);
         }
+    }
+
+    protected function extendPimcoreSecurityConfiguration(ContainerBuilder $container, bool $oauthEnabled): void
+    {
+        if ($this->authenticatorIsEnabled($container) === false) {
+
+            $container->loadFromExtension('pimcore', [
+                'security' => [
+                    'encoder_factories' => [
+                        UserInterface::class => UserAwareEncoderFactory::class
+                    ]
+                ]
+            ]);
+
+            if ($oauthEnabled === true) {
+                $container->loadFromExtension('security', [
+                    'firewalls' => [
+                        'members_fe' => [
+                            'guard' => [
+                                'authenticators' => [
+                                    \MembersBundle\Security\OAuthIdentityAuthenticator::class
+                                ]
+                            ]
+                        ]
+                    ]
+                ]);
+            }
+
+            return;
+        }
+
+        $container->loadFromExtension('pimcore', [
+            'security' => [
+                'password_hasher_factories' => [
+                    UserInterface::class => 'members.security.password_hasher_factory'
+                ]
+            ]
+        ]);
+
+        if ($oauthEnabled === true) {
+            $container->loadFromExtension('security', [
+                'firewalls' => [
+                    'members_fe' => [
+                        'custom_authenticators' => [
+                            OAuthIdentityAuthenticator::class
+                        ]
+                    ]
+                ]
+            ]);
+        }
+    }
+
+    protected function buildSecurityConfiguration(ContainerBuilder $container, YamlFileLoader $loader): void
+    {
+        if ($this->authenticatorIsEnabled($container) === false) {
+            $loader->load('security_legacy.yml');
+
+            return;
+        }
+
+        $loader->load('security_authenticator_manager.yml');
+    }
+
+    protected function authenticatorIsEnabled(ContainerBuilder $container): bool
+    {
+        if (!$container->hasParameter('security.authenticator.manager.enabled')) {
+            return false;
+        }
+
+        if ($container->getParameter('security.authenticator.manager.enabled') !== true) {
+            return false;
+        }
+
+        return true;
     }
 }

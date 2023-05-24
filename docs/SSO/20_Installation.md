@@ -13,7 +13,7 @@ If you don't want to use it, you need to check several steps which we're going t
 
 ## Install Classes
 You need an additional Class for the SSO Identity. Every provider (e.g. Google or Facebook) creates an `SsoIdentity` entity, which gets appended to a user object.
-If you're using all the default Members Classes, you can simple re-run the command:
+If you're using all the default Members Classes, you can simply re-run the command:
 
 ````bash
 $ bin/console members:install:class -o
