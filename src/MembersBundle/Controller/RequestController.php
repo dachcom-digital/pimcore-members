@@ -70,14 +70,6 @@ class RequestController extends AbstractController
     {
         // @todo: replace this with Asset\Service::getStreamedResponseByUri() in P11
 
-        $regExpression = sprintf('/(%s)(%s)-thumb__(%s)__(%s)\/(%s)/',
-            '.*',
-            'video|image',
-            '\d+',
-            '[a-zA-Z0-9_\-]+',
-            '.*'
-        );
-
         $storage = $this->storage->get('thumbnail');
         $storagePath = urldecode($path);
 
@@ -86,25 +78,46 @@ class RequestController extends AbstractController
 
             return new StreamedResponse(function () use ($stream) {
                 fpassthru($stream);
-            }, 200, [
+            }, Response::HTTP_OK, [
                 'Content-Type'   => $storage->mimeType($storagePath),
                 'Content-Length' => $storage->fileSize($storagePath),
             ]);
         }
 
+        $regExpression = sprintf('/(%s)(%s)-thumb__(%s)__(%s)\/(%s)/',
+            '.*',
+            'video|image',
+            '\d+',
+            '[a-zA-Z0-9_\-]+',
+            '.*'
+        );
+
         if (preg_match($regExpression, $path, $matches)) {
-            $data = [
+            return $this->forward('Pimcore\Bundle\CoreBundle\Controller\PublicServicesController::thumbnailAction', [
                 'prefix'        => ltrim($matches[1], '/'),
                 'type'          => $matches[2],
                 'assetId'       => $matches[3],
                 'thumbnailName' => $matches[4],
                 'filename'      => $matches[5],
-            ];
-        } else {
-            return throw $this->createNotFoundException();
+            ]);
         }
 
-        return $this->forward('Pimcore\Bundle\CoreBundle\Controller\PublicServicesController::thumbnailAction', $data);
+        // no thumbnail path found, check if the original file has been requested
+
+        $asset = Model\Asset::getByPath($path);
+
+        if ($asset instanceof Model\Asset) {
+            $stream = $asset->getStream();
+
+            return new StreamedResponse(function () use ($stream) {
+                fpassthru($stream);
+            }, Response::HTTP_OK, [
+                'Content-Type'   => $asset->getMimeType(),
+                'Content-Length' => $asset->getFileSize(),
+            ]);
+        }
+
+        return throw $this->createNotFoundException();
     }
 
     private function serveFile(Model\Asset $asset): StreamedResponse

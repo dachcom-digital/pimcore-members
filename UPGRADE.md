@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+### 4.1.1
+- **[BUGFIX]**: Also respect original asset paths in protected env
+
 ### 4.1.0
 - **[FEATURE]**: PIMCORE 10.5 support only
 - **[ENHANCEMENT]**: Add public asset path protection, read more about it [here](./docs/200_Restrictions.md#public-assets-path-protection)
