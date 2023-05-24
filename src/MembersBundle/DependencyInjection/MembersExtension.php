@@ -177,10 +177,12 @@ class MembersExtension extends Extension implements PrependExtensionInterface
 
     protected function authenticatorIsEnabled(ContainerBuilder $container): bool
     {
+        /** @phpstan-ignore-next-line */
         if (!$container->hasParameter('security.authenticator.manager.enabled')) {
             return false;
         }
 
+        /** @phpstan-ignore-next-line */
         if ($container->getParameter('security.authenticator.manager.enabled') !== true) {
             return false;
         }
