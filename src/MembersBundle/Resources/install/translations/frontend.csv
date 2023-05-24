@@ -14,6 +14,7 @@
 "members.registration.check_email","Eine E-Mail wurde an %email% gesendet. Sie enthält einen Link, den Sie anklicken müssen, um Ihr Benutzerkonto zu bestätigen.","An email has been sent to %email%. It contains an activation link you must click to activate your account."
 "members.registration.check_admin","Ihr Account wurde erfolgreich erstellt und wird so schnell wie möglich von einem Administrator freigeschaltet.","Your account was created successfully and must be activated by site stuff."
 "members.registration.confirmed","Glückwunsch %username%, Ihr Benutzerkonto ist jetzt bestätigt.","Congrats %username%, your account is now activated."
+"members.registration.already_confirmed_or_not_found","Dieses Benutzerkonto wurde bereits bestätigt oder existiert nicht.","This user account has already been confirmed or does not exist."
 "members.registration.back","Zurück zur ursprünglichen Seite.","Back to the originating page."
 "members.registration.submit","Registrieren","Register"
 "members.registration.flash.user_created","Der Benutzer wurde erfolgreich erstellt.","The user has been created successfully."

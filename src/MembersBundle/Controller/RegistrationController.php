@@ -136,7 +136,11 @@ class RegistrationController extends AbstractController
         $user = $this->userManager->findUserByConfirmationToken($token);
 
         if ($user === null) {
-            throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
+            return $this->renderTemplate('@Members/registration/confirmed.html.twig', [
+                'tokenFound' => false,
+                'user'       => null,
+                'targetUrl'  => null
+            ]);
         }
 
         $user->setConfirmationToken(null);
@@ -167,8 +171,9 @@ class RegistrationController extends AbstractController
         $session = $request->getSession()->getBag('members_session');
 
         return $this->renderTemplate('@Members/registration/confirmed.html.twig', [
-            'user'      => $user,
-            'targetUrl' => $this->getTargetUrlFromSession($session)
+            'tokenFound' => true,
+            'user'       => $user,
+            'targetUrl'  => $this->getTargetUrlFromSession($session)
         ]);
     }
 
