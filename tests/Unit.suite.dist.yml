@@ -1,0 +1,8 @@
+actor: UnitTester
+error_level: '%PIMCORE_PHP_ERROR_REPORTING%'
+modules:
+    enabled:
+        - \Dachcom\Codeception\Helper\PimcoreCore:
+            connect_db: true
+        - \DachcomBundle\Test\Helper\PimcoreBundleCore:
+            run_installer: true

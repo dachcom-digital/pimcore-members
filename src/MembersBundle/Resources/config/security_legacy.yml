@@ -1,5 +1,0 @@
-services:
-    MembersBundle\Security\Encoder\Factory\UserAwareEncoderFactory:
-        arguments:
-            $className: 'Pimcore\Security\Encoder\PasswordFieldEncoder'
-            $arguments: ['password']
