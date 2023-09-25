@@ -1,6 +1,7 @@
 bundles:
     - { namespace: \Pimcore\Bundle\AdminBundle\PimcoreAdminBundle, priority: 60 }
     - { namespace: \Pimcore\Bundle\SeoBundle\PimcoreSeoBundle, priority: 0, execute_installer: true }
+    - { namespace: \Pimcore\Bundle\StaticRoutesBundle\PimcoreStaticRoutesBundle, priority: 0, execute_installer: true }
     - { namespace: \MembersBundle\MembersBundle }
 setup_files:
     - { path: app/config.yaml, dest: ./config/ }
