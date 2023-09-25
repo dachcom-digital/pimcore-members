@@ -1,0 +1,21 @@
+bundles:
+    - { namespace: \Pimcore\Bundle\AdminBundle\PimcoreAdminBundle, priority: 60 }
+    - { namespace: \Pimcore\Bundle\SeoBundle\PimcoreSeoBundle, priority: 0, execute_installer: true }
+    - { namespace: \Pimcore\Bundle\StaticRoutesBundle\PimcoreStaticRoutesBundle, priority: 0, execute_installer: true }
+    - { namespace: \MembersBundle\MembersBundle }
+setup_files:
+    - { path: app/config.yaml, dest: ./config/ }
+    - { path: app/routes.yaml, dest: ./config/ }
+    - { path: app/security.yaml, dest: ./config/packages/ }
+    - { path: app/system_settings.yaml, dest: ./var/config/system_settings/ }
+    - { path: app/controller/DefaultController.php, dest: ./src/Controller/ }
+    - { path: app/templates/default.html.twig, dest: ./templates/default/ }
+    - { path: app/templates/snippet.html.twig, dest: ./templates/default/ }
+    - { path: app/templates/staticRoute.html.twig, dest: ./templates/default/ }
+    - { path: app/templates/navigation.html.twig, dest: ./templates/default/ }
+preload_files:
+    - { path: Services/TestRestrictedStaticRouteListener.php }
+additional_composer_packages:
+    - { package: pimcore/admin-ui-classic-bundle, version: ^1.0 }
+    - { package: knpuniversity/oauth2-client-bundle, version: ^2.0 }
+    - { package: league/oauth2-google, version: ^3.0 }

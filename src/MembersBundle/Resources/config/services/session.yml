@@ -1,9 +1,0 @@
-services:
-
-    _defaults:
-        autowire: true
-        autoconfigure: true
-
-    MembersBundle\Session\SessionConfigurator:
-        tags:
-            - { name: pimcore.session.configurator }

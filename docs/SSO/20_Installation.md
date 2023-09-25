@@ -21,7 +21,7 @@ $ bin/console members:install:class -o
 
 By adding the `-o` argument, this command will install the `SsoIdentity`. Already installed classes will be skipped.
 
-If you want to use a different name, just create the class and import it from `src/MembersBundle/Resources/install/classes/class_SsoIdentity_export.json`.
+If you want to use a different name, just create the class and import it from `src/MembersBundle/config/install/classes/class_SsoIdentity_export.json`.
 Read more about changing the default class name [here](../20_ClassCustomization.md).  
 
 ## Add SSO Identity Relation Field

@@ -1,0 +1,10 @@
+doctrine_migrations:
+    migrations_paths:
+        'MembersBundle\Migrations': '@MembersBundle/src/Migrations'
+
+pimcore:
+    objects:
+        class_definitions:
+            data:
+                map:
+                    membersGroupMultiselect: MembersBundle\CoreExtension\GroupMultiselect

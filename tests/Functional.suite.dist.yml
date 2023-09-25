@@ -1,0 +1,16 @@
+actor: FunctionalTester
+error_level: '%PIMCORE_PHP_ERROR_REPORTING%'
+modules:
+    enabled:
+        - \Pimcore\Tests\Support\Helper\ClassManager
+        - \Dachcom\Codeception\Support\Helper\PimcoreCore:
+                connect_db: true
+                rebootable_client: true
+        - \Dachcom\Codeception\Support\Helper\Browser\PhpBrowser:
+                depends: \Dachcom\Codeception\Support\Helper\PimcoreCore
+        - \Dachcom\Codeception\Support\Helper\PimcoreUser
+        - \DachcomBundle\Test\Support\Helper\PimcoreBackend
+        - \DachcomBundle\Test\Support\Helper\Members:
+                depends: \DachcomBundle\Test\Support\Helper\PimcoreBackend
+        - \DachcomBundle\Test\Support\Helper\PimcoreBundleCore:
+                run_installer: true
