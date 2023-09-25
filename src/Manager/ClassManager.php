@@ -3,6 +3,7 @@
 namespace MembersBundle\Manager;
 
 use MembersBundle\Configuration\Configuration;
+use Pimcore\Model\DataObject\AbstractObject;
 use Pimcore\Model\DataObject\Listing;
 use Pimcore\Tool;
 
@@ -14,6 +15,7 @@ class ClassManager implements ClassManagerInterface
 
     public function getGroupListing(): Listing
     {
+        /** @var AbstractObject $listingClass */
         $listingClass = $this->getGroupClass();
 
         if (!Tool::classExists($listingClass)) {
@@ -25,6 +27,7 @@ class ClassManager implements ClassManagerInterface
 
     public function getUserListing(): Listing
     {
+        /** @var AbstractObject $listingClass */
         $listingClass = $this->getUserClass();
 
         if (!Tool::classExists($listingClass)) {
@@ -34,11 +37,9 @@ class ClassManager implements ClassManagerInterface
         return $listingClass::getList();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSsoIdentityListing(): Listing
     {
+        /** @var AbstractObject $listingClass */
         $listingClass = $this->getSsoIdentityClass();
 
         if (!Tool::classExists($listingClass)) {

@@ -10,7 +10,6 @@ parameters:
         # only works if optional bundles are available:
         - src/Adapter/User/AbstractCustomerUser.php
     ignoreErrors:
-        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\.#'
         - '#Comparison operation \"\>\" between int\<1, max\> and 0 is always true\.#'
         - '#Method MembersBundle\\EventListener\\PostConfirmationListener::confirmByMail\(\) is unused#'
         - '#Method MembersBundle\\EventListener\\PostConfirmationListener::confirmByAdmin\(\) is unused#'

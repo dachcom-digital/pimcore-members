@@ -2,11 +2,11 @@
 
 namespace DachcomBundle\Test\Unit\Security;
 
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\Security\UserChecker;
-use PHPUnit\Framework\TestCase;
 use Pimcore\Model\DataObject\MembersUser;
 
-class UserCheckerTest extends TestCase
+class UserCheckerTest extends DachcomBundleTestCase
 {
     public function testCheckPreAuthFailsLockedOut()
     {
@@ -43,11 +43,7 @@ class UserCheckerTest extends TestCase
         $userMock = $this->getUser(true, true, true);
         $checker = new UserChecker();
 
-        try {
-            $this->assertNull($checker->checkPreAuth($userMock));
-        } catch (\Exception $ex) {
-            $this->fail();
-        }
+        $this->assertNull($checker->checkPreAuth($userMock));
     }
 
     public function testCheckPostAuthSuccess()
@@ -55,11 +51,7 @@ class UserCheckerTest extends TestCase
         $userMock = $this->getUser(true, true, true);
         $checker = new UserChecker();
 
-        try {
-            $this->assertNull($checker->checkPostAuth($userMock));
-        } catch (\Exception $ex) {
-            $this->fail();
-        }
+        $this->assertNull($checker->checkPostAuth($userMock));
     }
 
     private function getUser($isAccountNonLocked, $isPublished, $isAccountNonExpired)

@@ -54,7 +54,7 @@ class ClassInstaller
         foreach ($classes as $className) {
 
             $filename = sprintf('class_%s_export.json', $className);
-            $path = realpath(sprintf('%s/Resources/install/classes/%s', dirname(__DIR__), $filename));
+            $path = realpath(sprintf('%s/config/install/classes/%s', dirname(__DIR__, 2), $filename));
 
             if ($path === false || !is_file($path)) {
                 throw new \RuntimeException(sprintf(

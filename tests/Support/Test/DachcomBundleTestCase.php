@@ -25,6 +25,8 @@ abstract class DachcomBundleTestCase extends BundleTestCase
 
     protected function createUser(bool $published = false, array $groups = []): UserInterface
     {
+        \Pimcore\Model\DataObject::setHideUnpublished(true);
+
         $userManager = $this->getContainer()->get(UserManager::class);
         $configuration = $this->getContainer()->get(Configuration::class);
 

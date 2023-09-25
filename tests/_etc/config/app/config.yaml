@@ -22,6 +22,12 @@ doctrine:
                     enum: string
                     bit: boolean
 
+pimcore_static_routes:
+    config_location:
+        staticroutes:
+            write_target:
+                type: 'settings-store'
+
 pimcore:
     config_location:
         image_thumbnails:

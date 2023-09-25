@@ -1,8 +1,8 @@
 <?php
 
-namespace DachcomBundle\Test;
+namespace DachcomBundle\Test\Support;
 
-class FunctionalTester extends \Dachcom\Codeception\FunctionalTester
+class FunctionalTester extends \Dachcom\Codeception\Support\FunctionalTester
 {
     use _generated\FunctionalTesterActions;
 }

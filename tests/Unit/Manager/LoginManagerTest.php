@@ -5,7 +5,7 @@ namespace DachcomBundle\Test\Unit\Manager;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\LoginManager;
 use MembersBundle\Security\UserChecker;
-use PHPUnit\Framework\TestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\RememberMe\RememberMeHandlerInterface;
 use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
-class LoginManagerTest extends TestCase
+class LoginManagerTest extends DachcomBundleTestCase
 {
     public function testLogInUserWithRequestStack(): void
     {
@@ -24,12 +24,18 @@ class LoginManagerTest extends TestCase
 
     public function testLogInUserWithRememberMeAndRequestStack(): void
     {
-        $response = $this->getMockBuilder(Response::class)->getMock();
-        $loginManager = $this->createLoginManager($response);
-        $loginManager->logInUser('main', $this->mockUser(), $response);
+        $response = new Response();
+        $user = $this->mockUser();
+        $rememberMeHandler = $this->createMock(RememberMeHandlerInterface::class);
+        $rememberMeHandler->expects($this->once())
+            ->method('createRememberMeCookie')
+            ->with($user);
+
+        $loginManager = $this->createLoginManager($rememberMeHandler);
+        $loginManager->logInUser('main', $user, $response);
     }
 
-    private function createLoginManager(Response $response = null)
+    private function createLoginManager(?RememberMeHandlerInterface $rememberMeHandler = null): LoginManager
     {
         $tokenStorage = $this->getMockBuilder(TokenStorageInterface::class)->getMock();
         $tokenStorage
@@ -57,19 +63,11 @@ class LoginManagerTest extends TestCase
             ->method('getCurrentRequest')
             ->willReturn($request);
 
-        $rememberMe = null;
-        if (null !== $response) {
-            $user = $this->mockUser();
-            $rememberMeHandler = $this->createMock(RememberMeHandlerInterface::class);
-            $rememberMeHandler->expects($this->once())
-                ->method('createRememberMeCookie')
-                ->with($user);
-        }
 
-        return new LoginManager($tokenStorage, $userChecker, $sessionStrategy, $requestStack, $rememberMe);
+        return new LoginManager($tokenStorage, $userChecker, $sessionStrategy, $requestStack, $rememberMeHandler);
     }
 
-    private function mockUser()
+    private function mockUser(): UserInterface
     {
         $user = $this->getMockBuilder(UserInterface::class)->getMock();
         $user

@@ -6,6 +6,7 @@
 - Recommended folder structure by symfony adopted
 - [ROUTE] Route include changed from `@MembersBundle/Resources/pimcore/routing/all.yml` to `@MembersBundle/config/pimcore/routing/all.yaml`
 - All template folder are lowercase/underscore now (`templates/change_password`, `templates/delete_account`)
+- `AbstractUser` and `AbstractSsoAwareUser` now implements the `PasswordAuthenticatedUserInterface` interface by default
 
 ### Deprecations
 - Constant `MembersBundle\Security\RestrictionUri::PROTECTED_ASSET_FOLDER` has been removed

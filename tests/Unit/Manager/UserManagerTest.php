@@ -13,7 +13,7 @@ class UserManagerTest extends DachcomBundleTestCase
     /**
      * @throws \Codeception\Exception\ModuleException
      */
-    public function testClassGetter()
+    public function testClassGetter(): void
     {
         $userManager = $this->getContainer()->get(UserManager::class);
         $groupClass = $userManager->getClass();
@@ -21,7 +21,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertEquals(MembersUser::class, $groupClass);
     }
 
-    public function testCreateNewUser()
+    public function testCreateNewUser(): void
     {
         $user = $this->createUser();
         $this->assertInstanceOf(UserInterface::class, $user);
@@ -30,7 +30,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertEquals($expectedKey, $user->getKey());
     }
 
-    public function testFindUserByEmail()
+    public function testFindUserByEmail(): void
     {
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
@@ -38,7 +38,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertInstanceOf(UserInterface::class, $userManager->findUserByEmail(MembersHelper::DEFAULT_FEU_EMAIL));
     }
 
-    public function testFindUserByUsername()
+    public function testFindUserByUsername(): void
     {
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
@@ -46,7 +46,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsername(MembersHelper::DEFAULT_FEU_USERNAME));
     }
 
-    public function testFindUserByUsernameOrEmail()
+    public function testFindUserByUsernameOrEmail(): void
     {
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
@@ -55,7 +55,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertInstanceOf(UserInterface::class, $userManager->findUserByUsernameOrEmail(MembersHelper::DEFAULT_FEU_USERNAME));
     }
 
-    public function testFindUserByCondition()
+    public function testFindUserByCondition(): void
     {
         $this->createUser();
         $userManager = $this->getContainer()->get(UserManager::class);
@@ -63,7 +63,7 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertInstanceOf(UserInterface::class, $userManager->findUserByCondition('email = ?', [MembersHelper::DEFAULT_FEU_EMAIL]));
     }
 
-    public function testFindPublishedUsers()
+    public function testFindPublishedUsers(): void
     {
         $this->createUser(true);
         $userManager = $this->getContainer()->get(UserManager::class);
@@ -71,9 +71,9 @@ class UserManagerTest extends DachcomBundleTestCase
         $this->assertCount(1, $userManager->findUsers());
     }
 
-    public function testFindUnPublishedUsers()
+    public function testFindUnPublishedUsers(): void
     {
-        $this->createUser(false);
+        $user = $this->createUser(false);
         $userManager = $this->getContainer()->get(UserManager::class);
 
         $this->assertCount(0, $userManager->findUsers());

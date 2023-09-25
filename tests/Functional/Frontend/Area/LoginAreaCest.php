@@ -2,16 +2,12 @@
 
 namespace DachcomBundle\Test\Functional\Frontend\Area;
 
-use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\Support\FunctionalTester;
 use DachcomBundle\Test\Support\Util\MembersHelper;
 
 class LoginAreaCest
 {
-    /**
-     * @param FunctionalTester $I
-     */
-    public function testLoginAreaElementForm(FunctionalTester $I)
+    public function testLoginAreaElementForm(FunctionalTester $I): void
     {
         $editables = [
             'hideWhenLoggedIn'        => [
@@ -41,12 +37,7 @@ class LoginAreaCest
         $I->seeElement('form[class="members_user_login"] input[type="hidden"][id="_failure_path"]');
     }
 
-    /**
-     * @param FunctionalTester $I
-     *
-     * @throws ModuleException
-     */
-    public function testLoginAreaElementWithDefaultSettingsAndInvalidCredentials(FunctionalTester $I)
+    public function testLoginAreaElementWithDefaultSettingsAndInvalidCredentials(FunctionalTester $I): void
     {
         $editables = [
             'hideWhenLoggedIn'        => [
@@ -76,12 +67,7 @@ class LoginAreaCest
 
     }
 
-    /**
-     * @param FunctionalTester $I
-     *
-     * @throws ModuleException
-     */
-    public function testLoginAreaElementWithDefaultSettingsAndValidCredentials(FunctionalTester $I)
+    public function testLoginAreaElementWithDefaultSettingsAndValidCredentials(FunctionalTester $I): void
     {
         $editables = [
             'hideWhenLoggedIn'        => [
@@ -114,12 +100,7 @@ class LoginAreaCest
         $I->seeALoggedInFrontEndUser();
     }
 
-    /**
-     * @param FunctionalTester $I
-     *
-     * @throws ModuleException
-     */
-    public function testLoginAreaElementWithHiddenAreaAfterLogin(FunctionalTester $I)
+    public function testLoginAreaElementWithHiddenAreaAfterLogin(FunctionalTester $I): void
     {
         $editables = [
             'hideWhenLoggedIn'        => [
@@ -152,12 +133,7 @@ class LoginAreaCest
         $I->seeALoggedInFrontEndUser();
     }
 
-    /**
-     * @param FunctionalTester $I
-     *
-     * @throws ModuleException
-     */
-    public function testLoginAreaElementWithRedirectToSpecificDocumentAfterSuccessfullyLogin(FunctionalTester $I)
+    public function testLoginAreaElementWithRedirectToSpecificDocumentAfterSuccessfullyLogin(FunctionalTester $I): void
     {
         $redirectDocument = $I->haveAPageDocument('success-document');
         $document = $I->haveAPageDocument('members-area-test');
@@ -169,11 +145,11 @@ class LoginAreaCest
             ],
             'redirectAfterSuccess'    => [
                 'type'             => 'relation',
-                'dataFromResource' => [
+                'dataFromResource' => serialize([
                     'type'    => 'document',
                     'id'      => $redirectDocument->getId(),
                     'subtype' => $redirectDocument->getType()
-                ]
+                ])
             ],
             'showSnippedWhenLoggedIn' => [
                 'type' => 'relation',
@@ -193,12 +169,7 @@ class LoginAreaCest
         $I->seeLastRequestIsInPath($redirectDocument->getFullPath());
     }
 
-    /**
-     * @param FunctionalTester $I
-     *
-     * @throws ModuleException
-     */
-    public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I)
+    public function testLoginAreaElementWithSnippetAfterSuccessfullyLogin(FunctionalTester $I): void
     {
         $snippetParams = [
             'controller' => 'App\Controller\DefaultController',
@@ -218,11 +189,11 @@ class LoginAreaCest
             ],
             'showSnippedWhenLoggedIn' => [
                 'type'             => 'relation',
-                'dataFromResource' => [
+                'dataFromResource' => serialize([
                     'type'    => 'document',
                     'id'      => $successSnippet->getId(),
                     'subtype' => $successSnippet->getType()
-                ]
+                ])
             ],
         ];
 

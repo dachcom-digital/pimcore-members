@@ -32,7 +32,8 @@
     },
     "require": {
         "pimcore/pimcore": "^11.0",
-        "doctrine/orm": "^2.7"
+        "doctrine/orm": "^2.7",
+        "symfony/form": "^6.2"
     },
     "require-dev": {
         "codeception/codeception": "^5.0",

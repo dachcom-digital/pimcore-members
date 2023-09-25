@@ -7,7 +7,7 @@ modules:
                 connect_db: true
                 rebootable_client: true
         - \Dachcom\Codeception\Support\Helper\Browser\PhpBrowser:
-                depends: \Dachcom\Codeception\Helper\PimcoreCore
+                depends: \Dachcom\Codeception\Support\Helper\PimcoreCore
         - \Dachcom\Codeception\Support\Helper\PimcoreUser
         - \DachcomBundle\Test\Support\Helper\PimcoreBackend
         - \DachcomBundle\Test\Support\Helper\Members:

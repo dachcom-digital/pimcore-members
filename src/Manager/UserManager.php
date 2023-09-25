@@ -133,9 +133,7 @@ class UserManager implements UserManagerInterface
 
     public function findUsers(): array
     {
-        $memberListing = $this->classManager->getUserListing();
-
-        return $memberListing->getObjects();
+        return $this->classManager->getUserListing()->getObjects();
     }
 
     public function reloadUser(UserInterface $user): void

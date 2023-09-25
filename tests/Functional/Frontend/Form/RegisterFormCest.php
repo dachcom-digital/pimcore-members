@@ -8,10 +8,7 @@ use Pimcore\Model\Document\Email;
 
 class RegisterFormCest
 {
-    /**
-     * @param FunctionalTester $I
-     */
-    public function testUserRegistrationForm(FunctionalTester $I)
+    public function testUserRegistrationForm(FunctionalTester $I): void
     {
         $I->amOnPage('/en/members/register');
         $I->see('Email', 'form[name="members_user_registration_form"] label');
@@ -26,11 +23,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserRegistrationFormConfirmByMail(FunctionalTester $I)
+    public function testUserRegistrationFormConfirmByMail(FunctionalTester $I): void
     {
         $this->register($I);
 
@@ -56,11 +51,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserRegistrationFormConfirmByAdmin(FunctionalTester $I)
+    public function testUserRegistrationFormConfirmByAdmin(FunctionalTester $I): void
     {
         $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin.yaml');
 
@@ -83,11 +76,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserRegistrationFormConfirmByAdminWithFinalConfirmationMail(FunctionalTester $I)
+    public function testUserRegistrationFormConfirmByAdminWithFinalConfirmationMail(FunctionalTester $I): void
     {
         $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yaml');
 
@@ -102,11 +93,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserRegistrationFormConfirmByAdminWithAdminNotificationMail(FunctionalTester $I)
+    public function testUserRegistrationFormConfirmByAdminWithAdminNotificationMail(FunctionalTester $I): void
     {
         $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_admin_notify.yaml');
 
@@ -121,11 +110,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserRegistrationFormConfirmInstant(FunctionalTester $I)
+    public function testUserRegistrationFormConfirmInstant(FunctionalTester $I): void
     {
         $I->haveABootedSymfonyConfiguration('config_reg_confirm_instant.yaml');
 
@@ -145,11 +132,9 @@ class RegisterFormCest
     }
 
     /**
-     * @param FunctionalTester $I
-     *
      * @throws \Exception
      */
-    public function testUserPropertiesAfterRegistration(FunctionalTester $I)
+    public function testUserPropertiesAfterRegistration(FunctionalTester $I): void
     {
         $this->register($I);
 
@@ -157,14 +142,12 @@ class RegisterFormCest
         $I->seePropertiesInFrontendUser($user, ['_user_locale']);
     }
 
-    /**
-     * @param FunctionalTester $I
-     */
-    private function register(FunctionalTester $I)
+    private function register(FunctionalTester $I): void
     {
         $I->amOnPage('/en/members/register');
         $I->fillField('form[name="members_user_registration_form"] input[type="email"][id="members_user_registration_form_email"]', MembersHelper::DEFAULT_FEU_EMAIL);
-        $I->fillField('form[name="members_user_registration_form"] input[type="text"][id="members_user_registration_form_username"]', MembersHelper::DEFAULT_FEU_USERNAME);
+        $I->fillField('form[name="members_user_registration_form"] input[type="text"][id="members_user_registration_form_username"]',
+            MembersHelper::DEFAULT_FEU_USERNAME);
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_first"]', 'password');
         $I->fillField('form[name="members_user_registration_form"] input[type="password"][id="members_user_registration_form_plainPassword_second"]', 'password');
         $I->click('Register');

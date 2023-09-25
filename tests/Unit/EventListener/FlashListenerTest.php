@@ -4,13 +4,15 @@ namespace DachcomBundle\Test\Unit\EventListener;
 
 use MembersBundle\EventListener\FlashListener;
 use MembersBundle\MembersEvents;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\Session;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 
-class FlashListenerTest extends TestCase
+class FlashListenerTest extends DachcomBundleTestCase
 {
     private Event $event;
     private FlashListener $listener;
@@ -25,10 +27,17 @@ class FlashListenerTest extends TestCase
             ->method('getFlashBag')
             ->willReturn($flashBag);
 
+
+        $request = new Request();
+        $request->setSession($session);
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
         // nah.
         $translator = \Pimcore::getContainer()->get(TranslatorInterface::class);
 
-        $this->listener = new FlashListener($session, $translator);
+        $this->listener = new FlashListener($requestStack, $translator);
     }
 
     public function testAddSuccessFlash(): void
