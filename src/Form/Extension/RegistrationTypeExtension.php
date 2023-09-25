@@ -11,11 +11,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class RegistrationTypeExtension extends AbstractTypeExtension
 {
-    protected RequestStack $requestStack;
-
-    public function __construct(RequestStack $requestStack)
+    public function __construct(protected RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

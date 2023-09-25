@@ -12,13 +12,10 @@ use Symfony\Component\Security\Core\Exception\AccountStatusException;
 
 class AuthenticationListener implements EventSubscriberInterface
 {
-    private LoginManagerInterface $loginManager;
-    private string $firewallName;
-
-    public function __construct(LoginManagerInterface $loginManager, string $firewallName = 'members_fe')
-    {
-        $this->loginManager = $loginManager;
-        $this->firewallName = $firewallName;
+    public function __construct(
+        private LoginManagerInterface $loginManager,
+        private string $firewallName = 'members_fe'
+    ) {
     }
 
     /**

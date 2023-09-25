@@ -9,14 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class FormEvent extends Event
 {
-    private FormInterface $form;
-    private Request $request;
     private ?Response $response = null;
 
-    public function __construct(FormInterface $form, Request $request)
-    {
-        $this->form = $form;
-        $this->request = $request;
+    public function __construct(
+        private FormInterface $form,
+        private Request $request
+    ) {
     }
 
     public function getForm(): FormInterface

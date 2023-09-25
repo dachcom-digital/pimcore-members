@@ -7,11 +7,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class OAuthResponseEvent extends Event
 {
-    protected OAuthResponseInterface $oauthResponse;
-
-    public function __construct(OAuthResponseInterface $oauthResponse)
+    public function __construct(protected OAuthResponseInterface $oauthResponse)
     {
-        $this->oauthResponse = $oauthResponse;
     }
 
     public function getOAuthResponse(): OAuthResponseInterface

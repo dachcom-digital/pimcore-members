@@ -11,13 +11,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Mailer implements MailerInterface
 {
-    protected UrlGeneratorInterface $router;
-    protected Configuration $configuration;
-
-    public function __construct(UrlGeneratorInterface $router, Configuration $configuration)
+    public function __construct(
+        protected UrlGeneratorInterface $router,
+        protected Configuration $configuration
+    )
     {
-        $this->router = $router;
-        $this->configuration = $configuration;
     }
 
     public function sendConfirmationEmailMessage(UserInterface $user): void

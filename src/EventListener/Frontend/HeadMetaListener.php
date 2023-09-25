@@ -3,10 +3,8 @@
 namespace MembersBundle\EventListener\Frontend;
 
 use MembersBundle\Manager\RestrictionManager;
-use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\Restriction\ElementRestriction;
 use Pimcore\Bundle\CoreBundle\EventListener\Traits\PimcoreContextAwareTrait;
-use Pimcore\Http\Request\Resolver\DocumentResolver as DocumentResolverService;
 use Pimcore\Http\Request\Resolver\PimcoreContextResolver;
 use Pimcore\Twig\Extension\Templating\HeadMeta;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -17,18 +15,8 @@ class HeadMetaListener implements EventSubscriberInterface
 {
     use PimcoreContextAwareTrait;
 
-    protected DocumentResolverService $documentResolverService;
-    protected HeadMeta $headMeta;
-    protected RestrictionManagerInterface $restrictionManager;
-
-    public function __construct(
-        RestrictionManagerInterface $restrictionManager,
-        DocumentResolverService $documentResolverService,
-        HeadMeta $headMeta
-    ) {
-        $this->documentResolverService = $documentResolverService;
-        $this->headMeta = $headMeta;
-        $this->restrictionManager = $restrictionManager;
+    public function __construct(protected HeadMeta $headMeta)
+    {
     }
 
     public static function getSubscribedEvents(): array

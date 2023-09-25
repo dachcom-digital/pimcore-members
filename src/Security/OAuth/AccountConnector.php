@@ -10,15 +10,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountConnector implements AccountConnectorInterface
 {
-    protected SsoIdentityManagerInterface $ssoIdentityManager;
-    protected ResourceMappingService $resourceMappingService;
-
     public function __construct(
-        SsoIdentityManagerInterface $ssoIdentityManager,
-        ResourceMappingService $resourceMappingService
+        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected ResourceMappingService $resourceMappingService
     ) {
-        $this->ssoIdentityManager = $ssoIdentityManager;
-        $this->resourceMappingService = $resourceMappingService;
     }
 
     public function connectToSsoIdentity(UserInterface $user, OAuthResponseInterface $oAuthResponse): SsoIdentityInterface

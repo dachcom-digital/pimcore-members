@@ -18,21 +18,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ProfileController extends AbstractController
 {
-    protected FactoryInterface $formFactory;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected UserManagerInterface $userManager;
-    protected RequestHelper $requestHelper;
-
     public function __construct(
-        FactoryInterface $formFactory,
-        EventDispatcherInterface $eventDispatcher,
-        UserManagerInterface $userManager,
-        RequestHelper $requestHelper
+        protected FactoryInterface $formFactory,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected UserManagerInterface $userManager,
+        protected RequestHelper $requestHelper
     ) {
-        $this->formFactory = $formFactory;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->userManager = $userManager;
-        $this->requestHelper = $requestHelper;
     }
 
     public function showAction(Request $request): Response

@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestPropertiesForUserExtractorService implements RequestPropertiesForUserExtractorServiceInterface
 {
-    protected SiteResolver $siteResolver;
-
-    public function __construct(SiteResolver $siteResolver)
+    public function __construct(protected SiteResolver $siteResolver)
     {
-        $this->siteResolver = $siteResolver;
     }
 
     public function extract(Request $request): array

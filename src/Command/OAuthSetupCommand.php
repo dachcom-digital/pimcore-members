@@ -20,14 +20,11 @@ class OAuthSetupCommand extends Command
     protected static $defaultName = 'members:oauth:setup';
     protected static $defaultDescription = 'This command helps you the enhance Members with oauth2 connectors.';
 
-    protected bool $oauthEnabled;
     protected ClassManagerInterface $classManager;
     protected ClassInstaller $classInstaller;
 
-    public function __construct(bool $oauthEnabled)
+    public function __construct(protected bool $oauthEnabled)
     {
-        $this->oauthEnabled = $oauthEnabled;
-
         parent::__construct();
     }
 

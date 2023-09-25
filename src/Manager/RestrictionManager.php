@@ -25,13 +25,10 @@ class RestrictionManager implements RestrictionManagerInterface
     public const RESTRICTION_SECTION_REFUSED = 'members.restriction.refused';
     public const REQUEST_RESTRICTION_STORAGE = 'members.restriction.store';
 
-    protected Configuration $configuration;
-    protected TokenStorageInterface $tokenStorage;
-
-    public function __construct(Configuration $configuration, TokenStorageInterface $tokenStorage)
-    {
-        $this->configuration = $configuration;
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        protected Configuration $configuration,
+        protected TokenStorageInterface $tokenStorage
+    ) {
     }
 
     public function getElementRestrictedGroups(ElementInterface $element): array

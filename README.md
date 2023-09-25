@@ -11,9 +11,10 @@ Add frontend user authentication and document restriction to pimcore.
 
 | Release | Supported Pimcore Versions        | Supported Symfony Versions | Release Date | Maintained     | Branch   |
 |---------|-----------------------------------|----------------------------|--------------|----------------|----------|
-| **4.x** | `10.5 - 10.6`                     | `5.4`                      | 22.11.2021   | Feature Branch | master   |
-| **3.x** | `6.0` - `6.8`                     | `3.4`, `^4.4`              | 21.07.2019   | Feature Branch | 3.x      |
-| **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Bugfix only    | 2.5      |
+| **5.x** | `11.0`                            | `6.2`                      | --           | Feature Branch | master   |
+| **4.x** | `10.5 - 10.6`                     | `5.4`                      | 22.11.2021   | Unsupported    | 4.x      |
+| **3.x** | `6.0` - `6.8`                     | `3.4`, `^4.4`              | 21.07.2019   | Unsupported    | 3.x      |
+| **2.5** | `5.4`, `5.5`, `5.6`, `5.7`, `5.8` | `3.4`                      | 18.07.2019   | Unsupported    | 2.5      |
 | **1.5** | `4.0`                             | --                         | 07.07.2017   | Unsupported    | pimcore4 |
 
 ## Features
@@ -31,11 +32,17 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~4.1.0"
+    "dachcom-digital/members" : "~5.0.0"
 }
 ```
 
-- Execute: `$ bin/console pimcore:bundle:enable MembersBundle`
+Add Bundle to `bundles.php`:
+```php
+return [
+    MembersBundle\MembersBundle::class => ['all' => true],
+];
+```
+
 - Execute: `$ bin/console pimcore:bundle:install MembersBundle`
 
 ## Upgrading
@@ -50,12 +57,8 @@ bin/console members:install:class
 
 ### Security Installation
 It is not possible to merge security configurations from multiple locations, including bundles. Instead, you have to move them to
-one single config file, e.g. `config/packages/security.yaml`. Please adopt [security_auth_manager.yaml](./src/MembersBundle/Resources/config/packages/security_auth_manager.yaml)
+one single config file, e.g. `config/packages/security.yaml`. Please adopt [security_auth_manager.yaml](./config/packages/security_auth_manager.yaml)
 and merge your own firewall configuration into one single file.
-
-#### Legacy Security Configuration
-⚠️ If you still want to use the legacy authenticator, adopt [security_legacy.yaml](./src/MembersBundle/Resources/config/packages/security_legacy.yaml)
-Keep in mind, that this configuration will be removed in Members 5.0.
 
 ### Route Installation
 MembersBundle does not include any routes per default. Otherwise, it would be hard for you to change or override included routes. 

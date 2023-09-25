@@ -13,11 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CompleteProfileFormType extends AbstractType
 {
-    protected string $class;
-
-    public function __construct(string $class)
+    public function __construct(protected string $class)
     {
-        $this->class = $class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

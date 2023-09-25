@@ -10,7 +10,7 @@ services:
         calls:
             - [setContainer, ['@service_container']]
 
-    DachcomBundle\Test\Services\TestRestrictedStaticRouteListener:
+    DachcomBundle\Test\Support\Services\TestRestrictedStaticRouteListener:
         tags:
             - { name: kernel.event_subscriber }
 

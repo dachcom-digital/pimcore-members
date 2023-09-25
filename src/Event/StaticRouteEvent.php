@@ -8,14 +8,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class StaticRouteEvent extends Event
 {
-    protected Request $request;
-    protected ?string $routeName;
     protected ?DataObject $object = null;
 
-    public function __construct(Request $request, ?string $routeName = null)
-    {
-        $this->request = $request;
-        $this->routeName = $routeName;
+    public function __construct(
+        protected Request $request,
+        protected ?string $routeName = null
+    ) {
     }
 
     public function getRequest(): Request

@@ -21,30 +21,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ResettingController extends AbstractController
 {
-    protected FactoryInterface $requestResettingFormFactory;
-    protected FactoryInterface $resettingFormFactory;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected UserManagerInterface $userManager;
-    protected TokenGeneratorInterface $tokenGenerator;
-    protected MailerInterface $mailer;
-    protected RequestHelper $requestHelper;
-
     public function __construct(
-        FactoryInterface $requestResettingFormFactory,
-        FactoryInterface $resettingFormFactory,
-        EventDispatcherInterface $eventDispatcher,
-        UserManagerInterface $userManager,
-        TokenGeneratorInterface $tokenGenerator,
-        MailerInterface $mailer,
-        RequestHelper $requestHelper
+        protected FactoryInterface $requestResettingFormFactory,
+        protected FactoryInterface $resettingFormFactory,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected UserManagerInterface $userManager,
+        protected TokenGeneratorInterface $tokenGenerator,
+        protected MailerInterface $mailer,
+        protected RequestHelper $requestHelper
     ) {
-        $this->requestResettingFormFactory = $requestResettingFormFactory;
-        $this->resettingFormFactory = $resettingFormFactory;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->userManager = $userManager;
-        $this->tokenGenerator = $tokenGenerator;
-        $this->mailer = $mailer;
-        $this->requestHelper = $requestHelper;
     }
 
     public function requestAction(Request $request): Response

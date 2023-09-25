@@ -11,18 +11,11 @@ use MembersBundle\Adapter\User\UserInterface;
 
 class SsoIdentityManager implements SsoIdentityManagerInterface
 {
-    protected Connection $connection;
-    protected UserManagerInterface $userManager;
-    protected ClassManagerInterface $classManager;
-
     public function __construct(
-        Connection $connection,
-        UserManagerInterface $userManager,
-        ClassManagerInterface $classManager
+        protected Connection $connection,
+        protected UserManagerInterface $userManager,
+        protected ClassManagerInterface $classManager
     ) {
-        $this->connection = $connection;
-        $this->userManager = $userManager;
-        $this->classManager = $classManager;
     }
 
     public function getClass(): string

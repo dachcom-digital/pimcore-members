@@ -13,21 +13,12 @@ use Twig\TwigFunction;
 
 class OAuthExtension extends AbstractExtension
 {
-    protected ClientRegistry $oauthRegistry;
-    protected SsoIdentityManagerInterface $ssoIdentityManager;
-    protected TokenStorageInterface $tokenStorage;
-    protected SsoIdentityStatusServiceInterface $identityStatusService;
-
     public function __construct(
-        ClientRegistry $oauthRegistry,
-        SsoIdentityManagerInterface $ssoIdentityManager,
-        TokenStorageInterface $tokenStorage,
-        SsoIdentityStatusServiceInterface $identityStatusService
+        protected ClientRegistry $oauthRegistry,
+        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected TokenStorageInterface $tokenStorage,
+        protected SsoIdentityStatusServiceInterface $identityStatusService
     ) {
-        $this->oauthRegistry = $oauthRegistry;
-        $this->ssoIdentityManager = $ssoIdentityManager;
-        $this->tokenStorage = $tokenStorage;
-        $this->identityStatusService = $identityStatusService;
     }
 
     public function getFunctions(): array

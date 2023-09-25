@@ -11,24 +11,13 @@ use MembersBundle\Service\SsoIdentityStatusServiceInterface;
 
 class SsoCleanUpExpiredTokenListener implements TaskInterface
 {
-    protected bool $oauthEnabled;
-    protected bool $cleanUpExpiredTokens;
-    protected int $expiredTokensTtl;
-    protected SsoIdentityManagerInterface $ssoIdentityManager;
-    protected SsoIdentityStatusServiceInterface $ssoIdentityStatusService;
-
     public function __construct(
-        bool $oauthEnabled,
-        bool $cleanUpExpiredTokens,
-        int $expiredTokensTtl,
-        SsoIdentityManagerInterface $ssoIdentityManager,
-        SsoIdentityStatusServiceInterface $ssoIdentityStatusService
+        protected bool $oauthEnabled,
+        protected bool $cleanUpExpiredTokens,
+        protected int $expiredTokensTtl,
+        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected SsoIdentityStatusServiceInterface $ssoIdentityStatusService
     ) {
-        $this->oauthEnabled = $oauthEnabled;
-        $this->cleanUpExpiredTokens = $cleanUpExpiredTokens;
-        $this->expiredTokensTtl = $expiredTokensTtl;
-        $this->ssoIdentityManager = $ssoIdentityManager;
-        $this->ssoIdentityStatusService = $ssoIdentityStatusService;
     }
 
     /**

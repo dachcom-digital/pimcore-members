@@ -8,13 +8,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class OAuthResourceEvent extends Event
 {
-    protected UserInterface $user;
-    protected ResourceOwnerInterface $resourceOwner;
-
-    public function __construct(UserInterface $user, ResourceOwnerInterface $resourceOwner)
-    {
-        $this->resourceOwner = $resourceOwner;
-        $this->user = $user;
+    public function __construct(
+        protected UserInterface $user,
+        protected ResourceOwnerInterface $resourceOwner
+    ) {
     }
 
     public function getUser(): UserInterface

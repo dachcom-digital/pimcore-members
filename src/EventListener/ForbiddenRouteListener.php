@@ -22,15 +22,11 @@ class ForbiddenRouteListener implements EventSubscriberInterface
 {
     use PimcoreContextAwareTrait;
 
-    protected RestrictionManagerInterface $restrictionManager;
-    protected RouterInterface $router;
-    protected RequestHelper $requestHelper;
-
-    public function __construct(RestrictionManagerInterface $restrictionManager, RouterInterface $router, RequestHelper $requestHelper)
-    {
-        $this->restrictionManager = $restrictionManager;
-        $this->router = $router;
-        $this->requestHelper = $requestHelper;
+    public function __construct(
+        protected RestrictionManagerInterface $restrictionManager,
+        protected RouterInterface $router,
+        protected RequestHelper $requestHelper
+    ) {
     }
 
     public static function getSubscribedEvents(): array

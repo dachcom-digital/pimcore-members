@@ -10,13 +10,10 @@ use Symfony\Component\Form\FormEvents;
 
 class RegistrationAuthIdentifierTypeExtension extends AbstractTypeExtension
 {
-    protected string $authIdentifier;
-    protected bool $onlyAuthIdentifierRegistration;
-
-    public function __construct(string $authIdentifier, bool $onlyAuthIdentifierRegistration)
-    {
-        $this->authIdentifier = $authIdentifier;
-        $this->onlyAuthIdentifierRegistration = $onlyAuthIdentifierRegistration;
+    public function __construct(
+        protected string $authIdentifier,
+        protected bool $onlyAuthIdentifierRegistration
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

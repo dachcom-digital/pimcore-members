@@ -11,13 +11,10 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    protected string $authIdentifier;
-    protected UserManagerInterface $userManager;
-
-    public function __construct(string $authIdentifier, UserManagerInterface $userManager)
-    {
-        $this->authIdentifier = $authIdentifier;
-        $this->userManager = $userManager;
+    public function __construct(
+        protected string $authIdentifier,
+        protected UserManagerInterface $userManager
+    ) {
     }
 
     public function loadUserByUsername(string $username)

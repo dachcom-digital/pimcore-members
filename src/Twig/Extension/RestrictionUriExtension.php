@@ -9,11 +9,8 @@ use Twig\TwigFunction;
 
 class RestrictionUriExtension extends AbstractExtension
 {
-    protected RestrictionUri $restrictionUri;
-
-    public function __construct(RestrictionUri $restrictionUri)
+    public function __construct(protected RestrictionUri $restrictionUri)
     {
-        $this->restrictionUri = $restrictionUri;
     }
 
     public function getFunctions(): array

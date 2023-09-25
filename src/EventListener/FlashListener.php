@@ -19,8 +19,10 @@ class FlashListener implements EventSubscriberInterface
         MembersEvents::OAUTH_PROFILE_CONNECTION_SUCCESS => 'members.oauth.connection.success',
     ];
 
-    public function __construct(protected RequestStack $requestStack, protected Translator $translator)
-    {
+    public function __construct(
+        protected RequestStack $requestStack,
+        protected Translator $translator
+    ) {
     }
 
     public static function getSubscribedEvents(): array

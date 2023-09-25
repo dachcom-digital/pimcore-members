@@ -7,19 +7,9 @@ use MembersBundle\Manager\RestrictionManagerInterface;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class RestrictionUri
 {
-    /**
-     * @deprecated since 4.1 and will be removed with 5.0
-     */
-    public const PROTECTED_ASSET_FOLDER = 'restricted-assets';
-    /**
-     * @deprecated since 4.1 and will be removed with 5.0
-     */
-    public const MEMBERS_REQUEST_URL = '/members/request-data/';
-
     public function __construct(
         protected RouterInterface $router,
         protected RestrictionManagerInterface $restrictionManager

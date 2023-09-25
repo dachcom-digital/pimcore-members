@@ -13,18 +13,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ResettingListener implements EventSubscriberInterface
 {
-    private UserManagerInterface $userManager;
-    private UrlGeneratorInterface $router;
-    private int $tokenTtl;
-
     public function __construct(
-        UserManagerInterface $userManager,
-        UrlGeneratorInterface $router,
-        int $tokenTtl
+        private UserManagerInterface $userManager,
+        private UrlGeneratorInterface $router,
+        private int $tokenTtl
     ) {
-        $this->userManager = $userManager;
-        $this->router = $router;
-        $this->tokenTtl = $tokenTtl;
     }
 
     public static function getSubscribedEvents(): array

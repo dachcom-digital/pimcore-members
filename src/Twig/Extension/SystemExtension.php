@@ -7,11 +7,8 @@ use Twig\Extension\AbstractExtension;
 
 class SystemExtension extends AbstractExtension
 {
-    protected bool $oauthEnabled;
-
-    public function __construct(bool $oauthEnabled)
+    public function __construct(protected bool $oauthEnabled)
     {
-        $this->oauthEnabled = $oauthEnabled;
     }
 
     public function getFunctions(): array

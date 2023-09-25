@@ -11,14 +11,11 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 class RestrictionQuery
 {
-    protected RestrictionManagerInterface $restrictionManager;
-
-    public function __construct(RestrictionManagerInterface $restrictionManager)
+    public function __construct(protected RestrictionManagerInterface $restrictionManager)
     {
-        $this->restrictionManager = $restrictionManager;
     }
 
-    public function addRestrictionInjection(QueryBuilder $query, Model\Listing\AbstractListing $listing, string $queryIdentifier = 'id', ?string $aliasFrom = null)
+    public function addRestrictionInjection(QueryBuilder $query, Model\Listing\AbstractListing $listing, string $queryIdentifier = 'id', ?string $aliasFrom = null): void
     {
         $additionalQuery = '';
         $allowedGroups = [];

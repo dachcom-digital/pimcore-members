@@ -12,11 +12,8 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ChangePasswordFormType extends AbstractType
 {
-    private string $class;
-
-    public function __construct(string $class)
+    public function __construct(private string $class)
     {
-        $this->class = $class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

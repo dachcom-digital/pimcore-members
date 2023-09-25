@@ -4,11 +4,8 @@ namespace MembersBundle\Security\OAuth;
 
 class OAuthScopeAllocator implements OAuthScopeAllocatorInterface
 {
-    protected array $scopes;
-
-    public function __construct(array $scopes)
+    public function __construct(protected array $scopes)
     {
-        $this->scopes = $scopes;
     }
 
     public function allocate(string $client): array

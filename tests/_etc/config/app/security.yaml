@@ -22,15 +22,15 @@ security:
         members_fe:
             pattern: ^/(?!(admin)($|/)).*$
             provider: members
+            entry_point: form_login
             form_login:
                 login_path: members_user_security_login
                 check_path: members_user_security_check
-                csrf_token_generator: security.csrf.token_manager
+                enable_csrf: true
             logout:
                 path: members_user_security_logout
                 invalidate_session: false
                 target: /
-            anonymous: true
             user_checker: MembersBundle\Security\UserChecker
 
     access_control:
@@ -41,9 +41,9 @@ security:
         - { path: ^/admin/login/(login|lostpassword|deeplink|csrf-token)$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin, roles: ROLE_PIMCORE_USER }
 
-        - { path: ^/_locale/members/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_locale/members/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_locale/members/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_locale/members/login$, role: PUBLIC_ACCESS }
+        - { path: ^/_locale/members/register, role: PUBLIC_ACCESS }
+        - { path: ^/_locale/members/resetting, role: PUBLIC_ACCESS }
 
     role_hierarchy:
         ROLE_PIMCORE_ADMIN: [ROLE_PIMCORE_USER]

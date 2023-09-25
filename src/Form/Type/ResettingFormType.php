@@ -11,11 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResettingFormType extends AbstractType
 {
-    private string $class;
-
-    public function __construct(string $class)
+    public function __construct(private string $class)
     {
-        $this->class = $class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

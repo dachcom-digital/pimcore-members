@@ -15,18 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RestrictionController extends AdminAbstractController
 {
-    protected Configuration $configuration;
-    protected ClassManagerInterface $classManager;
-    protected RestrictionService $restrictionService;
-
     public function __construct(
-        Configuration $configuration,
-        ClassManagerInterface $classManager,
-        RestrictionService $restrictionService
+        protected Configuration $configuration,
+        protected ClassManagerInterface $classManager,
+        protected RestrictionService $restrictionService
     ) {
-        $this->configuration = $configuration;
-        $this->classManager = $classManager;
-        $this->restrictionService = $restrictionService;
     }
 
     public function getGlobalSettingsAction(): JsonResponse

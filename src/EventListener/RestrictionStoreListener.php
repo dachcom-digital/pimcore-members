@@ -13,11 +13,8 @@ use MembersBundle\Service\RestrictionService;
 
 class RestrictionStoreListener implements EventSubscriberInterface
 {
-    protected RestrictionService $serviceRestriction;
-
-    public function __construct(RestrictionService $serviceRestriction)
+    public function __construct(protected RestrictionService $serviceRestriction)
     {
-        $this->serviceRestriction = $serviceRestriction;
     }
 
     public static function getSubscribedEvents(): array

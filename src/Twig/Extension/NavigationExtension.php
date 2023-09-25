@@ -18,18 +18,11 @@ use Twig\TwigFunction;
 
 class NavigationExtension extends AbstractExtension
 {
-    protected Navigation $navigationExtension;
-    protected RestrictionManagerInterface $restrictionManager;
-    protected TokenStorageInterface $tokenStorage;
-
     public function __construct(
-        Navigation $navigationExtension,
-        RestrictionManagerInterface $restrictionManager,
-        TokenStorageInterface $tokenStorage
+        protected Navigation $navigationExtension,
+        protected RestrictionManagerInterface $restrictionManager,
+        protected TokenStorageInterface $tokenStorage
     ) {
-        $this->navigationExtension = $navigationExtension;
-        $this->restrictionManager = $restrictionManager;
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function getFunctions(): array

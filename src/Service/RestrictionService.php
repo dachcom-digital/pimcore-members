@@ -14,11 +14,8 @@ class RestrictionService
 {
     public const ALLOWED_RESTRICTION_CTYPES = ['asset', 'page', 'object'];
 
-    protected EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(protected EventDispatcherInterface $eventDispatcher)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

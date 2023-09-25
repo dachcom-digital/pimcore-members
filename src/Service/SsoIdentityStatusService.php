@@ -11,15 +11,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface as ComponentEvent
 
 class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 {
-    protected SsoIdentityManagerInterface $ssoIdentityManager;
-    protected EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        SsoIdentityManagerInterface $ssoIdentityManager,
-        EventDispatcherInterface $eventDispatcher
+        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected EventDispatcherInterface $eventDispatcher
     ) {
-        $this->ssoIdentityManager = $ssoIdentityManager;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function identityCanCompleteProfile(UserInterface $user): bool

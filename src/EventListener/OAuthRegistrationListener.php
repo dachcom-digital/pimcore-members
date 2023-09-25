@@ -14,18 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OAuthRegistrationListener implements EventSubscriberInterface
 {
-    protected OAuthRegistrationHandler $oAuthRegistrationHandler;
-    protected OAuthTokenStorageInterface $oAuthTokenStorage;
-    protected ResourceMappingService $resourceMappingService;
-
     public function __construct(
-        OAuthRegistrationHandler $oAuthRegistrationHandler,
-        OAuthTokenStorageInterface $oAuthTokenStorage,
-        ResourceMappingService $resourceMappingService
+        protected OAuthRegistrationHandler $oAuthRegistrationHandler,
+        protected OAuthTokenStorageInterface $oAuthTokenStorage,
+        protected ResourceMappingService $resourceMappingService
     ) {
-        $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
-        $this->oAuthTokenStorage = $oAuthTokenStorage;
-        $this->resourceMappingService = $resourceMappingService;
     }
 
     public static function getSubscribedEvents(): array

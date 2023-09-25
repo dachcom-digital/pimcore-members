@@ -16,18 +16,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class DeleteAccountController extends AbstractController
 {
-    protected FactoryInterface $formFactory;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected UserManagerInterface $userManager;
-
     public function __construct(
-        FactoryInterface $formFactory,
-        EventDispatcherInterface $eventDispatcher,
-        UserManagerInterface $userManager
+        protected FactoryInterface $formFactory,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected UserManagerInterface $userManager
     ) {
-        $this->formFactory = $formFactory;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->userManager = $userManager;
     }
 
     public function deleteAccountAction(Request $request): Response

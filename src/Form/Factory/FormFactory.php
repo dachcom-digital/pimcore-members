@@ -8,17 +8,13 @@ use Symfony\Component\Form\FormInterface;
 
 class FormFactory implements FactoryInterface
 {
-    private FormFactoryInterface $formFactory;
-    private string $name;
-    private string $type;
-    private null|array|ValidationGroupResolverInterface $validationGroups;
-
-    public function __construct(FormFactoryInterface $formFactory, string $name, string $type, null|array|ValidationGroupResolverInterface $validationGroups = null)
+    public function __construct(
+        private FormFactoryInterface $formFactory,
+        private string $name,
+        private string $type,
+        private null|array|ValidationGroupResolverInterface $validationGroups = null
+    )
     {
-        $this->formFactory = $formFactory;
-        $this->name = $name;
-        $this->type = $type;
-        $this->validationGroups = $validationGroups;
     }
 
     public function createForm(array $options = []): FormInterface

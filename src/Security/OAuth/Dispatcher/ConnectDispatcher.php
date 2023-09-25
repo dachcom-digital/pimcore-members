@@ -13,18 +13,11 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 
 class ConnectDispatcher implements DispatcherInterface
 {
-    protected TokenStorageInterface $tokenStorage;
-    protected EventDispatcherInterface $eventDispatcher;
-    protected OAuthRegistrationHandler $oAuthRegistrationHandler;
-
     public function __construct(
-        TokenStorageInterface $tokenStorage,
-        EventDispatcherInterface $eventDispatcher,
-        OAuthRegistrationHandler $oAuthRegistrationHandler
+        protected TokenStorageInterface $tokenStorage,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected OAuthRegistrationHandler $oAuthRegistrationHandler
     ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->oAuthRegistrationHandler = $oAuthRegistrationHandler;
     }
 
     public function dispatch(string $provider, OAuthResponse $oAuthResponse): UserInterface

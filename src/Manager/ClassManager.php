@@ -8,11 +8,8 @@ use Pimcore\Tool;
 
 class ClassManager implements ClassManagerInterface
 {
-    protected Configuration $configuration;
-
-    public function __construct(Configuration $configuration)
+    public function __construct(protected Configuration $configuration)
     {
-        $this->configuration = $configuration;
     }
 
     public function getGroupListing(): Listing

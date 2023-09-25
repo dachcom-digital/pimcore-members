@@ -9,16 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Environment;
 
 class BrickBuilder
 {
     protected string $sourceType = 'area';
-    protected TokenStorageInterface $tokenStorage;
-    protected IncludeRenderer $includeRenderer;
-    protected Environment $templateRenderer;
-    protected UrlGeneratorInterface $urlGenerator;
     protected ?string $logoutUri = null;
     protected bool $hideAfterLogin = false;
     protected ?Document $redirectPage = null;
@@ -35,15 +31,11 @@ class BrickBuilder
     ];
 
     public function __construct(
-        TokenStorageInterface $tokenStorage,
-        IncludeRenderer $includeRenderer,
-        Environment $templateRenderer,
-        UrlGeneratorInterface $urlGenerator
+        protected TokenStorageInterface $tokenStorage,
+        protected IncludeRenderer $includeRenderer,
+        protected Environment $templateRenderer,
+        protected UrlGeneratorInterface $urlGenerator
     ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->includeRenderer = $includeRenderer;
-        $this->templateRenderer = $templateRenderer;
-        $this->urlGenerator = $urlGenerator;
     }
 
     public function setup(string $sourceType): self

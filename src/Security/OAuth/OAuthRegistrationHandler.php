@@ -11,21 +11,12 @@ use Symfony\Component\Uid\Uuid;
 
 class OAuthRegistrationHandler
 {
-    protected SsoIdentityManagerInterface $ssoIdentityManager;
-    protected AccountConnectorInterface $accountConnector;
-    protected UserManagerInterface $userManager;
-    protected RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService;
-
     public function __construct(
-        SsoIdentityManagerInterface $ssoIdentityManager,
-        AccountConnectorInterface $accountConnector,
-        UserManagerInterface $userManager,
-        RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
+        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected AccountConnectorInterface $accountConnector,
+        protected UserManagerInterface $userManager,
+        protected RequestPropertiesForUserExtractorServiceInterface $requestPropertiesForUserExtractorService
     ) {
-        $this->ssoIdentityManager = $ssoIdentityManager;
-        $this->accountConnector = $accountConnector;
-        $this->userManager = $userManager;
-        $this->requestPropertiesForUserExtractorService = $requestPropertiesForUserExtractorService;
     }
 
     public function getUserFromUserResponse(OAuthResponseInterface $OAuthResponse): ?UserInterface

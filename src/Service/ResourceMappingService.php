@@ -14,13 +14,10 @@ class ResourceMappingService
     public const MAP_FOR_PROFILE = 'profile';
     public const MAP_FOR_REGISTRATION = 'registration';
 
-    protected string $authIdentifier;
-    protected EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(string $authIdentifier, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->authIdentifier = $authIdentifier;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        protected string $authIdentifier,
+        protected EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     /**

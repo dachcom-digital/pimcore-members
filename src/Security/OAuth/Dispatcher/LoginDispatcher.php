@@ -9,15 +9,10 @@ use MembersBundle\Security\OAuth\OAuthResponse;
 
 class LoginDispatcher implements DispatcherInterface
 {
-    protected Configuration $configuration;
-    protected OAuthLoginProcessorRegistryInterface $loginProcessorRegistry;
-
     public function __construct(
-        Configuration $configuration,
-        OAuthLoginProcessorRegistryInterface $loginProcessorRegistry
+        protected Configuration $configuration,
+        protected OAuthLoginProcessorRegistryInterface $loginProcessorRegistry
     ) {
-        $this->configuration = $configuration;
-        $this->loginProcessorRegistry = $loginProcessorRegistry;
     }
 
     public function dispatch(string $provider, OAuthResponse $oAuthResponse): ?UserInterface

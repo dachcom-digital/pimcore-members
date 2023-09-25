@@ -11,18 +11,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserChangeListener implements EventSubscriberInterface
 {
-    protected UserManagerInterface $userManager;
-    protected MailerInterface $mailer;
-    protected string $postEventType;
-
     public function __construct(
-        UserManagerInterface $userManager,
-        MailerInterface $mailer,
-        string $postEventType
+        protected UserManagerInterface $userManager,
+        protected MailerInterface $mailer,
+        protected string $postEventType
     ) {
-        $this->userManager = $userManager;
-        $this->mailer = $mailer;
-        $this->postEventType = $postEventType;
     }
 
     public static function getSubscribedEvents(): array

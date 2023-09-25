@@ -1,7 +1,5 @@
 security:
 
-    enable_authenticator_manager: true
-
     # symfony default is set to "true".
     # you may want to keep it "true" but keep in mind that this hide meaningful exceptions like "acount is disabled"
     # instead the BadCredentialsException will be thrown
