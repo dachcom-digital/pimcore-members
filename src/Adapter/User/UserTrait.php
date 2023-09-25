@@ -16,16 +16,6 @@ trait UserTrait
      */
     protected ?string $plainPassword = null;
 
-    /**
-     * This method is deprecated since Symfony 5.3
-     *
-     * @deprecated
-     */
-    public function getSalt(): ?string
-    {
-        return null;
-    }
-
     public function getUserIdentifier(): string
     {
         $authIdentifier = \Pimcore::getContainer()?->getParameter('members.auth.identifier');

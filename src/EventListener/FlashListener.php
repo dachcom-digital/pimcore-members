@@ -4,7 +4,8 @@ namespace MembersBundle\EventListener;
 
 use MembersBundle\MembersEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pimcore\Translation\Translator;
@@ -43,7 +44,7 @@ class FlashListener implements EventSubscriberInterface
             throw new \InvalidArgumentException('This event does not correspond to a known flash message.');
         }
 
-        $this->getSession()->getFlashBag()->add('success', $this->trans(self::$successMessages[$eventName]));
+        $this->getFlashBag()?->add('success', $this->trans(self::$successMessages[$eventName]));
     }
 
     private function trans(string $message, array $params = []): string
@@ -51,7 +52,7 @@ class FlashListener implements EventSubscriberInterface
         return $this->translator->trans($message, $params);
     }
 
-    private function getSession(): SessionInterface
+    private function getFlashBag(): ?FlashBagInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -59,6 +60,11 @@ class FlashListener implements EventSubscriberInterface
             throw new \LogicException('Cannot get the session without an active request.');
         }
 
-        return $request->getSession();
+        $session = $request->getSession();
+        if (!$session instanceof FlashBagAwareSessionInterface) {
+            return null;
+        }
+
+        return $session->getFlashBag();
     }
 }
