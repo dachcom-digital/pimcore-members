@@ -3,8 +3,8 @@
 namespace MembersBundle\Security\OAuth;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OAuthTokenStorage implements OAuthTokenStorageInterface
 {
@@ -41,12 +41,16 @@ class OAuthTokenStorage implements OAuthTokenStorageInterface
         return sprintf('members.oauth.token.%s.%s', $type, $key);
     }
 
-    protected function getSessionBag(): SessionBagInterface
+    protected function getSessionBag(): AttributeBagInterface
     {
-        return $this->getSession()->getBag('members_session');
+        $session = $this->getSession();
+        /** @var AttributeBagInterface $sessionBag */
+        $sessionBag = $session->getBag('members_session');
+
+        return $sessionBag;
     }
 
-    private function getSession(): Session
+    private function getSession(): SessionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 

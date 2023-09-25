@@ -11,7 +11,8 @@ use MembersBundle\Tool\TokenGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PostConfirmationListener implements EventSubscriberInterface
@@ -67,6 +68,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
         $this->mailer->sendConfirmationEmailMessage($user);
 
+        /** @var AttributeBagInterface $sessionBag */
         $sessionBag = $this->getSession()->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
@@ -87,6 +89,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
         $this->mailer->sendAdminNotificationEmailMessage($user);
 
+        /** @var AttributeBagInterface $sessionBag */
         $sessionBag = $this->getSession()->getBag('members_session');
         $sessionBag->set('members_user_send_confirmation_email/email', $user->getEmail());
 
@@ -102,7 +105,7 @@ class PostConfirmationListener implements EventSubscriberInterface
         $this->userManager->updateUser($user);
     }
 
-    private function getSession(): Session
+    private function getSession(): SessionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 

@@ -41,7 +41,7 @@ trait UserTrait
      */
     public function eraseCredentials(): void
     {
-        $field = $this->getClass()?->getFieldDefinition('password');
+        $field = $this->getClass()->getFieldDefinition('password');
 
         if (!$field instanceof Password) {
             throw new \Exception('Field "password" class not found');

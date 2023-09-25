@@ -39,8 +39,8 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    public function checkPostAuth(UserInterface $user): mixed
+    public function checkPostAuth(UserInterface $user): void
     {
-        return null;
+        // do nothing
     }
 }

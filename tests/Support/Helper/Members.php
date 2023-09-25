@@ -157,12 +157,11 @@ class Members extends Module implements DependsOnModule
     public function haveConfirmationLinkInEmail(Email $email): string
     {
         $foundEmails = $this->pimcoreBackend->getEmailsFromDocumentIds([$email->getId()]);
-        $serializer = $this->pimcoreBackend->getSerializer();
 
         $propertyKey = 'confirmationUrl';
         $link = null;
         foreach ($foundEmails as $foundEmail) {
-            $params = $serializer->decode($foundEmail->getParams(), 'json', ['json_decode_associative' => true]);
+            $params = $foundEmail->getParams();
             $key = array_search($propertyKey, array_column($params, 'key'), true);
             if ($key === false) {
                 $this->fail(sprintf('Failed asserting that mail params array has the key "%s".', $propertyKey));

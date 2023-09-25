@@ -7,7 +7,7 @@ setup_files:
     - { path: app/config.yaml, dest: ./config/ }
     - { path: app/routes.yaml, dest: ./config/ }
     - { path: app/security.yaml, dest: ./config/packages/ }
-    - { path: app/system_settings.yaml, dest: ./var/config/ }
+    - { path: app/system_settings.yaml, dest: ./var/config/system_settings/ }
     - { path: app/controller/DefaultController.php, dest: ./src/Controller/ }
     - { path: app/templates/default.html.twig, dest: ./templates/default/ }
     - { path: app/templates/snippet.html.twig, dest: ./templates/default/ }

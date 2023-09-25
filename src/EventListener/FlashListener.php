@@ -4,7 +4,7 @@ namespace MembersBundle\EventListener;
 
 use MembersBundle\MembersEvents;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pimcore\Translation\Translator;
@@ -51,7 +51,7 @@ class FlashListener implements EventSubscriberInterface
         return $this->translator->trans($message, $params);
     }
 
-    private function getSession(): Session
+    private function getSession(): SessionInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
