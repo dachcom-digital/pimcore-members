@@ -14,25 +14,16 @@ class TreeListener implements EventSubscriberInterface
     public function __construct(
         protected Configuration $configuration,
         protected RestrictionManager $restrictionManager
-    )
-    {
+    ) {
     }
 
     public static function getSubscribedEvents(): array
     {
-        $defaultEvents = [
-            AdminEvents::OBJECT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA => ['handleObjectTree', 0]
+        return [
+            AdminEvents::OBJECT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA   => ['handleObjectTree', 0],
+            AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA    => ['handleAssetTree', 0],
+            AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA => ['handleDocumentTree', 0]
         ];
-
-        if (defined('\Pimcore\Event\AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA')) {
-            $defaultEvents[AdminEvents::ASSET_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA] = ['handleAssetTree', 0];
-        }
-
-        if (defined('\Pimcore\Event\AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA')) {
-            $defaultEvents[AdminEvents::DOCUMENT_TREE_GET_CHILDREN_BY_ID_PRE_SEND_DATA] = ['handleDocumentTree', 0];
-        }
-
-        return $defaultEvents;
     }
 
     public function handleObjectTree(GenericEvent $event): void
