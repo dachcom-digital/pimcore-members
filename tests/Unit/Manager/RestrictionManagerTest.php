@@ -1,8 +1,8 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Manager;
+namespace DachcomBundle\Test\Unit\Manager;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Restriction\ElementRestriction;
 

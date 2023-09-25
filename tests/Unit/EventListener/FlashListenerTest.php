@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\unit\EventListener;
+namespace DachcomBundle\Test\Unit\EventListener;
 
 use MembersBundle\EventListener\FlashListener;
 use MembersBundle\MembersEvents;

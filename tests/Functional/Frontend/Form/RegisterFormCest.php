@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Frontend\Form;
+namespace DachcomBundle\Test\Functional\Frontend\Form;
 
 use DachcomBundle\Test\Support\FunctionalTester;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use Pimcore\Model\Document\Email;
 
 class RegisterFormCest
@@ -62,7 +62,7 @@ class RegisterFormCest
      */
     public function testUserRegistrationFormConfirmByAdmin(FunctionalTester $I)
     {
-        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin.yml');
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin.yaml');
 
         $this->register($I);
 
@@ -89,7 +89,7 @@ class RegisterFormCest
      */
     public function testUserRegistrationFormConfirmByAdminWithFinalConfirmationMail(FunctionalTester $I)
     {
-        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yml');
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yaml');
 
         $this->register($I);
 
@@ -108,7 +108,7 @@ class RegisterFormCest
      */
     public function testUserRegistrationFormConfirmByAdminWithAdminNotificationMail(FunctionalTester $I)
     {
-        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_admin_notify.yml');
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_admin_notify.yaml');
 
         $email = Email::getByPath('/email/admin-register-notification');
         $email->setTo('test-admin@universe.org');
@@ -127,7 +127,7 @@ class RegisterFormCest
      */
     public function testUserRegistrationFormConfirmInstant(FunctionalTester $I)
     {
-        $I->haveABootedSymfonyConfiguration('config_reg_confirm_instant.yml');
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_instant.yaml');
 
         $this->register($I);
 

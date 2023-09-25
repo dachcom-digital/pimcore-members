@@ -1,36 +1,29 @@
 <?php
 
-namespace DachcomBundle\Test\Test;
+namespace DachcomBundle\Test\Support\Test;
 
-use Codeception\Exception\ModuleException;
-use Dachcom\Codeception\Test\BundleTestCase;
-use Dachcom\Codeception\Util\SystemHelper;
-use DachcomBundle\Test\Util\MembersHelper;
+use Dachcom\Codeception\Support\Test\BundleTestCase;
+use Dachcom\Codeception\Support\Util\SystemHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
+use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\SsoIdentityManager;
 use MembersBundle\Manager\UserManager;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\Document\Page;
-use Pimcore\Tests\Util\TestHelper;
+use Pimcore\Tests\Support\Util\TestHelper;
 
 abstract class DachcomBundleTestCase extends BundleTestCase
 {
-    protected function _after()
+    protected function _after(): void
     {
         SystemHelper::cleanUp(['members_restrictions', 'members_group_relations']);
         MembersHelper::reCreateMembersStructure();
     }
 
-    /**
-     * @param bool  $published
-     * @param array $groups
-     *
-     * @return mixed
-     * @throws ModuleException
-     */
-    protected function createUser($published = false, $groups = [])
+    protected function createUser(bool $published = false, array $groups = []): UserInterface
     {
         $userManager = $this->getContainer()->get(UserManager::class);
         $configuration = $this->getContainer()->get(Configuration::class);
@@ -54,15 +47,7 @@ abstract class DachcomBundleTestCase extends BundleTestCase
         return $user;
     }
 
-    /**
-     * @param bool   $published
-     * @param string $provider
-     * @param string $identifier
-     *
-     * @return SsoIdentityInterface
-     * @throws ModuleException
-     */
-    protected function createSsoIdentity($published, $provider, $identifier)
+    protected function createSsoIdentity(bool $published, string $provider, string $identifier): SsoIdentityInterface
     {
         $user = $this->createUser($published);
 
@@ -78,14 +63,7 @@ abstract class DachcomBundleTestCase extends BundleTestCase
         return $ssoIdentity;
     }
 
-    /**
-     * @param string $key
-     * @param array  $roles
-     *
-     * @return DataObject\MembersGroup
-     * @throws \Exception
-     */
-    protected function createUserGroup($key = 'group-1', $roles = [])
+    protected function createUserGroup(string $key = 'group-1', array $roles = []): DataObject\MembersGroup
     {
         $group = new DataObject\MembersGroup();
         $group->setKey($key);
@@ -98,12 +76,7 @@ abstract class DachcomBundleTestCase extends BundleTestCase
         return $group;
     }
 
-    /**
-     * @param array $groups
-     *
-     * @return Page
-     */
-    protected function createRestrictedDocument($groups = [])
+    protected function createRestrictedDocument(array $groups = []): Page
     {
         $document = TestHelper::createEmptyDocumentPage('restricted-document');
 

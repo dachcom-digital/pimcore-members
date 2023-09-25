@@ -1,8 +1,8 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Security;
+namespace DachcomBundle\Test\Unit\Security;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\CoreExtension\Provider\RoleOptionsProvider;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Multiselect;
 

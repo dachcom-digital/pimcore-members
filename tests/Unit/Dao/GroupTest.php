@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Dao;
+namespace DachcomBundle\Test\Unit\Dao;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use Pimcore\Model\DataObject\MembersGroup;
 
 class GroupTest extends DachcomBundleTestCase

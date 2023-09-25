@@ -1,10 +1,10 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Frontend\Area;
+namespace DachcomBundle\Test\Functional\Frontend\Area;
 
 use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\Support\FunctionalTester;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 
 class LoginAreaCest
 {

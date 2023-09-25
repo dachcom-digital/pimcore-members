@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Security;
+namespace DachcomBundle\Test\Unit\Security;
 
 use MembersBundle\Security\UserProvider;
 use Codeception\TestCase\Test;
@@ -94,7 +94,7 @@ class UserProviderTest extends Test
     public function testRefreshInvalidUserClass()
     {
         $user = $this->getMockBuilder(MembersUser::class)->getMock();
-        $providedUser = $this->getMockBuilder('DachcomBundle\Test\Test\TestUser')->getMock();
+        $providedUser = $this->getMockBuilder('DachcomBundle\Test\Support\Test\TestUser')->getMock();
 
         $this->userManager->expects($this->atLeastOnce())
             ->method('getClass')

@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Frontend\Form;
+namespace DachcomBundle\Test\Functional\Frontend\Form;
 
 use DachcomBundle\Test\Support\FunctionalTester;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 
 class ProfileFormCest
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Config;
+namespace DachcomBundle\Test\Unit\Config;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\Configuration\Configuration;
 
 class ConfigurationTest extends DachcomBundleTestCase

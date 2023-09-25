@@ -1,8 +1,8 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Dao;
+namespace DachcomBundle\Test\Unit\Dao;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use Pimcore\Model\DataObject\SsoIdentity;
 
 class SsoIdentityTest extends DachcomBundleTestCase

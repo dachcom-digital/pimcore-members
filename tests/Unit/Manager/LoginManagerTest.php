@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Manager;
+namespace DachcomBundle\Test\Unit\Manager;
 
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\LoginManager;

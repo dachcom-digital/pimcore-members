@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Frontend\Navigation;
+namespace DachcomBundle\Test\Functional\Frontend\Navigation;
 
 use DachcomBundle\Test\Support\FunctionalTester;
 

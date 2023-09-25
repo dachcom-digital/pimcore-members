@@ -6,4 +6,4 @@ services:
 
     MembersBundle\Session\SessionConfigurator:
         tags:
-            - { name: pimcore.session.configurator }
+            - { name: kernel.event_subscriber }

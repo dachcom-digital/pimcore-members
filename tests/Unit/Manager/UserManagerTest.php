@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Manager;
+namespace DachcomBundle\Test\Unit\Manager;
 
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\UserManager;
 use Pimcore\Model\DataObject\MembersUser;

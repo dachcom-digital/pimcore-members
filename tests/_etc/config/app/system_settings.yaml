@@ -1,63 +1,47 @@
 pimcore:
     general:
         timezone: Europe/Berlin
+        domain: 'localhost'
+        redirect_to_maindomain: false
+        disable_usage_statistics: true
+        debug_admin_translations: false
         language: en
-        valid_languages: 'en,de'
+        default_language: en
+        valid_languages:
+            - en
+            - de
         fallback_languages:
             en: ''
             de: ''
-        path_variable: ''
-        domain: 'localhost'
-        redirect_to_maindomain: false
-        default_language: en
-        disable_usage_statistics: true
-        debug_admin_translations: false
-        instance_identifier: ''
     documents:
-        versions:
-            steps: 10
-            days: null
-        error_pages:
-            default: /404
         allow_trailing_slash: 'no'
         generate_preview: false
+        versions:
+            days: null
+            steps: 10
+        error_pages:
+            default: '/error'
+            localized:
+                en: ''
+                de: ''
     objects:
         versions:
-            steps: 10
             days: null
+            steps: 10
     assets:
         versions:
-            steps: 10
             days: null
-        icc_rgb_profile: ''
-        icc_cmyk_profile: ''
-        hide_edit_image: false
-        disable_tree_preview: true
+            steps: 10
     email:
         debug:
-            email_addresses: opensource@dachcom.ch
-    full_page_cache:
-        exclude_cookie: ''
-        enabled: false
-        lifetime: null
-        exclude_patterns: ''
-    httpclient:
-        adapter: Socket
-        proxy_host: ''
-        proxy_port: ''
-        proxy_user: ''
-        proxy_pass: ''
-    applicationlog:
-        mail_notification:
-            send_log_summary: false
-            filter_priority: null
-            mail_receiver: ''
-        archive_treshold: '30'
-        archive_alternative_database: ''
-        delete_archive_threshold: '6'
+            email_addresses: shagspiel@dachcom.ch
 pimcore_admin:
+    assets:
+        hide_edit_image: true
+        disable_tree_preview: true
     branding:
+        login_screen_invert_colors: false
         color_login_screen: ''
         color_admin_interface: ''
+        color_admin_interface_background: ''
         login_screen_custom_image: ''
-        login_screen_invert_colors: false

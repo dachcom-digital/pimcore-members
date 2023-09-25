@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Security;
+namespace DachcomBundle\Test\Unit\Security;
 
 use MembersBundle\Security\UserChecker;
 use PHPUnit\Framework\TestCase;

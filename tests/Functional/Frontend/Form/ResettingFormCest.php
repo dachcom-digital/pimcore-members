@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Frontend\Form;
+namespace DachcomBundle\Test\Functional\Frontend\Form;
 
 use DachcomBundle\Test\Support\FunctionalTester;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use Pimcore\Model\Document\Email;
 
 class ResettingFormCest
@@ -50,7 +50,7 @@ class ResettingFormCest
      */
     public function testResettingWithAdminConfirm(FunctionalTester $I)
     {
-        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yml');
+        $I->haveABootedSymfonyConfiguration('config_reg_confirm_by_admin_with_after_confirmed.yaml');
 
         $user = $I->haveARegisteredFrontEndUser(true);
         $this->triggerResetForm($I, $user->getEmail());

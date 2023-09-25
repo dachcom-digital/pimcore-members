@@ -1,13 +1,13 @@
 <?php
 
-namespace DachcomBundle\Test\Helper;
+namespace DachcomBundle\Test\Support\Helper;
 
 use Codeception\TestInterface;
-use Dachcom\Codeception\Util\FileGeneratorHelper;
-use Dachcom\Codeception\Util\SystemHelper;
-use DachcomBundle\Test\Util\MembersHelper;
+use Dachcom\Codeception\Support\Util\FileGeneratorHelper;
+use Dachcom\Codeception\Support\Util\SystemHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 
-class PimcoreBackend extends \Dachcom\Codeception\Helper\PimcoreBackend
+class PimcoreBackend extends \Dachcom\Codeception\Support\Helper\PimcoreBackend
 {
     public function _after(TestInterface $test): void
     {

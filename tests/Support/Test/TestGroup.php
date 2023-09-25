@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\Test;
+namespace DachcomBundle\Test\Support\Test;
 
 use Pimcore\Model\DataObject\MembersGroup;
 

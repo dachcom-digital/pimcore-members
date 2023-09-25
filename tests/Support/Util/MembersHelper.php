@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\Util;
+namespace DachcomBundle\Test\Support\Util;
 
 use MembersBundle\Tool\Install;
 use Pimcore\Model\Document;
@@ -12,7 +12,7 @@ class MembersHelper
     public const DEFAULT_FEU_PASSWORD = 'default-password';
     public const DEFAULT_FEG_NAME = 'Default Group';
 
-    public static function assertMailSender()
+    public static function assertMailSender(): void
     {
         // we need to set a valid sender
         $emailListing = new Document\Listing();
@@ -26,7 +26,7 @@ class MembersHelper
         }
     }
 
-    public static function reCreateMembersStructure()
+    public static function reCreateMembersStructure(): void
     {
         $installer = \Pimcore::getContainer()->get(Install::class);
         $installer->install();

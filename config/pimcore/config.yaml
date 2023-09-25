@@ -1,6 +1,6 @@
 doctrine_migrations:
     migrations_paths:
-        'MembersBundle\Migrations': '@MembersBundle/Migrations'
+        'MembersBundle\Migrations': '@MembersBundle/src/Migrations'
 
 pimcore:
     objects:

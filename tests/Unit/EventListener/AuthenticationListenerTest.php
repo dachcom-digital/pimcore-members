@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\unit\EventListener;
+namespace DachcomBundle\Test\Unit\EventListener;
 
 use MembersBundle\Event\FilterUserResponseEvent;
 use MembersBundle\EventListener\AuthenticationListener;

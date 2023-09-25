@@ -6,9 +6,9 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     symfony:
         container_xml_path: %currentWorkingDirectory%/var/cache/test/TestKernelTestDebugContainer.xml
-    excludes_analyse:
+    excludePaths:
         # only works if optional bundles are available:
-        - '**/AbstractCustomerUser.php'
+        - src/Adapter/User/AbstractCustomerUser.php
     ignoreErrors:
         - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface::end\(\)\.#'
         - '#Comparison operation \"\>\" between int\<1, max\> and 0 is always true\.#'

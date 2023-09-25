@@ -1,12 +1,11 @@
 <?php
 
-namespace DachcomBundle\Test\Helper;
+namespace DachcomBundle\Test\Support\Helper;
 
-use Codeception\Exception\ModuleException;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
-use Dachcom\Codeception\Helper\PimcoreCore;
-use DachcomBundle\Test\Util\MembersHelper;
+use Dachcom\Codeception\Support\Helper\PimcoreCore;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Configuration\Configuration;

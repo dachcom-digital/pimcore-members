@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Validation;
+namespace DachcomBundle\Test\Functional\Validation;
 
 use DachcomBundle\Test\Support\FunctionalTester;
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 
 class UniqueCest
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace DachcomBundle\Test\unit\Manager;
+namespace DachcomBundle\Test\Unit\Manager;
 
 use Codeception\Exception\ModuleException;
-use DachcomBundle\Test\Test\DachcomBundleTestCase;
+use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\Manager\ClassManager;
 use Pimcore\Model\DataObject\MembersGroup;
 use Pimcore\Model\DataObject\MembersUser;

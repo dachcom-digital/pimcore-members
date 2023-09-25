@@ -1,6 +1,6 @@
 <?php
 
-namespace DachcomBundle\Test\functional\Restriction;
+namespace DachcomBundle\Test\Functional\Restriction;
 
 use Codeception\Exception\ModuleException;
 use DachcomBundle\Test\Support\FunctionalTester;

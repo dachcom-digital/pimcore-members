@@ -1,22 +1,17 @@
 <?php
 
-namespace DachcomBundle\Test\Helper;
+namespace DachcomBundle\Test\Support\Helper;
 
-use DachcomBundle\Test\Util\MembersHelper;
+use DachcomBundle\Test\Support\Util\MembersHelper;
 use MembersBundle\Adapter\User\AbstractSsoAwareUser;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Tool\Console;
 
-class PimcoreBundleCore extends \Dachcom\Codeception\Helper\PimcoreBundleCore
+class PimcoreBundleCore extends \Dachcom\Codeception\Support\Helper\PimcoreBundleCore
 {
-    /**
-     * @param array $settings
-     *
-     * @throws \Exception
-     */
-    protected function installBundle(array $settings): void
+    protected function installBundle(): void
     {
-        parent::installBundle($settings);
+        parent::installBundle();
 
         // install members classes
         $cmd = sprintf('%s %s/bin/console members:install:class -o --no-interaction --env=test', Console::getExecutable('php'), PIMCORE_PROJECT_ROOT);
