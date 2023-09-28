@@ -11,12 +11,6 @@ services:
         arguments:
             $scopes: '%members.oauth.scopes%'
 
-    MembersBundle\Security\OAuthIdentityAuthenticator:
-        deprecated:
-            message: 'The "%service_id%" service is deprecated. Use MembersBundle\Security\Authenticator\OAuthIdentityAuthenticator instead'
-            package: dachcom-digital/members
-            version: 4.1
-
     MembersBundle\Security\Authenticator\OAuthIdentityAuthenticator: ~
 
     MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher: ~
