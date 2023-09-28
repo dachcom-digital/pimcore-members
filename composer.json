@@ -43,9 +43,6 @@
         "phpstan/phpstan-symfony": "^1.0",
         "symplify/easy-coding-standard": "^9.0"
     },
-    "conflict": {
-        "league/csv": "9.11.0"
-    },
     "suggest": {
         "knpuniversity/oauth2-client-bundle": "^2.0"
     }

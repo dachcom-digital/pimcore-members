@@ -17,11 +17,6 @@ class UserProvider implements UserProviderInterface
     ) {
     }
 
-    public function loadUserByUsername(string $username)
-    {
-        throw new UnsupportedUserException('loadUserByUsername is not supported anymore. use loadUserByIdentifier instead.');
-    }
-
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
         $user = $this->findUser($identifier);

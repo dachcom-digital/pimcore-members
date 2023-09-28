@@ -21,7 +21,7 @@ class UserProviderTest extends DachcomBundleTestCase
         $this->userProvider = new UserProvider('username', $this->userManager);
     }
 
-    public function testLoadUserByUsername(): void
+    public function testLoadUserByIdentifier(): void
     {
         $user = $this->getMockBuilder(UserInterface::class)->getMock();
 
