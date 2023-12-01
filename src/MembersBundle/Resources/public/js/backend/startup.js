@@ -114,11 +114,21 @@ class MembersCore {
             return false;
         }
 
-        if (type === 'object' && this.settings.restriction.allowed_objects.indexOf(obj.data.general.o_className) === -1) {
+        if (
+            type === 'object' &&
+            obj.data.general.o_type !== 'folder' &&
+            this.settings.restriction.allowed_objects.indexOf(obj.data.general.o_className) === -1
+        ) {
             isAllowed = false;
-        } else if (type === 'page' && ['page', 'link'].indexOf(obj.type) === -1) {
+        } else if (
+            type === 'page' &&
+            ['page', 'link', 'folder'].indexOf(obj.type) === -1
+        ) {
             isAllowed = false;
-        } else if (type === 'asset' && !(obj.data.filename === 'restricted-assets' || obj.data.path.substring(0, 18) === '/restricted-assets')) {
+        } else if (
+            type === 'asset' &&
+            !(obj.data.filename === 'restricted-assets' || obj.data.path.substring(0, 18) === '/restricted-assets')
+        ) {
             isAllowed = false;
         }
 
