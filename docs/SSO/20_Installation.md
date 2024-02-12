@@ -105,6 +105,14 @@ members:
         activation_type: 'complete_profile' # choose between "complete_profile" and  "instant"
 ```
 
+## Configure Firewall
+If your using a different name for your firewall than `members_fe` you need to configure the container parameter:
+
+```yaml
+parameters:
+    members.firewall_name: your_fw_name
+```
+
 ## Configure Client
 Every provider comes with its own configuration. 
 In this example, we're going to setup the google client:
