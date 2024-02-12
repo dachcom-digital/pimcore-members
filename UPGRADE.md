@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+### 4.1.2
+- **[IMPROVEMENT]**: Introduce `OAUTH_RESOURCE_MAPPING_REFRESH` Event
+
 ### 4.1.1
 - **[BUGFIX]**: Also respect original asset paths in protected env
 
