@@ -7,6 +7,8 @@ services:
 
     # event: check auth
     MembersBundle\EventListener\AuthenticationListener:
+        arguments:
+            $firewallName: '%members.firewall_name%'
         tags:
             - { name: kernel.event_subscriber }
 
