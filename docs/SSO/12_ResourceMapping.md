@@ -40,7 +40,8 @@ class MembersResourceMappingListener implements EventSubscriberInterface
     {
         return [
             MembersEvents::OAUTH_RESOURCE_MAPPING_PROFILE      => 'onProfileMapping',
-            MembersEvents::OAUTH_RESOURCE_MAPPING_REGISTRATION => 'onRegistrationMapping'
+            MembersEvents::OAUTH_RESOURCE_MAPPING_REGISTRATION => 'onRegistrationMapping',
+            MembersEvents::OAUTH_RESOURCE_MAPPING_REFRESH      => 'onRegistrationRefresh',
         ];
     }
 
@@ -60,6 +61,18 @@ class MembersResourceMappingListener implements EventSubscriberInterface
         $ownerDetails = $resourceOwner->toArray();
 
         $this->mapData($user, $ownerDetails);
+    }
+
+    public function onRegistrationRefresh(OAuthResourceRefreshEvent $event): void
+    {
+        $user = $event->getUser();
+        $resourceOwner = $event->getResourceOwner();
+        $ownerDetails = $resourceOwner->toArray();
+
+        $user->setUserName($ownerDetails['name']);
+        
+        // ATTENTION! You need to inform event about changes!
+        $event->setHasChanged(true);
     }
 
     protected function mapData(UserInterface $user, array $ownerDetails): void

@@ -300,6 +300,15 @@ final class MembersEvents
     public const OAUTH_RESOURCE_MAPPING_REGISTRATION = 'members.oauth.resource_mapping.registration';
 
     /**
+     * The OAUTH_RESOURCE_MAPPING_REFRESH event occurs after an existing sso identity has been found.
+     *
+     * This event allows you to map resource data (e.g. google) to your existing user identity.
+     *
+     * @Event("MembersBundle\Event\OAuth\OAuthResourceRefreshEvent")
+     */
+    public const OAUTH_RESOURCE_MAPPING_REFRESH = 'members.oauth.resource_mapping.refresh';
+
+    /**
      * The OAUTH_IDENTITY_STATUS_PROFILE_COMPLETION event occurs before a user enters the profile completion step.
      *
      * This event allows you to overrule the termination if a user is able to complete is profile or not

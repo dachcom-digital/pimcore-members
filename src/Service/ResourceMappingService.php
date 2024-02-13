@@ -2,17 +2,19 @@
 
 namespace MembersBundle\Service;
 
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Event\OAuth\OAuthResourceEvent;
+use MembersBundle\Event\OAuth\OAuthResourceRefreshEvent;
+use MembersBundle\Exception\EntityNotRefreshedException;
 use MembersBundle\MembersEvents;
-use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface as ComponentEventDispatcherInterface;
 
 class ResourceMappingService
 {
     public const MAP_FOR_PROFILE = 'profile';
     public const MAP_FOR_REGISTRATION = 'registration';
+    public const MAP_FOR_REFRESH = 'refresh';
 
     public function __construct(
         protected string $authIdentifier,
@@ -22,6 +24,7 @@ class ResourceMappingService
 
     /**
      * @throws \Exception
+     * @throws EntityNotRefreshedException
      */
     public function mapResourceData(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
@@ -33,17 +36,30 @@ class ResourceMappingService
         }
 
         $eventName = constant($eventPath);
-        if ($this->eventDispatcher instanceof ComponentEventDispatcherInterface && $this->eventDispatcher->hasListeners($eventName) === false) {
+        if ($this->eventDispatcher instanceof EventDispatcherInterface && $this->eventDispatcher->hasListeners($eventName) === false) {
             $this->addDefaults($user, $resourceOwner, $type);
 
             return;
         }
 
-        $this->eventDispatcher->dispatch(new OAuthResourceEvent($user, $resourceOwner), $eventName);
+        $eventClass = $type === self::MAP_FOR_REFRESH ? OAuthResourceRefreshEvent::class : OAuthResourceEvent::class;
+        $event = new $eventClass($user, $resourceOwner);
+
+        $this->eventDispatcher->dispatch($event, $eventName);
+
+        if ($event instanceof OAuthResourceRefreshEvent && $event->hasChanged() === false) {
+            throw new EntityNotRefreshedException(sprintf('entity %d has not changed', $user->getId()));
+        }
+
     }
 
     public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void
     {
+        // do not add default values in refresh mode
+        if ($type === self::MAP_FOR_REFRESH) {
+            return;
+        }
+
         $ownerDetails = $resourceOwner->toArray();
         $disallowedProperties = ['lastLogin', 'password', 'confirmationToken', 'passwordRequestedAt', 'groups', 'ssoIdentities'];
 

@@ -6,9 +6,9 @@ use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2ClientInterface;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use MembersBundle\Adapter\User\UserInterface;
-use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
 use MembersBundle\Security\OAuth\Exception\AccountNotLinkedException;
+use MembersBundle\Security\OAuth\OAuthRegistrationHandler;
 use MembersBundle\Security\OAuth\OAuthResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ class OAuthIdentityAuthenticator extends OAuth2Authenticator implements Authenti
     public function __construct(
         protected UrlGeneratorInterface $router,
         protected ClientRegistry $clientRegistry,
-        protected SsoIdentityManagerInterface $ssoIdentityManager,
+        protected OAuthRegistrationHandler $oAuthRegistrationHandler,
         protected DispatchRouter $dispatchRouter
     ) {
     }
@@ -67,9 +67,10 @@ class OAuthIdentityAuthenticator extends OAuth2Authenticator implements Authenti
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client, $provider, $type, $parameter) {
+
                 $user = $client->fetchUserFromToken($accessToken);
                 $oAuthResponse = new OAuthResponse($provider, $accessToken, $user, $parameter);
-                $memberUser = $this->ssoIdentityManager->getUserBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
+                $memberUser = $this->oAuthRegistrationHandler->getRefreshedUserFromUserResponse($oAuthResponse);
 
                 if ($memberUser instanceof UserInterface) {
                     return $memberUser;

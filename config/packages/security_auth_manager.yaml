@@ -1,3 +1,7 @@
+# if you're using a different firewall name, you need to enable this parameter
+# parameters:
+#     members.firewall_name: 'your_fw_name'
+
 security:
 
     # symfony default is set to "true".
