@@ -34,7 +34,7 @@ pimcore:
             steps: 10
     email:
         debug:
-            email_addresses: shagspiel@dachcom.ch
+            email_addresses: development@dachcom.ch
 pimcore_admin:
     assets:
         hide_edit_image: true
