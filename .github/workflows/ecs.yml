@@ -105,6 +105,7 @@ jobs:
                 run: |
                     chmod +x ./pimcore-codeception-framework/src/_etc/scripts/composer.sh
                     ./pimcore-codeception-framework/src/_etc/scripts/composer.sh
+                    sed -i 's,\"require-dev"\: {,\"conflict"\: {\"league/csv"\: \">=9.11.0"\}\, \"require-dev"\: {,g' ${{ github.workspace }}/lib/test-bundle/composer.json
 
             -   name: Assets Install
                 run: |
