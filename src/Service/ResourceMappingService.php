@@ -9,6 +9,7 @@ use MembersBundle\Event\OAuth\OAuthResourceRefreshEvent;
 use MembersBundle\Exception\EntityNotRefreshedException;
 use MembersBundle\MembersEvents;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface as ComponentEventDispatcherInterface;
 
 class ResourceMappingService
 {
@@ -36,7 +37,7 @@ class ResourceMappingService
         }
 
         $eventName = constant($eventPath);
-        if ($this->eventDispatcher instanceof EventDispatcherInterface && $this->eventDispatcher->hasListeners($eventName) === false) {
+        if ($this->eventDispatcher instanceof ComponentEventDispatcherInterface && $this->eventDispatcher->hasListeners($eventName) === false) {
             $this->addDefaults($user, $resourceOwner, $type);
 
             return;

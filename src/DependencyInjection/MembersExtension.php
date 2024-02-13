@@ -23,6 +23,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
+        /** @phpstan-ignore-next-line */
         if (!$container->hasParameter('members.firewall_name')) {
             $container->setParameter('members.firewall_name', 'members_fe');
         }
