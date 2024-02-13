@@ -306,7 +306,7 @@
 | Type | Reference |
 |:--- |:--- |
 | **const** | `\MembersEvent:OAUTH_RESOURCE_MAPPING_PROFILE` |
-| **name** | `members.oauth.connection.success` |
+| **name** | `members.oauth.resource_mapping.profile` |
 | **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
 | **description** | The OAUTH_RESOURCE_MAPPING_PROFILE event occurs before a sso identity gets assigned to given user profile. This event allows you to map resource data (e.g. google) to your user identity. |
 
@@ -315,9 +315,18 @@
 | Type | Reference |
 |:--- |:--- |
 | **const** | `\MembersEvent:OAUTH_RESOURCE_MAPPING_REGISTRATION` |
-| **name** | `members.oauth.connection.success` |
+| **name** | `members.oauth.resource_mapping.registration` |
 | **class** | `\MembersBundle\Event\OAuth\OAuthResourceEvent` |
 | **description** | The OAUTH_RESOURCE_MAPPING_REGISTRATION event occurs before the registration form gets rendered. This event allows you to map resource data (e.g. google) to your registration form. |
+
+### members.oauth.resource_mapping.refresh
+
+| Type | Reference                                                                                                                                                                                |
+|:--- |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **const** | `\MembersEvent:OAUTH_RESOURCE_MAPPING_REFRESH`                                                                                                                                           |
+| **name** | `members.oauth.resource_mapping.refresh`                                                                                                                                                 |
+| **class** | `\MembersBundle\Event\OAuth\OAuthResourceRefreshEvent`                                                                                                                                   |
+| **description** | TThe OAUTH_RESOURCE_MAPPING_REFRESH event occurs after an existing sso identity has been found. This event allows you to map resource data (e.g. google) to your existing user identity. |
 
 ***
 

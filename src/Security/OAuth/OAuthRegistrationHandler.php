@@ -4,6 +4,7 @@ namespace MembersBundle\Security\OAuth;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Exception\EntityNotRefreshedException;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\Service\RequestPropertiesForUserExtractorServiceInterface;
@@ -22,6 +23,26 @@ class OAuthRegistrationHandler
     public function getUserFromUserResponse(OAuthResponseInterface $OAuthResponse): ?UserInterface
     {
         return $this->ssoIdentityManager->getUserBySsoIdentity($OAuthResponse->getProvider(), $OAuthResponse->getResourceOwner()->getId());
+    }
+
+    public function getRefreshedUserFromUserResponse(OAuthResponseInterface $oAuthResponse): ?UserInterface
+    {
+        $user = $this->ssoIdentityManager->getUserBySsoIdentity($oAuthResponse->getProvider(), $oAuthResponse->getResourceOwner()->getId());
+
+        if (!$user instanceof UserInterface) {
+            return null;
+        }
+
+        try {
+            $this->accountConnector->refreshSsoIdentityUser($user, $oAuthResponse);
+        } catch (EntityNotRefreshedException $e) {
+            // entity hasn't changed. return
+            return $user;
+        }
+
+        $this->userManager->updateUser($user);
+
+        return $user;
     }
 
     /**

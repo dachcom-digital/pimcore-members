@@ -1,5 +1,9 @@
 # Upgrade Notes
 
+### 5.0.1
+- **[IMPROVEMENT]**: Introduce `OAUTH_RESOURCE_MAPPING_REFRESH` Event
+- **[IMPROVEMENT]**: Configurable Firewall Name via container parameter `members.firewall_name`
+
 ## Migrating from Version 4.x to Version 5.0
 
 ### Global Changes

@@ -23,6 +23,11 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
+        /** @phpstan-ignore-next-line */
+        if (!$container->hasParameter('members.firewall_name')) {
+            $container->setParameter('members.firewall_name', 'members_fe');
+        }
+
         $oauthEnabled = false;
         if ($container->hasExtension('security') === true && $config['oauth']['enabled'] === true) {
             $oauthEnabled = true;
@@ -114,6 +119,8 @@ class MembersExtension extends Extension implements PrependExtensionInterface
 
     protected function extendPimcoreSecurityConfiguration(ContainerBuilder $container, bool $oauthEnabled): void
     {
+        $firewallName = $container->getParameter('members.firewall_name');
+
         $container->loadFromExtension('pimcore', [
             'security' => [
                 'password_hasher_factories' => [
@@ -125,7 +132,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         if ($oauthEnabled === true) {
             $container->loadFromExtension('security', [
                 'firewalls' => [
-                    'members_fe' => [
+                    $firewallName => [
                         'custom_authenticators' => [
                             OAuthIdentityAuthenticator::class
                         ]

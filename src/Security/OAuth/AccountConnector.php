@@ -4,6 +4,7 @@ namespace MembersBundle\Security\OAuth;
 
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\UserInterface as MembersUserInterface;
+use MembersBundle\Exception\EntityNotRefreshedException;
 use MembersBundle\Manager\SsoIdentityManagerInterface;
 use MembersBundle\Service\ResourceMappingService;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -53,6 +54,18 @@ class AccountConnector implements AccountConnectorInterface
         $this->ssoIdentityManager->addSsoIdentity($user, $ssoIdentity);
 
         return $ssoIdentity;
+    }
+
+    /**
+     * @throws EntityNotRefreshedException
+     */
+    public function refreshSsoIdentityUser(UserInterface $user, OAuthResponseInterface $oAuthResponse): void
+    {
+        if (!$user instanceof MembersUserInterface) {
+            throw new \InvalidArgumentException('User is not supported');
+        }
+
+        $this->resourceMappingService->mapResourceData($user, $oAuthResponse->getResourceOwner(), ResourceMappingService::MAP_FOR_REFRESH);
     }
 
     protected function applyCredentialsToSsoIdentity(SsoIdentityInterface $ssoIdentity, OAuthResponseInterface $oAuthResponse): void

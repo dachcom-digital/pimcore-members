@@ -62,6 +62,7 @@ pimcore_admin:
 framework:
 
     session:
+        gc_probability: 0
         storage_factory_id: session.storage.factory.native
 
     profiler:

@@ -100,7 +100,7 @@ jobs:
                 run: |
                     nohup $CHROMEWEBDRIVER/chromedriver --url-base=/wd/hub /dev/null 2>&1 &
 
-            -   name: Start Webserver and Chrome
+            -   name: Start Symfony Server
                 run: |
                     curl -sS https://get.symfony.com/cli/installer | bash -s -- --install-dir=$HOME/.symfony/bin
                     ~/.symfony/bin/symfony server:start --port=8080 --dir=public --allow-http --no-tls --daemon
