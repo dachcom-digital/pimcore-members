@@ -1,5 +1,9 @@
 # Upgrade Notes
 
+### 4.1.2
+- **[IMPROVEMENT]**: Introduce `OAUTH_RESOURCE_MAPPING_REFRESH` Event
+- **[IMPROVEMENT]**: Configurable Firewall Name via container parameter `members.firewall_name`
+
 ### 4.1.1
 - **[BUGFIX]**: Also respect original asset paths in protected env
 
