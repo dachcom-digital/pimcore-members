@@ -51,9 +51,9 @@ trait UserTrait
     public function getRoles(): array
     {
         $roles = $this->roles;
-
+        $groups = $this->getGroups() ?? [];
         /** @var GroupInterface $group */
-        foreach ($this->getGroups() as $group) {
+        foreach ($groups as $group) {
             $groupRoles = $group->getRoles();
             $roles[] = is_array($groupRoles) ? $groupRoles : [];
         }
@@ -67,8 +67,9 @@ trait UserTrait
     public function getGroupNames(): array
     {
         $names = [];
+        $groups = $this->getGroups() ?? [];
         /** @var GroupInterface $group */
-        foreach ($this->getGroups() as $group) {
+        foreach ($groups as $group) {
             $names[] = $group->getName();
         }
 
