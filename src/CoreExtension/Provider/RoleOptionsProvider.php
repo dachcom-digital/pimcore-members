@@ -19,26 +19,16 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
 
     public function getOptions(array $context, Data $fieldDefinition): array
     {
-        $roles = [];
+        $roles = [$this->getDefaultValue()];
 
-        /*
-         * Get all unique roles
-         */
         foreach ($this->originalRoles as $originalRole => $inheritedRoles) {
-            foreach ($inheritedRoles as $inheritedRole) {
-                $roles[] = $inheritedRole;
-            }
-
-            $roles[] = $originalRole;
+            array_push($roles, $originalRole, ...$inheritedRoles);
         }
 
-        $result = [];
-
-        foreach (array_unique($roles) as $role) {
-            $result[] = ['key' => $role, 'value' => $role];
-        }
-
-        return $result;
+        return array_map(
+            static fn($role): array => ['key' => $role, 'value' => $role],
+            array_unique($roles)
+        );
     }
 
     public function hasStaticOptions(array $context, Data $fieldDefinition): bool
@@ -46,7 +36,7 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
         return false;
     }
 
-    public function getDefaultValue(array $context, Data $fieldDefinition): ?string
+    public function getDefaultValue(): string
     {
         return 'ROLE_USER';
     }
