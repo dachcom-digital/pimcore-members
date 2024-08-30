@@ -4,8 +4,9 @@ namespace MembersBundle\CoreExtension\Provider;
 
 use Pimcore\Model\DataObject\ClassDefinition\DynamicOptionsProvider\MultiSelectOptionsProviderInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data;
+use Pimcore\Model\DataObject\ClassDefinition\DynamicOptionsProvider\SelectOptionsProviderInterface;
 
-class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
+class RoleOptionsProvider implements SelectOptionsProviderInterface
 {
     protected array $originalRoles;
     protected array $invalidRoles = [
@@ -19,26 +20,16 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
 
     public function getOptions(array $context, Data $fieldDefinition): array
     {
-        $roles = [];
+        $roles = [$this->getDefaultValue($context, $fieldDefinition)];
 
-        /*
-         * Get all unique roles
-         */
         foreach ($this->originalRoles as $originalRole => $inheritedRoles) {
-            foreach ($inheritedRoles as $inheritedRole) {
-                $roles[] = $inheritedRole;
-            }
-
-            $roles[] = $originalRole;
+            array_push($roles, $originalRole, ...$inheritedRoles);
         }
 
-        $result = [];
-
-        foreach (array_unique($roles) as $role) {
-            $result[] = ['key' => $role, 'value' => $role];
-        }
-
-        return $result;
+        return array_map(
+            static fn($role): array => ['key' => $role, 'value' => $role],
+            array_unique($roles)
+        );
     }
 
     public function hasStaticOptions(array $context, Data $fieldDefinition): bool
