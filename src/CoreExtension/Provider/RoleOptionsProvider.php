@@ -19,7 +19,7 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
 
     public function getOptions(array $context, Data $fieldDefinition): array
     {
-        $roles = [$this->getDefaultValue()];
+        $roles = [$this->getDefaultValue($context, $fieldDefinition)];
 
         foreach ($this->originalRoles as $originalRole => $inheritedRoles) {
             array_push($roles, $originalRole, ...$inheritedRoles);
@@ -36,7 +36,7 @@ class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
         return false;
     }
 
-    public function getDefaultValue(): string
+    public function getDefaultValue(array $context, Data $fieldDefinition): ?string
     {
         return 'ROLE_USER';
     }
