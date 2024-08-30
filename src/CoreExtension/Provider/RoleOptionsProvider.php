@@ -4,8 +4,9 @@ namespace MembersBundle\CoreExtension\Provider;
 
 use Pimcore\Model\DataObject\ClassDefinition\DynamicOptionsProvider\MultiSelectOptionsProviderInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data;
+use Pimcore\Model\DataObject\ClassDefinition\DynamicOptionsProvider\SelectOptionsProviderInterface;
 
-class RoleOptionsProvider implements MultiSelectOptionsProviderInterface
+class RoleOptionsProvider implements SelectOptionsProviderInterface
 {
     protected array $originalRoles;
     protected array $invalidRoles = [
