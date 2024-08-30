@@ -6,6 +6,9 @@ use MembersBundle\Adapter\Group\GroupInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\Password;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @method GroupInterface[]|null getGroups()
+ */
 trait UserTrait
 {
     private array $roles = [];
@@ -51,9 +54,8 @@ trait UserTrait
     public function getRoles(): array
     {
         $roles = $this->roles;
-
-        /** @var GroupInterface $group */
-        foreach ($this->getGroups() as $group) {
+        $groups = $this->getGroups() ?? [];
+        foreach ($groups as $group) {
             $groupRoles = $group->getRoles();
             $roles[] = is_array($groupRoles) ? $groupRoles : [];
         }
@@ -67,8 +69,8 @@ trait UserTrait
     public function getGroupNames(): array
     {
         $names = [];
-        /** @var GroupInterface $group */
-        foreach ($this->getGroups() as $group) {
+        $groups = $this->getGroups() ?? [];
+        foreach ($groups as $group) {
             $names[] = $group->getName();
         }
 
@@ -82,7 +84,6 @@ trait UserTrait
     {
         $groups = $this->getGroups() ?? [];
         $groupIds = array_map(static function ($group) {
-            /* @var GroupInterface $group */
             return $group->getId();
         }, $groups);
 
@@ -115,7 +116,6 @@ trait UserTrait
     {
         $groups = $this->getGroups() ?? [];
         $groupIds = array_map(static function ($group) {
-            /* @var GroupInterface $group */
             return $group->getId();
         }, $groups);
 
