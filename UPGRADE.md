@@ -1,5 +1,9 @@
 # Upgrade Notes
 
+### 5.0.2
+- **[IMPROVEMENT]**: RoleOptionsProvider now shows the default role in UserGroup objects if no configuration was made [#201](https://github.com/dachcom-digital/pimcore-members/issues/201)
+- **[BUGFIX]**: Fixed a bug that breaks the system when you have empty roles [#200](https://github.com/dachcom-digital/pimcore-members/pull/200)
+
 ### 5.0.1
 - **[IMPROVEMENT]**: Introduce `OAUTH_RESOURCE_MAPPING_REFRESH` Event
 - **[IMPROVEMENT]**: Configurable Firewall Name via container parameter `members.firewall_name`
