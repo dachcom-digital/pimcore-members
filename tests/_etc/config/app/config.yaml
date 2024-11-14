@@ -15,6 +15,10 @@ services:
             - { name: kernel.event_subscriber }
 
 doctrine:
+    orm:
+        entity_managers:
+            default:
+                connection: default
     dbal:
         connections:
             default:
