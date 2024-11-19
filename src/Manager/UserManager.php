@@ -11,17 +11,11 @@ class UserManager implements UserManagerInterface
 {
     protected Configuration $configuration;
     protected ClassManagerInterface $classManager;
-    protected int $memberStorageId;
 
     public function __construct(Configuration $configuration, ClassManagerInterface $classManager)
     {
         $this->configuration = $configuration;
         $this->classManager = $classManager;
-
-        $storagePath = $configuration->getConfig('storage_path');
-        if (($membersStoreObject = DataObject::getByPath($storagePath)) instanceof DataObject\Folder) {
-            $this->memberStorageId = $membersStoreObject->getId();
-        }
     }
 
     public function getClass(): string
@@ -187,10 +181,16 @@ class UserManager implements UserManagerInterface
 
     private function setupNewUser(UserInterface $user, ?string $key): UserInterface
     {
+        $memberStorageId = null;
         $validKey = $key ?? $user->getEmail();
 
+        $storagePath = $this->configuration->getConfig('storage_path');
+        if (($membersStoreObject = DataObject::getByPath($storagePath)) instanceof DataObject\Folder) {
+            $memberStorageId = $membersStoreObject->getId();
+        }
+
         $user->setKey(\Pimcore\File::getValidFilename($validKey));
-        $user->setParentId($this->memberStorageId);
+        $user->setParentId($memberStorageId);
 
         $userGroups = [];
         $userConfiguration = $this->configuration->getConfig('user');

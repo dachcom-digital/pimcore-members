@@ -1,4 +1,6 @@
 # Upgrade Notes
+### 5.0.3
+- **[BUGFIX]**: Do not initialize `memberStorageId` in UserManager::constructor to prevent early db connection 
 
 ### 5.0.2
 - **[IMPROVEMENT]**: RoleOptionsProvider now shows the default role in UserGroup objects if no configuration was made [#201](https://github.com/dachcom-digital/pimcore-members/issues/201)
