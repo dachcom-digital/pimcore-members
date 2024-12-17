@@ -1,4 +1,8 @@
 # Upgrade Notes
+
+## 5.1.0
+- [LICENSE] Dual-License with GPL and Dachcom Commercial License (DCL) added
+
 ### 5.0.3
 - **[BUGFIX]**: Do not initialize `memberStorageId` in UserManager::constructor to prevent early db connection 
 
