@@ -1,9 +1,20 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Service;
 
-use Pimcore\Model\Site;
 use Pimcore\Http\Request\Resolver\SiteResolver;
+use Pimcore\Model\Site;
 use Symfony\Component\HttpFoundation\Request;
 
 class RequestPropertiesForUserExtractorService implements RequestPropertiesForUserExtractorServiceInterface

@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Service;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
@@ -8,8 +19,8 @@ use MembersBundle\Event\OAuth\OAuthResourceEvent;
 use MembersBundle\Event\OAuth\OAuthResourceRefreshEvent;
 use MembersBundle\Exception\EntityNotRefreshedException;
 use MembersBundle\MembersEvents;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as ComponentEventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ResourceMappingService
 {
@@ -51,7 +62,6 @@ class ResourceMappingService
         if ($event instanceof OAuthResourceRefreshEvent && $event->hasChanged() === false) {
             throw new EntityNotRefreshedException(sprintf('entity %d has not changed', $user->getId()));
         }
-
     }
 
     public function addDefaults(UserInterface $user, ResourceOwnerInterface $resourceOwner, string $type): void

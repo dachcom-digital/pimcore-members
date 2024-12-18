@@ -1,13 +1,24 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Manager;
 
-use Pimcore\File;
-use Pimcore\Model\DataObject;
 use Doctrine\DBAL\Connection;
 use MembersBundle\Adapter\Sso\SsoIdentityInterface;
 use MembersBundle\Adapter\User\SsoAwareUserInterface;
 use MembersBundle\Adapter\User\UserInterface;
+use Pimcore\File;
+use Pimcore\Model\DataObject;
 
 class SsoIdentityManager implements SsoIdentityManagerInterface
 {

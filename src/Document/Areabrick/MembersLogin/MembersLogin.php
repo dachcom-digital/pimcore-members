@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Document\Areabrick\MembersLogin;
 
 use MembersBundle\Document\Builder\BrickBuilder;
@@ -27,27 +38,27 @@ class MembersLogin extends AbstractAreabrick implements EditableDialogBoxInterfa
 
         $editableDialog->setItems([
             [
-                'type' => 'relation',
-                'label' => $this->translator->trans('redirect after successful login', [], 'admin'),
-                'name' => 'redirectAfterSuccess',
+                'type'   => 'relation',
+                'label'  => $this->translator->trans('redirect after successful login', [], 'admin'),
+                'name'   => 'redirectAfterSuccess',
                 'config' => [
-                    'types' => ['document'],
+                    'types'    => ['document'],
                     'subtypes' => [
                         'document' => ['page', 'link', 'hardlink']
                     ]
                 ]
             ],
             [
-                'type' => 'checkbox',
+                'type'  => 'checkbox',
                 'label' => $this->translator->trans('Hide when logged in', [], 'admin'),
-                'name' => 'hideWhenLoggedIn',
+                'name'  => 'hideWhenLoggedIn',
             ],
             [
-                'type' => 'relation',
-                'label' => $this->translator->trans('Show this snippet when logged in', [], 'admin'),
-                'name' => 'showSnippedWhenLoggedIn',
+                'type'   => 'relation',
+                'label'  => $this->translator->trans('Show this snippet when logged in', [], 'admin'),
+                'name'   => 'showSnippedWhenLoggedIn',
                 'config' => [
-                    'types' => ['document'],
+                    'types'    => ['document'],
                     'subtypes' => [
                         'document' => ['snippet']
                     ]

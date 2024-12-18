@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle;
 
 final class MembersEvents
@@ -12,21 +23,21 @@ final class MembersEvents
     public const RESTRICTION_CHECK_STATICROUTE = 'members.restriction.staticroute';
 
     /**
-     * The ENTITY_CREATE_RESTRICTION event occurs after a restriction has been created
+     * The ENTITY_CREATE_RESTRICTION event occurs after a restriction has been created.
      *
      * @Event("MembersBundle\Event\RestrictionEvent")
      */
     public const ENTITY_CREATE_RESTRICTION = 'members.entity.restriction.create';
 
     /**
-     * The ENTITY_UPDATE_RESTRICTION event occurs after a restriction has been updated
+     * The ENTITY_UPDATE_RESTRICTION event occurs after a restriction has been updated.
      *
      * @Event("MembersBundle\Event\RestrictionEvent")
      */
     public const ENTITY_UPDATE_RESTRICTION = 'members.entity.restriction.update';
 
     /**
-     * The ENTITY_DELETE_RESTRICTION event occurs after a restriction has been deleted
+     * The ENTITY_DELETE_RESTRICTION event occurs after a restriction has been deleted.
      *
      * @Event("MembersBundle\Event\RestrictionEvent")
      */
