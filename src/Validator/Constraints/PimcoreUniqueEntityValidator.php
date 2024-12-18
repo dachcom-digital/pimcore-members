@@ -20,10 +20,6 @@ class PimcoreUniqueEntityValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\PimcoreUniqueEntity');
         }
 
-        if (!is_array($constraint->fields)) {
-            throw new UnexpectedTypeException($constraint->fields, 'array');
-        }
-
         $fields = $constraint->fields;
 
         if (count($fields) === 0) {

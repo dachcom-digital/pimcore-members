@@ -55,10 +55,7 @@ class SsoIdentityStatusService implements SsoIdentityStatusServiceInterface
 
         // don't touch a user if he has other identities
         $userSsoIdentities = $this->ssoIdentityManager->getSsoIdentities($user);
-        if (is_array($userSsoIdentities) && count($userSsoIdentities) > 0) {
-            return false;
-        }
 
-        return true;
+        return count($userSsoIdentities) <= 0;
     }
 }

@@ -29,11 +29,11 @@ class RequestPropertiesForUserExtractorService implements RequestPropertiesForUs
     {
         $userProperties = [];
 
-        if (isset($parameter['locale']) && $parameter['locale'] !== null) {
+        if (isset($parameter['locale'])) {
             $userProperties['_user_locale'] = $parameter['locale'];
         }
 
-        if (isset($parameter['site_id']) && $parameter['site_id'] !== null) {
+        if (isset($parameter['site_id'])) {
             $site = Site::getById($parameter['site_id']);
             if ($site instanceof Site) {
                 $userProperties['_site_domain'] = $site->getMainDomain();

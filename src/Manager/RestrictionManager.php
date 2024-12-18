@@ -48,12 +48,7 @@ class RestrictionManager implements RestrictionManagerInterface
             return $groups;
         }
 
-        $groups = [];
-        if (is_array($restriction->getRelatedGroups())) {
-            $groups = $restriction->getRelatedGroups();
-        }
-
-        return $groups;
+        return $restriction->getRelatedGroups();
     }
 
     public function getElementRestrictionStatus(ElementInterface $element): ElementRestriction
@@ -88,9 +83,7 @@ class RestrictionManager implements RestrictionManagerInterface
             return $elementRestriction;
         }
 
-        if (is_array($restriction->getRelatedGroups())) {
-            $elementRestriction->setRestrictionGroups($restriction->getRelatedGroups());
-        }
+        $elementRestriction->setRestrictionGroups($restriction->getRelatedGroups());
 
         //check if user is not logged in.
         if (!$user instanceof UserInterface) {

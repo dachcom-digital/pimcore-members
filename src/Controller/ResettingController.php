@@ -44,7 +44,7 @@ class ResettingController extends AbstractController
     {
         $username = $request->request->get('username');
 
-        /** @var UserInterface $user */
+        /** @var UserInterface|null $user */
         $user = $this->userManager->findUserByUsernameOrEmail($username);
 
         /* Dispatch init event */

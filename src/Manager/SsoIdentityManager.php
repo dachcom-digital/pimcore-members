@@ -86,7 +86,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
         $path = sprintf('%s/%s', $user->getRealFullPath(), $key);
 
-        /** @var SsoIdentityInterface $ssoIdentity */
+        /** @var SsoIdentityInterface|null $ssoIdentity */
         $ssoIdentity = DataObject::getByPath($path);
 
         if (!$ssoIdentity instanceof SsoIdentityInterface) {
@@ -158,7 +158,6 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
 
     protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity): ?UserInterface
     {
-        /** @var DataObject\Concrete $userClass */
         $userClass = $this->classManager->getUserClass();
 
         $qb = $this->connection->createQueryBuilder();
