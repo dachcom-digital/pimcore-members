@@ -252,7 +252,7 @@ class GroupMultiselect extends AbstractRelations implements
             return $return;
         }
 
-        if (is_array($data) && count($data) === 0) {
+        if (is_array($data)) {
             //give empty array if data was not null
             return [];
         }

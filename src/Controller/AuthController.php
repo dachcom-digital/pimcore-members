@@ -6,7 +6,7 @@ use MembersBundle\Form\Factory\FactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class AuthController extends AbstractController
 {
@@ -16,8 +16,8 @@ class AuthController extends AbstractController
 
     public function loginAction(Request $request): Response
     {
-        $authErrorKey = Security::AUTHENTICATION_ERROR;
-        $lastUsernameKey = Security::LAST_USERNAME;
+        $authErrorKey = SecurityRequestAttributes::AUTHENTICATION_ERROR;
+        $lastUsernameKey = SecurityRequestAttributes::LAST_USERNAME;
 
         $session = $request->getSession();
 

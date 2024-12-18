@@ -80,20 +80,12 @@ class Dao extends Model\Dao\AbstractDao
         return true;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return mixed
-     * @throws Exception
-     */
-    private function addRelationData($data)
+    private function addRelationData(array $data): array
     {
         $relations = $this->db->fetchAllAssociative('SELECT * FROM ' . $this->tableRelationName . ' WHERE restrictionId  = ?', [$data['id']]);
 
-        if ($relations !== false) {
-            foreach ($relations as $relation) {
-                $data['relatedGroups'][] = $relation['groupId'];
-            }
+        foreach ($relations as $relation) {
+            $data['relatedGroups'][] = $relation['groupId'];
         }
 
         return $data;

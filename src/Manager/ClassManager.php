@@ -15,10 +15,9 @@ class ClassManager implements ClassManagerInterface
 
     public function getGroupListing(): Listing
     {
-        /** @var AbstractObject $listingClass */
         $listingClass = $this->getGroupClass();
 
-        if (!Tool::classExists($listingClass)) {
+        if (!Tool::classExists($listingClass) || !method_exists($listingClass, 'getList')) {
             throw new \Exception(sprintf('Cannot create listing with class "%s"', $listingClass));
         }
 
@@ -27,10 +26,9 @@ class ClassManager implements ClassManagerInterface
 
     public function getUserListing(): Listing
     {
-        /** @var AbstractObject $listingClass */
         $listingClass = $this->getUserClass();
 
-        if (!Tool::classExists($listingClass)) {
+        if (!Tool::classExists($listingClass) || !method_exists($listingClass, 'getList')) {
             throw new \Exception(sprintf('Cannot create listing with class "%s"', $listingClass));
         }
 
@@ -39,10 +37,9 @@ class ClassManager implements ClassManagerInterface
 
     public function getSsoIdentityListing(): Listing
     {
-        /** @var AbstractObject $listingClass */
         $listingClass = $this->getSsoIdentityClass();
 
-        if (!Tool::classExists($listingClass)) {
+        if (!Tool::classExists($listingClass) || !method_exists($listingClass, 'getList')) {
             throw new \Exception(sprintf('Cannot create listing with class "%s"', $listingClass));
         }
 

@@ -5,7 +5,8 @@ parameters:
         - %currentWorkingDirectory%/vendor/pimcore/pimcore/stubs/dynamic-constants.php
     reportUnmatchedIgnoredErrors: false
     symfony:
-        container_xml_path: %currentWorkingDirectory%/var/cache/test/TestKernelTestDebugContainer.xml
+        containerXmlPath: %currentWorkingDirectory%/var/cache/test/TestKernelTestDebugContainer.xml
+        constantHassers: false
     excludePaths:
         # only works if optional bundles are available:
         - src/Adapter/User/AbstractCustomerUser.php

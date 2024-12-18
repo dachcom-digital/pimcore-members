@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Twig\Environment;
 
 class BrickBuilder
@@ -122,13 +122,13 @@ class BrickBuilder
             //only show backend note
             $template = $this->getTemplate('area-not-available');
         } elseif (!$this->tokenStorage->getToken()?->getUser() instanceof UserInterface) {
-            $authErrorKey = Security::AUTHENTICATION_ERROR;
-            $lastUsernameKey = Security::LAST_USERNAME;
+            $authErrorKey = SecurityRequestAttributes::AUTHENTICATION_ERROR;
+            $lastUsernameKey = SecurityRequestAttributes::LAST_USERNAME;
 
             // get the error if any (works with forward and redirect -- see below)
             if ($this->request->attributes->has($authErrorKey)) {
                 $error = $this->request->attributes->get($authErrorKey);
-            } elseif (null !== $this->request->getSession() && $this->request->getSession()->has($authErrorKey)) {
+            } elseif ($this->request->getSession()->has($authErrorKey)) {
                 $error = $this->request->getSession()->get($authErrorKey);
                 $this->request->getSession()->remove($authErrorKey);
             } else {

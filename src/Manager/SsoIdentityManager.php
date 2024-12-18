@@ -86,7 +86,6 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
         $path = sprintf('%s/%s', $user->getRealFullPath(), $key);
 
-        /** @var SsoIdentityInterface $ssoIdentity */
         $ssoIdentity = DataObject::getByPath($path);
 
         if (!$ssoIdentity instanceof SsoIdentityInterface) {
@@ -94,16 +93,15 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
             $ssoIdentity = new $ssoIdentityClass();
         }
 
-        if (!$ssoIdentity instanceof DataObject\Concrete) {
-            throw new \RuntimeException('Sso Identity needs to be an instance of Concrete');
-        }
-
         $ssoIdentity->setProvider($provider);
         $ssoIdentity->setIdentifier($identifier);
         $ssoIdentity->setProfileData($profileData);
-        $ssoIdentity->setPublished(true);
-        $ssoIdentity->setKey($key);
-        $ssoIdentity->setParent($user);
+
+        if ($ssoIdentity instanceof DataObject\Concrete) {
+            $ssoIdentity->setPublished(true);
+            $ssoIdentity->setKey($key);
+            $ssoIdentity->setParent($user);
+        }
 
         return $ssoIdentity;
     }
@@ -158,7 +156,6 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
 
     protected function findUserBySsoIdentity(SsoIdentityInterface $ssoIdentity): ?UserInterface
     {
-        /** @var DataObject\Concrete $userClass */
         $userClass = $this->classManager->getUserClass();
 
         $qb = $this->connection->createQueryBuilder();

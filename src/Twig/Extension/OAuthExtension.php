@@ -50,10 +50,6 @@ class OAuthExtension extends AbstractExtension
         $ssoIdentityProviders = $this->getSsoIdentityProvider();
         $resourceOwners = $this->oauthRegistry->getEnabledClientKeys();
 
-        if (!is_array($resourceOwners)) {
-            return [];
-        }
-
         $data = [];
 
         foreach ($resourceOwners as $resourceOwner) {
