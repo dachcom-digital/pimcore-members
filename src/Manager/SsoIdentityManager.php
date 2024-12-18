@@ -93,16 +93,15 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
             $ssoIdentity = new $ssoIdentityClass();
         }
 
-        if (!$ssoIdentity instanceof DataObject\Concrete) {
-            throw new \RuntimeException('Sso Identity needs to be an instance of Concrete');
-        }
-
         $ssoIdentity->setProvider($provider);
         $ssoIdentity->setIdentifier($identifier);
         $ssoIdentity->setProfileData($profileData);
-        $ssoIdentity->setPublished(true);
-        $ssoIdentity->setKey($key);
-        $ssoIdentity->setParent($user);
+
+        if ($ssoIdentity instanceof DataObject\Concrete) {
+            $ssoIdentity->setPublished(true);
+            $ssoIdentity->setKey($key);
+            $ssoIdentity->setParent($user);
+        }
 
         return $ssoIdentity;
     }
