@@ -18,11 +18,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class OAuthIdentityAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
 {
@@ -111,7 +111,7 @@ class OAuthIdentityAuthenticator extends OAuth2Authenticator implements Authenti
         $parameterLocale = $parameter['locale'] ?? null;
 
         $sessionBag->remove('oauth_state_data');
-        $session->set(Security::AUTHENTICATION_ERROR, $exception);
+        $session->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
 
         if ($parameterLocale !== null) {
             $request->setLocale($parameterLocale);
