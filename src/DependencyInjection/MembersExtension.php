@@ -1,20 +1,31 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\DependencyInjection;
 
 use MembersBundle\Adapter\User\UserInterface;
+use MembersBundle\Configuration\Configuration as BundleConfiguration;
 use MembersBundle\Security\Authenticator\OAuthIdentityAuthenticator;
 use MembersBundle\Security\OAuth\Dispatcher\ConnectDispatcher;
 use MembersBundle\Security\OAuth\Dispatcher\LoginDispatcher;
 use MembersBundle\Security\OAuth\Dispatcher\Router\DispatchRouter;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use MembersBundle\Configuration\Configuration as BundleConfiguration;
 
 class MembersExtension extends Extension implements PrependExtensionInterface
 {
@@ -23,7 +34,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $configs = $container->getExtensionConfig($this->getAlias());
         $config = $this->processConfiguration($this->getConfiguration([], $container), $configs);
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         if (!$container->hasParameter('members.firewall_name')) {
             $container->setParameter('members.firewall_name', 'members_fe');
         }

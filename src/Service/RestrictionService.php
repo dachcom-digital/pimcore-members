@@ -1,13 +1,24 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Service;
 
 use MembersBundle\Event\RestrictionEvent;
 use MembersBundle\MembersEvents;
+use MembersBundle\Restriction\Restriction;
 use Pimcore\Cache;
 use Pimcore\Model;
 use Pimcore\Model\Element\ElementInterface;
-use MembersBundle\Restriction\Restriction;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RestrictionService
@@ -37,12 +48,10 @@ class RestrictionService
         }
 
         if (empty($userGroupIds)) {
-
             // remove restriction if no groups have been assigned
             // and restriction is not inherited
 
             if ($restriction instanceof Restriction && $restriction->isInherited() === false) {
-
                 $restriction->getDao()->delete();
 
                 $this->triggerEvent($obj, $restriction, MembersEvents::ENTITY_DELETE_RESTRICTION);
@@ -235,7 +244,6 @@ class RestrictionService
         }
 
         foreach ($paths as $p) {
-
             /** @var ElementInterface $el */
             if ($el = $class::getByPath($p)) {
                 $restriction = false;
@@ -290,7 +298,6 @@ class RestrictionService
 
         if (!$hasParentRestriction) {
             if ($objectRestriction->isInherited()) {
-
                 $objectRestriction->getDao()->delete();
 
                 $this->triggerEvent($obj, $objectRestriction, MembersEvents::ENTITY_DELETE_RESTRICTION);

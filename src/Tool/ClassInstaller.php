@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Tool;
 
 use Pimcore\Model\DataObject\ClassDefinition;
@@ -24,7 +35,7 @@ class ClassInstaller
 
             try {
                 $id = $class->getDao()->getIdByName($className);
-            } catch(NotFoundException $e) {
+            } catch (NotFoundException $e) {
                 // fail silently
             }
 
@@ -52,7 +63,6 @@ class ClassInstaller
         $result = [];
 
         foreach ($classes as $className) {
-
             $filename = sprintf('class_%s_export.json', $className);
             $path = realpath(sprintf('%s/config/install/classes/%s', dirname(__DIR__, 2), $filename));
 

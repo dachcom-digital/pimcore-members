@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Security;
 
 use MembersBundle\Manager\RestrictionManager;
@@ -46,8 +57,8 @@ class RestrictionUri
      * @param bool  $checkRestriction if true, this method will only return a valid string if current user is allowed to open the file
      *
      * @throws \Exception
-     * @see generateAssetUrl serves data as zip.
      *
+     * @see generateAssetUrl serves data as zip.
      */
     public function generateAssetPackageUrl(array $assetData = [], bool $checkRestriction = false): string
     {
@@ -134,7 +145,6 @@ class RestrictionUri
 
         $dataToProcess = [];
         foreach ($fileInfo as $file) {
-
             $assetId = $file['f'];
             $proxyId = $file['p'];
 
@@ -176,7 +186,8 @@ class RestrictionUri
         }
 
         if (!$this->restrictionManager->elementIsInProtectedStorageFolder($asset)) {
-            throw new \Exception(sprintf(
+            throw new \Exception(
+                sprintf(
                     'Asset "%s" is not in protected environment. Please move it to "%s"',
                     $asset->getFullPath(),
                     RestrictionManager::PROTECTED_ASSET_FOLDER

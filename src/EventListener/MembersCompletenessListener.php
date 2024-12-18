@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\EventListener;
 
 use MembersBundle\Adapter\Group\GroupInterface;
@@ -11,8 +22,8 @@ use Pimcore\Event\Model\DataObjectEvent;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\Element\ValidationException;
 use Pimcore\Model\User;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pimcore\Security\User\TokenStorageUserResolver;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MembersCompletenessListener implements EventSubscriberInterface
 {

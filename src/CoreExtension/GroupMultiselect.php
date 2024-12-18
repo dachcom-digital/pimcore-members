@@ -1,24 +1,31 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\CoreExtension;
 
 use MembersBundle\Adapter\Group\GroupInterface;
+use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\ClassDefinition\Data\PreGetDataInterface;
 use Pimcore\Model\DataObject\ClassDefinition\Data\PreSetDataInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
+use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Fieldcollection\Data\AbstractData;
 use Pimcore\Model\DataObject\Localizedfield;
 use Pimcore\Model\Element;
-use Pimcore\Model\DataObject;
-use Pimcore\Model\DataObject\ClassDefinition\Data\Relations\AbstractRelations;
-use Pimcore\Model\DataObject\ClassDefinition\Data\QueryResourcePersistenceAwareInterface;
 use Pimcore\Normalizer\NormalizerInterface;
 
-class GroupMultiselect extends AbstractRelations implements
-    QueryResourcePersistenceAwareInterface,
-    PreGetDataInterface,
-    PreSetDataInterface,
-    NormalizerInterface
+class GroupMultiselect extends AbstractRelations implements QueryResourcePersistenceAwareInterface, PreGetDataInterface, PreSetDataInterface, NormalizerInterface
 {
     public int $width = 0;
     public int $height = 0;
@@ -362,8 +369,8 @@ class GroupMultiselect extends AbstractRelations implements
      * @param mixed                    $params
      *
      * @return array
-     * @see Data::getDataFromEditmode
      *
+     * @see Data::getDataFromEditmode
      */
     public function getDataFromGridEditor($data, $object = null, $params = [])
     {

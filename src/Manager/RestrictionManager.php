@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Manager;
 
 use MembersBundle\Adapter\Group\GroupInterface;
@@ -8,8 +19,8 @@ use MembersBundle\Configuration\Configuration;
 use MembersBundle\Restriction\ElementRestriction;
 use MembersBundle\Restriction\Restriction;
 use Pimcore\Model\Asset;
-use Pimcore\Model\Document;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Tool;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -17,7 +28,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class RestrictionManager implements RestrictionManagerInterface
 {
     public const PROTECTED_ASSET_FOLDER = 'restricted-assets';
-
     public const RESTRICTION_STATE_LOGGED_IN = 'members.restriction.logged_in';
     public const RESTRICTION_STATE_NOT_LOGGED_IN = 'members.restriction.not_logged_in';
     public const RESTRICTION_SECTION_ALLOWED = 'members.restriction.allowed';
@@ -72,7 +82,8 @@ class RestrictionManager implements RestrictionManagerInterface
         if ($restriction === null) {
             if ($element instanceof Asset) {
                 //protect asset if element is in restricted area with no added restriction group.
-                $elementRestriction->setSection($this->isFrontendRequestByAdmin() || !$this->elementIsInProtectedStorageFolder($element)
+                $elementRestriction->setSection(
+                    $this->isFrontendRequestByAdmin() || !$this->elementIsInProtectedStorageFolder($element)
                     ? self::RESTRICTION_SECTION_ALLOWED
                     : self::RESTRICTION_SECTION_NOT_ALLOWED
                 );
@@ -91,7 +102,6 @@ class RestrictionManager implements RestrictionManagerInterface
         }
 
         return $elementRestriction->setSection($this->filterAllowedSectionToUser($user->getGroups(), $restriction->getRelatedGroups()));
-
     }
 
     private function filterAllowedSectionToUser(array $userGroups, array $elementGroups): string

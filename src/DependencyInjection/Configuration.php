@@ -1,22 +1,32 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\DependencyInjection;
 
 use MembersBundle\Form\Type\ChangePasswordFormType;
-use MembersBundle\Form\Type\Sso\CompleteProfileFormType;
 use MembersBundle\Form\Type\DeleteAccountFormType;
+use MembersBundle\Form\Type\LoginFormType;
 use MembersBundle\Form\Type\ProfileFormType;
 use MembersBundle\Form\Type\RegistrationFormType;
-use MembersBundle\Form\Type\LoginFormType;
 use MembersBundle\Form\Type\ResettingFormType;
 use MembersBundle\Form\Type\ResettingRequestFormType;
+use MembersBundle\Form\Type\Sso\CompleteProfileFormType;
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-
     public function getConfigTreeBuilder()
     {
         $validPostRegisterTypes = ['confirm_by_mail', 'confirm_by_admin', 'confirm_instant'];
@@ -376,4 +386,3 @@ class Configuration implements ConfigurationInterface
         return $rootNode;
     }
 }
-

@@ -1,13 +1,24 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Security;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use MembersBundle\Adapter\Group\GroupInterface;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\RestrictionManager;
 use MembersBundle\Manager\RestrictionManagerInterface;
 use Pimcore\Model;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 class RestrictionQuery
 {
@@ -48,11 +59,17 @@ class RestrictionQuery
 
         $aliasFrom = $aliasFrom ?? $typedAliasFrom;
 
-        $query->leftJoin($aliasFrom, 'members_restrictions', 'mr',
+        $query->leftJoin(
+            $aliasFrom,
+            'members_restrictions',
+            'mr',
             sprintf('mr.targetId = %s.%s AND mr.ctype = "%s"', $aliasFrom, $queryIdentifier, $cType),
         );
 
-        $query->leftJoin($aliasFrom, 'members_group_relations', 'mgr',
+        $query->leftJoin(
+            $aliasFrom,
+            'members_group_relations',
+            'mgr',
             'mgr.restrictionId = mr.id'
         );
 

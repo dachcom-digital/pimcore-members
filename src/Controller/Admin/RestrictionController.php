@@ -1,13 +1,24 @@
 <?php
 
+/*
+ * This source file is available under two different licenses:
+ *   - GNU General Public License version 3 (GPLv3)
+ *   - DACHCOM Commercial License (DCL)
+ * Full copyright and license information is available in
+ * LICENSE.md which is distributed with this source code.
+ *
+ * @copyright  Copyright (c) DACHCOM.DIGITAL AG (https://www.dachcom-digital.com)
+ * @license    GPLv3 and DCL
+ */
+
 namespace MembersBundle\Controller\Admin;
 
 use MembersBundle\Adapter\Group\GroupInterface;
+use MembersBundle\Configuration\Configuration;
 use MembersBundle\Manager\ClassManagerInterface;
 use MembersBundle\Restriction\Restriction;
 use MembersBundle\Service\RestrictionService;
 use Pimcore\Bundle\AdminBundle\Controller\AdminAbstractController;
-use MembersBundle\Configuration\Configuration;
 use Pimcore\Model\Element\ElementInterface;
 use Pimcore\Model\Element\Service;
 use Symfony\Component\HttpFoundation\JsonResponse;
