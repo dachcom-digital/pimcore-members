@@ -86,7 +86,6 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         $key = File::getValidFilename(sprintf('%s-%s', $provider, $identifier));
         $path = sprintf('%s/%s', $user->getRealFullPath(), $key);
 
-        /** @var SsoIdentityInterface|null $ssoIdentity */
         $ssoIdentity = DataObject::getByPath($path);
 
         if (!$ssoIdentity instanceof SsoIdentityInterface) {
