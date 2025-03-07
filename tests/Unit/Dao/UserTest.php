@@ -9,11 +9,7 @@ use Pimcore\Model\DataObject\MembersUser;
 
 class UserTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws \Codeception\Exception\ModuleException
-     * @throws \Exception
-     */
-    public function testUserDaoEntity()
+    public function testUserDaoEntity(): void
     {
         $group1 = $this->createUserGroup('group-1');
         $group2 = $this->createUserGroup('group-2');

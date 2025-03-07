@@ -10,9 +10,6 @@ use Pimcore\Model\DataObject\MembersUser;
 
 class UserManagerTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws \Codeception\Exception\ModuleException
-     */
     public function testClassGetter(): void
     {
         $userManager = $this->getContainer()->get(UserManager::class);

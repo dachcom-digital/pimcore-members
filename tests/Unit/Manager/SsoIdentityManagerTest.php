@@ -11,10 +11,7 @@ use Pimcore\Model\DataObject\SsoIdentity;
 
 class SsoIdentityManagerTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws \Exception
-     */
-    public function testClassGetter()
+    public function testClassGetter(): void
     {
         $ssoIdentityManager = $this->getContainer()->get(SsoIdentityManager::class);
         $ssoIdentityClass = $ssoIdentityManager->getClass();
@@ -22,10 +19,7 @@ class SsoIdentityManagerTest extends DachcomBundleTestCase
         $this->assertEquals(SsoIdentity::class, $ssoIdentityClass);
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function testCreateNewSsoIdentity()
+    public function testCreateNewSsoIdentity(): void
     {
         $ssoIdentity = $this->createSsoIdentity(true, 'google', '1234');
         $this->assertInstanceOf(SsoIdentityInterface::class, $ssoIdentity);
@@ -34,10 +28,7 @@ class SsoIdentityManagerTest extends DachcomBundleTestCase
         $this->assertEquals($expectedKey, $ssoIdentity->getKey());
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function testFindUserBySsoIdentity()
+    public function testFindUserBySsoIdentity(): void
     {
         $ssoIdentity = $this->createSsoIdentity(true, 'google', '1234');
         $ssoIdentityManager = $this->getContainer()->get(SsoIdentityManager::class);

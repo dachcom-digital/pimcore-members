@@ -11,7 +11,7 @@ class GroupTest extends DachcomBundleTestCase
     /**
      * @throws \Exception
      */
-    public function testGroupDaoEntity()
+    public function testGroupDaoEntity(): void
     {
         $group = $this->createUserGroup('group-1', ['ROLE_MEMBERS_MODERATOR']);
         $storedGroup = MembersGroup::getById($group->getId(), ['force' => true]);
