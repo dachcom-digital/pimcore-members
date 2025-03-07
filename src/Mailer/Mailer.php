@@ -30,8 +30,12 @@ class Mailer implements MailerInterface
 
     public function sendConfirmationEmailMessage(UserInterface $user): void
     {
+        $route = $this->configuration->getConfig('enable_preview_confirmation') === true
+            ? 'members_user_registration_confirm_preview'
+            : 'members_user_registration_confirm';
+
         $template = $this->getMailTemplatePath('register_confirm', $user);
-        $url = $this->router->generate('members_user_registration_confirm', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $url = $this->router->generate($route, ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $mailParams = [
             'user'            => $user,

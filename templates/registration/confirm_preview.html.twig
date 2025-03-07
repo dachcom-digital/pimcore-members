@@ -1,0 +1,9 @@
+{% extends '@Members/layout.html.twig' %}
+
+{% block members_user_content %}
+    {% set user_name = user is not null ? user.username|default(user.email) : '' %}
+    <p>{{ 'members.registration.confirm_preview'|trans({ '%username%': user_name }) }}</p>
+    {% if confirmationUrl %}
+        <p><a class="btn btn-info btn-sm" href="{{ confirmationUrl }}">{{ 'members.registration.complete_confirmation'|trans }}</a></p>
+    {% endif %}
+{% endblock members_user_content %}

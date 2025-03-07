@@ -10,10 +10,7 @@ use Pimcore\Model\DataObject\MembersUser;
 
 class ClassManagerTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws ModuleException
-     */
-    public function testGroupClass()
+    public function testGroupClass(): void
     {
         $classManager = $this->getContainer()->get(ClassManager::class);
         $groupClass = $classManager->getGroupClass();
@@ -21,10 +18,7 @@ class ClassManagerTest extends DachcomBundleTestCase
         $this->assertEquals(MembersGroup::class, $groupClass);
     }
 
-    /**
-     * @throws ModuleException
-     */
-    public function testGroupListing()
+    public function testGroupListing(): void
     {
         $classManager = $this->getContainer()->get(ClassManager::class);
         $groupListing = $classManager->getGroupListing();
@@ -32,10 +26,7 @@ class ClassManagerTest extends DachcomBundleTestCase
         $this->assertInstanceOf(MembersGroup\Listing::class, $groupListing);
     }
 
-    /**
-     * @throws ModuleException
-     */
-    public function testUserClass()
+    public function testUserClass(): void
     {
         $classManager = $this->getContainer()->get(ClassManager::class);
         $userClass = $classManager->getUserClass();
@@ -43,10 +34,7 @@ class ClassManagerTest extends DachcomBundleTestCase
         $this->assertEquals(MembersUser::class, $userClass);
     }
 
-    /**
-     * @throws ModuleException
-     */
-    public function testUserListing()
+    public function testUserListing(): void
     {
         $classManager = $this->getContainer()->get(ClassManager::class);
         $userListing = $classManager->getUserListing();

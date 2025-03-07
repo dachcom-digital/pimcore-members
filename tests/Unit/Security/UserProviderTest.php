@@ -9,6 +9,8 @@ use Pimcore\Model\DataObject\MembersUser;
 use MembersBundle\Adapter\User\UserInterface;
 use MembersBundle\Manager\UserManagerInterface;
 use DachcomBundle\Test\Support\Test\TestUser;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 class UserProviderTest extends DachcomBundleTestCase
 {
@@ -28,7 +30,7 @@ class UserProviderTest extends DachcomBundleTestCase
         $this->userManager->expects($this->once())
             ->method('findUserByUsername')
             ->with('foobar')
-            ->will($this->returnValue($user));
+            ->willReturn($user);
 
         $this->assertSame($user, $this->userProvider->loadUserByIdentifier('foobar'));
     }
@@ -38,9 +40,9 @@ class UserProviderTest extends DachcomBundleTestCase
         $this->userManager->expects($this->once())
             ->method('findUserByUsername')
             ->with('foobar')
-            ->will($this->returnValue(null));
+            ->willReturn(null);
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UserNotFoundException::class);
+        $this->expectException(UserNotFoundException::class);
         $this->userProvider->loadUserByIdentifier('foobar');
     }
 
@@ -52,34 +54,36 @@ class UserProviderTest extends DachcomBundleTestCase
 
         $user->expects($this->once())
             ->method('getId')
-            ->will($this->returnValue(2));
+            ->willReturn(2);
 
         $refreshedUser = $this->getMockBuilder(UserInterface::class)->getMock();
 
         $this->userManager->expects($this->once())
             ->method('findUserByCondition')
             ->with('oo_id = ?', [2])
-            ->will($this->returnValue($refreshedUser));
+            ->willReturn($refreshedUser);
 
         $this->userManager->expects($this->atLeastOnce())
             ->method('getClass')
-            ->will($this->returnValue(get_class($user)));
+            ->willReturn(get_class($user));
 
         $this->assertSame($refreshedUser, $this->userProvider->refreshUser($user));
     }
 
     public function testRefreshDeleted(): void
     {
-        $user = $this->getMockForAbstractClass(MembersUser::class);
+        $user = $this->getMockBuilder(MembersUser::class)
+            ->getMock();
 
         $this->userManager->expects($this->once())
             ->method('findUserByCondition')
             ->willReturn(null);
         $this->userManager->expects($this->atLeastOnce())
             ->method('getClass')
-            ->will($this->returnValue(get_class($user)));
+            ->willReturn(get_class($user));
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UserNotFoundException::class);
+        $this->expectException(UserNotFoundException::class);
+
         $this->userProvider->refreshUser($user);
     }
 
@@ -90,7 +94,7 @@ class UserProviderTest extends DachcomBundleTestCase
             ->method('getClass')
             ->willReturn(get_class($user));
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UnsupportedUserException::class);
+        $this->expectException(UnsupportedUserException::class);
         $this->userProvider->refreshUser($user);
     }
 
@@ -103,7 +107,7 @@ class UserProviderTest extends DachcomBundleTestCase
             ->method('getClass')
             ->willReturn(get_class($user));
 
-        $this->expectException(\Symfony\Component\Security\Core\Exception\UnsupportedUserException::class);
+        $this->expectException(UnsupportedUserException::class);
         $this->userProvider->refreshUser($providedUser);
     }
 }

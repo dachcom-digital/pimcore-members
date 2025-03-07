@@ -8,10 +8,7 @@ use Pimcore\Model\DataObject\ClassDefinition\Data\Multiselect;
 
 class RoleOptionsProviderTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws \Codeception\Exception\ModuleException
-     */
-    public function testRoleOptions()
+    public function testRoleOptions(): void
     {
         /** @var RoleOptionsProvider $roleOptionsProvider */
         $roleOptionsProvider = $this->getContainer()->get(RoleOptionsProvider::class);
@@ -32,7 +29,5 @@ class RoleOptionsProviderTest extends DachcomBundleTestCase
         $this->assertArrayHasKey('value', $options[1]);
         $this->assertEquals('ROLE_MEMBERS_MODERATOR', $options[1]['key']);
         $this->assertEquals('ROLE_MEMBERS_MODERATOR', $options[1]['value']);
-
     }
-
 }

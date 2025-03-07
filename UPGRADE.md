@@ -1,6 +1,10 @@
 # Upgrade Notes
 
 ## 5.1.0
+- [NEW FEATURE] "Preview confirmation" workflow added to avoid registration confirmation by prefetching email processes. 
+  Read more about it [here](./docs/60_RegistrationTypes.md#email-prefetching). 
+  This also comes with a new template: `@Members/registration/confirm_preview.html.twig` and also two new translations (
+  `members.registration.confirm_preview`, `members.registration.complete_confirmation`)
 - [LICENSE] Dual-License with GPL and Dachcom Commercial License (DCL) added
 
 ### 5.0.3

@@ -5,12 +5,15 @@ namespace DachcomBundle\Test\Unit\Security;
 use DachcomBundle\Test\Support\Test\DachcomBundleTestCase;
 use MembersBundle\Security\UserChecker;
 use Pimcore\Model\DataObject\MembersUser;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\LockedException;
 
 class UserCheckerTest extends DachcomBundleTestCase
 {
-    public function testCheckPreAuthFailsLockedOut()
+    public function testCheckPreAuthFailsLockedOut(): void
     {
-        $this->expectException(\Symfony\Component\Security\Core\Exception\LockedException::class);
+        $this->expectException(LockedException::class);
         $this->expectExceptionMessage('User account is locked.');
 
         $userMock = $this->getUser(false, false, false);
@@ -18,9 +21,9 @@ class UserCheckerTest extends DachcomBundleTestCase
         $checker->checkPreAuth($userMock);
     }
 
-    public function testCheckPreAuthFailsIsPublished()
+    public function testCheckPreAuthFailsIsPublished(): void
     {
-        $this->expectException(\Symfony\Component\Security\Core\Exception\DisabledException::class);
+        $this->expectException(DisabledException::class);
         $this->expectExceptionMessage('User account is disabled.');
 
         $userMock = $this->getUser(true, false, false);
@@ -28,9 +31,9 @@ class UserCheckerTest extends DachcomBundleTestCase
         $checker->checkPreAuth($userMock);
     }
 
-    public function testCheckPreAuthFailsIsAccountNonExpired()
+    public function testCheckPreAuthFailsIsAccountNonExpired(): void
     {
-        $this->expectException(\Symfony\Component\Security\Core\Exception\AccountExpiredException::class);
+        $this->expectException(AccountExpiredException::class);
         $this->expectExceptionMessage('User account has expired.');
 
         $userMock = $this->getUser(true, true, false);
@@ -38,7 +41,7 @@ class UserCheckerTest extends DachcomBundleTestCase
         $checker->checkPreAuth($userMock);
     }
 
-    public function testCheckPreAuthSuccess()
+    public function testCheckPreAuthSuccess(): void
     {
         $userMock = $this->getUser(true, true, true);
         $checker = new UserChecker();
@@ -46,7 +49,7 @@ class UserCheckerTest extends DachcomBundleTestCase
         $this->assertNull($checker->checkPreAuth($userMock));
     }
 
-    public function testCheckPostAuthSuccess()
+    public function testCheckPostAuthSuccess(): void
     {
         $userMock = $this->getUser(true, true, true);
         $checker = new UserChecker();
@@ -54,7 +57,7 @@ class UserCheckerTest extends DachcomBundleTestCase
         $this->assertNull($checker->checkPostAuth($userMock));
     }
 
-    private function getUser($isAccountNonLocked, $isPublished, $isAccountNonExpired)
+    private function getUser($isAccountNonLocked, $isPublished, $isAccountNonExpired): MembersUser
     {
         $userMock = $this->getMockBuilder(MembersUser::class)->getMock();
         $userMock

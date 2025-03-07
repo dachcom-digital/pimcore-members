@@ -7,10 +7,7 @@ use MembersBundle\Configuration\Configuration;
 
 class ConfigurationTest extends DachcomBundleTestCase
 {
-    /**
-     * @throws \Codeception\Exception\ModuleException
-     */
-    public function testConfigArrayGetter()
+    public function testConfigArrayGetter(): void
     {
         $configuration = $this->getContainer()->get(Configuration::class);
         $adminConfig = $configuration->getConfigArray();
@@ -19,10 +16,7 @@ class ConfigurationTest extends DachcomBundleTestCase
         $this->assertArrayHasKey('send_admin_mail_after_register', $adminConfig);
     }
 
-    /**
-     * @throws \Codeception\Exception\ModuleException
-     */
-    public function testConfigSlotGetter()
+    public function testConfigSlotGetter(): void
     {
         $configuration = $this->getContainer()->get(Configuration::class);
         $configSlot = $configuration->getConfig('post_register_type');

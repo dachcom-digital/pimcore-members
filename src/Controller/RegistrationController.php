@@ -129,6 +129,22 @@ class RegistrationController extends AbstractController
         return $this->renderTemplate('@Members/registration/check_admin.html.twig', ['user' => $user]);
     }
 
+    public function confirmPreviewAction(Request $request, string $token): Response
+    {
+        $user = $this->userManager->findUserByConfirmationToken($token);
+
+        if ($user === null) {
+            throw new NotFoundHttpException(sprintf('The user with confirmation token "%s" does not exist', $token));
+        }
+
+        $confirmationUrl = $this->generateUrl('members_user_registration_confirm', ['token' => $user->getConfirmationToken()]);
+
+        return $this->renderTemplate('@Members/registration/confirm_preview.html.twig', [
+            'user'            => $user,
+            'confirmationUrl' => $confirmationUrl,
+        ]);
+    }
+
     public function confirmAction(Request $request, string $token): Response
     {
         $user = $this->userManager->findUserByConfirmationToken($token);

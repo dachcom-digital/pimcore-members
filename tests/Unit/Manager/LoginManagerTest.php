@@ -73,7 +73,7 @@ class LoginManagerTest extends DachcomBundleTestCase
         $user
             ->expects($this->once())
             ->method('getRoles')
-            ->will($this->returnValue(['ROLE_USER']));
+            ->willReturn(['ROLE_USER']);
 
         return $user;
     }

@@ -10,7 +10,7 @@ class SsoIdentityTest extends DachcomBundleTestCase
     /**
      * @throws \Exception
      */
-    public function testSsoIdentityDaoEntity()
+    public function testSsoIdentityDaoEntity(): void
     {
         $ssoIdentity = $this->createSsoIdentity(true, 'google', '1234');
 

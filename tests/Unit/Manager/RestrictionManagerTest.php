@@ -8,7 +8,7 @@ use MembersBundle\Restriction\ElementRestriction;
 
 class RestrictionManagerTest extends DachcomBundleTestCase
 {
-    public function testGetElementRestrictedGroupsDefault()
+    public function testGetElementRestrictedGroupsDefault(): void
     {
         $document = $this->createRestrictedDocument();
         $restrictionManager = $this->getContainer()->get(RestrictionManager::class);
@@ -19,7 +19,7 @@ class RestrictionManagerTest extends DachcomBundleTestCase
         $this->assertContains('default', $restrictionGroups);
     }
 
-    public function testGetElementRestrictedGroups()
+    public function testGetElementRestrictedGroups(): void
     {
         $group = $this->createUserGroup();
         $document = $this->createRestrictedDocument([$group->getId()]);
@@ -33,7 +33,7 @@ class RestrictionManagerTest extends DachcomBundleTestCase
 
     }
 
-    public function testGetElementRestrictionStatus()
+    public function testGetElementRestrictionStatus(): void
     {
         $group = $this->createUserGroup();
         $document = $this->createRestrictedDocument([$group->getId()]);
