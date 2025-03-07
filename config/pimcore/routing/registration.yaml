@@ -11,6 +11,10 @@ members_user_registration_check_admin:
     path: /check-admin
     defaults: { _controller: MembersBundle\Controller\RegistrationController::checkAdminAction }
     methods:  [GET]
+members_user_registration_confirm_preview:
+    path: /confirm-preview/{token}
+    defaults: { _controller: MembersBundle\Controller\RegistrationController::confirmPreviewAction }
+    methods: [ GET ]
 members_user_registration_confirm:
     path: /confirm/{token}
     defaults: { _controller: MembersBundle\Controller\RegistrationController::confirmAction }

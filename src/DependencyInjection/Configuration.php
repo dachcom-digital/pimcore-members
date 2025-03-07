@@ -38,6 +38,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->booleanNode('send_admin_mail_after_register')->defaultFalse()->end()
                 ->booleanNode('send_user_mail_after_confirmed')->defaultFalse()->end()
+                ->booleanNode('enable_preview_confirmation')->defaultFalse()->end()
                 ->enumNode('post_register_type')
                     ->values($validPostRegisterTypes)
                     ->defaultValue('confirm_by_mail')

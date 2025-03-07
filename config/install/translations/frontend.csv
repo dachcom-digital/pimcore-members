@@ -16,6 +16,8 @@
 "members.registration.confirmed","Glückwunsch %username%, Ihr Benutzerkonto ist jetzt bestätigt.","Congrats %username%, your account is now activated."
 "members.registration.already_confirmed_or_not_found","Dieses Benutzerkonto wurde bereits bestätigt oder existiert nicht.","This user account has already been confirmed or does not exist."
 "members.registration.back","Zurück zur ursprünglichen Seite.","Back to the originating page."
+"members.registration.confirm_preview","Hallo %username%, bitte bestätige nun deine Registrierung!","Hello %username%, please confirm your registration now!"
+"members.registration.complete_confirmation","Registrierung abschliessen","Complete registration"
 "members.registration.submit","Registrieren","Register"
 "members.registration.flash.user_created","Der Benutzer wurde erfolgreich erstellt.","The user has been created successfully."
 "members.resetting.check_email","Eine E-Mail wurde verschickt. Sie beinhaltet einen Link zum Zurücksetzen des Passwortes. Hinweis: Ein neues Passwort kann nur alle %tokenLifetime% Stunden beantragt werden. Eventuell wurde diese E-Mail als Spam markiert, wenn sie nicht angekommen ist.","An email has been sent. It contains a link you must click to reset your password. Note: You can only request a new password once within %tokenLifetime% hours. If you don't get an email check your spam folder or try again."
