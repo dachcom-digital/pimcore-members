@@ -32,7 +32,7 @@ Please read the installation instructions before going deep with Members!
 
 ```json
 "require" : {
-    "dachcom-digital/members" : "~5.2.0"
+    "dachcom-digital/members" : "~5.1.0"
 }
 ```
 
