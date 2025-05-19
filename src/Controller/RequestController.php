@@ -79,39 +79,10 @@ class RequestController extends AbstractController
 
     private function servePath(string $path): Response
     {
-        // @todo: replace this with Asset\Service::getStreamedResponseByUri() in P11
+        $response = Model\Asset\Service::getStreamedResponseByUri($path);
 
-        $storage = $this->storage->get('thumbnail');
-        $storagePath = urldecode($path);
-
-        if ($storage->fileExists($storagePath)) {
-            $stream = $storage->readStream($storagePath);
-
-            return new StreamedResponse(function () use ($stream) {
-                fpassthru($stream);
-            }, Response::HTTP_OK, [
-                'Content-Type'   => $storage->mimeType($storagePath),
-                'Content-Length' => $storage->fileSize($storagePath),
-            ]);
-        }
-
-        $regExpression = sprintf(
-            '/(%s)(%s)-thumb__(%s)__(%s)\/(%s)/',
-            '.*',
-            'video|image',
-            '\d+',
-            '[a-zA-Z0-9_\-]+',
-            '.*'
-        );
-
-        if (preg_match($regExpression, $path, $matches)) {
-            return $this->forward('Pimcore\Bundle\CoreBundle\Controller\PublicServicesController::thumbnailAction', [
-                'prefix'        => ltrim($matches[1], '/'),
-                'type'          => $matches[2],
-                'assetId'       => $matches[3],
-                'thumbnailName' => $matches[4],
-                'filename'      => $matches[5],
-            ]);
+        if ($response instanceof StreamedResponse) {
+            return $response;
         }
 
         // no thumbnail path found, check if the original file has been requested
