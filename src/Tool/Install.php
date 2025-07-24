@@ -217,6 +217,7 @@ class Install extends SettingsStoreAwareInstaller
     {
         $db = \Pimcore\Db::get();
         $db->executeQuery(file_get_contents($this->getInstallSourcesPath() . '/sql/install.sql'));
+        // DBAL 4.x: executeQuery returns a Result object, but we do not use the result here.
     }
 
     protected function getUserId(): int
