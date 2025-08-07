@@ -135,6 +135,7 @@ class MembersExtension extends Extension implements PrependExtensionInterface
         $container->loadFromExtension('pimcore', [
             'security' => [
                 'password_hasher_factories' => [
+                    'Pimcore\Model\DataObject\MembersUser' => 'members.security.password_hasher_factory',
                     UserInterface::class => 'members.security.password_hasher_factory'
                 ]
             ]
