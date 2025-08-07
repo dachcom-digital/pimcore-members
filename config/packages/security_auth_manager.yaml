@@ -9,6 +9,10 @@ security:
     # instead the BadCredentialsException will be thrown
     hide_user_not_found: false
 
+    password_hashers:
+        'Pimcore\Model\DataObject\MembersUser': 'members.security.pimcore_password_hasher'
+        'MembersBundle\Adapter\User\UserInterface': 'members.security.pimcore_password_hasher'
+
     providers:
 
         # [...] other providers
