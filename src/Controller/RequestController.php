@@ -74,10 +74,10 @@ class RequestController extends AbstractController
             return new BinaryFileResponse(PIMCORE_PATH . '/bundles/AdminBundle/Resources/public/img/filetype-not-supported.svg');
         }
 
-        return $this->servePath($decodedPath);
+        return $this->servePath($decodedPath, $request);
     }
 
-    private function servePath(string $path): Response
+    private function servePath(string $path, Request $request): Response
     {
         // @todo: replace this with Asset\Service::getStreamedResponseByUri() in P11
 
@@ -119,6 +119,12 @@ class RequestController extends AbstractController
         $asset = Model\Asset::getByPath($path);
 
         if ($asset instanceof Model\Asset) {
+
+            // Handle response differently for video assets.
+            if ($asset instanceof Model\Asset\Video) {
+                return $this->serveVideoAsset($asset, $request);
+            }
+
             $stream = $asset->getStream();
 
             return new StreamedResponse(function () use ($stream) {
@@ -130,6 +136,61 @@ class RequestController extends AbstractController
         }
 
         return throw $this->createNotFoundException();
+    }
+
+    private function serveVideoAsset(Model\Asset\Video $asset, Request $request): Response
+    {
+        $fileSize = $asset->getFileSize();
+        $start = 0;
+        $end = $fileSize - 1;
+        $statusCode = Response::HTTP_OK;
+
+        $absolutePath = sprintf('%s/public/var/assets%s', PIMCORE_PROJECT_ROOT, $asset->getRealFullPath());
+
+        if ($range = $request->headers->get('Range')) {
+            if (preg_match('/bytes=(\d*)-(\d*)/', $range, $matches)) {
+                if ($matches[1] !== '') {
+                    $start = (int) $matches[1];
+                }
+
+                if ($matches[2] !== '') {
+                    $end = (int) $matches[2];
+                }
+
+                if ($end > $fileSize - 1) {
+                    $end = $fileSize - 1;
+                }
+
+                $statusCode = Response::HTTP_PARTIAL_CONTENT;
+            }
+        }
+
+        $length = $end - $start + 1;
+
+        $response = new StreamedResponse(function () use ($absolutePath, $start, $length) {
+            $handle = fopen($absolutePath, 'rb');
+            fseek($handle, $start);
+            $bytesLeft = $length;
+            $chunkSize = 8192;
+
+            while ($bytesLeft > 0 && !feof($handle)) {
+                $readSize = ($bytesLeft > $chunkSize) ? $chunkSize : $bytesLeft;
+                echo fread($handle, $readSize);
+                flush();
+                $bytesLeft -= $readSize;
+            }
+            fclose($handle);
+        }, $statusCode);
+
+        $response->headers->set('Content-Type', $asset->getMimeType());
+        $response->headers->set('Accept-Ranges', 'bytes');
+        $response->headers->set('Content-Length', $length);
+
+        if ($statusCode === Response::HTTP_PARTIAL_CONTENT) {
+            $response->headers->set('Content-Range', "bytes {$start}-{$end}/{$fileSize}");
+        }
+
+        return $response;
     }
 
     private function serveFile(Model\Asset $asset): StreamedResponse
