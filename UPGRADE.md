@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+## 5.1.1
+- **[BUGFIX]**: Fix chunked serving of protected video assets [#214](https://github.com/dachcom-digital/pimcore-members/pull/214)
+
 ## 5.1.0
 - [NEW FEATURE] "Preview confirmation" workflow added to avoid registration confirmation by prefetching email processes. 
   Read more about it [here](./docs/60_RegistrationTypes.md#email-prefetching). 
