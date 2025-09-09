@@ -183,7 +183,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
         ]);
 
         $stmt = $qb->execute();
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAllAssociative();
 
         if (count($result) === 1) {
             return $this->userManager->findUserById((int) $result[0]['src_id']);

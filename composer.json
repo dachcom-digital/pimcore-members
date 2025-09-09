@@ -1,5 +1,5 @@
 {
-    "name": "dachcom-digital/members",
+    "name": "multi-concept-gmbh/members",
     "type": "pimcore-bundle",
     "license": [
         "GPL-3.0-or-later",
@@ -34,8 +34,8 @@
         }
     },
     "require": {
-        "pimcore/pimcore": "^11.0",
-        "doctrine/orm": "^2.7",
+        "pimcore/pimcore": "^12.0",
+        "doctrine/orm": "^3.0",
         "symfony/form": "^6.4"
     },
     "require-dev": {

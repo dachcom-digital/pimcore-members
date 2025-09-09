@@ -132,11 +132,11 @@ class MembersExtension extends Extension implements PrependExtensionInterface
     {
         $firewallName = $container->getParameter('members.firewall_name');
 
-        $container->loadFromExtension('pimcore', [
-            'security' => [
-                'password_hasher_factories' => [
-                    UserInterface::class => 'members.security.password_hasher_factory'
-                ]
+        // Configure password hashers for Pimcore DataObjects
+        $container->loadFromExtension('security', [
+            'password_hashers' => [
+                'Pimcore\Model\DataObject\MembersUser' => 'members.security.pimcore_password_hasher',
+                UserInterface::class => 'members.security.pimcore_password_hasher'
             ]
         ]);
 

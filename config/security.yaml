@@ -1,6 +1,8 @@
+security:
+    password_hashers:
+        'Pimcore\Model\DataObject\MembersUser': 'members.security.pimcore_password_hasher'
+        'MembersBundle\Adapter\User\UserInterface': 'members.security.pimcore_password_hasher'
+
 services:
-    members.security.password_hasher_factory:
-        class: Pimcore\Security\Hasher\Factory\UserAwarePasswordHasherFactory
-        arguments:
-            - Pimcore\Security\Hasher\PasswordFieldHasher
-            - ['password']
+    members.security.pimcore_password_hasher:
+        class: MembersBundle\Security\PimcorePasswordHasher
