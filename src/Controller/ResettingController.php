@@ -117,6 +117,17 @@ class ResettingController extends AbstractController
         ]);
     }
 
+    public function accountLocked(Request $request): Response
+    {
+        $username = $request->query->get('username');
+
+        if (empty($username)) {
+            return new RedirectResponse($this->generateUrl('members_user_resetting_request'));
+        }
+
+        return $this->renderTemplate('@Members/resetting/account_locked.html.twig');
+    }
+
     public function resetAction(Request $request, ?string $token = null): Response
     {
         if ($this->requestHelper->isFrontendRequestByAdmin($request)) {
