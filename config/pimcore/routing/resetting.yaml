@@ -11,10 +11,6 @@ members_user_resetting_check_email:
     path: /check-email
     defaults: { _controller: MembersBundle\Controller\ResettingController::checkEmailAction }
     methods:  [GET]
-members_user_resetting_account_locked:
-    path: /account-locked
-    defaults: { _controller: MembersBundle\Controller\ResettingController::accountLocked }
-    methods:  [GET]
 members_user_resetting_reset:
     path: /reset/{token}
     defaults: { _controller: MembersBundle\Controller\ResettingController::resetAction }
