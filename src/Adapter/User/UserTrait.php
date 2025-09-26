@@ -161,7 +161,7 @@ trait UserTrait
 
     public function isAccountNonLocked(): bool
     {
-        if (false === $this->getPublished() && false === empty($this->getConfirmationToken())) {
+        if ($this->getPublished() === false && empty($this->getConfirmationToken() === false)) {
             return false;
         }
 

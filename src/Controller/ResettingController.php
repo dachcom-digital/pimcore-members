@@ -24,6 +24,7 @@ use MembersBundle\Manager\UserManagerInterface;
 use MembersBundle\MembersEvents;
 use MembersBundle\Tool\TokenGeneratorInterface;
 use Pimcore\Http\RequestHelper;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,10 +54,26 @@ class ResettingController extends AbstractController
 
     public function sendEmailAction(Request $request): Response
     {
-        $username = $request->request->get('username');
+        $form = $this->requestResettingFormFactory->createUnnamedForm();
+
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('@Members/resetting/request.html.twig', ['form' => $form]);
+        }
+
+        $username = $form->get('username')->getData();
 
         /** @var UserInterface|null $user */
         $user = $this->userManager->findUserByUsernameOrEmail($username);
+
+        if ($user?->isAccountNonLocked() === false) {
+            $form->get('username')->addError(new FormError('members.resetting.account_locked'));
+        }
+
+        if ($form->isValid() === false) {
+            return $this->render('@Members/resetting/request.html.twig', ['form' => $form]);
+        }
 
         /* Dispatch init event */
         $event = new GetResponseNullableUserEvent($user, $request);
@@ -115,17 +132,6 @@ class ResettingController extends AbstractController
         return $this->renderTemplate('@Members/resetting/check_email.html.twig', [
             'tokenLifetime' => ceil($this->getParameter('members.resetting.retry_ttl') / 3600),
         ]);
-    }
-
-    public function accountLocked(Request $request): Response
-    {
-        $username = $request->query->get('username');
-
-        if (empty($username)) {
-            return new RedirectResponse($this->generateUrl('members_user_resetting_request'));
-        }
-
-        return $this->renderTemplate('@Members/resetting/account_locked.html.twig');
     }
 
     public function resetAction(Request $request, ?string $token = null): Response
