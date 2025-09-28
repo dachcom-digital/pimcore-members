@@ -47,33 +47,37 @@ class ResettingController extends AbstractController
     public function requestAction(Request $request): Response
     {
         $form = $this->requestResettingFormFactory->createUnnamedForm();
-        $form->handleRequest($request);
+
+        if ($request->isMethod(Request::METHOD_POST)) {
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $username = $form->get('username')->getData();
+
+                /** @var UserInterface|null $user */
+                $user = $this->userManager->findUserByUsernameOrEmail($username);
+
+                if ($user?->isAccountNonLocked() === false) {
+                    $form->get('username')->addError(new FormError('members.resetting.account_locked'));
+                }
+
+                if (count($form->getErrors(true)) === 0) {
+                    return $this->redirectToRoute('members_user_resetting_send_email', [
+                        'username' => $username,
+                    ]);
+                }
+            }
+        }
 
         return $this->render('@Members/resetting/request.html.twig', ['form' => $form]);
     }
 
     public function sendEmailAction(Request $request): Response
     {
-        $form = $this->requestResettingFormFactory->createUnnamedForm();
-
-        $form->handleRequest($request);
-
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('@Members/resetting/request.html.twig', ['form' => $form]);
-        }
-
-        $username = $form->get('username')->getData();
+        $username = $request->query->get('username');
 
         /** @var UserInterface|null $user */
         $user = $this->userManager->findUserByUsernameOrEmail($username);
-
-        if ($user?->isAccountNonLocked() === false) {
-            $form->get('username')->addError(new FormError('members.resetting.account_locked'));
-        }
-
-        if ($form->isValid() === false) {
-            return $this->render('@Members/resetting/request.html.twig', ['form' => $form]);
-        }
 
         /* Dispatch init event */
         $event = new GetResponseNullableUserEvent($user, $request);
