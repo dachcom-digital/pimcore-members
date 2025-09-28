@@ -11,6 +11,7 @@ class MembersHelper
     public const DEFAULT_FEU_EMAIL = 'test@universe.org';
     public const DEFAULT_FEU_PASSWORD = 'default-password';
     public const DEFAULT_FEG_NAME = 'Default Group';
+    public const DEFAULT_CONFIRMATION_TOKEN = 'default-confirmation-token';
 
     public static function assertMailSender(): void
     {
