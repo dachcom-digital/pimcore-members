@@ -35,20 +35,9 @@ class LoginLogoutFormCest
     /**
      * @param FunctionalTester $I
      */
-    public function testLoginWithLockedUser(FunctionalTester $I)
-    {
-        $I->haveARegisteredFrontEndUser(false);
-        $this->login($I);
-        $I->see('Account is locked.', 'div');
-        $I->seeANotLoggedInFrontEndUser();
-    }
-
-    /**
-     * @param FunctionalTester $I
-     */
     public function testLoginWithInactiveUser(FunctionalTester $I)
     {
-        $I->haveAConfirmedUnpublishedFrontEndUser();
+        $I->haveARegisteredFrontEndUser(false);
         $this->login($I);
         $I->see('Account is disabled.', 'div');
         $I->seeANotLoggedInFrontEndUser();

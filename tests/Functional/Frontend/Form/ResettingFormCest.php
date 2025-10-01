@@ -37,6 +37,18 @@ class ResettingFormCest
         $this->triggerResetForm($I, $user->getEmail());
     }
 
+    public function testResettingWithLockedUser(FunctionalTester $I): void
+    {
+        $user = $I->haveARegisteredFrontEndUser(false);
+
+        $I->amOnPage('/en/members/resetting/request');
+
+        $I->fillField('form[class="members_user_resetting_request"] input[type="text"][id="username"]', $user->getEmail());
+        $I->click('Reset password');
+
+        $I->canSeeCurrentRouteIs('members_user_resetting_request');
+    }
+
     private function triggerResetForm(FunctionalTester $I, $field): void
     {
         $I->amOnPage('/en/members/resetting/request');
