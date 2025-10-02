@@ -14,59 +14,44 @@
 namespace MembersBundle\Adapter\User;
 
 use Carbon\Carbon;
+use Pimcore\Model\Element\ElementInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
-interface UserInterface extends BaseUserInterface, EquatableInterface
+interface UserInterface extends BaseUserInterface, EquatableInterface, ElementInterface
 {
     public const ROLE_DEFAULT = 'ROLE_USER';
     public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
-
-    public function setId(?int $id): static;
-
-    public function getId(): ?int;
-
-    public function setParentId(?int $parentId): static;
-
-    public function getParentId(): ?int;
-
-    public function setKey(string $key): static;
-
-    public function getKey(): ?string;
-
-    public function setProperty(string $name, string $type, mixed $data, bool $inherited = false, bool $inheritable = false): static;
-
-    public function getProperty(string $name, bool $asContainer = false): mixed;
 
     public function setPublished(bool $published): static;
 
     public function getPublished(): bool;
 
-    public function setConfirmationToken(?string $confirmationToken): static;
+    public function setConfirmationToken(?string $confirmationToken);
 
     public function getConfirmationToken(): ?string;
 
-    public function setLastLogin(Carbon $time): static;
+    public function setLastLogin(Carbon $time);
 
     public function getLastLogin(): ?Carbon;
 
-    public function setPassword(string $password): static;
+    public function setPassword(?string $password);
 
     public function getPassword(): ?string;
 
-    public function setUserName(?string $userName): static;
+    public function setUserName(?string $userName);
 
     public function getUserName(): ?string;
 
-    public function setEmail(?string $email): static;
+    public function setEmail(?string $email);
 
     public function getEmail(): ?string;
 
-    public function setGroups(array $groups): static;
+    public function setGroups(array $groups);
 
     public function getGroups(): ?array;
 
-    public function setPasswordRequestedAt(?Carbon $date): static;
+    public function setPasswordRequestedAt(?Carbon $date);
 
     public function getPasswordRequestedAt(): ?Carbon;
 
@@ -77,7 +62,7 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
      */
     public function isPasswordRequestNonExpired(int $ttl): bool;
 
-    public function setPlainPassword(string $password): self;
+    public function setPlainPassword(string $password);
 
     public function getPlainPassword(): ?string;
 
@@ -85,8 +70,4 @@ interface UserInterface extends BaseUserInterface, EquatableInterface
 
     public function isAccountNonLocked(): bool;
 
-    /**
-     * @throws \Exception
-     */
-    public function save();
 }

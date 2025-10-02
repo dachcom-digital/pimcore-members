@@ -137,7 +137,7 @@ trait UserTrait
         $this->setGroups($groups);
     }
 
-    public function setPlainPassword(string $password): self
+    public function setPlainPassword(string $password)
     {
         $this->plainPassword = $password;
 
@@ -164,7 +164,7 @@ trait UserTrait
         return true;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getUsername();
     }
