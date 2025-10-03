@@ -3,6 +3,7 @@
 ## 5.1.2
 - **[BUGFIX]**: Fix interface compatibility [#216](https://github.com/dachcom-digital/pimcore-members/issues/216)
 - **[IMPROVEMENT]**: Account check before password reset
+- **[IMPROVEMENT]**: [Restriction] Use AssetService to stream response by URI 
 
 ## 5.1.1
 - **[BUGFIX]**: Fix chunked serving of protected video assets [#214](https://github.com/dachcom-digital/pimcore-members/pull/214)
