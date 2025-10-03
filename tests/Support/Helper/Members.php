@@ -78,6 +78,7 @@ class Members extends Module implements DependsOnModule
         $userObject->setUserName(MembersHelper::DEFAULT_FEU_USERNAME);
         $userObject->setPlainPassword(MembersHelper::DEFAULT_FEU_PASSWORD);
         $userObject->setPublished(false);
+        $userObject->setConfirmationToken(MembersHelper::DEFAULT_CONFIRMATION_TOKEN);
 
         if (count($additionalParameter) > 0) {
             foreach ($additionalParameter as $additionalParam => $additionalParamValue) {
@@ -101,10 +102,39 @@ class Members extends Module implements DependsOnModule
         return $user;
     }
 
+    public function haveAConfirmedUnpublishedFrontEndUser(array $groups = [], array $additionalParameter = []): UserInterface
+    {
+        $user = $this->haveARegisteredFrontEndUser(true, $groups, $additionalParameter);
+
+        $user->setPublished(false);
+
+        $userManager = $this->getContainer()->get(UserManager::class);
+        $userManager->updateUser($user);
+
+        $this->assertInstanceOf(UserInterface::class, $user);
+
+        return $user;
+    }
+
     /**
      * Actor Function to publish and confirm (triggered by updateUser()) a frontend user.
      */
     public function publishAndConfirmAFrontendUser(UserInterface $user): void
+    {
+        $user->setPublished(true);
+        $user->setConfirmationToken(null);
+
+        $userManager = $this->getContainer()->get(UserManager::class);
+        $userManager->updateUser($user);
+
+        $this->assertTrue($user->getPublished());
+        $this->assertNull($user->getConfirmationToken());
+    }
+
+    /**
+     * Actor Function to publish (triggered by updateUser()) a frontend user.
+     */
+    public function publishAFrontendUser(UserInterface $user): void
     {
         $user->setPublished(true);
 

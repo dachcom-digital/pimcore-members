@@ -85,7 +85,7 @@ class RegisterFormCest
         $this->register($I);
 
         $user = $I->grabOneUserAfterRegistration();
-        $I->publishAndConfirmAFrontendUser($user);
+        $I->publishAFrontendUser($user);
 
         $email = Email::getByPath('/email/register-confirmed');
         $I->canSeeEmailIsSent($email);

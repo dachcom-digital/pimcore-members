@@ -60,7 +60,19 @@ class ResettingListener implements EventSubscriberInterface
 
     public function onResettingResetRequest(GetResponseUserEvent $event): void
     {
-        if (!$event->getUser()->isAccountNonLocked()) {
+        $user = $event->getUser();
+
+        if (!$user instanceof UserInterface) {
+            return;
+        }
+
+        if (!$user->isAccountNonLocked()) {
+            $event->setResponse(new RedirectResponse($this->router->generate('members_user_resetting_request')));
+
+            return;
+        }
+
+        if ($user->getConfirmationToken() !== null) {
             $event->setResponse(new RedirectResponse($this->router->generate('members_user_resetting_request')));
         }
     }
