@@ -38,7 +38,7 @@ class RoleOptionsProvider implements SelectOptionsProviderInterface
 
         return array_map(
             static fn ($role): array => ['key' => $role, 'value' => $role],
-            array_unique($roles)
+            array_values(array_unique($roles))
         );
     }
 
