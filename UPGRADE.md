@@ -1,5 +1,8 @@
 # Upgrade Notes
 
+## 5.1.3
+- **[BUGFIX]**: Assert correct video context in chunked video streaming
+
 ## 5.1.2
 - **[BUGFIX]**: Fix interface compatibility [#216](https://github.com/dachcom-digital/pimcore-members/issues/216)
 - **[IMPROVEMENT]**: Account check before password reset
