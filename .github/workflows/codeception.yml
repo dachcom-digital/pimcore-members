@@ -40,9 +40,9 @@ jobs:
             matrix:
                 php: [ 8.3 ]
                 symfony: [ ^6.4 ]
-                pimcore: [ ~11.4.0 ]
+                pimcore: [ ~11.5.0 ]
                 include:
-                    -   pimcore: ~11.4.0
+                    -   pimcore: ~11.5.0
                         template_tag: 2024.3
         steps:
             -   uses: nanasess/setup-chromedriver@v2

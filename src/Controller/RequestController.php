@@ -71,14 +71,24 @@ class RequestController extends AbstractController
         $decodedPath = $this->restrictionUri->decodePublicAssetUrl($id, $path, $extension);
 
         if ($decodedPath === null) {
-            return new BinaryFileResponse(PIMCORE_PATH . '/bundles/AdminBundle/Resources/public/img/filetype-not-supported.svg');
+            return new BinaryFileResponse(PIMCORE_WEB_ROOT . '/bundles/pimcoreadmin/img/filetype-not-supported.svg');
         }
 
-        return $this->servePath($decodedPath, $request);
+        return $this->servePath($decodedPath, $id, $request);
     }
 
-    private function servePath(string $path, Request $request): Response
+    private function servePath(string $path, int $id, Request $request): Response
     {
+        $asset = Model\Asset::getById($id);
+
+        if ($asset instanceof Model\Asset\Video) {
+            try {
+                return $this->serveVideoAsset($asset, $path, $request);
+            } catch (\Throwable $e) {
+                return new BinaryFileResponse(PIMCORE_WEB_ROOT . '/bundles/pimcoreadmin/img/filetype-not-supported.svg');
+            }
+        }
+
         $response = Model\Asset\Service::getStreamedResponseByUri($path);
 
         if ($response instanceof StreamedResponse) {
@@ -86,15 +96,7 @@ class RequestController extends AbstractController
         }
 
         // no thumbnail path found, check if the original file has been requested
-
-        $asset = Model\Asset::getByPath($path);
-
         if ($asset instanceof Model\Asset) {
-
-            // Handle response differently for video assets.
-            if ($asset instanceof Model\Asset\Video) {
-                return $this->serveVideoAsset($asset, $request);
-            }
 
             $stream = $asset->getStream();
 
@@ -109,14 +111,31 @@ class RequestController extends AbstractController
         return throw $this->createNotFoundException();
     }
 
-    private function serveVideoAsset(Model\Asset\Video $asset, Request $request): Response
+    private function serveVideoAsset(Model\Asset\Video $asset, string $path, Request $request): Response
     {
-        $fileSize = $asset->getFileSize();
+        $regExpression = sprintf('/(%s)(%s)-thumb__(%s)__(%s)\/(%s)/',
+            '.*',
+            'video|image',
+            '\d+',
+            '[a-zA-Z0-9_\-]+',
+            '.*'
+        );
+
+        if (preg_match($regExpression, $path, $matches)) {
+            $storage = $this->storage->get('thumbnail');
+        } else {
+            $storage = $this->storage->get('asset');
+        }
+
+        if (!$storage->fileExists($path)) {
+            throw new \InvalidArgumentException('File does not exist');
+        }
+
+        $fileSize = $storage->fileSize($path);
+
         $start = 0;
         $end = $fileSize - 1;
         $statusCode = Response::HTTP_OK;
-
-        $absolutePath = sprintf('%s/public/var/assets%s', PIMCORE_PROJECT_ROOT, $asset->getRealFullPath());
 
         if ($range = $request->headers->get('Range')) {
             if (preg_match('/bytes=(\d*)-(\d*)/', $range, $matches)) {
@@ -138,22 +157,25 @@ class RequestController extends AbstractController
 
         $length = $end - $start + 1;
 
-        $response = new StreamedResponse(function () use ($absolutePath, $start, $length) {
-            $handle = fopen($absolutePath, 'rb');
+        $response = new StreamedResponse(function () use ($storage, $path, $start, $length) {
+
+            $handle = $storage->readStream($path);
+
             fseek($handle, $start);
             $bytesLeft = $length;
             $chunkSize = 8192;
 
             while ($bytesLeft > 0 && !feof($handle)) {
-                $readSize = ($bytesLeft > $chunkSize) ? $chunkSize : $bytesLeft;
+                $readSize = min($chunkSize, $bytesLeft);
                 echo fread($handle, $readSize);
                 flush();
                 $bytesLeft -= $readSize;
             }
+
             fclose($handle);
         }, $statusCode);
 
-        $response->headers->set('Content-Type', $asset->getMimeType());
+        $response->headers->set('Content-Type', $storage->mimeType($path));
         $response->headers->set('Accept-Ranges', 'bytes');
         $response->headers->set('Content-Length', $length);
 
