@@ -175,7 +175,7 @@ class SsoIdentityManager implements SsoIdentityManagerInterface
             ->select('src_id')
             ->from('object_relations_' . $userClass::classId())
             ->where('fieldname = :ssoIdentitiesName')
-            ->where('dest_id = :ssoIdentitiesId');
+            ->andWhere('dest_id = :ssoIdentitiesId');
 
         $qb->setParameters([
             'ssoIdentitiesName' => 'ssoIdentities',
