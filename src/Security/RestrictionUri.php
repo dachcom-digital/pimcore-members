@@ -104,7 +104,7 @@ class RestrictionUri
             return null;
         }
 
-        $userGroups = $restriction->getRelatedGroups();
+        $userGroups = $restriction instanceof Restriction ? $restriction->getRelatedGroups() : [];
 
         // check if asset is in restricted mode without any restriction settings
         // if not, set restriction to null since there can't be any protection.
