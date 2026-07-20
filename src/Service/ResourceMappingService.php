@@ -72,7 +72,7 @@ class ResourceMappingService
         }
 
         $ownerDetails = $resourceOwner->toArray();
-        $disallowedProperties = ['lastLogin', 'password', 'confirmationToken', 'passwordRequestedAt', 'groups', 'ssoIdentities'];
+        $disallowedProperties = ['lastlogin', 'password', 'confirmationtoken', 'passwordrequestedat', 'groups', 'ssoidentities'];
 
         foreach ($ownerDetails as $property => $value) {
             if (in_array(strtolower($property), $disallowedProperties)) {
